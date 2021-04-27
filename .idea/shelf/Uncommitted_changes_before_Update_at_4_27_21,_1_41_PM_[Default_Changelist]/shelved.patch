@@ -1,0 +1,54 @@
+Index: src/Main.java
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+>public class Main {\n    public static void main(String[] args) {\n        System.out.println(\"Hello World!\");\n    }\n}\n
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/src/Main.java b/src/Main.java
+--- a/src/Main.java	(revision 41df799420eee5b818f7e336313780b4ce47ead7)
++++ b/src/Main.java	(date 1618937058637)
+@@ -1,5 +1,5 @@
+ public class Main {
+     public static void main(String[] args) {
+-        System.out.println("Hello World!");
++
+     }
+ }
+Index: src/Controller/LoginMenu.java
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/src/Controller/LoginMenu.java b/src/Controller/LoginMenu.java
+new file mode 100644
+--- /dev/null	(date 1618937501482)
++++ b/src/Controller/LoginMenu.java	(date 1618937501482)
+@@ -0,0 +1,5 @@
++package Controller;
++
++public class LoginMenu {
++    public static 
++}
+Index: src/Controller/BaseMenu.java
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/src/Controller/BaseMenu.java b/src/Controller/BaseMenu.java
+new file mode 100644
+--- /dev/null	(date 1618937483422)
++++ b/src/Controller/BaseMenu.java	(date 1618937483422)
+@@ -0,0 +1,11 @@
++package Controller;
++
++public abstract class BaseMenu {
++    public abstract void showCurrentMenu();
++
++    public abstract void navigateToMenu(String menu);
++
++    public abstract void exit();
++
++    public abstract void programControl();
++}
+\ No newline at end of file
