@@ -1,0 +1,188 @@
+Index: src/main/java/model/Player.java
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+>package model;\n\nimport model.deck.*;\n\npublic class Player {\n    private User user;\n    private Deck deck;\n    private Board board;\n    private Integer lifePoint;\n\n    public User getUser() {\n        return user;\n    }\n\n    public MainDeck getMainDeck() {\n        return deck.getMainDeck();\n    }\n\n    public SideDeck getSideDeck() {\n        return deck.getSideDeck();\n    }\n\n    public Board getBoard() {\n        return board;\n    }\n\n    public Integer getLifePoint() {\n        return lifePoint;\n    }\n\n    public void increaseLifePoint(Integer value) {\n        this.lifePoint += value;\n    }\n    \n    public void decreaseLifePoint(Integer value) {\n        this.lifePoint -= value;\n    }\n    \n\n\n}\n
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/src/main/java/model/Player.java b/src/main/java/model/Player.java
+--- a/src/main/java/model/Player.java	(revision 80a4a6a1937bf3b6012b4ecfe246c3dc834bbcad)
++++ b/src/main/java/model/Player.java	(date 1619551157491)
+@@ -35,7 +35,4 @@
+     public void decreaseLifePoint(Integer value) {
+         this.lifePoint -= value;
+     }
+-    
+-
+-
+ }
+Index: .idea/compiler.xml
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/.idea/compiler.xml b/.idea/compiler.xml
+new file mode 100644
+--- /dev/null	(date 1619550375586)
++++ b/.idea/compiler.xml	(date 1619550375586)
+@@ -0,0 +1,13 @@
++<?xml version="1.0" encoding="UTF-8"?>
++<project version="4">
++  <component name="CompilerConfiguration">
++    <annotationProcessing>
++      <profile name="Maven default annotation processors profile" enabled="true">
++        <sourceOutputDir name="target/generated-sources/annotations" />
++        <sourceTestOutputDir name="target/generated-test-sources/test-annotations" />
++        <outputRelativeToContentRoot value="true" />
++        <module name="YuGiOh" />
++      </profile>
++    </annotationProcessing>
++  </component>
++</project>
+\ No newline at end of file
+Index: YuGiOh.iml
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+><?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<module type=\"JAVA_MODULE\" version=\"4\">\n  <component name=\"NewModuleRootManager\" inherit-compiler-output=\"true\">\n    <exclude-output />\n    <content url=\"file://$MODULE_DIR$\" />\n    <orderEntry type=\"inheritedJdk\" />\n    <orderEntry type=\"sourceFolder\" forTests=\"false\" />\n  </component>\n</module>
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/YuGiOh.iml b/YuGiOh.iml
+--- a/YuGiOh.iml	(revision 80a4a6a1937bf3b6012b4ecfe246c3dc834bbcad)
++++ b/YuGiOh.iml	(date 1619550375539)
+@@ -1,9 +1,2 @@
+ <?xml version="1.0" encoding="UTF-8"?>
+-<module type="JAVA_MODULE" version="4">
+-  <component name="NewModuleRootManager" inherit-compiler-output="true">
+-    <exclude-output />
+-    <content url="file://$MODULE_DIR$" />
+-    <orderEntry type="inheritedJdk" />
+-    <orderEntry type="sourceFolder" forTests="false" />
+-  </component>
+-</module>
+\ No newline at end of file
++<module type="JAVA_MODULE" version="4" />
+\ No newline at end of file
+Index: src/main/java/model/User.java
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/src/main/java/model/User.java b/src/main/java/model/User.java
+new file mode 100644
+--- /dev/null	(date 1619520899183)
++++ b/src/main/java/model/User.java	(date 1619520899183)
+@@ -0,0 +1,82 @@
++package model;
++
++import model.card.Card;
++import model.deck.Deck;
++
++import java.util.ArrayList;
++
++public class User {
++    private static ArrayList<User> users = new ArrayList<>();
++
++    private String username;
++    private String password;
++    private String nickname;
++    private Integer score;
++    private ArrayList<Card> cards = new ArrayList<>();
++    private ArrayList<Deck> decks = new ArrayList<>();
++
++    User(String username, String password, String nickname) {
++        this.username = username;
++        this.password = password;
++        this.nickname = nickname;
++        users.add(this);
++    }
++
++    public static User getUserByUsername(String username) {
++        for (User user : users)
++            if (user.getUsername().equals(username))
++                return user;
++        return null;
++    }
++
++    public String getUsername() {
++        return username;
++    }
++
++    public String getPassword() {
++        return password;
++    }
++
++    public String getNickname() {
++        return nickname;
++    }
++
++    public Integer getScore() {
++        return score;
++    }
++
++    public void setUsername(String username) {
++        this.username = username;
++    }
++
++    public void setPassword(String password) {
++        this.password = password;
++    }
++
++    public void setNickname(String nickname) {
++        this.nickname = nickname;
++    }
++
++    public void increaseScore(Integer value) {
++        score += value;
++    }
++
++    public void decreaseScore(Integer value) {
++        score -= value;
++    }
++
++    public Deck getDeckByName(String deckName) {
++        for (Deck deck : decks)
++            if (deck.getName().equals(deckName))
++                return deck;
++        return null;
++    }
++
++    public void addDeck(Deck deck) {
++        decks.add(deck);
++    }
++
++    public void deleteDeck(Deck deck) {
++        decks.removeIf(deck1 -> deck1.equals(deck));
++    }
++}
+Index: .idea/jarRepositories.xml
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/.idea/jarRepositories.xml b/.idea/jarRepositories.xml
+new file mode 100644
+--- /dev/null	(date 1619550375604)
++++ b/.idea/jarRepositories.xml	(date 1619550375604)
+@@ -0,0 +1,20 @@
++<?xml version="1.0" encoding="UTF-8"?>
++<project version="4">
++  <component name="RemoteRepositoriesConfiguration">
++    <remote-repository>
++      <option name="id" value="central" />
++      <option name="name" value="Central Repository" />
++      <option name="url" value="https://repo.maven.apache.org/maven2" />
++    </remote-repository>
++    <remote-repository>
++      <option name="id" value="central" />
++      <option name="name" value="Maven Central repository" />
++      <option name="url" value="https://repo1.maven.org/maven2" />
++    </remote-repository>
++    <remote-repository>
++      <option name="id" value="jboss.community" />
++      <option name="name" value="JBoss Community repository" />
++      <option name="url" value="https://repository.jboss.org/nexus/content/repositories/public/" />
++    </remote-repository>
++  </component>
++</project>
+\ No newline at end of file
