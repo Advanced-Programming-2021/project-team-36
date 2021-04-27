@@ -1,11 +1,39 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
-  <component name="AutoImportSettings">
-    <option name="autoReloadType" value="SELECTIVE" />
+  <component name="BranchesTreeState">
+    <expand>
+      <path>
+        <item name="ROOT" type="e8cecc67:BranchNodeDescriptor" />
+        <item name="LOCAL_ROOT" type="e8cecc67:BranchNodeDescriptor" />
+      </path>
+      <path>
+        <item name="ROOT" type="e8cecc67:BranchNodeDescriptor" />
+        <item name="REMOTE_ROOT" type="e8cecc67:BranchNodeDescriptor" />
+      </path>
+      <path>
+        <item name="ROOT" type="e8cecc67:BranchNodeDescriptor" />
+        <item name="REMOTE_ROOT" type="e8cecc67:BranchNodeDescriptor" />
+        <item name="GROUP_NODE:origin" type="e8cecc67:BranchNodeDescriptor" />
+      </path>
+    </expand>
+    <select />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="dce70137-6b5f-4cf9-9741-034e451d63e0" name="Default Changelist" comment="models">
+    <list default="true" id="376d3e2d-5741-4a24-be07-dcbf3eb04000" name="Default Changelist" comment="">
+      <change afterPath="$PROJECT_DIR$/.idea/compiler.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/.idea/jarRepositories.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/controller/DeckMenu.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/controller/DuelMenu.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/controller/ImportAndExportMenu.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/controller/MainMenu.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/controller/ProfileMenu.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/controller/ScoreboardMenu.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/controller/ShopMenu.java" afterDir="false" />
       <change afterPath="$PROJECT_DIR$/src/main/java/model/User.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/modules.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/YuGiOh.iml" beforeDir="false" afterPath="$PROJECT_DIR$/YuGiOh.iml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/controller/BaseMenu.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/controller/BaseMenu.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/controller/LoginMenu.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/controller/LoginMenu.java" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -16,22 +44,13 @@
     <option name="RECENT_TEMPLATES">
       <list>
         <option value="Class" />
-        <option value="Enum" />
       </list>
     </option>
   </component>
   <component name="Git.Settings">
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
   </component>
-  <component name="GitSEFilterConfiguration">
-    <file-type-list>
-      <filtered-out-file-type name="LOCAL_BRANCH" />
-      <filtered-out-file-type name="REMOTE_BRANCH" />
-      <filtered-out-file-type name="TAG" />
-      <filtered-out-file-type name="COMMIT_BY_MESSAGE" />
-    </file-type-list>
-  </component>
-  <component name="ProjectId" id="1rRJp2C3rw130AKqkEDaPsZjbvy" />
+  <component name="ProjectId" id="1rkrHl1yA5rmImXYqGbuNe3edQQ" />
   <component name="ProjectViewState">
     <option name="hideEmptyMiddlePackages" value="true" />
     <option name="showLibraryContents" value="true" />
@@ -42,91 +61,25 @@
     <property name="SHARE_PROJECT_CONFIGURATION_FILES" value="true" />
     <property name="WebServerToolWindowFactoryState" value="false" />
     <property name="aspect.path.notification.shown" value="true" />
-    <property name="last_opened_file_path" value="$PROJECT_DIR$/src/main/java/model" />
-    <property name="project.structure.last.edited" value="Artifacts" />
-    <property name="project.structure.proportion" value="0.15" />
-    <property name="project.structure.side.proportion" value="0.2" />
+    <property name="last_opened_file_path" value="$PROJECT_DIR$" />
   </component>
-  <component name="RecentsManager">
-    <key name="MoveFile.RECENT_KEYS">
-      <recent name="$PROJECT_DIR$/src/main/java" />
-      <recent name="$PROJECT_DIR$/src/main/java/controller" />
-      <recent name="$PROJECT_DIR$/src/main/java/model" />
-    </key>
+  <component name="SvnConfiguration">
+    <configuration />
   </component>
-  <component name="RunManager">
-    <configuration name="Main" type="Application" factoryName="Application" temporary="true" nameIsGenerated="true">
-      <option name="MAIN_CLASS_NAME" value="Main" />
-      <module name="project-team-36" />
-      <method v="2">
-        <option name="Make" enabled="true" />
-      </method>
-    </configuration>
-    <recent_temporary>
-      <list>
-        <item itemvalue="Application.Main" />
-      </list>
-    </recent_temporary>
-  </component>
-  <component name="SpellCheckerSettings" RuntimeDictionaries="0" Folders="0" CustomDictionaries="0" DefaultDictionary="application-level" UseSingleDictionary="true" transferred="true" />
   <component name="TaskManager">
     <task active="true" id="Default" summary="Default task">
-      <changelist id="dce70137-6b5f-4cf9-9741-034e451d63e0" name="Default Changelist" comment="" />
-      <created>1618933150960</created>
+      <changelist id="376d3e2d-5741-4a24-be07-dcbf3eb04000" name="Default Changelist" comment="" />
+      <created>1619530843060</created>
       <option name="number" value="Default" />
       <option name="presentableId" value="Default" />
-      <updated>1618933150960</updated>
-      <workItem from="1618933156249" duration="2725000" />
-      <workItem from="1619441444484" duration="7584000" />
-      <workItem from="1619550333429" duration="650000" />
+      <updated>1619530843060</updated>
+      <workItem from="1619530850495" duration="830000" />
+      <workItem from="1619532051536" duration="1352000" />
     </task>
-    <task id="LOCAL-00001" summary="init">
-      <created>1618934459232</created>
-      <option name="number" value="00001" />
-      <option name="presentableId" value="LOCAL-00001" />
-      <option name="project" value="LOCAL" />
-      <updated>1618934459232</updated>
-    </task>
-    <task id="LOCAL-00002" summary="init">
-      <created>1618936843870</created>
-      <option name="number" value="00002" />
-      <option name="presentableId" value="LOCAL-00002" />
-      <option name="project" value="LOCAL" />
-      <updated>1618936843870</updated>
-    </task>
-    <task id="LOCAL-00003" summary="init">
-      <created>1618936852136</created>
-      <option name="number" value="00003" />
-      <option name="presentableId" value="LOCAL-00003" />
-      <option name="project" value="LOCAL" />
-      <updated>1618936852136</updated>
-    </task>
-    <task id="LOCAL-00004" summary="models">
-      <created>1619524461257</created>
-      <option name="number" value="00004" />
-      <option name="presentableId" value="LOCAL-00004" />
-      <option name="project" value="LOCAL" />
-      <updated>1619524461258</updated>
-    </task>
-    <task id="LOCAL-00005" summary="models">
-      <created>1619524998725</created>
-      <option name="number" value="00005" />
-      <option name="presentableId" value="LOCAL-00005" />
-      <option name="project" value="LOCAL" />
-      <updated>1619524998725</updated>
-    </task>
-    <task id="LOCAL-00006" summary="models">
-      <created>1619551198768</created>
-      <option name="number" value="00006" />
-      <option name="presentableId" value="LOCAL-00006" />
-      <option name="project" value="LOCAL" />
-      <updated>1619551198768</updated>
-    </task>
-    <option name="localTasksCounter" value="7" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
-    <option name="version" value="3" />
+    <option name="version" value="2" />
   </component>
   <component name="Vcs.Log.Tabs.Properties">
     <option name="TAB_STATES">
@@ -139,10 +92,5 @@
       </map>
     </option>
     <option name="oldMeFiltersMigrated" value="true" />
-  </component>
-  <component name="VcsManagerConfiguration">
-    <MESSAGE value="init" />
-    <MESSAGE value="models" />
-    <option name="LAST_COMMIT_MESSAGE" value="models" />
   </component>
 </project>
