@@ -7,5 +7,5 @@ public class Monster extends Card{
     protected Integer defenseRate;
     protected String attribute;
     protected String type;
-    private State state;
+    protected State state;
 }
