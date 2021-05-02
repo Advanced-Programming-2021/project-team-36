@@ -7,7 +7,7 @@ public class CardAddress {
     private boolean isInHand;
     private Integer id;
 
-    public CardAddress cardAddressParser(String text) {
-
-    }
+//    public CardAddress cardAddressParser(String text) {
+//
+//    }
 }

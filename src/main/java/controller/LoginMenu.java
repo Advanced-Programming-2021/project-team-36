@@ -4,8 +4,7 @@ public class LoginMenu extends BaseMenu {
     private static void createUser(String username, String nickname, String password) {
 
     }
-    private static void login(String username, String password) {
-
+    public static void login(String username, String password) {
     }
     private static void logout() {
 

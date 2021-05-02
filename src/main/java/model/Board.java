@@ -16,32 +16,32 @@ public class Board {
     private Map<Integer, Card> spellAndTrapCardZone = new HashMap<>();
     private Map<Integer, Card> cardsOnHand = new HashMap<>();
 
-    public CardAddress getCardAddressByCard(Card card) {
-
-    }
-
-    public List<Card> getAllCardsOnField() {
-
-    }
-
-    public void addCardToBoard(Card card, CardAddress cardAddress) {
-
-    }
-
-    public void moveCardToGraveYard(CardAddress cardAddress) {
-
-    }
-
-    public void summonMonster(Monster monsterCard) {
-
-    }
-
-    public boolean isMonsterCardZoneFull() {
-        return monsterCardZone.size() == 5;
-    }
-
-    public void finishTurn() {
-
-    }
+//    public CardAddress getCardAddressByCard(Card card) {
+//
+//    }
+//
+//    public List<Card> getAllCardsOnField() {
+//
+//    }
+//
+//    public void addCardToBoard(Card card, CardAddress cardAddress) {
+//
+//    }
+//
+//    public void moveCardToGraveYard(CardAddress cardAddress) {
+//
+//    }
+//
+//    public void summonMonster(Monster monsterCard) {
+//
+//    }
+//
+//    public boolean isMonsterCardZoneFull() {
+//        return monsterCardZone.size() == 5;
+//    }
+//
+//    public void finishTurn() {
+//
+//    }
 
 }

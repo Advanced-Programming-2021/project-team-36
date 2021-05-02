@@ -1,8 +1,16 @@
 package controller;
 
 abstract public class BaseMenu {
-    abstract protected static void showCurrentMenu();
-    abstract protected static void navigateToMenu(String menu);
-    abstract protected static void exit();
-    abstract public static void programControl();
+    protected static void showCurrentMenu(){
+
+    }
+    protected static void navigateToMenu(String menu){
+
+    }
+    protected static void exit(){
+
+    }
+    public static void programControl(){
+
+    }
 }
