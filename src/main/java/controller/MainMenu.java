@@ -3,12 +3,16 @@ package controller;
 import model.User;
 
 public class MainMenu extends BaseMenu {
-    private static User user;
     private static void startNewDuel(String secondPlayerUsername, int round) {
 
     }
     private static void startDuelWithAI(int round) {
 
+    }
+    private static void logout() {
+        User.logOut();
+        System.out.println("user logged out successfully!");
+        navigateToMenu("Login Menu");
     }
     protected static void showCurrentMenu() {
 
@@ -17,9 +21,6 @@ public class MainMenu extends BaseMenu {
 
     }
     protected static void exit() {
-
-    }
-    private static void start(User user) {
 
     }
     public static void programControl() {

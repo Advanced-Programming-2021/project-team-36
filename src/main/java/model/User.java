@@ -4,18 +4,20 @@ import model.card.Card;
 import model.deck.Deck;
 
 import java.util.ArrayList;
+import java.util.Comparator;
 
 public class User {
     private static ArrayList<User> users = new ArrayList<>();
+    private static User currentUser;
 
     private String username;
     private String password;
     private String nickname;
-    private Integer score;
+    private int score;
     private ArrayList<Card> cards = new ArrayList<>();
     private ArrayList<Deck> decks = new ArrayList<>();
 
-    User(String username, String password, String nickname) {
+    public User(String username, String password, String nickname) {
         this.username = username;
         this.password = password;
         this.nickname = nickname;
@@ -27,6 +29,61 @@ public class User {
             if (user.getUsername().equals(username))
                 return user;
         return null;
+    }
+
+    public static User getUserByNickname(String nickname) {
+        for (User user : users)
+            if (user.getNickname().equals(nickname))
+                return user;
+        return null;
+    }
+
+    public static User getCurrentUser() {
+        return currentUser;
+    }
+
+    public static ArrayList<User> retrieveUsersBasedOnScore() {
+        users.sort(new scoreBasedComparator());
+        return users;
+    }
+
+    public static ArrayList<Card> getCardsLexicographically() {
+        // TODO
+        return new ArrayList<>();
+    }
+
+    public static ArrayList<Deck> getDecksLexicographically() {
+        // TODO
+        return new ArrayList<>();
+    }
+
+    public static String checkValidity(String username, String nickname, String password) {
+        // TODO :
+        return "TODO";
+    }
+
+    public static boolean authenticateUser(String username, String password) {
+        User user = getUserByUsername(username);
+        return user != null && user.password.equals(password);
+    }
+
+    public static void logIn(String username, String password) {
+        User user = getUserByUsername(username);
+        if (user == null || !user.password.equals(password))
+            assert false;
+        User.currentUser = user;
+    }
+
+    public static void logOut() {
+        User.currentUser = null;
+    }
+
+    private static class scoreBasedComparator implements Comparator<User> {
+        public int compare(User user1, User user2) {
+            if (user1.score != user2.score)
+                return (user1.score < user2.score ? 1 : -1);
+            return user1.nickname.compareTo(user2.nickname);
+        }
     }
 
     public String getUsername() {
@@ -45,6 +102,11 @@ public class User {
         return score;
     }
 
+    public Deck getActiveDeck() {
+        // TODO
+        return new Deck("");
+    }
+
     public void setUsername(String username) {
         this.username = username;
     }
@@ -55,6 +117,10 @@ public class User {
 
     public void setNickname(String nickname) {
         this.nickname = nickname;
+    }
+
+    public void setActiveDeck(Deck deck) {
+        // TODO
     }
 
     public void increaseScore(Integer value) {
@@ -78,5 +144,9 @@ public class User {
 
     public void deleteDeck(Deck deck) {
         decks.removeIf(deck1 -> deck1.equals(deck));
+    }
+
+    public boolean authenticate(String password) {
+        return this.password.equals(password);
     }
 }

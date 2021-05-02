@@ -8,7 +8,7 @@ public class Deck {
     private MainDeck mainDeck;
     private SideDeck sideDeck;
 
-    Deck(String name) {
+    public Deck(String name) {
         this.name = name;
         mainDeck = new MainDeck();
         sideDeck = new SideDeck();
@@ -28,5 +28,10 @@ public class Deck {
 
     public SideDeck getSideDeck() {
         return sideDeck;
+    }
+
+    public String info(boolean side) {
+        // TODO
+        return "";
     }
 }
