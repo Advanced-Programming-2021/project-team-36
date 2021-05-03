@@ -62,15 +62,12 @@ public class User {
         return "TODO";
     }
 
-    public static boolean authenticateUser(String username, String password) {
-        User user = getUserByUsername(username);
+    public static boolean authenticateUser(User user, String password) {
         return user != null && user.password.equals(password);
     }
 
-    public static void logIn(String username, String password) {
-        User user = getUserByUsername(username);
-        if (user == null || !user.password.equals(password))
-            assert false;
+    public static void logIn(User user, String password) {
+        assert user != null && user.password.equals(password);
         User.currentUser = user;
     }
 

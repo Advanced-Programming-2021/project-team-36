@@ -3,7 +3,7 @@ package controller;
 import model.User;
 
 public class ProfileMenu extends BaseMenu {
-    private static void changeNickname(String nickname) {
+    public static void changeNickname(String nickname) {
         User user = User.getCurrentUser();
         if (User.getUserByNickname(nickname) != null) {
             System.out.println("user with nickname " + nickname + " already exists");
@@ -11,7 +11,7 @@ public class ProfileMenu extends BaseMenu {
         user.setNickname(nickname);
         System.out.println("nickname changed successfully!");
     }
-    private static void changePassword(String oldPassword, String newPassword) {
+    public static void changePassword(String oldPassword, String newPassword) {
         User user = User.getCurrentUser();
         if (!user.authenticate(oldPassword)) {
             System.out.println("current password is invalid");

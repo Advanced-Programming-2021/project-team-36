@@ -4,10 +4,10 @@ import model.User;
 
 public class ShopMenu extends BaseMenu {
     private static User user;
-    private static void buyCard(String cardName) {
+    public static void buyCard(String cardName) {
 
     }
-    private static void shopAll() {
+    public static void shopAll() {
 
     }
     protected static void showCurrentMenu() {

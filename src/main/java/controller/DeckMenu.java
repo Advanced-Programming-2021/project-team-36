@@ -6,7 +6,7 @@ import model.card.Card;
 import model.deck.Deck;
 
 public class DeckMenu extends BaseMenu {
-    private static void createDeck(String deckName) {
+    public static void createDeck(String deckName) {
         User user = User.getCurrentUser();
         if (user.getDeckByName(deckName) != null) {
             System.out.println("deck with name " + deckName + " already exists");
@@ -14,7 +14,7 @@ public class DeckMenu extends BaseMenu {
         User.getCurrentUser().addDeck(new Deck(deckName));
         System.out.println("deck created successfully!");
     }
-    private static void deleteDeck(String deckName) {
+    public static void deleteDeck(String deckName) {
         User user = User.getCurrentUser();
         Deck deck = user.getDeckByName(deckName);
         if (deck == null) {
@@ -24,7 +24,7 @@ public class DeckMenu extends BaseMenu {
         user.deleteDeck(deck);
         System.out.println("deck deleted successfully");
     }
-    private static void setActiveDeck(String deckName) {
+    public static void setActiveDeck(String deckName) {
         User user = User.getCurrentUser();
         Deck deck = user.getDeckByName(deckName);
         if (deck == null) {
@@ -34,7 +34,7 @@ public class DeckMenu extends BaseMenu {
         user.setActiveDeck(deck);
         System.out.println("deck activated successfully");
     }
-    private static void addCardToDeck(String cardName, String deckName, boolean side) {
+    public static void addCardToDeck(String cardName, String deckName, boolean side) {
         Card card; // TODO : Card must be initialized to something. Should also check whether the card exists or not.
         // Response in case : "card with name " + cardName + " does not exist"
         User user = User.getCurrentUser();
@@ -55,7 +55,7 @@ public class DeckMenu extends BaseMenu {
         }
         System.out.println("card added to deck successfully");
     }
-    private static void removeCardFromDeck(String cardName, String deckName, boolean side) {
+    public static void removeCardFromDeck(String cardName, String deckName, boolean side) {
         Card card; // TODO : Card must be initialized to something. Should also check whether the card exists or not.
         // Response in case : "card with name " + cardName + " does not exist"
         User user = User.getCurrentUser();
@@ -76,12 +76,12 @@ public class DeckMenu extends BaseMenu {
         }
         System.out.println("card removed from deck successfully"); // Doc mistakenly says "form"
     }
-    private static void showDeck(String deckName, boolean side) {
+    public static void showDeck(String deckName, boolean side) {
         User user = User.getCurrentUser();
         Deck deck = user.getDeckByName(deckName);
         System.out.println(deck.info(side));
     }
-    private static void showAllDecks() {
+    public static void showAllDecks() {
         System.out.println("Decks:");
         System.out.println("Active deck:");
         User user = User.getCurrentUser();
@@ -93,7 +93,7 @@ public class DeckMenu extends BaseMenu {
             if (deck != activeDeck)
                 System.out.println(deck);
     }
-    private static void showAllCards() {
+    public static void showAllCards() {
         User user = User.getCurrentUser();
         for (Card card : user.getCardsLexicographically())
             System.out.println(card);

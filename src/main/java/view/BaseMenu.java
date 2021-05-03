@@ -1,5 +1,6 @@
 package view;
 
+import Utils.ParserException;
 import view.CommandLine.CommandLine;
 import view.CommandLine.CommandLineException;
 
@@ -14,10 +15,10 @@ public class BaseMenu {
         this.cmd = new CommandLine();
     }
     public void runNextCommand(){
-        try{
+        try {
             String line = scanner.nextLine();
             this.cmd.runNextCommand(line);
-        } catch (CommandLineException e){
+        } catch (CommandLineException | ParserException e) {
             System.out.println(e.getMessage());
         }
     }

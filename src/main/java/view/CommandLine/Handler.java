@@ -1,7 +1,9 @@
 package view.CommandLine;
 
-import org.apache.commons.cli.CommandLine;
+import Utils.ParserException;
+
+import java.util.Map;
 
 public interface Handler {
-    void run(CommandLine cmd);
+    void run(Map<String, String> cmd) throws ParserException;
 }

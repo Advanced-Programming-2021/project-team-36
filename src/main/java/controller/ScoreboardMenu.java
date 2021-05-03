@@ -7,7 +7,7 @@ import java.util.ArrayList;
 public class ScoreboardMenu extends BaseMenu {
     private static User user;
 
-    private static void showScoreboard() {
+    public static void showScoreboard() {
         ArrayList<User> users = User.retrieveUsersBasedOnScore();
         int rank = 1;
         for (int i = 0; i < users.size(); i++) {
@@ -18,7 +18,7 @@ public class ScoreboardMenu extends BaseMenu {
         }
     }
 
-    protected static void showCurrentMenu() {
+    public static void showCurrentMenu() {
         System.out.println("Scoreboard Menu");
     }
 
@@ -28,10 +28,6 @@ public class ScoreboardMenu extends BaseMenu {
 
     protected static void exit() {
         // TODO : Fully Terminate The Program
-    }
-
-    private static void start() {
-        // Nothing to do here. This method is actually redundant.
     }
 
     public static void programControl() {

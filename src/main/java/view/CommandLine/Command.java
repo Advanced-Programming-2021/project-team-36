@@ -1,60 +1,44 @@
 package view.CommandLine;
 
-import org.apache.commons.cli.*;
+import Utils.ParserException;
+import org.apache.commons.cli.CommandLineParser;
 import org.apache.commons.cli.CommandLine;
+import org.apache.commons.cli.Options;
+import org.apache.commons.cli.Option;
+import org.apache.commons.cli.GnuParser;
+import org.apache.commons.cli.HelpFormatter;
 
-import java.util.Arrays;
+import java.util.*;
 
 public class Command {
     String usage;
     String[] prefixCommand;
     Options options;
     Handler handler;
+    List<String> optionNames;
 
     private static String[] toStringArray(String str){
         return Arrays.stream(str.split(" ")).filter(e -> !e.isEmpty()).toArray(String[]::new);
     }
 
-    public Command(String usage, String prefixCommand){
+    public Command(String prefixCommand, Handler handler, Option... options){
         this.prefixCommand = toStringArray(prefixCommand);
-        this.options = new Options();
-        this.usage = usage;
-    }
-
-    public Command addOpt(String opt) {
-        options.addOption(new Option(opt, "empty description"));
-        return this;
-    }
-    public Command addOpt(String opt, boolean hasArg) {
-        options.addOption(new Option(opt, hasArg, "empty description"));
-        return this;
-    }
-    public Command addOpt(String opt, String longOpt, boolean hasArg) {
-        options.addOption(opt, longOpt, hasArg, "empty description");
-        return this;
-    }
-    public Command addRequiredOpt(String opt) {
-        Option option = new Option(opt, "empty description");
-        option.setRequired(true);
-        options.addOption(option);
-        return this;
-    }
-    public Command addRequiredOpt(String opt, boolean hasArg) {
-        Option option = new Option(opt, hasArg, "empty description");
-        option.setRequired(true);
-        options.addOption(option);
-        return this;
-    }
-    public Command addRequiredOpt(String opt, String longOpt, boolean hasArg) {
-        Option option = new Option(opt, longOpt, hasArg, "empty description");
-        option.setRequired(true);
-        options.addOption(option);
-        return this;
-    }
-
-    public Command addHandler(Handler handler){
+        this.usage = prefixCommand;
         this.handler = handler;
-        return this;
+        this.options = new Options();
+        this.optionNames = new ArrayList<>();
+        for(Option option: options){
+            this.options.addOption(option);
+            this.optionNames.add(option.getOpt());
+        }
+    }
+
+    boolean isSpecialItem(String item){
+        return item.matches("\\[.*]");
+    }
+    String getSpecialItemName(String item){
+        assert isSpecialItem(item);
+        return item.substring(1, item.length()-1);
     }
 
     boolean initStringMatch(String commandString) {
@@ -62,19 +46,30 @@ public class Command {
         if (prefixCommand.length > commandArray.length)
             return false;
         for (int i = 0; i < prefixCommand.length; i++) {
-            if (!prefixCommand[i].equals(commandArray[i]))
+            if (!isSpecialItem(prefixCommand[i]) && !prefixCommand[i].equals(commandArray[i]))
                 return false;
         }
         return true;
     }
-    void tryRunCommand(String commandString) throws InvalidCommandException {
+    void tryRunCommand(String commandString) throws InvalidCommandException, ParserException {
         if (!initStringMatch(commandString))
             throw new InvalidCommandException();
         CommandLineParser parser = new GnuParser();
         String[] commandArray = toStringArray(commandString);
         String[] splitCommandArray = Arrays.copyOfRange(commandArray, this.prefixCommand.length, commandArray.length);
         try {
-            handler.run(parser.parse(options, splitCommandArray));
+            CommandLine commandLine = parser.parse(options, splitCommandArray);
+            Map<String, String> mp = new HashMap<>();
+            for(String optName: optionNames){
+                if(commandLine.hasOption(optName))
+                    mp.put(optName, commandLine.getOptionValue(optName));
+            }
+            for(int i = 0; i < prefixCommand.length; i++){
+                if(isSpecialItem(prefixCommand[i])){
+                    mp.put(getSpecialItemName(prefixCommand[i]), commandArray[i]);
+                }
+            }
+            handler.run(mp);
         } catch (Exception e){
             throw new InvalidCommandException();
         }
