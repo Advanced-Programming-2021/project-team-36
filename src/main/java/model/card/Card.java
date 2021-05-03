@@ -3,19 +3,10 @@ package model.card;
 public abstract class Card {
     protected String name;
     protected String description;
-    protected Integer level;
-    protected Integer speed;
+    protected Integer price;
 
     public String getName() {
         return name;
-    }
-
-    public Integer getLevel() {
-        return level;
-    }
-
-    public Integer getSpeed() {
-        return speed;
     }
 
     public String getDescription() {
@@ -23,12 +14,7 @@ public abstract class Card {
     }
 
     @Override
-    public String toString() { // TODO
-        return "Card{" +
-                "name='" + name + '\'' +
-                ", description='" + description + '\'' +
-                ", level=" + level +
-                ", speed=" + speed +
-                '}';
+    public String toString() {
+        return name + ":" + description;
     }
 }

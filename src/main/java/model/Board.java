@@ -15,8 +15,25 @@ public class Board {
     private Map<Integer, Card> monsterCardZone = new HashMap<>();
     private Map<Integer, Card> spellAndTrapCardZone = new HashMap<>();
     private Map<Integer, Card> cardsOnHand = new HashMap<>();
+    private Card fieldZoneCard;
 
-//    public CardAddress getCardAddressByCard(Card card) {
+    public List<Card> getGraveYard() {
+        return graveYard;
+    }
+
+    public Map<Integer, Card> getCardsOnHand() {
+        return cardsOnHand;
+    }
+
+    public Map<Integer, Card> getMonsterCardZone() {
+        return monsterCardZone;
+    }
+
+    public Map<Integer, Card> getSpellAndTrapCardZone() {
+        return spellAndTrapCardZone;
+    }
+
+    //    public CardAddress getCardAddressByCard(Card card) {
 //
 //    }
 //
@@ -36,12 +53,11 @@ public class Board {
 //
 //    }
 //
-//    public boolean isMonsterCardZoneFull() {
-//        return monsterCardZone.size() == 5;
-//    }
+    public boolean isMonsterCardZoneFull() {
+        return monsterCardZone.size() == 5;
+    }
 //
 //    public void finishTurn() {
 //
 //    }
-
 }

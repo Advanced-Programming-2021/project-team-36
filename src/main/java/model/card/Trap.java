@@ -1,4 +1,4 @@
 package model.card;
 
-public class Trap extends Card{
+public class Trap extends Magic {
 }

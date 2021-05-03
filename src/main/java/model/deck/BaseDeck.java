@@ -4,6 +4,7 @@ import model.card.Card;
 
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Comparator;
 import java.util.Random;
 
 public class BaseDeck {
@@ -28,9 +29,11 @@ public class BaseDeck {
     }
 
     @Override
-    public String toString() { // TODO
-        return "BaseDeck{" +
-                "cards=" + cards +
-                '}';
+    public String toString() {
+        cards.sort(Comparator.comparing(Card::getName));
+        StringBuilder stringBuilder = new StringBuilder();
+        for (Card card : cards)
+            stringBuilder.append(card.toString()).append("\n");
+        return stringBuilder.toString();
     }
 }
