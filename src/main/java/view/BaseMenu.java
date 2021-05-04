@@ -1,6 +1,7 @@
 package view;
 
 import Utils.ParserException;
+import controller.LogicException;
 import model.ModelException;
 import view.CommandLine.CommandLine;
 import view.CommandLine.CommandLineException;
@@ -19,7 +20,7 @@ public class BaseMenu {
         try {
             String line = scanner.nextLine();
             this.cmd.runNextCommand(line);
-        } catch (CommandLineException | ParserException | ModelException e) {
+        } catch (CommandLineException | ParserException | ModelException | LogicException e) {
             System.out.println(e.getMessage());
         }
     }

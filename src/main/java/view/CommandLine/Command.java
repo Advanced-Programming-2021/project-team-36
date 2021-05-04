@@ -1,6 +1,7 @@
 package view.CommandLine;
 
 import Utils.ParserException;
+import controller.LogicException;
 import model.ModelException;
 import org.apache.commons.cli.CommandLineParser;
 import org.apache.commons.cli.CommandLine;
@@ -52,28 +53,29 @@ public class Command {
         }
         return true;
     }
-    void tryRunCommand(String commandString) throws CommandLineException, ParserException, ModelException {
+    void tryRunCommand(String commandString) throws CommandLineException, ParserException, ModelException, LogicException {
         if (!initStringMatch(commandString))
             throw new InvalidCommandException();
         CommandLineParser parser = new GnuParser();
         String[] commandArray = toStringArray(commandString);
         String[] splitCommandArray = Arrays.copyOfRange(commandArray, this.prefixCommand.length, commandArray.length);
+        CommandLine commandLine;
         try {
-            CommandLine commandLine = parser.parse(options, splitCommandArray);
-            Map<String, String> mp = new HashMap<>();
-            for(String optName: optionNames){
-                if(commandLine.hasOption(optName))
-                    mp.put(optName, commandLine.getOptionValue(optName));
-            }
-            for(int i = 0; i < prefixCommand.length; i++){
-                if(isSpecialItem(prefixCommand[i])){
-                    mp.put(getSpecialItemName(prefixCommand[i]), commandArray[i]);
-                }
-            }
-            handler.run(mp);
+            commandLine = parser.parse(options, splitCommandArray);
         } catch (Exception e){
             throw new InvalidCommandException();
         }
+        Map<String, String> mp = new HashMap<>();
+        for(String optName: optionNames){
+            if(commandLine.hasOption(optName))
+                mp.put(optName, commandLine.getOptionValue(optName));
+        }
+        for(int i = 0; i < prefixCommand.length; i++){
+            if(isSpecialItem(prefixCommand[i])){
+                mp.put(getSpecialItemName(prefixCommand[i]), commandArray[i]);
+            }
+        }
+        handler.run(mp);
     }
     void printHelper(){
         HelpFormatter formatter = new HelpFormatter();

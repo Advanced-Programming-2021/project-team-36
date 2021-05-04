@@ -64,4 +64,23 @@ public class Parser {
         return new Monster();
         // just for test
     }
+    public static Class<?> menuParser(String menuName) throws ParserException {
+        if(menuName.equalsIgnoreCase("Login"))
+            return view.LoginMenu.class;
+        if(menuName.equalsIgnoreCase("Main"))
+            return view.MainMenu.class;
+        if(menuName.equalsIgnoreCase("Duel"))
+            return view.DuelMenu.class;
+        if(menuName.equalsIgnoreCase("Deck"))
+            return view.DeckMenu.class;
+        if(menuName.equalsIgnoreCase("Scoreboard"))
+            return view.ScoreboardMenu.class;
+        if(menuName.equalsIgnoreCase("Profile"))
+            return view.ProfileMenu.class;
+        if(menuName.equalsIgnoreCase("Shop"))
+            return view.ShopMenu.class;
+        if(menuName.equalsIgnoreCase("Import/Export"))
+            return view.ImportExportMenu.class;
+        throw new ParserException("invalid menu name");
+    }
 }
