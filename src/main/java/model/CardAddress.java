@@ -1,38 +1,30 @@
 package model;
 
+import model.enums.ZoneType;
+
 public class CardAddress {
-    private boolean isInField;
-    private boolean isInMonsterZone;
-    private boolean isInSpellZone;
-    private boolean isInHand;
-    private boolean isOpponentAddress;
+    private ZoneType zone;
     private Integer id;
+    private boolean opponent;
 
-//    public CardAddress cardAddressParser(String text) {
-//
-//    }
-
-
-    public boolean isInField() {
-        return isInField;
+    public CardAddress(ZoneType zone, Integer id, boolean opponent) {
+        this.zone = zone;
+        this.id = id;
+        this.opponent = opponent;
     }
 
     public boolean isInHand() {
-        return isInHand;
+        return zone.equals(ZoneType.HAND);
     }
-
     public boolean isInMonsterZone() {
-        return isInMonsterZone;
+        return zone.equals(ZoneType.MONSTER);
     }
-
     public boolean isInSpellZone() {
-        return isInSpellZone;
+        return zone.equals(ZoneType.MAGIC);
     }
-
     public boolean isOpponentAddress() {
-        return isOpponentAddress;
+        return opponent;
     }
-
     public Integer getId() {
         return id;
     }

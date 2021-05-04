@@ -4,13 +4,14 @@ import model.CardAddress;
 import model.Game;
 import model.card.*;
 import model.enums.Phase;
+import model.enums.State;
 
 import java.util.List;
 
 public class DuelMenu extends BaseMenu {
     private static Game game;
 
-    private static void selectCard(CardAddress cardAddress) {
+    public static void selectCard(CardAddress cardAddress) {
         // TODO : should check cardAddress is valid or not
 
         if (game.getCardByCardAddress(cardAddress) == null)
@@ -22,7 +23,7 @@ public class DuelMenu extends BaseMenu {
 
     }
 
-    private static void deselectCard() {
+    public static void deselectCard() {
         if (game.getSelectedCardAddress() == null)
             System.out.println("no card is selected");
         else {
@@ -31,7 +32,12 @@ public class DuelMenu extends BaseMenu {
         }
     }
 
-    private static void printCurrentPhase() {
+    public static Card getSelectedCard() {
+        // todo: this function returns the card that was selected and throws error if nothing had been selected
+        return null;
+    }
+
+    public static void printCurrentPhase() {
         if (game.getPhase() == Phase.DRAWPHASE)
             System.out.println("phase: draw phase");
         else if (game.getPhase() == Phase.STANDBYPHASE)
@@ -46,7 +52,7 @@ public class DuelMenu extends BaseMenu {
             System.out.println("phase: end phase");
     }
 
-    private static void goNextPhase() {
+    public static void goNextPhase() {
         if (game.getPhase() == Phase.DRAWPHASE)
             game.setPhase(Phase.STANDBYPHASE);
         else if (game.getPhase() == Phase.STANDBYPHASE)
@@ -61,19 +67,19 @@ public class DuelMenu extends BaseMenu {
             game.setPhase(Phase.DRAWPHASE);
     }
 
-    private static void summonCard() {
+    public static void summonCard(Card card) {
 
     }
 
-    private static void setCard(Card card) {
+    public static void setCard(Card card) {
 
     }
 
-    private static void changeCardPosition(Card card) {
+    public static void changeCardPosition(Card card, State state) {
 
     }
 
-    private static void flipSummon(Card card) {
+    public static void flipSummon(Card card) {
 
     }
 
@@ -81,19 +87,19 @@ public class DuelMenu extends BaseMenu {
 
     }
 
-    private static void attack(Card card, int id) {
+    public static void attack(Card card, int id) {
 
     }
 
-    private static void directAttack(Card card) {
+    public static void directAttack(Card card) {
 
     }
 
-    private static void activateEffect(Card card) {
+    public static void activateEffect(Card card) {
 
     }
 
-    private static void showGraveYard() {
+    public static void showGraveYard() {
         List<Card> graveYard = game.getCurrentPlayer().getBoard().getGraveYard();
         if (graveYard.isEmpty())
             System.out.println("graveyard empty");
@@ -110,6 +116,10 @@ public class DuelMenu extends BaseMenu {
         System.out.println();
         System.out.println(game.getCurrentPlayer().getBoard().toString());
         System.out.println(game.getCurrentPlayer().getUser().getNickname() + ":" + game.getCurrentPlayer().getLifePoint());
+    }
+
+    public static void showCard(Card card){
+
     }
 
     private static void surrender() {
