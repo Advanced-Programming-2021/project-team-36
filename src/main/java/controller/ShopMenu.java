@@ -1,14 +1,22 @@
 package controller;
 
 import model.User;
+import model.card.Card;
 
 public class ShopMenu extends BaseMenu {
-    private static User user;
     public static void buyCard(String cardName) {
-
+        Card card; // TODO : Card must be initialized to something. Should also check whether the card exists or not.
+        // Response in case : "there is no card with this name"
+        User user = User.getCurrentUser();
+        if (user.getBalance() < card.getPrice()) {
+            System.out.println("not enough money");
+            return;
+        }
+        user.buy(card);
     }
     public static void shopAll() {
-
+        for (Card card : Card.getAllCardsLexicographically())
+            System.out.println(card);
     }
     protected static void showCurrentMenu() {
 

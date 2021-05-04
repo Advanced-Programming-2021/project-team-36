@@ -14,6 +14,7 @@ public class User {
     private String password;
     private String nickname;
     private int score;
+    private int balance;
     private ArrayList<Card> cards = new ArrayList<>();
     private ArrayList<Deck> decks = new ArrayList<>();
 
@@ -47,12 +48,12 @@ public class User {
         return users;
     }
 
-    public static ArrayList<Card> getCardsLexicographically() {
+    public ArrayList<Card> getCardsLexicographically() {
         // TODO
         return new ArrayList<>();
     }
 
-    public static ArrayList<Deck> getDecksLexicographically() {
+    public ArrayList<Deck> getDecksLexicographically() {
         // TODO
         return new ArrayList<>();
     }
@@ -95,8 +96,12 @@ public class User {
         return nickname;
     }
 
-    public Integer getScore() {
+    public int getScore() {
         return score;
+    }
+
+    public int getBalance() {
+        return balance;
     }
 
     public Deck getActiveDeck() {
@@ -126,6 +131,15 @@ public class User {
 
     public void decreaseScore(Integer value) {
         score -= value;
+    }
+
+    public void buy(Card card) {
+        balance -= card.getPrice();
+        addCard(card);
+    }
+
+    public void addCard(Card card) {
+        // TODO
     }
 
     public Deck getDeckByName(String deckName) {

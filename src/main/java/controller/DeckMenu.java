@@ -107,9 +107,6 @@ public class DeckMenu extends BaseMenu {
     protected static void exit() {
 
     }
-    private static void start(User user) {
-
-    }
     public static void programControl() {
 
     }

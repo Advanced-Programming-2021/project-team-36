@@ -35,10 +35,6 @@ public class LoginMenu extends BaseMenu {
         // TODO : Fully Terminate The Program
     }
 
-    public static void logout() {
-
-    }
-
     public static void programControl() {
         // TODO : Pending Shayan's Implementations
     }
