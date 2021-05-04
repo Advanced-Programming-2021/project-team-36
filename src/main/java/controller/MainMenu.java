@@ -10,7 +10,7 @@ public class MainMenu extends BaseMenu {
 
     }
     public static void logout() {
-        User.logOut();
+        User.setCurrentUser(null);
         System.out.println("user logged out successfully!");
         navigateToMenu("Login Menu");
     }

@@ -13,7 +13,7 @@ public class LoginMenu extends BaseMenu {
         this.cmd.addCommand(new Command(
                 "user login",
                 mp -> {
-                    controller.LoginMenu.login(Parser.UserParser(mp.get("u")), mp.get("p"));
+                    controller.LoginMenu.login(mp.get("u"), mp.get("p"));
                 },
                 Options.username(true),
                 Options.password(true)

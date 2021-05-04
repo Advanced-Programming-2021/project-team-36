@@ -13,14 +13,14 @@ public class LoginMenu extends BaseMenu {
         System.out.println("user created successfully!");
     }
 
-    public static void login(User user, String password) {
-        if (!User.authenticateUser(user, password)) {
-            System.out.println("Username and password didn't match");
-            return;
-        }
-        User.logIn(user, password);
+    public static void login(String username, String password) throws ModelException {
+        if (User.getUserByUsername(username) == null)
+            throw new ModelException("Username and password didn’t match!");
+        if (!User.getUserByUsername(username).getPassword().equals(password))
+            throw new ModelException("Username and password didn’t match!");
+        User user = User.getUserByUsername(username);
+        User.setCurrentUser(user);
         System.out.println("user logged in successfully!");
-        navigateToMenu("Main Menu");
     }
 
     public static void showCurrentMenu() {

@@ -58,17 +58,8 @@ public class User {
         return new ArrayList<>();
     }
 
-    public static boolean authenticateUser(User user, String password) {
-        return user != null && user.password.equals(password);
-    }
-
-    public static void logIn(User user, String password) {
-        assert user != null && user.password.equals(password);
+    public static void setCurrentUser(User user) {
         User.currentUser = user;
-    }
-
-    public static void logOut() {
-        User.currentUser = null;
     }
 
     private static class scoreBasedComparator implements Comparator<User> {
