@@ -1,14 +1,14 @@
 package controller;
 
+import model.ModelException;
 import model.User;
 
 public class LoginMenu extends BaseMenu {
-    public static void createUser(String username, String nickname, String password) {
-        String error = User.checkValidity(username, nickname, password);
-        if (!error.equals("")) {
-            System.out.println(error);
-            return;
-        }
+    public static void createUser(String username, String nickname, String password) throws ModelException {
+        if (User.getUserByUsername(username) != null)
+            throw new ModelException(String.format("user with username %s already exists", username));
+        if (User.getUserByNickname(nickname) != null)
+            throw new ModelException(String.format("user with nickname %s already exists", username));
         new User(username, password, nickname);
         System.out.println("user created successfully!");
     }

@@ -58,11 +58,6 @@ public class User {
         return new ArrayList<>();
     }
 
-    public static String checkValidity(String username, String nickname, String password) {
-        // TODO :
-        return "TODO";
-    }
-
     public static boolean authenticateUser(User user, String password) {
         return user != null && user.password.equals(password);
     }

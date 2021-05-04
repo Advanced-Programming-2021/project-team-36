@@ -1,6 +1,7 @@
 package view.CommandLine;
 
 import Utils.ParserException;
+import model.ModelException;
 import org.apache.commons.cli.CommandLineParser;
 import org.apache.commons.cli.CommandLine;
 import org.apache.commons.cli.Options;
@@ -51,7 +52,7 @@ public class Command {
         }
         return true;
     }
-    void tryRunCommand(String commandString) throws InvalidCommandException, ParserException {
+    void tryRunCommand(String commandString) throws CommandLineException, ParserException, ModelException {
         if (!initStringMatch(commandString))
             throw new InvalidCommandException();
         CommandLineParser parser = new GnuParser();

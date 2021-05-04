@@ -1,6 +1,7 @@
 package view.CommandLine;
 
 import Utils.ParserException;
+import model.ModelException;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -14,7 +15,7 @@ public class CommandLine {
     public void addCommand(Command command){
         commandList.add(command);
     }
-    public void runNextCommand(String line) throws InvalidCommandException, ParserException {
+    public void runNextCommand(String line) throws CommandLineException, ParserException, ModelException {
         for(Command command : commandList){
             try {
                 command.tryRunCommand(line);
