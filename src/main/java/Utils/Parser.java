@@ -2,6 +2,8 @@ package Utils;
 
 import model.CardAddress;
 import model.User;
+import model.card.Card;
+import model.card.Monster;
 import model.enums.State;
 import model.enums.ZoneType;
 
@@ -54,6 +56,12 @@ public class Parser {
         if(number.equals("5"))
             return 5;
         throw new ParserException("monster id is not valid!");
-
+    }
+    public static Card cardParser(String cardName) throws ParserException {
+        // todo add some card to game!
+        if(cardName.equals("shit shit"))
+            throw new ParserException(String.format("card with name %s does not exist", cardName));
+        return new Monster();
+        // just for test
     }
 }

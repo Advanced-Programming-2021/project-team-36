@@ -34,9 +34,7 @@ public class DeckMenu extends BaseMenu {
         user.setActiveDeck(deck);
         System.out.println("deck activated successfully");
     }
-    public static void addCardToDeck(String cardName, String deckName, boolean side) {
-        Card card; // TODO : Card must be initialized to something. Should also check whether the card exists or not.
-        // Response in case : "card with name " + cardName + " does not exist"
+    public static void addCardToDeck(Card card, String deckName, boolean side) {
         User user = User.getCurrentUser();
         Deck deck = user.getDeckByName(deckName);
         if (deck == null) {
@@ -55,9 +53,7 @@ public class DeckMenu extends BaseMenu {
         }
         System.out.println("card added to deck successfully");
     }
-    public static void removeCardFromDeck(String cardName, String deckName, boolean side) {
-        Card card; // TODO : Card must be initialized to something. Should also check whether the card exists or not.
-        // Response in case : "card with name " + cardName + " does not exist"
+    public static void removeCardFromDeck(Card card, String deckName, boolean side) {
         User user = User.getCurrentUser();
         Deck deck = user.getDeckByName(deckName);
         if (deck == null) {

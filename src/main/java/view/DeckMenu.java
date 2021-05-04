@@ -1,5 +1,6 @@
 package view;
 
+import Utils.Parser;
 import view.CommandLine.Command;
 
 import java.util.ConcurrentModificationException;
@@ -29,7 +30,7 @@ public class DeckMenu extends BaseMenu {
         this.cmd.addCommand(new Command(
                 "deck add-card",
                 mp -> {
-                    controller.DeckMenu.addCardToDeck(mp.get("card"), mp.get("deck"), mp.containsKey("side"));
+                    controller.DeckMenu.addCardToDeck(Parser.cardParser(mp.get("card")), mp.get("deck"), mp.containsKey("side"));
                 },
                 Options.card(true),
                 Options.deck(true),
@@ -38,7 +39,7 @@ public class DeckMenu extends BaseMenu {
         this.cmd.addCommand(new Command(
                 "deck rm-card",
                 mp -> {
-                    controller.DeckMenu.removeCardFromDeck(mp.get("card"), mp.get("deck"), mp.containsKey("side"));
+                    controller.DeckMenu.removeCardFromDeck(Parser.cardParser(mp.get("card")), mp.get("deck"), mp.containsKey("side"));
                 },
                 Options.card(true),
                 Options.deck(true),

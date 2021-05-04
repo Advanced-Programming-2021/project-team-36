@@ -27,5 +27,12 @@ public class MainMenu extends BaseMenu {
                 Options.ai(true),
                 Options.round(true)
         ));
+        this.cmd.addCommand(new Command(
+                "user logout",
+                mp -> {
+                    controller.MainMenu.logout();
+                }
+        ));
+
     }
 }

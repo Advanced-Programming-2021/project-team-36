@@ -4,9 +4,7 @@ import model.User;
 import model.card.Card;
 
 public class ShopMenu extends BaseMenu {
-    public static void buyCard(String cardName) {
-        Card card; // TODO : Card must be initialized to something. Should also check whether the card exists or not.
-        // Response in case : "there is no card with this name"
+    public static void buyCard(Card card) {
         User user = User.getCurrentUser();
         if (user.getBalance() < card.getPrice()) {
             System.out.println("not enough money");

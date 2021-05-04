@@ -5,6 +5,7 @@ import model.enums.MonsterCardType;
 import model.enums.State;
 
 public class Monster extends Card{
+    // this should be abstract too. todo
     protected Integer attackDamage;
     protected Integer defenseRate;
     protected MonsterAttribute attribute;

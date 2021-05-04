@@ -25,11 +25,5 @@ public class LoginMenu extends BaseMenu {
                 Options.nickname(true),
                 Options.password(true)
         ));
-        this.cmd.addCommand(new Command(
-                "user logout",
-                mp -> {
-                    controller.LoginMenu.logout();
-                }
-        ));
     }
 }
