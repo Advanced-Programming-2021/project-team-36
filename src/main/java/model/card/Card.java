@@ -15,7 +15,7 @@ public abstract class Card {
         return description;
     }
 
-    public static int getPrice() {
+    public int getPrice() {
         return 0; // TODO : Each card class should implement it's own getPrice method.
     }
 

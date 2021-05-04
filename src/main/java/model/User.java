@@ -44,7 +44,7 @@ public class User {
     }
 
     public static ArrayList<User> retrieveUsersBasedOnScore() {
-        users.sort(new scoreBasedComparator());
+        users.sort(Comparator.comparing(User::getScore).reversed().thenComparing(User::getNickname));
         return users;
     }
 
@@ -60,14 +60,6 @@ public class User {
 
     public static void setCurrentUser(User user) {
         User.currentUser = user;
-    }
-
-    private static class scoreBasedComparator implements Comparator<User> {
-        public int compare(User user1, User user2) {
-            if (user1.score != user2.score)
-                return (user1.score < user2.score ? 1 : -1);
-            return user1.nickname.compareTo(user2.nickname);
-        }
     }
 
     public String getUsername() {
