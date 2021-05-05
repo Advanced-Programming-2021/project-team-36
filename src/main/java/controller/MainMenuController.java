@@ -5,7 +5,7 @@ import Utils.RoutingException;
 import model.User;
 import view.Context;
 
-public class MainMenu {
+public class MainMenuController {
     public static void startNewDuel(Context context, User secondUser, int round) throws RoutingException {
 
         Router.navigateToMenu(view.DuelMenu.class);

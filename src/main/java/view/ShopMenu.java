@@ -3,6 +3,7 @@ package view;
 import Utils.Parser;
 import Utils.Router;
 import Utils.RoutingException;
+import controller.ShopMenuController;
 import view.CommandLine.Command;
 
 import java.util.Scanner;
@@ -18,13 +19,13 @@ public class ShopMenu extends BaseMenu {
         this.cmd.addCommand(new Command(
                 "shop buy [cardName]",
                 mp -> {
-                    controller.ShopMenu.buyCard(Context.getInstance(), Parser.cardParser(mp.get("cardName")));
+                    ShopMenuController.buyCard(Context.getInstance(), Parser.cardParser(mp.get("cardName")));
                 }
         ));
         this.cmd.addCommand(new Command(
                 "shop show",
                 mp -> {
-                    controller.ShopMenu.showAll(Context.getInstance());
+                    ShopMenuController.showAll(Context.getInstance());
                 },
                 Options.all(true)
         ));

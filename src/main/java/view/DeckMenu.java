@@ -3,6 +3,7 @@ package view;
 import Utils.Parser;
 import Utils.Router;
 import Utils.RoutingException;
+import controller.DeckMenuController;
 import view.CommandLine.Command;
 
 import java.util.Scanner;
@@ -18,25 +19,25 @@ public class DeckMenu extends BaseMenu {
         this.cmd.addCommand(new Command(
                 "deck create [deckName]",
                 mp -> {
-                    controller.DeckMenu.createDeck(Context.getInstance(), mp.get("deckName"));
+                    DeckMenuController.createDeck(Context.getInstance(), mp.get("deckName"));
                 }
         ));
         this.cmd.addCommand(new Command(
                 "deck delete [deckName]",
                 mp -> {
-                    controller.DeckMenu.deleteDeck(Context.getInstance(), mp.get("deckName"));
+                    DeckMenuController.deleteDeck(Context.getInstance(), mp.get("deckName"));
                 }
         ));
         this.cmd.addCommand(new Command(
                 "deck set-active [deckName]",
                 mp -> {
-                    controller.DeckMenu.setActiveDeck(Context.getInstance(), mp.get("deckName"));
+                    DeckMenuController.setActiveDeck(Context.getInstance(), mp.get("deckName"));
                 }
         ));
         this.cmd.addCommand(new Command(
                 "deck add-card",
                 mp -> {
-                    controller.DeckMenu.addCardToDeck(Context.getInstance(), Parser.cardParser(mp.get("card")), mp.get("deck"), mp.containsKey("side"));
+                    DeckMenuController.addCardToDeck(Context.getInstance(), Parser.cardParser(mp.get("card")), mp.get("deck"), mp.containsKey("side"));
                 },
                 Options.card(true),
                 Options.deck(true),
@@ -45,7 +46,7 @@ public class DeckMenu extends BaseMenu {
         this.cmd.addCommand(new Command(
                 "deck rm-card",
                 mp -> {
-                    controller.DeckMenu.removeCardFromDeck(Context.getInstance(), Parser.cardParser(mp.get("card")), mp.get("deck"), mp.containsKey("side"));
+                    DeckMenuController.removeCardFromDeck(Context.getInstance(), Parser.cardParser(mp.get("card")), mp.get("deck"), mp.containsKey("side"));
                 },
                 Options.card(true),
                 Options.deck(true),
@@ -54,14 +55,14 @@ public class DeckMenu extends BaseMenu {
         this.cmd.addCommand(new Command(
                 "deck show",
                 mp -> {
-                    controller.DeckMenu.showAllDecks(Context.getInstance());
+                    DeckMenuController.showAllDecks(Context.getInstance());
                 },
                 Options.all(true)
         ));
         this.cmd.addCommand(new Command(
                 "deck show",
                 mp -> {
-                    controller.DeckMenu.showDeck(Context.getInstance(), mp.get("deck"), mp.containsKey("side"));
+                    DeckMenuController.showDeck(Context.getInstance(), mp.get("deck"), mp.containsKey("side"));
                 },
                 Options.deck(true),
                 Options.side()
@@ -69,7 +70,7 @@ public class DeckMenu extends BaseMenu {
         this.cmd.addCommand(new Command(
                 "deck show",
                 mp -> {
-                    controller.DeckMenu.showAllCards(Context.getInstance());
+                    DeckMenuController.showAllCards(Context.getInstance());
                 },
                 Options.cards(true)
         ));

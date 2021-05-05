@@ -5,7 +5,7 @@ import view.Context;
 
 import java.util.ArrayList;
 
-public class ScoreboardMenu {
+public class ScoreboardMenuController {
     private static User user;
 
     public static void showScoreboard(Context context) {

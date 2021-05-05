@@ -2,7 +2,7 @@ package controller;
 
 import model.User;
 
-public class ImportAndExportMenu {
+public class ImportAndExportMenuController {
     public static void importCard(User user, String cardName) {
 
     }

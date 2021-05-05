@@ -5,7 +5,7 @@ import model.card.Card;
 import model.deck.Deck;
 import view.Context;
 
-public class DeckMenu {
+public class DeckMenuController {
     public static void createDeck(Context context, String deckName) {
         User user = context.getUser();
         if (user.getDeckByName(deckName) != null) {

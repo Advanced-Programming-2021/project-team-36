@@ -9,7 +9,7 @@ import view.Context;
 
 import java.util.List;
 
-public class DuelMenu {
+public class DuelMenuController {
     public static void selectCard(Context context, CardAddress cardAddress) {
         // TODO : should check cardAddress is valid or not
         Game game = context.getGame();

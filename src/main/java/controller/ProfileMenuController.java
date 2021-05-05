@@ -4,7 +4,7 @@ import model.User;
 import view.Context;
 
 
-public class ProfileMenu {
+public class ProfileMenuController {
     public static void changeNickname(Context context, String nickname) {
         User user = context.getUser();
         if (User.getUserByNickname(nickname) != null) {

@@ -2,6 +2,7 @@ package view;
 
 import Utils.Router;
 import Utils.RoutingException;
+import controller.ProfileMenuController;
 import view.CommandLine.Command;
 
 import java.util.Scanner;
@@ -17,14 +18,14 @@ public class ProfileMenu extends BaseMenu {
         this.cmd.addCommand(new Command(
                 "profile change",
                 mp -> {
-                    controller.ProfileMenu.changeNickname(Context.getInstance(), mp.get("nickname"));
+                    ProfileMenuController.changeNickname(Context.getInstance(), mp.get("nickname"));
                 },
                 Options.nickname(true)
         ));
         this.cmd.addCommand(new Command(
                 "profile change",
                 mp -> {
-                    controller.ProfileMenu.changePassword(Context.getInstance(), mp.get("current"), mp.get("new"));
+                    ProfileMenuController.changePassword(Context.getInstance(), mp.get("current"), mp.get("new"));
                 },
                 Options.requirePassword(true),
                 Options.currentPassword(true),

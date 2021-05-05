@@ -2,6 +2,7 @@ package view;
 
 import Utils.Parser;
 import Utils.RoutingException;
+import controller.MainMenuController;
 import view.CommandLine.Command;
 
 import java.util.Scanner;
@@ -17,7 +18,7 @@ public class MainMenu extends BaseMenu {
         this.cmd.addCommand(new Command(
                 "duel",
                 mp -> {
-                    controller.MainMenu.startNewDuel(Context.getInstance(), Parser.UserParser(mp.get("second_player")), Parser.RoundParser(mp.get("round")));
+                    MainMenuController.startNewDuel(Context.getInstance(), Parser.UserParser(mp.get("second_player")), Parser.RoundParser(mp.get("round")));
                 },
                 Options.newRound(true),
                 Options.secondPlayer(true),
@@ -26,7 +27,7 @@ public class MainMenu extends BaseMenu {
         this.cmd.addCommand(new Command(
                 "duel",
                 mp -> {
-                    controller.MainMenu.startDuelWithAI(Context.getInstance(), Parser.RoundParser(mp.get("round")));
+                    MainMenuController.startDuelWithAI(Context.getInstance(), Parser.RoundParser(mp.get("round")));
                 },
                 Options.newRound(true),
                 Options.ai(true),
@@ -35,7 +36,7 @@ public class MainMenu extends BaseMenu {
         this.cmd.addCommand(new Command(
                 "user logout",
                 mp -> {
-                    controller.MainMenu.logout(Context.getInstance());
+                    MainMenuController.logout(Context.getInstance());
                 }
         ));
     }
@@ -65,6 +66,6 @@ public class MainMenu extends BaseMenu {
 
     @Override
     public void exitMenu() throws RoutingException {
-        controller.MainMenu.logout(Context.getInstance());
+        MainMenuController.logout(Context.getInstance());
     }
 }

@@ -2,6 +2,7 @@ package view;
 
 import Utils.Router;
 import Utils.RoutingException;
+import controller.LoginMenuController;
 import view.CommandLine.Command;
 
 import java.util.Scanner;
@@ -17,7 +18,7 @@ public class LoginMenu extends BaseMenu {
         this.cmd.addCommand(new Command(
                 "user login",
                 mp -> {
-                    controller.LoginMenu.login(Context.getInstance(), mp.get("u"), mp.get("p"));
+                    LoginMenuController.login(Context.getInstance(), mp.get("u"), mp.get("p"));
                 },
                 Options.username(true),
                 Options.password(true)
@@ -25,7 +26,7 @@ public class LoginMenu extends BaseMenu {
         this.cmd.addCommand(new Command(
                 "user create",
                 mp -> {
-                    controller.LoginMenu.createUser(Context.getInstance(), mp.get("u"), mp.get("n"), mp.get("p"));
+                    LoginMenuController.createUser(Context.getInstance(), mp.get("u"), mp.get("n"), mp.get("p"));
                 },
                 Options.username(true),
                 Options.nickname(true),

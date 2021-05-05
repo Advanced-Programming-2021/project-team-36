@@ -2,6 +2,7 @@ package view;
 
 import Utils.Router;
 import Utils.RoutingException;
+import controller.ScoreboardMenuController;
 import view.CommandLine.Command;
 
 import java.util.Scanner;
@@ -17,7 +18,7 @@ public class ScoreboardMenu extends BaseMenu {
         this.cmd.addCommand(new Command(
                 "scoreboard show",
                 command -> {
-                    controller.ScoreboardMenu.showScoreboard(Context.getInstance());
+                    ScoreboardMenuController.showScoreboard(Context.getInstance());
                 }
         ));
     }

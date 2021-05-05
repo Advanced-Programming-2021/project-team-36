@@ -5,16 +5,14 @@ import Utils.RoutingException;
 import model.ModelException;
 import model.User;
 import view.Context;
-import view.MainMenu;
 
-public class LoginMenu {
+public class LoginMenuController {
     public static void createUser(Context context, String username, String nickname, String password) throws ModelException, RoutingException {
         if (User.getUserByUsername(username) != null)
             throw new ModelException(String.format("user with username %s already exists", username));
         if (User.getUserByNickname(nickname) != null)
             throw new ModelException(String.format("user with nickname %s already exists", username));
         context.login(new User(username, password, nickname));
-        Router.navigateToMenu(view.MainMenu.class);
         System.out.println("user created successfully!");
     }
 
@@ -25,7 +23,7 @@ public class LoginMenu {
             throw new ModelException("Username and password didn’t match!");
         User user = User.getUserByUsername(username);
         context.login(user);
-        Router.navigateToMenu(MainMenu.class);
+        Router.navigateToMenu(view.MainMenu.class);
         System.out.println("user logged in successfully!");
     }
 }

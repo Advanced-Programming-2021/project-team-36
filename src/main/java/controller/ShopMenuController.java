@@ -4,7 +4,7 @@ import model.User;
 import model.card.Card;
 import view.Context;
 
-public class ShopMenu {
+public class ShopMenuController {
     public static void buyCard(Context context, Card card) {
         User user = context.getUser();
         if (user.getBalance() < card.getPrice()) {
