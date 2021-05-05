@@ -1,6 +1,7 @@
 package view.CommandLine;
 
 import Utils.ParserException;
+import Utils.RoutingException;
 import controller.LogicException;
 import model.ModelException;
 
@@ -16,7 +17,7 @@ public class CommandLine {
     public void addCommand(Command command){
         commandList.add(command);
     }
-    public void runNextCommand(String line) throws CommandLineException, ParserException, ModelException, LogicException {
+    public void runNextCommand(String line) throws CommandLineException, ParserException, ModelException, LogicException, RoutingException {
         for(Command command : commandList){
             try {
                 command.tryRunCommand(line);
@@ -33,5 +34,10 @@ public class CommandLine {
             }
         }
         throw new InvalidCommandException();
+    }
+    public void printAllHelpers(){
+        for(Command command : commandList){
+            command.printHelper();
+        }
     }
 }

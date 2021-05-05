@@ -1,5 +1,6 @@
 package Utils;
 
+import controller.LogicException;
 import view.BaseMenu;
 
 public class Router {
@@ -10,5 +11,12 @@ public class Router {
     }
     public static BaseMenu getCurrentMenu(){
         return currentMenu;
+    }
+    public static void navigateToMenu(Class<?> menu) throws RoutingException {
+        currentMenu = currentMenu.getNavigatingMenuObject(menu);
+    }
+    public static void gameOver(){
+        // maybe you want to save the game or anything else now?
+        System.exit(0);
     }
 }

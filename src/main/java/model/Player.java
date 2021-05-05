@@ -8,6 +8,10 @@ public class Player {
     private Board board;
     private Integer lifePoint;
 
+    public Player(User user){
+        // to something
+    }
+
     public User getUser() {
         return user;
     }
@@ -35,7 +39,4 @@ public class Player {
     public void decreaseLifePoint(Integer value) {
         this.lifePoint -= value;
     }
-    
-
-
 }

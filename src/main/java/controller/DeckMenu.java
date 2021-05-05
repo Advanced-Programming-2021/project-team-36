@@ -1,21 +1,21 @@
 package controller;
 
-import model.Player;
 import model.User;
 import model.card.Card;
 import model.deck.Deck;
+import view.Context;
 
-public class DeckMenu extends BaseMenu {
-    public static void createDeck(String deckName) {
-        User user = User.getCurrentUser();
+public class DeckMenu {
+    public static void createDeck(Context context, String deckName) {
+        User user = context.getUser();
         if (user.getDeckByName(deckName) != null) {
             System.out.println("deck with name " + deckName + " already exists");
         }
-        User.getCurrentUser().addDeck(new Deck(deckName));
+        user.addDeck(new Deck(deckName));
         System.out.println("deck created successfully!");
     }
-    public static void deleteDeck(String deckName) {
-        User user = User.getCurrentUser();
+    public static void deleteDeck(Context context, String deckName) {
+        User user = context.getUser();
         Deck deck = user.getDeckByName(deckName);
         if (deck == null) {
             System.out.println("deck with name " + deckName + " does not exists");
@@ -24,8 +24,8 @@ public class DeckMenu extends BaseMenu {
         user.deleteDeck(deck);
         System.out.println("deck deleted successfully");
     }
-    public static void setActiveDeck(String deckName) {
-        User user = User.getCurrentUser();
+    public static void setActiveDeck(Context context, String deckName) {
+        User user = context.getUser();
         Deck deck = user.getDeckByName(deckName);
         if (deck == null) {
             System.out.println("deck with name " + deckName + " does not exists");
@@ -34,8 +34,8 @@ public class DeckMenu extends BaseMenu {
         user.setActiveDeck(deck);
         System.out.println("deck activated successfully");
     }
-    public static void addCardToDeck(Card card, String deckName, boolean side) {
-        User user = User.getCurrentUser();
+    public static void addCardToDeck(Context context, Card card, String deckName, boolean side) {
+        User user = context.getUser();
         Deck deck = user.getDeckByName(deckName);
         if (deck == null) {
             System.out.println("deck with name " + deckName + " does not exists");
@@ -53,8 +53,8 @@ public class DeckMenu extends BaseMenu {
         }
         System.out.println("card added to deck successfully");
     }
-    public static void removeCardFromDeck(Card card, String deckName, boolean side) {
-        User user = User.getCurrentUser();
+    public static void removeCardFromDeck(Context context, Card card, String deckName, boolean side) {
+        User user = context.getUser();
         Deck deck = user.getDeckByName(deckName);
         if (deck == null) {
             System.out.println("deck with name " + deckName + " does not exists");
@@ -72,38 +72,26 @@ public class DeckMenu extends BaseMenu {
         }
         System.out.println("card removed from deck successfully"); // Doc mistakenly says "form"
     }
-    public static void showDeck(String deckName, boolean side) {
-        User user = User.getCurrentUser();
+    public static void showDeck(Context context, String deckName, boolean side) {
+        User user = context.getUser();
         Deck deck = user.getDeckByName(deckName);
         System.out.println(deck.info(side));
     }
-    public static void showAllDecks() {
+    public static void showAllDecks(Context context) {
         System.out.println("Decks:");
         System.out.println("Active deck:");
-        User user = User.getCurrentUser();
+        User user = context.getUser();
         Deck activeDeck = user.getActiveDeck();
         if (activeDeck != null)
             System.out.println(activeDeck);
         System.out.println("Other decks:");
-        for (Deck deck : User.getCurrentUser().getDecksLexicographically())
+        for (Deck deck : user.getDecksLexicographically())
             if (deck != activeDeck)
                 System.out.println(deck);
     }
-    public static void showAllCards() {
-        User user = User.getCurrentUser();
+    public static void showAllCards(Context context) {
+        User user = context.getUser();
         for (Card card : user.getCardsLexicographically())
             System.out.println(card);
-    }
-    protected static void showCurrentMenu() {
-
-    }
-    protected static void navigateToMenu(String menu) {
-
-    }
-    protected static void exit() {
-
-    }
-    public static void programControl() {
-
     }
 }

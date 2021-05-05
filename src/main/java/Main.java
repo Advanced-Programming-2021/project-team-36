@@ -4,7 +4,7 @@ import view.LoginMenu;
 import java.util.Scanner;
 
 public class Main {
-    private static Scanner scanner;
+    private static final Scanner scanner;
 
     static {
         scanner = new Scanner(System.in);

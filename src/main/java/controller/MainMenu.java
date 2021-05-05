@@ -1,29 +1,22 @@
 package controller;
 
+import Utils.Router;
+import Utils.RoutingException;
 import model.User;
+import view.Context;
 
-public class MainMenu extends BaseMenu {
-    public static void startNewDuel(User secondPlayer, int round) {
+public class MainMenu {
+    public static void startNewDuel(Context context, User secondUser, int round) throws RoutingException {
 
+        Router.navigateToMenu(view.DuelMenu.class);
     }
-    public static void startDuelWithAI(int round) {
+    public static void startDuelWithAI(Context context, int round) throws RoutingException {
 
+        Router.navigateToMenu(view.DuelMenu.class);
     }
-    public static void logout() {
-        User.setCurrentUser(null);
+    public static void logout(Context context) throws RoutingException {
+        context.logout();
+        Router.navigateToMenu(view.LoginMenu.class);
         System.out.println("user logged out successfully!");
-        navigateToMenu("Login Menu");
-    }
-    protected static void showCurrentMenu() {
-
-    }
-    protected static void navigateToMenu(String menu) {
-
-    }
-    protected static void exit() {
-
-    }
-    public static void programControl() {
-
     }
 }

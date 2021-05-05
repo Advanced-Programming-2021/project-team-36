@@ -5,15 +5,14 @@ import model.Game;
 import model.card.*;
 import model.enums.Phase;
 import model.enums.State;
+import view.Context;
 
 import java.util.List;
 
-public class DuelMenu extends BaseMenu {
-    private static Game game;
-
-    public static void selectCard(CardAddress cardAddress) {
+public class DuelMenu {
+    public static void selectCard(Context context, CardAddress cardAddress) {
         // TODO : should check cardAddress is valid or not
-
+        Game game = context.getGame();
         if (game.getCardByCardAddress(cardAddress) == null)
             System.out.println("no card found in the given position");
         else {
@@ -23,7 +22,8 @@ public class DuelMenu extends BaseMenu {
 
     }
 
-    public static void deselectCard() {
+    public static void deselectCard(Context context) {
+        Game game = context.getGame();
         if (game.getSelectedCardAddress() == null)
             System.out.println("no card is selected");
         else {
@@ -32,12 +32,14 @@ public class DuelMenu extends BaseMenu {
         }
     }
 
-    public static Card getSelectedCard() {
+    public static Card getSelectedCard(Context context) {
+        Game game = context.getGame();
         // todo: this function returns the card that was selected and throws error if nothing had been selected
         return null;
     }
 
-    public static void printCurrentPhase() {
+    public static void printCurrentPhase(Context context) {
+        Game game = context.getGame();
         if (game.getPhase() == Phase.DRAWPHASE)
             System.out.println("phase: draw phase");
         else if (game.getPhase() == Phase.STANDBYPHASE)
@@ -52,7 +54,8 @@ public class DuelMenu extends BaseMenu {
             System.out.println("phase: end phase");
     }
 
-    public static void goNextPhase() {
+    public static void goNextPhase(Context context) {
+        Game game = context.getGame();
         if (game.getPhase() == Phase.DRAWPHASE)
             game.setPhase(Phase.STANDBYPHASE);
         else if (game.getPhase() == Phase.STANDBYPHASE)
@@ -67,39 +70,40 @@ public class DuelMenu extends BaseMenu {
             game.setPhase(Phase.DRAWPHASE);
     }
 
-    public static void summonCard(Card card) {
-
+    public static void summonCard(Context context, Card card) {
+        Game game = context.getGame();
     }
 
-    public static void setCard(Card card) {
-
+    public static void setCard(Context context, Card card) {
+        Game game = context.getGame();
     }
 
-    public static void changeCardPosition(Card card, State state) {
-
+    public static void changeCardPosition(Context context, Card card, State state) {
+        Game game = context.getGame();
     }
 
-    public static void flipSummon(Card card) {
-
+    public static void flipSummon(Context context, Card card) {
+        Game game = context.getGame();
     }
 
-    private static void ritualSummon(Card card) {
-
+    private static void ritualSummon(Context context, Card card) {
+        Game game = context.getGame();
     }
 
-    public static void attack(Card card, int id) {
-
+    public static void attack(Context context, Card card, int id) {
+        Game game = context.getGame();
     }
 
-    public static void directAttack(Card card) {
-
+    public static void directAttack(Context context, Card card) {
+        Game game = context.getGame();
     }
 
-    public static void activateEffect(Card card) {
-
+    public static void activateEffect(Context context, Card card) {
+        Game game = context.getGame();
     }
 
-    public static void showGraveYard() {
+    public static void showGraveYard(Context context) {
+        Game game = context.getGame();
         List<Card> graveYard = game.getCurrentPlayer().getBoard().getGraveYard();
         if (graveYard.isEmpty())
             System.out.println("graveyard empty");
@@ -107,7 +111,8 @@ public class DuelMenu extends BaseMenu {
             System.out.println((i + 1) + ". " + graveYard.get(i).toString());
     }
 
-    private static void showBoard() {
+    private static void showBoard(Context context) {
+        Game game = context.getGame();
         System.out.println(game.getOpponentPlayer().getUser().getNickname() + ":" + game.getOpponentPlayer().getLifePoint());
         System.out.println(game.getOpponentPlayer().getBoard().toString()); // TODO it should rotate 180 degree
         System.out.println();
@@ -118,31 +123,11 @@ public class DuelMenu extends BaseMenu {
         System.out.println(game.getCurrentPlayer().getUser().getNickname() + ":" + game.getCurrentPlayer().getLifePoint());
     }
 
-    public static void showCard(Card card){
-
+    public static void showCard(Context context, Card card){
+        Game game = context.getGame();
     }
 
-    private static void surrender() {
-
-    }
-
-    protected static void showCurrentMenu() {
-
-    }
-
-    protected static void navigateToMenu(String menu) {
-
-    }
-
-    protected static void exit() {
-
-    }
-
-    private static void start(Game game) {
-
-    }
-
-    public static void programControl() {
-
+    private static void surrender(Context context) {
+        Game game = context.getGame();
     }
 }

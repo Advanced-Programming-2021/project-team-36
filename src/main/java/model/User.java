@@ -8,7 +8,6 @@ import java.util.Comparator;
 
 public class User {
     private static ArrayList<User> users = new ArrayList<>();
-    private static User currentUser;
 
     private String username;
     private String password;
@@ -39,10 +38,6 @@ public class User {
         return null;
     }
 
-    public static User getCurrentUser() {
-        return currentUser;
-    }
-
     public static ArrayList<User> retrieveUsersBasedOnScore() {
         users.sort(new scoreBasedComparator());
         return users;
@@ -56,10 +51,6 @@ public class User {
     public ArrayList<Deck> getDecksLexicographically() {
         // TODO
         return new ArrayList<>();
-    }
-
-    public static void setCurrentUser(User user) {
-        User.currentUser = user;
     }
 
     private static class scoreBasedComparator implements Comparator<User> {

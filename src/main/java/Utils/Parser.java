@@ -6,6 +6,7 @@ import model.card.Card;
 import model.card.Monster;
 import model.enums.State;
 import model.enums.ZoneType;
+import view.ImportAndExportMenu;
 
 public class Parser {
     public static User UserParser(String username) throws ParserException {
@@ -80,7 +81,7 @@ public class Parser {
         if(menuName.equalsIgnoreCase("Shop"))
             return view.ShopMenu.class;
         if(menuName.equalsIgnoreCase("Import/Export"))
-            return view.ImportExportMenu.class;
+            return ImportAndExportMenu.class;
         throw new ParserException("invalid menu name");
     }
 }

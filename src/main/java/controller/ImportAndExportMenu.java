@@ -2,27 +2,11 @@ package controller;
 
 import model.User;
 
-public class ImportAndExportMenu extends BaseMenu {
-    private static User user;
-    private static void importCard(String cardName) {
+public class ImportAndExportMenu {
+    public static void importCard(User user, String cardName) {
 
     }
-    private static void exportCard(String cardName) {
-
-    }
-    protected static void showCurrentMenu() {
-
-    }
-    protected static void navigateToMenu(String menu) {
-
-    }
-    protected static void exit() {
-
-    }
-    private static void start(User user) {
-
-    }
-    public static void programControl() {
+    public static void exportCard(User user, String cardName) {
 
     }
 }

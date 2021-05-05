@@ -2,33 +2,19 @@ package controller;
 
 import model.User;
 import model.card.Card;
+import view.Context;
 
-public class ShopMenu extends BaseMenu {
-    public static void buyCard(Card card) {
-        User user = User.getCurrentUser();
+public class ShopMenu {
+    public static void buyCard(Context context, Card card) {
+        User user = context.getUser();
         if (user.getBalance() < card.getPrice()) {
             System.out.println("not enough money");
             return;
         }
         user.buy(card);
     }
-    public static void shopAll() {
+    public static void showAll(Context context) {
         for (Card card : Card.getAllCardsLexicographically())
             System.out.println(card);
-    }
-    protected static void showCurrentMenu() {
-
-    }
-    protected static void navigateToMenu(String menu) {
-
-    }
-    protected static void exit() {
-
-    }
-    private static void start(User user) {
-
-    }
-    public static void programControl() {
-
     }
 }

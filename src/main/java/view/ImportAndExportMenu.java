@@ -1,25 +1,21 @@
 package view;
 
+import Utils.Parser;
 import Utils.Router;
 import Utils.RoutingException;
 import view.CommandLine.Command;
 
 import java.util.Scanner;
 
-public class ScoreboardMenu extends BaseMenu {
-    ScoreboardMenu(Scanner scanner) {
+public class ImportAndExportMenu extends BaseMenu {
+    ImportAndExportMenu(Scanner scanner){
         super(scanner);
     }
 
     @Override
     protected void addCommands() {
         super.addCommands();
-        this.cmd.addCommand(new Command(
-                "scoreboard show",
-                command -> {
-                    controller.ScoreboardMenu.showScoreboard(Context.getInstance());
-                }
-        ));
+        // todo complete this
     }
 
     @Override
@@ -31,7 +27,7 @@ public class ScoreboardMenu extends BaseMenu {
         if(menu.equals(ProfileMenu.class))
             return new ProfileMenu(scanner);
         if(menu.equals(ScoreboardMenu.class))
-            throw new RoutingException("can't navigate to your current menu!");
+            return new ScoreboardMenu(scanner);
         if(menu.equals(ShopMenu.class))
             return new ShopMenu(scanner);
         if(menu.equals(DeckMenu.class))
@@ -39,7 +35,7 @@ public class ScoreboardMenu extends BaseMenu {
         if(menu.equals(DuelMenu.class))
             return new DuelMenu(scanner);
         if(menu.equals(ImportAndExportMenu.class))
-            return new ImportAndExportMenu(scanner);
+            throw new RoutingException("can't navigate to your current menu!");
         throw new RoutingException("menu navigation is not possible");
     }
 
