@@ -33,9 +33,18 @@ public class Board {
         return spellAndTrapCardZone;
     }
 
-    //    public CardAddress getCardAddressByCard(Card card) {
-//
-//    }
+    public Card getCardByCardAddress(CardAddress cardAddress) {
+        if (cardAddress.isInHand())
+            return cardsOnHand.get(cardAddress.getId());
+        else if (cardAddress.isInMonsterZone())
+            return monsterCardZone.get(cardAddress.getId());
+        else if (cardAddress.isInSpellZone())
+            return spellAndTrapCardZone.get(cardAddress.getId());
+        else if (cardAddress.isInFieldZone())
+            return fieldZoneCard;
+        else
+            return graveYard.get(cardAddress.getId());
+    }
 //
 //    public List<Card> getAllCardsOnField() {
 //

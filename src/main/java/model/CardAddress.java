@@ -25,6 +25,8 @@ public class CardAddress {
     public boolean isOpponentAddress() {
         return opponent;
     }
+    public boolean isInFieldZone() { return zone.equals(ZoneType.FIELD); }
+    public boolean isInGraveYard() { return zone.equals(ZoneType.GRAVEYARD); }
     public int getId() {
         return id;
     }
