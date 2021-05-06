@@ -1,7 +1,10 @@
 package model.card;
 
+import model.enums.Icon;
+import model.enums.Status;
+
 public class Trap extends Magic {
-    Trap(String name, String description, int price) {
-        super(name, description, price);
+    protected Trap(String name, String description, int price, Icon icon, Status status) {
+        super(name, description, price, icon, status);
     }
 }
