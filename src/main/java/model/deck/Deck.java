@@ -49,4 +49,11 @@ public class Deck implements Comparable<Deck> {
     public int compareTo(Deck other) {
         return this.getName().compareTo(other.getName());
     }
+
+    @Override
+    public String toString() {
+        return String.format("%s: main deck %d, side deck %d, %s",
+                name, mainDeck.cards.size(), sideDeck.cards.size(),
+                (mainDeck.isValid() && sideDeck.isValid()) ? "valid" : "invalid");
+    }
 }
