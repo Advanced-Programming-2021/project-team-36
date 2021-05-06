@@ -4,14 +4,13 @@ import model.CardAddress;
 import model.Game;
 import model.card.*;
 import model.enums.Phase;
-import model.enums.State;
+import model.enums.MonsterState;
 import view.Context;
 
 import java.util.List;
 
 public class DuelMenuController {
     public static void selectCard(Context context, CardAddress cardAddress) throws LogicException {
-        // TODO : should check cardAddress is valid or not
         Game game = context.getGame();
         if (game.getCardByCardAddress(cardAddress) == null)
             throw new LogicException("no card found in the given position");
@@ -74,7 +73,7 @@ public class DuelMenuController {
         Game game = context.getGame();
     }
 
-    public static void changeCardPosition(Context context, Card card, State state) {
+    public static void changeCardPosition(Context context, Card card, MonsterState monsterState) {
         Game game = context.getGame();
     }
 
