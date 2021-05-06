@@ -5,7 +5,7 @@ import model.enums.MonsterCardType;
 import model.enums.MonsterType;
 import model.enums.MonsterState;
 
-public class Monster extends Card{
+public class Monster extends Card {
     // this should be abstract too. todo
     protected int attackDamage;
     protected int defenseRate;
@@ -21,7 +21,20 @@ public class Monster extends Card{
         this.defenseRate = defenseRate;
         this.attribute = attribute;
         this.monsterType = monsterType;
+        this.monsterCardType = monsterCardType;
+        this.monsterState = null;
         this.level = level;
+    }
+
+    public Monster(Monster monster){
+        super(monster.name, monster.description, monster.price);
+        this.attackDamage = monster.attackDamage;
+        this.defenseRate = monster.defenseRate;
+        this.attribute = monster.attribute;
+        this.monsterType = monster.monsterType;
+        this.monsterCardType = monster.monsterCardType;
+        this.monsterState = monster.monsterState;
+        this.level = monster.level;
     }
 
     public int getAttackDamage() {

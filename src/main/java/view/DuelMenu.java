@@ -45,8 +45,7 @@ public class DuelMenu extends BaseMenu {
                 mp -> {
                     DuelMenuController.selectCard(Context.getInstance(), Parser.cardAddressParser("hand", mp.get("hand"), mp.containsKey("opponent")));
                 },
-                Options.handZone(true),
-                Options.opponent(false)
+                Options.handZone(true)
         ));
         this.cmd.addCommand(new Command(
                 "select",
