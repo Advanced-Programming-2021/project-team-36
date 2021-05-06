@@ -7,14 +7,15 @@ import model.enums.MonsterType;
 
 public class SilverFang extends Monster {
     public SilverFang() {
-        name = "Silver Fang";
-        level = 3;
-        attribute = MonsterAttribute.EARTH;
-        monsterType = MonsterType.BEAST;
-        monsterCardType = MonsterCardType.NORMAL;
-        attackDamage = 1200;
-        defenseRate = 800;
-        description = "A snow wolf that's beautiful to the eye, but absolutely vicious in battle.";
-        price = 1700;
+        super("SilverFang",
+                "A small fiend that dwells in the dark, its single horn makes it a formidable opponent.",
+                1700,
+                1200,
+                800,
+                MonsterAttribute.EARTH,
+                MonsterType.BEAST,
+                MonsterCardType.NORMAL,
+                3
+        );
     }
 }

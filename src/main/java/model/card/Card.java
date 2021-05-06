@@ -7,7 +7,7 @@ public abstract class Card {
     protected final String description;
     protected final int price;
 
-    Card(String name, String description, int price){
+    protected Card(String name, String description, int price){
         this.name = name;
         this.description = description;
         this.price = price;

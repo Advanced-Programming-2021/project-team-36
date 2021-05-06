@@ -15,7 +15,7 @@ public class Monster extends Card{
     protected State state = null;
     protected int level;
 
-    Monster(String name, String description, int price, int attackDamage, int defenseRate, MonsterAttribute attribute, MonsterType monsterType, int level) {
+    protected Monster(String name, String description, int price, int attackDamage, int defenseRate, MonsterAttribute attribute, MonsterType monsterType, MonsterCardType monsterCardType, int level) {
         super(name, description, price);
         this.attackDamage = attackDamage;
         this.defenseRate = defenseRate;

@@ -7,14 +7,15 @@ import model.enums.MonsterType;
 
 public class AxeRaider extends Monster {
     public AxeRaider() {
-        name = "Axe Raider";
-        level = 4;
-        attribute = MonsterAttribute.EARTH;
-        monsterType = MonsterType.WARRIOR;
-        monsterCardType = MonsterCardType.NORMAL;
-        attackDamage = 1700;
-        defenseRate = 1150;
-        description = "An axe-wielding monster of tremendous strength and agility.";
-        price = 3100;
+        super("AxeRaider",
+                "An axe-wielding monster of tremendous strength and agility.",
+                3100,
+                1700,
+                1150,
+                MonsterAttribute.EARTH,
+                MonsterType.WARRIOR,
+                MonsterCardType.NORMAL,
+                4
+        );
     }
 }
