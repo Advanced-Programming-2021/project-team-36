@@ -3,7 +3,7 @@ package model.card;
 import model.enums.MonsterAttribute;
 import model.enums.MonsterCardType;
 import model.enums.MonsterType;
-import model.enums.State;
+import model.enums.MonsterState;
 
 public class Monster extends Card{
     // this should be abstract too. todo
@@ -12,7 +12,7 @@ public class Monster extends Card{
     protected MonsterAttribute attribute;
     protected MonsterType monsterType;
     protected MonsterCardType monsterCardType;
-    protected State state = null;
+    protected MonsterState monsterState = null;
     protected int level;
 
     protected Monster(String name, String description, int price, int attackDamage, int defenseRate, MonsterAttribute attribute, MonsterType monsterType, MonsterCardType monsterCardType, int level) {
@@ -24,16 +24,20 @@ public class Monster extends Card{
         this.level = level;
     }
 
-    public Integer getAttackDamage() {
+    public int getAttackDamage() {
         return attackDamage;
     }
 
-    public Integer getDefenseRate() {
+    public int getDefenseRate() {
         return defenseRate;
     }
 
-    public Integer getLevel() {
+    public int getLevel() {
         return level;
+    }
+
+    public MonsterState getState() {
+        return monsterState;
     }
 
     public boolean canSummonNormally() {
