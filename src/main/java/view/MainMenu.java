@@ -47,6 +47,8 @@ public class MainMenu extends BaseMenu {
             return new LoginMenu();
         if (menu.equals(MainMenu.class))
             throw new RoutingException("can't navigate to your current menu!");
+        if (menu.equals(DuelMenu.class))
+            return new DuelMenu();
         if (menu.equals(ProfileMenu.class))
             return new ProfileMenu();
         if (menu.equals(ScoreboardMenu.class))
