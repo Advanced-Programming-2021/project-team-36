@@ -10,44 +10,28 @@ import java.util.Collections;
 import java.util.List;
 
 public class DeckMenuController {
-    public static void createDeck(Context context, String deckName) {
+    public static void createDeck(Context context, String deckName) throws LogicException {
         User user = context.getUser();
-        if (user.getDeckByName(deckName) != null) {
-            System.out.println("deck with name " + deckName + " already exists");
-        }
+        if (user.getDeckByName(deckName) != null)
+            throw new LogicException(String.format("deck with name %s already exists", deckName));
         user.addDeck(new Deck(deckName));
         System.out.println("deck created successfully!");
     }
 
-    public static void deleteDeck(Context context, String deckName) {
+    public static void deleteDeck(Context context, Deck deck) throws LogicException {
         User user = context.getUser();
-        Deck deck = user.getDeckByName(deckName);
-        if (deck == null) {
-            System.out.println("deck with name " + deckName + " does not exists");
-            return;
-        }
         user.deleteDeck(deck);
         System.out.println("deck deleted successfully");
     }
 
-    public static void setActiveDeck(Context context, String deckName) {
+    public static void setActiveDeck(Context context, Deck deck) throws LogicException {
         User user = context.getUser();
-        Deck deck = user.getDeckByName(deckName);
-        if (deck == null) {
-            System.out.println("deck with name " + deckName + " does not exists");
-            return;
-        }
         user.setActiveDeck(deck);
         System.out.println("deck activated successfully");
     }
 
-    public static void addCardToDeck(Context context, Card card, String deckName, boolean side) {
+    public static void addCardToDeck(Context context, Card card, Deck deck, boolean side) throws LogicException {
         User user = context.getUser();
-        Deck deck = user.getDeckByName(deckName);
-        if (deck == null) {
-            System.out.println("deck with name " + deckName + " does not exists");
-            return;
-        }
         if (!side) {
             // TODO : Should check whether the mainDeck is full.
             // Response in case : "main deck is full"
@@ -60,13 +44,8 @@ public class DeckMenuController {
         System.out.println("card added to deck successfully");
     }
 
-    public static void removeCardFromDeck(Context context, Card card, String deckName, boolean side) {
+    public static void removeCardFromDeck(Context context, Card card, Deck deck, boolean side) throws LogicException {
         User user = context.getUser();
-        Deck deck = user.getDeckByName(deckName);
-        if (deck == null) {
-            System.out.println("deck with name " + deckName + " does not exists");
-            return;
-        }
         if (!side) {
             // TODO : Should check whether the card exists in the mainDeck.
             // Response in case : "card with name " + cardName + " does not exists in main deck"
@@ -79,9 +58,8 @@ public class DeckMenuController {
         System.out.println("card removed from deck successfully"); // Doc mistakenly says "form"
     }
 
-    public static void showDeck(Context context, String deckName, boolean side) {
+    public static void showDeck(Context context, Deck deck, boolean side) {
         User user = context.getUser();
-        Deck deck = user.getDeckByName(deckName);
         System.out.println(deck.info(side));
     }
 

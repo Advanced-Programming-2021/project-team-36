@@ -7,7 +7,7 @@ import model.card.Monster;
 import java.util.*;
 
 public class BaseDeck {
-    protected ArrayList<Card> cards;
+    protected ArrayList<Card> cards = new ArrayList<>();
 
     public Card getTopCard() {
         if (!cards.isEmpty())

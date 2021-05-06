@@ -23,19 +23,19 @@ public class DeckMenu extends BaseMenu {
         this.cmd.addCommand(new Command(
                 "deck delete [deckName]",
                 mp -> {
-                    DeckMenuController.deleteDeck(Context.getInstance(), mp.get("deckName"));
+                    DeckMenuController.deleteDeck(Context.getInstance(), Parser.deckParser(mp.get("deckName")));
                 }
         ));
         this.cmd.addCommand(new Command(
                 "deck set-active [deckName]",
                 mp -> {
-                    DeckMenuController.setActiveDeck(Context.getInstance(), mp.get("deckName"));
+                    DeckMenuController.setActiveDeck(Context.getInstance(), Parser.deckParser(mp.get("deckName")));
                 }
         ));
         this.cmd.addCommand(new Command(
                 "deck add-card",
                 mp -> {
-                    DeckMenuController.addCardToDeck(Context.getInstance(), Parser.cardParser(mp.get("card")), mp.get("deck"), mp.containsKey("side"));
+                    DeckMenuController.addCardToDeck(Context.getInstance(), Parser.cardParser(mp.get("card")), Parser.deckParser(mp.get("deck")), mp.containsKey("side"));
                 },
                 Options.card(true),
                 Options.deck(true),
@@ -44,7 +44,7 @@ public class DeckMenu extends BaseMenu {
         this.cmd.addCommand(new Command(
                 "deck rm-card",
                 mp -> {
-                    DeckMenuController.removeCardFromDeck(Context.getInstance(), Parser.cardParser(mp.get("card")), mp.get("deck"), mp.containsKey("side"));
+                    DeckMenuController.removeCardFromDeck(Context.getInstance(), Parser.cardParser(mp.get("card")), Parser.deckParser(mp.get("deck")), mp.containsKey("side"));
                 },
                 Options.card(true),
                 Options.deck(true),
@@ -60,7 +60,7 @@ public class DeckMenu extends BaseMenu {
         this.cmd.addCommand(new Command(
                 "deck show",
                 mp -> {
-                    DeckMenuController.showDeck(Context.getInstance(), mp.get("deck"), mp.containsKey("side"));
+                    DeckMenuController.showDeck(Context.getInstance(), Parser.deckParser(mp.get("deck")), mp.containsKey("side"));
                 },
                 Options.deck(true),
                 Options.side()
