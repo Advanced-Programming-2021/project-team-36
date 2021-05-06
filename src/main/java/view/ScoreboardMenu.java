@@ -5,11 +5,9 @@ import Utils.RoutingException;
 import controller.ScoreboardMenuController;
 import view.CommandLine.Command;
 
-import java.util.Scanner;
-
 public class ScoreboardMenu extends BaseMenu {
-    ScoreboardMenu(Scanner scanner) {
-        super(scanner);
+    ScoreboardMenu() {
+        super();
     }
 
     @Override
@@ -28,19 +26,19 @@ public class ScoreboardMenu extends BaseMenu {
         if (menu.equals(LoginMenu.class))
             throw new RoutingException("you must logout for that!");
         if (menu.equals(MainMenu.class))
-            return new MainMenu(scanner);
+            return new MainMenu();
         if (menu.equals(ScoreboardMenu.class))
             throw new RoutingException("can't navigate to your current menu!");
         if (!Debugger.getMode())
             throw new RoutingException("menu navigation is not possible");
         if (menu.equals(ProfileMenu.class))
-            return new ProfileMenu(scanner);
+            return new ProfileMenu();
         if (menu.equals(ShopMenu.class))
-            return new ShopMenu(scanner);
+            return new ShopMenu();
         if (menu.equals(DeckMenu.class))
-            return new DeckMenu(scanner);
+            return new DeckMenu();
         if (menu.equals(ImportAndExportMenu.class))
-            return new ImportAndExportMenu(scanner);
+            return new ImportAndExportMenu();
         throw new RoutingException("menu navigation is not possible");
     }
 

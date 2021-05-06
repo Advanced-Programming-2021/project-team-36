@@ -5,11 +5,9 @@ import Utils.RoutingException;
 import controller.LoginMenuController;
 import view.CommandLine.Command;
 
-import java.util.Scanner;
-
 public class LoginMenu extends BaseMenu {
-    public LoginMenu(Scanner scanner) {
-        super(scanner);
+    public LoginMenu() {
+        super();
     }
 
     @Override
@@ -35,18 +33,13 @@ public class LoginMenu extends BaseMenu {
     }
 
     @Override
-<<<<<<< HEAD
-    public BaseMenu getNavigatingMenuObject(Class<?> menu) throws RoutingException {
-        if (menu.equals(LoginMenu.class))
-=======
     public BaseMenu getNavigatingMenuObject(Class<? extends BaseMenu> menu) throws RoutingException {
-        if(menu.equals(LoginMenu.class))
->>>>>>> 29dc37040df9e1e10bcdc4431858b8da7a7cb0ef
+        if (menu.equals(LoginMenu.class))
             throw new RoutingException("can't navigate to your current menu!");
-        if(menu.equals(MainMenu.class))
-            return new MainMenu(scanner);
+        if (menu.equals(MainMenu.class))
+            return new MainMenu();
         if (menu.equals(ImportAndExportMenu.class))
-            return new ImportAndExportMenu(scanner);
+            return new ImportAndExportMenu();
         throw new RoutingException("please login first");
     }
 

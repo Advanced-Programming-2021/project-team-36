@@ -5,11 +5,9 @@ import Utils.RoutingException;
 import controller.ProfileMenuController;
 import view.CommandLine.Command;
 
-import java.util.Scanner;
-
 public class ProfileMenu extends BaseMenu {
-    ProfileMenu(Scanner scanner) {
-        super(scanner);
+    ProfileMenu() {
+        super();
     }
 
     @Override
@@ -35,22 +33,22 @@ public class ProfileMenu extends BaseMenu {
 
     @Override
     public BaseMenu getNavigatingMenuObject(Class<? extends BaseMenu> menu) throws RoutingException {
-        if(menu.equals(LoginMenu.class))
+        if (menu.equals(LoginMenu.class))
             throw new RoutingException("you must logout for that!");
         if (menu.equals(MainMenu.class))
-            return new MainMenu(scanner);
+            return new MainMenu();
         if (menu.equals(ProfileMenu.class))
             throw new RoutingException("can't navigate to your current menu!");
         if (!Debugger.getMode())
             throw new RoutingException("menu navigation is not possible");
         if (menu.equals(ScoreboardMenu.class))
-            return new ScoreboardMenu(scanner);
+            return new ScoreboardMenu();
         if (menu.equals(ShopMenu.class))
-            return new ShopMenu(scanner);
+            return new ShopMenu();
         if (menu.equals(DeckMenu.class))
-            return new DeckMenu(scanner);
+            return new DeckMenu();
         if (menu.equals(ImportAndExportMenu.class))
-            return new ImportAndExportMenu(scanner);
+            return new ImportAndExportMenu();
         throw new RoutingException("menu navigation is not possible");
     }
 

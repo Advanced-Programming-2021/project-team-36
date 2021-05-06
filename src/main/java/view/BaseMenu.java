@@ -1,9 +1,6 @@
 package view;
 
-import Utils.Parser;
-import Utils.ParserException;
-import Utils.Router;
-import Utils.RoutingException;
+import Utils.*;
 import controller.LogicException;
 import model.ModelException;
 import view.CommandLine.Command;
@@ -13,18 +10,16 @@ import view.CommandLine.CommandLineException;
 import java.util.Scanner;
 
 abstract public class BaseMenu {
-    protected final Scanner scanner;
     protected final CommandLine cmd;
 
-    public BaseMenu(Scanner scanner) {
-        this.scanner = scanner;
+    public BaseMenu() {
         this.cmd = new CommandLine();
         addCommands();
     }
 
     public void runNextCommand() {
         try {
-            String line = scanner.nextLine();
+            String line = CustomScanner.nextLine();
             if (Debugger.getCaptureMode())
                 Debugger.captureCommand(line);
             this.cmd.runNextCommand(line);
@@ -72,7 +67,14 @@ abstract public class BaseMenu {
                 },
                 Options.captureMode(true)
         ));
-
+        this.cmd.addCommand(new Command(
+                "debug import test",
+                mp -> {
+                    Debugger.importTest(mp.get("file"), mp.get("count"));
+                },
+                Options.file(true),
+                Options.count(false)
+        ));
     }
 
     abstract protected String getMenuName();

@@ -6,11 +6,9 @@ import Utils.RoutingException;
 import controller.DuelMenuController;
 import view.CommandLine.Command;
 
-import java.util.Scanner;
-
 public class DuelMenu extends BaseMenu {
-    DuelMenu(Scanner scanner) {
-        super(scanner);
+    DuelMenu() {
+        super();
     }
 
     @Override
@@ -126,10 +124,10 @@ public class DuelMenu extends BaseMenu {
         // this is strange here
         // todo move if only we finished the game
 
-        if(menu.equals(LoginMenu.class))
+        if (menu.equals(LoginMenu.class))
             throw new RoutingException("you must logout for that!");
-        if(menu.equals(MainMenu.class))
-            return new MainMenu(scanner);
+        if (menu.equals(MainMenu.class))
+            return new MainMenu();
         if (Debugger.getMode())
             throw new RoutingException("you cannot navigate out of an ongoing game");
         throw new RoutingException("menu navigation is not possible");

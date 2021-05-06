@@ -1,19 +1,10 @@
 import Utils.Router;
 import view.LoginMenu;
 
-import java.util.Scanner;
-
 public class Main {
-    private static final Scanner scanner;
-
-    static {
-        scanner = new Scanner(System.in);
-    }
-
     public static void main(String[] args) {
-        Router.setCurrentMenu(new LoginMenu(scanner));
-        while (true) {
+        Router.setCurrentMenu(new LoginMenu());
+        while (true)
             Router.getCurrentMenu().runNextCommand();
-        }
     }
 }

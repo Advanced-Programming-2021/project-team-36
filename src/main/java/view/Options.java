@@ -153,4 +153,16 @@ public class Options {
         ret.setRequired(required);
         return ret;
     }
+    static Option file(boolean required) {
+        Option ret = new Option("file", true, "file");
+        ret.setRequired(required);
+        return ret;
+    }
+
+    static Option count(boolean required) {
+        Option ret = new Option("count", true, "count");
+        ret.setRequired(required);
+        return ret;
+    }
+
 }

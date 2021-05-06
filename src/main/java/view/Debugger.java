@@ -1,5 +1,6 @@
 package view;
 
+import Utils.CustomScanner;
 import view.CommandLine.InvalidCommandException;
 
 import java.io.*;
@@ -81,6 +82,16 @@ public class Debugger {
         } catch (IOException exception) {
             System.out.println("failed to write into the test file");
             return;
+        }
+    }
+
+    public static void importTest(String fileAsString, String countAsString) throws InvalidCommandException {
+        if (countAsString == null)
+            countAsString = "9999999"; // Just a large number.
+        try {
+            CustomScanner.readTestFile(fileAsString, Integer.parseInt(countAsString));
+        } catch (Exception exception) {
+            throw new InvalidCommandException();
         }
     }
 
