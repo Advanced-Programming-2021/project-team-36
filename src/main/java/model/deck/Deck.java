@@ -9,7 +9,7 @@ import java.util.function.Function;
 import java.util.stream.Collector;
 import java.util.stream.Collectors;
 
-public class Deck implements Comparable<Deck> {
+public class Deck implements Comparable<Deck>, Cloneable {
     private String name;
     private MainDeck mainDeck;
     private SideDeck sideDeck;
@@ -64,5 +64,20 @@ public class Deck implements Comparable<Deck> {
         return String.format("%s: main deck %d, side deck %d, %s",
                 name, mainDeck.cards.size(), sideDeck.cards.size(),
                 (mainDeck.isValid() && sideDeck.isValid()) ? "valid" : "invalid");
+    }
+
+    @Override
+    public Deck clone(){
+        Deck deck;
+        try {
+            deck = (Deck) super.clone();
+        } catch (CloneNotSupportedException e){
+            e.printStackTrace();
+            return null;
+        }
+        deck.name = new String(name);
+        deck.mainDeck = mainDeck.clone();
+        deck.sideDeck = sideDeck.clone();
+        return deck;
     }
 }

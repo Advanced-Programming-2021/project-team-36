@@ -1,12 +1,17 @@
 package model.deck;
 
 public class MainDeck extends BaseDeck {
-    private final Integer minimumNumberOfCards = 15;
-    private final Integer maximumNumberOfCards = 45;
+    private final static Integer minimumNumberOfCards = 15;
+    private final static Integer maximumNumberOfCards = 45;
 
     public boolean isValid() {
         return minimumNumberOfCards <= cards.size() && cards.size() <= maximumNumberOfCards;
     }
 
     public boolean isFull() { return cards.size() == maximumNumberOfCards; }
+
+    @Override
+    public MainDeck clone() {
+        return (MainDeck) super.clone();
+    }
 }

@@ -13,8 +13,9 @@ public class Player {
         if(user.getActiveDeck() == null)
             throw new ModelException(String.format("%s has no active deck", user.getUsername()));
         this.user = user;
-        this.deck = user.getActiveDeck();
-        this.board = new Board(user.getActiveDeck().getMainDeck());
+        this.deck = user.getActiveDeck().clone();
+        this.board = new Board(user.getActiveDeck().getMainDeck().clone());
+        // the deck in board and this.deck are cloned and different objects
         this.lifePoint = Constants.InitialLifePoint.val;
     }
 
