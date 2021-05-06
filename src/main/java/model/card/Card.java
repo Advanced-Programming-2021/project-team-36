@@ -1,18 +1,15 @@
 package model.card;
 
-import java.util.ArrayList;
+public abstract class Card implements Comparable<Card>, Cloneable{
+    protected String name;
+    protected String description;
+    protected int price;
 
-public abstract class Card {
-    protected final String name;
-    protected final String description;
-    protected final int price;
-
-    protected Card(String name, String description, int price){
+    protected Card(String name, String description, int price) {
         this.name = name;
         this.description = description;
         this.price = price;
     }
-
     public String getName() {
         return name;
     }
@@ -25,13 +22,27 @@ public abstract class Card {
         return price;
     }
 
-    public static ArrayList<Card> getAllCardsLexicographically() {
-        // TODO
-        return new ArrayList<>();
+    @Override
+    public Card clone() {
+        try {
+            Card cloned = (Card) super.clone();
+            cloned.name = name;
+            cloned.description = description;
+            cloned.price = price;
+            return cloned;
+        } catch (CloneNotSupportedException e){
+            e.printStackTrace();
+            return null;
+        }
     }
 
     @Override
     public String toString() {
         return name + ":" + description;
+    }
+
+    @Override
+    public int compareTo(Card other) {
+        return this.name.compareTo(other.name);
     }
 }

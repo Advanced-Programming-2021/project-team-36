@@ -21,7 +21,7 @@ public class Main {
         controller.LoginMenuController.createUser(Context.getInstance(), "shayan", "shayan.p", "1234");
         controller.LoginMenuController.createUser(Context.getInstance(), "abolfazl", "abolof", "12345");
         controller.LoginMenuController.login(Context.getInstance(), "shayan", "1234");
-        controller.MainMenuController.startNewDuel(Context.getInstance(), Parser.UserParser("abolfazl"), 3);
+//        controller.MainMenuController.startNewDuel(Context.getInstance(), Parser.UserParser("abolfazl"), 3);
         // end initializing
         while (true){
             Router.getCurrentMenu().runNextCommand();

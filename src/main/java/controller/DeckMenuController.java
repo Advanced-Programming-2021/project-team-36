@@ -5,6 +5,10 @@ import model.card.Card;
 import model.deck.Deck;
 import view.Context;
 
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.List;
+
 public class DeckMenuController {
     public static void createDeck(Context context, String deckName) {
         User user = context.getUser();
@@ -85,13 +89,10 @@ public class DeckMenuController {
         if (activeDeck != null)
             System.out.println(activeDeck);
         System.out.println("Other decks:");
-        for (Deck deck : user.getDecksLexicographically())
-            if (deck != activeDeck)
-                System.out.println(deck);
+        Arrays.stream(user.getDecks().toArray()).sorted().filter(e -> e != activeDeck).forEach(System.out::println);
     }
     public static void showAllCards(Context context) {
         User user = context.getUser();
-        for (Card card : user.getCardsLexicographically())
-            System.out.println(card);
+        Arrays.stream(user.getCards().toArray()).sorted().forEach(System.out::println);
     }
 }
