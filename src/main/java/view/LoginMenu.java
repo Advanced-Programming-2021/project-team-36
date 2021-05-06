@@ -35,8 +35,13 @@ public class LoginMenu extends BaseMenu {
     }
 
     @Override
+<<<<<<< HEAD
     public BaseMenu getNavigatingMenuObject(Class<?> menu) throws RoutingException {
         if (menu.equals(LoginMenu.class))
+=======
+    public BaseMenu getNavigatingMenuObject(Class<? extends BaseMenu> menu) throws RoutingException {
+        if(menu.equals(LoginMenu.class))
+>>>>>>> 29dc37040df9e1e10bcdc4431858b8da7a7cb0ef
             throw new RoutingException("can't navigate to your current menu!");
         if(menu.equals(MainMenu.class))
             return new MainMenu(scanner);

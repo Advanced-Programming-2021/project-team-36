@@ -28,6 +28,10 @@ public class BaseDeck {
         cards.removeIf(card1 -> card1.equals(card));
     }
 
+    public int getNumberOfCards() {
+        return cards.size();
+    }
+
     @Override
     public String toString() {
         cards.sort(Comparator.comparing(Card::getName));

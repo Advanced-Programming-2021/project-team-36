@@ -77,7 +77,7 @@ abstract public class BaseMenu {
 
     abstract protected String getMenuName();
 
-    abstract public BaseMenu getNavigatingMenuObject(Class<?> menu) throws RoutingException;
+    abstract public BaseMenu getNavigatingMenuObject(Class<? extends BaseMenu> menu) throws RoutingException;
 
     abstract public void exitMenu() throws RoutingException;
 }

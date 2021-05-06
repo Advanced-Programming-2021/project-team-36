@@ -4,7 +4,7 @@ import model.enums.ZoneType;
 
 public class CardAddress {
     private ZoneType zone;
-    private Integer id;
+    private int id;
     private boolean opponent;
 
     public CardAddress(ZoneType zone, Integer id, boolean opponent) {
@@ -19,13 +19,15 @@ public class CardAddress {
     public boolean isInMonsterZone() {
         return zone.equals(ZoneType.MONSTER);
     }
-    public boolean isInSpellZone() {
+    public boolean isInMagicZone() {
         return zone.equals(ZoneType.MAGIC);
     }
     public boolean isOpponentAddress() {
         return opponent;
     }
-    public Integer getId() {
+    public boolean isInFieldZone() { return zone.equals(ZoneType.FIELD); }
+    public boolean isInGraveYard() { return zone.equals(ZoneType.GRAVEYARD); }
+    public int getId() {
         return id;
     }
 }

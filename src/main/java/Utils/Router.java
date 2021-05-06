@@ -14,7 +14,7 @@ public class Router {
         return currentMenu;
     }
 
-    public static void navigateToMenu(Class<?> menu) throws RoutingException {
+    public static void navigateToMenu(Class<? extends BaseMenu> menu) throws RoutingException {
         currentMenu = currentMenu.getNavigatingMenuObject(menu);
     }
 

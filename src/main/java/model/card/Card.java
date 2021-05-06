@@ -3,9 +3,15 @@ package model.card;
 import java.util.ArrayList;
 
 public abstract class Card {
-    protected String name;
-    protected String description;
-    protected Integer price;
+    protected final String name;
+    protected final String description;
+    protected final int price;
+
+    protected Card(String name, String description, int price){
+        this.name = name;
+        this.description = description;
+        this.price = price;
+    }
 
     public String getName() {
         return name;
@@ -16,7 +22,7 @@ public abstract class Card {
     }
 
     public int getPrice() {
-        return 0; // TODO : Each card class should implement it's own getPrice method.
+        return price;
     }
 
     public static ArrayList<Card> getAllCardsLexicographically() {

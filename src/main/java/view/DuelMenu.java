@@ -45,8 +45,7 @@ public class DuelMenu extends BaseMenu {
                 mp -> {
                     DuelMenuController.selectCard(Context.getInstance(), Parser.cardAddressParser("hand", mp.get("hand"), mp.containsKey("opponent")));
                 },
-                Options.handZone(true),
-                Options.opponent(false)
+                Options.handZone(true)
         ));
         this.cmd.addCommand(new Command(
                 "select",
@@ -123,7 +122,7 @@ public class DuelMenu extends BaseMenu {
     }
 
     @Override
-    public BaseMenu getNavigatingMenuObject(Class<?> menu) throws RoutingException {
+    public BaseMenu getNavigatingMenuObject(Class<? extends BaseMenu> menu) throws RoutingException {
         // this is strange here
         // todo move if only we finished the game
 

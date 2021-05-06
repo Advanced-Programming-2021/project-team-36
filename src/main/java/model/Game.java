@@ -30,7 +30,10 @@ public class Game {
     }
 
     public Card getCardByCardAddress(CardAddress cardAddress) {
-        return null;
+        if (cardAddress.isOpponentAddress())
+            return getOpponentPlayer().getBoard().getCardByCardAddress(cardAddress);
+        else
+            return getCurrentPlayer().getBoard().getCardByCardAddress(cardAddress);
     }
 
     public CardAddress getSelectedCardAddress() {

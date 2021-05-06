@@ -3,9 +3,10 @@ package Utils;
 import model.CardAddress;
 import model.User;
 import model.card.Card;
-import model.card.Monster;
-import model.enums.State;
+import model.card.Utils;
+import model.enums.MonsterState;
 import model.enums.ZoneType;
+import view.BaseMenu;
 import view.ImportAndExportMenu;
 
 public class Parser {
@@ -41,8 +42,8 @@ public class Parser {
         return new CardAddress(zone, id, opponent);
     }
     // TODO : Proof-reading
-    public static State cardStateParser(String state) throws ParserException {
-        State ret = State.getOccupiedStateByName(state);
+    public static MonsterState cardStateParser(String state) throws ParserException {
+        MonsterState ret = MonsterState.getOccupiedStateByName(state);
         if (ret == null)
             throw new ParserException("invalid card state!");
         return ret;
@@ -63,14 +64,13 @@ public class Parser {
     }
     // TODO : Proof-reading
     public static Card cardParser(String cardName) throws ParserException {
-        // todo add some card to game!
-        if (cardName.equals("shit shit"))
-            throw new ParserException(String.format("card with name %s does not exist", cardName));
-        return new Monster();
-        // just for test
+        for(Card c : Utils.getAllCards()){
+            if (c.getName().equalsIgnoreCase(cardName))
+                return c;
+        }
+        throw new ParserException("There is no card with this name");
     }
-
-    public static Class<?> menuParser(String menuName) throws ParserException {
+    public static Class<? extends BaseMenu> menuParser(String menuName) throws ParserException {
         if (menuName.equalsIgnoreCase("Login"))
             return view.LoginMenu.class;
         if (menuName.equalsIgnoreCase("Main"))
