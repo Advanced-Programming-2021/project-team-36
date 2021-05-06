@@ -32,8 +32,17 @@ public class Deck implements Comparable<Deck> {
     }
 
     public String info(boolean side) {
-        // TODO
-        return "";
+        StringBuilder stringBuilder = new StringBuilder();
+        stringBuilder.append("Deck: ").append(name).append("\n");
+        if (side){
+            stringBuilder.append("Side deck:").append("\n");
+            stringBuilder.append(sideDeck.toString());
+        }
+        else{
+            stringBuilder.append("Main deck:").append("\n");
+            stringBuilder.append(mainDeck.toString());
+        }
+        return stringBuilder.toString();
     }
 
     @Override

@@ -1,11 +1,10 @@
 package model.deck;
 
 import model.card.Card;
+import model.card.Magic;
+import model.card.Monster;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Comparator;
-import java.util.Random;
+import java.util.*;
 
 public class BaseDeck {
     protected ArrayList<Card> cards;
@@ -34,10 +33,11 @@ public class BaseDeck {
 
     @Override
     public String toString() {
-        cards.sort(Comparator.comparing(Card::getName));
         StringBuilder stringBuilder = new StringBuilder();
-        for (Card card : cards)
-            stringBuilder.append(card.toString()).append("\n");
+        stringBuilder.append("Monsters:\n");
+        Arrays.stream(cards.toArray()).filter(card -> card instanceof Monster).forEach(card -> stringBuilder.append(card.toString()).append("\n"));
+        stringBuilder.append("Spell and Traps:\n");
+        Arrays.stream(cards.toArray()).filter(card -> card instanceof Magic).forEach(card -> stringBuilder.append(card.toString()).append("\n"));
         return stringBuilder.toString();
     }
 }
