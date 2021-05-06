@@ -6,8 +6,6 @@ import model.deck.Deck;
 import view.Context;
 
 import java.util.Arrays;
-import java.util.Collections;
-import java.util.List;
 
 public class DeckMenuController {
     public static void createDeck(Context context, String deckName) throws LogicException {
@@ -18,19 +16,19 @@ public class DeckMenuController {
         System.out.println("deck created successfully!");
     }
 
-    public static void deleteDeck(Context context, Deck deck) throws LogicException {
+    public static void deleteDeck(Context context, Deck deck) {
         User user = context.getUser();
         user.deleteDeck(deck);
         System.out.println("deck deleted successfully");
     }
 
-    public static void setActiveDeck(Context context, Deck deck) throws LogicException {
+    public static void setActiveDeck(Context context, Deck deck) {
         User user = context.getUser();
         user.setActiveDeck(deck);
         System.out.println("deck activated successfully");
     }
 
-    public static void addCardToDeck(Context context, Card card, Deck deck, boolean side) throws LogicException {
+    public static void addCardToDeck(Context context, Card card, Deck deck, boolean side) {
         User user = context.getUser();
         if (!side) {
             // TODO : Should check whether the mainDeck is full.
@@ -44,7 +42,7 @@ public class DeckMenuController {
         System.out.println("card added to deck successfully");
     }
 
-    public static void removeCardFromDeck(Context context, Card card, Deck deck, boolean side) throws LogicException {
+    public static void removeCardFromDeck(Context context, Card card, Deck deck, boolean side) {
         User user = context.getUser();
         if (!side) {
             // TODO : Should check whether the card exists in the mainDeck.
