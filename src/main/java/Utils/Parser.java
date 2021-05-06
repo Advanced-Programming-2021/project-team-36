@@ -63,21 +63,9 @@ public class Parser {
         throw new ParserException("monster id is not valid!");
     }
     public static Card cardParser(String cardName) throws ParserException {
-        for(Class<? extends Card> c : Utils.getAllCards()){
-            String name;
-            try {
-                name = (String) c.getField("name").get(c);
-            } catch (IllegalAccessException | NoSuchFieldException e) {
-                e.printStackTrace();
-                throw new ParserException("yeki az card ha name nadare mashti! bug zadi");
-            }
-            if (name.equalsIgnoreCase(cardName)) {
-                try {
-                    return c.getConstructor().newInstance();
-                } catch (NoSuchMethodException | InstantiationException | IllegalAccessException | InvocationTargetException e) {
-                    throw new ParserException("bug zadi baba.");
-                }
-            }
+        for(Card c : Utils.getAllCards()){
+            if (c.getName().equalsIgnoreCase(cardName))
+                return c;
         }
         throw new ParserException("There is no card with this name");
     }
