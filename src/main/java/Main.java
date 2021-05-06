@@ -15,7 +15,7 @@ public class Main {
             Router.getCurrentMenu().runNextCommand();
     }
 
-    @Test
+    @BeforeEach
     public void readyForBattle() throws ModelException, ParserException, RoutingException, LogicException {
         Router.setCurrentMenu(new LoginMenu());
         LoginMenuController.createUser(Context.getInstance(), "shayan", "Shayan.P", "1234");
@@ -87,5 +87,15 @@ public class Main {
         LoginMenuController.login(Context.getInstance(), "shayan", "1234");
         Assertions.assertEquals(Router.getCurrentMenu().getClass(), MainMenu.class);
         MainMenuController.startNewDuel(Context.getInstance(), Parser.UserParser("abolfazl"), 3);
+    }
+
+    @Test
+    public void duelTest1(){
+
+    }
+
+    @Test
+    public void duelTest2(){
+
     }
 }
