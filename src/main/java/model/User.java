@@ -2,25 +2,32 @@ package model;
 
 import model.card.Card;
 import model.deck.Deck;
+import model.enums.Constants;
 
 import java.util.ArrayList;
 import java.util.Comparator;
 
 public class User {
-    private static ArrayList<User> users = new ArrayList<>();
+    private static final ArrayList<User> users = new ArrayList<>();
 
     private String username;
     private String password;
     private String nickname;
     private int score;
     private int balance;
-    private ArrayList<Card> cards = new ArrayList<>();
-    private ArrayList<Deck> decks = new ArrayList<>();
+    private final ArrayList<Card> cards;
+    private final ArrayList<Deck> decks;
+    private Deck activeDeck;
 
     public User(String username, String nickname, String password) {
         this.username = username;
         this.nickname = nickname;
         this.password = password;
+        this.score = Constants.InitialScore.val;
+        this.balance = Constants.InitialMoney.val;
+        this.cards = new ArrayList<>();
+        this.decks = new ArrayList<>();
+        this.activeDeck = null;
         users.add(this);
     }
 
@@ -43,14 +50,12 @@ public class User {
         return users;
     }
 
-    public ArrayList<Card> getCardsLexicographically() {
-        // TODO
-        return new ArrayList<>();
+    public ArrayList<Card> getCards() {
+        return cards;
     }
 
-    public ArrayList<Deck> getDecksLexicographically() {
-        // TODO
-        return new ArrayList<>();
+    public ArrayList<Deck> getDecks() {
+        return decks;
     }
 
     public String getUsername() {
@@ -74,8 +79,7 @@ public class User {
     }
 
     public Deck getActiveDeck() {
-        // TODO
-        return new Deck("");
+        return activeDeck;
     }
 
     public void setUsername(String username) {
@@ -91,7 +95,7 @@ public class User {
     }
 
     public void setActiveDeck(Deck deck) {
-        // TODO
+        this.activeDeck = deck;
     }
 
     public void increaseScore(Integer value) {
@@ -102,13 +106,15 @@ public class User {
         score -= value;
     }
 
-    public void buy(Card card) {
+    public void buy(Card card) throws ModelException {
+        if(balance < card.getPrice())
+            throw new ModelException("not enough money");
         balance -= card.getPrice();
         addCard(card);
     }
 
     public void addCard(Card card) {
-        // TODO
+        cards.add(card);
     }
 
     public Deck getDeckByName(String deckName) {

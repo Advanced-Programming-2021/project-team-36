@@ -10,12 +10,21 @@ import model.enums.MonsterState;
 import java.util.*;
 
 public class Board {
-    private MainDeck mainDeck;
-    private List<Card> graveYard = new ArrayList<>();
-    private Map<Integer, Monster> monsterCardZone = new HashMap<>();
-    private Map<Integer, Magic> magicCardZone = new HashMap<>();
-    private List<Card> cardsOnHand = new ArrayList<>();
+    private final MainDeck mainDeck;
+    private final List<Card> graveYard;
+    private final Map<Integer, Monster> monsterCardZone;
+    private final Map<Integer, Magic> magicCardZone;
+    private final List<Card> cardsOnHand;
     private Magic fieldZoneCard;
+
+    public Board(MainDeck mainDeck){
+        this.mainDeck = mainDeck;
+        graveYard = new ArrayList<>();
+        monsterCardZone = new HashMap<>();
+        magicCardZone = new HashMap<>();
+        cardsOnHand = new ArrayList<>();
+        fieldZoneCard = null;
+    }
 
     public List<Card> getGraveYard() {
         return graveYard;

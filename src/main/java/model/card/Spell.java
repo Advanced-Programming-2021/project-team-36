@@ -1,8 +1,10 @@
 package model.card;
 
-public class Spell extends Magic {
+import model.enums.Icon;
+import model.enums.Status;
 
-    Spell(String name, String description, int price) {
-        super(name, description, price);
+public class Spell extends Magic {
+    protected Spell(String name, String description, int price, Icon icon, Status status) {
+        super(name, description, price, icon, status);
     }
 }

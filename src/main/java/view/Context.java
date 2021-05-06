@@ -9,7 +9,9 @@ public class Context {
 
     private static Context myObject;
 
-    private Context() {
+    private Context(){
+        user = null;
+        game = null;
     }
 
     public static Context getInstance() {
@@ -37,8 +39,10 @@ public class Context {
     public void endGame() {
         this.game = null;
     }
-
-    public User getUser() {
+    public boolean noGame(){
+        return this.game == null;
+    }
+    public User getUser(){
         return user;
     }
 

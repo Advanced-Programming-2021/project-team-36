@@ -1,9 +1,10 @@
 package model.deck;
 
+import model.card.Card;
 import model.deck.MainDeck;
 import model.deck.SideDeck;
 
-public class Deck {
+public class Deck implements Comparable<Deck> {
     private String name;
     private MainDeck mainDeck;
     private SideDeck sideDeck;
@@ -33,5 +34,10 @@ public class Deck {
     public String info(boolean side) {
         // TODO
         return "";
+    }
+
+    @Override
+    public int compareTo(Deck other) {
+        return this.getName().compareTo(other.getName());
     }
 }

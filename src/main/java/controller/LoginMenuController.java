@@ -17,11 +17,12 @@ public class LoginMenuController {
     }
 
     public static void login(Context context, String username, String password) throws ModelException, RoutingException {
+        User user = User.getUserByUsername(username);
         if (User.getUserByUsername(username) == null)
             throw new ModelException("Username and password didn’t match!");
-        if (!User.getUserByUsername(username).authenticate(password))
+        assert user != null;
+        if (!user.authenticate(password))
             throw new ModelException("Username and password didn’t match!");
-        User user = User.getUserByUsername(username);
         context.login(user);
         Router.navigateToMenu(view.MainMenu.class);
         System.out.println("user logged in successfully!");
