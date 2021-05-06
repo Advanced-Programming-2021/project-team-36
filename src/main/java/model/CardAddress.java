@@ -4,7 +4,7 @@ import model.enums.ZoneType;
 
 public class CardAddress {
     private ZoneType zone;
-    private Integer id;
+    private int id;
     private boolean opponent;
 
     public CardAddress(ZoneType zone, Integer id, boolean opponent) {
@@ -25,7 +25,7 @@ public class CardAddress {
     public boolean isOpponentAddress() {
         return opponent;
     }
-    public Integer getId() {
+    public int getId() {
         return id;
     }
 }

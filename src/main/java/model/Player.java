@@ -6,7 +6,7 @@ public class Player {
     private User user;
     private Deck deck;
     private Board board;
-    private Integer lifePoint;
+    private int lifePoint;
 
     public Player(User user){
         // to something
@@ -28,15 +28,15 @@ public class Player {
         return board;
     }
 
-    public Integer getLifePoint() {
+    public int getLifePoint() {
         return lifePoint;
     }
 
-    public void increaseLifePoint(Integer value) {
+    public void increaseLifePoint(int value) {
         this.lifePoint += value;
     }
     
-    public void decreaseLifePoint(Integer value) {
+    public void decreaseLifePoint(int value) {
         this.lifePoint -= value;
     }
 }

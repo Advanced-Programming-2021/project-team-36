@@ -10,32 +10,28 @@ import view.Context;
 import java.util.List;
 
 public class DuelMenuController {
-    public static void selectCard(Context context, CardAddress cardAddress) {
+    public static void selectCard(Context context, CardAddress cardAddress) throws LogicException {
         // TODO : should check cardAddress is valid or not
         Game game = context.getGame();
         if (game.getCardByCardAddress(cardAddress) == null)
-            System.out.println("no card found in the given position");
-        else {
-            game.selectCard(cardAddress);
-            System.out.println("card selected");
-        }
-
+            throw new LogicException("no card found in the given position");
+        game.selectCard(cardAddress);
+        System.out.println("card selected");
     }
 
-    public static void deselectCard(Context context) {
+    public static void deselectCard(Context context) throws LogicException {
         Game game = context.getGame();
         if (game.getSelectedCardAddress() == null)
-            System.out.println("no card is selected");
-        else {
-            game.unselectCard();
-            System.out.println("card deselected");
-        }
+            throw new LogicException("no card is selected");
+        game.unselectCard();
+        System.out.println("card deselected");
     }
 
-    public static Card getSelectedCard(Context context) {
+    public static Card getSelectedCard(Context context) throws LogicException {
         Game game = context.getGame();
-        // todo: this function returns the card that was selected and throws error if nothing had been selected
-        return null;
+        if (!game.isAnyCardSelected())
+            throw new LogicException("no card is selected");
+        return game.getCardByCardAddress(game.getSelectedCardAddress());
     }
 
     public static void printCurrentPhase(Context context) {

@@ -5,7 +5,7 @@ import java.util.ArrayList;
 public abstract class Card {
     protected String name;
     protected String description;
-    protected Integer price;
+    protected int price;
 
     public String getName() {
         return name;

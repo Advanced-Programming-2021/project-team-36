@@ -2,17 +2,18 @@ package model.card;
 
 import model.enums.MonsterAttribute;
 import model.enums.MonsterCardType;
+import model.enums.MonsterType;
 import model.enums.State;
 
 public class Monster extends Card{
     // this should be abstract too. todo
-    protected Integer attackDamage;
-    protected Integer defenseRate;
+    protected int attackDamage;
+    protected int defenseRate;
     protected MonsterAttribute attribute;
-    protected String monsterType;
-    protected MonsterCardType cardType;
+    protected MonsterType monsterType;
+    protected MonsterCardType monsterCardType;
     protected State state;
-    protected Integer level;
+    protected int level;
 
     public Integer getAttackDamage() {
         return attackDamage;
