@@ -59,6 +59,6 @@ abstract public class BaseMenu {
         return this.getClass().getName().replaceAll(".*\\.", "").replaceAll("Menu", "");
         // this is a hack. fix it! todo
     }
-    abstract public BaseMenu getNavigatingMenuObject(Class<?> menu) throws RoutingException;
+    abstract public BaseMenu getNavigatingMenuObject(Class<? extends BaseMenu> menu) throws RoutingException;
     abstract public void exitMenu() throws RoutingException;
 }

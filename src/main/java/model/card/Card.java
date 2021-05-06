@@ -16,7 +16,7 @@ public abstract class Card {
     }
 
     public int getPrice() {
-        return 0; // TODO : Each card class should implement it's own getPrice method.
+        return price;
     }
 
     public static ArrayList<Card> getAllCardsLexicographically() {

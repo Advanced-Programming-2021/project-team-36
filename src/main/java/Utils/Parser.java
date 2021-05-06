@@ -4,9 +4,13 @@ import model.CardAddress;
 import model.User;
 import model.card.Card;
 import model.card.Monster;
+import model.card.Utils;
 import model.enums.State;
 import model.enums.ZoneType;
+import view.BaseMenu;
 import view.ImportAndExportMenu;
+
+import java.lang.reflect.InvocationTargetException;
 
 public class Parser {
     public static User UserParser(String username) throws ParserException {
@@ -59,13 +63,25 @@ public class Parser {
         throw new ParserException("monster id is not valid!");
     }
     public static Card cardParser(String cardName) throws ParserException {
-        // todo add some card to game!
-        if(cardName.equals("shit shit"))
-            throw new ParserException(String.format("card with name %s does not exist", cardName));
-        return new Monster();
-        // just for test
+        for(Class<? extends Card> c : Utils.getAllCards()){
+            String name;
+            try {
+                name = (String) c.getField("name").get(c);
+            } catch (IllegalAccessException | NoSuchFieldException e) {
+                e.printStackTrace();
+                throw new ParserException("yeki az card ha name nadare mashti! bug zadi");
+            }
+            if (name.equalsIgnoreCase(cardName)) {
+                try {
+                    return c.getConstructor().newInstance();
+                } catch (NoSuchMethodException | InstantiationException | IllegalAccessException | InvocationTargetException e) {
+                    throw new ParserException("bug zadi baba.");
+                }
+            }
+        }
+        throw new ParserException("There is no card with this name");
     }
-    public static Class<?> menuParser(String menuName) throws ParserException {
+    public static Class<? extends BaseMenu> menuParser(String menuName) throws ParserException {
         if(menuName.equalsIgnoreCase("Login"))
             return view.LoginMenu.class;
         if(menuName.equalsIgnoreCase("Main"))

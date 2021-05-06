@@ -42,7 +42,7 @@ public class MainMenu extends BaseMenu {
     }
 
     @Override
-    public BaseMenu getNavigatingMenuObject(Class<?> menu) throws RoutingException {
+    public BaseMenu getNavigatingMenuObject(Class<? extends BaseMenu> menu) throws RoutingException {
         if(menu.equals(LoginMenu.class) && Context.getInstance().isLoggedIn())
             throw new RoutingException("you must logout for that!");
         else if(menu.equals(LoginMenu.class))

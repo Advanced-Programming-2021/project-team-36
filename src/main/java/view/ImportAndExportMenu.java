@@ -19,7 +19,7 @@ public class ImportAndExportMenu extends BaseMenu {
     }
 
     @Override
-    public BaseMenu getNavigatingMenuObject(Class<?> menu) throws RoutingException {
+    public BaseMenu getNavigatingMenuObject(Class<? extends BaseMenu> menu) throws RoutingException {
         if(menu.equals(LoginMenu.class))
             throw new RoutingException("you must logout for that!");
         if(menu.equals(MainMenu.class))
