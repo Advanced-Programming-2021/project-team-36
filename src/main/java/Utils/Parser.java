@@ -3,14 +3,11 @@ package Utils;
 import model.CardAddress;
 import model.User;
 import model.card.Card;
-import model.card.Monster;
 import model.card.Utils;
-import model.enums.State;
+import model.enums.MonsterState;
 import model.enums.ZoneType;
 import view.BaseMenu;
 import view.ImportAndExportMenu;
-
-import java.lang.reflect.InvocationTargetException;
 
 public class Parser {
     public static User UserParser(String username) throws ParserException {
@@ -43,8 +40,8 @@ public class Parser {
         int id = IntegerParser(idString);
         return new CardAddress(zone, id, opponent);
     }
-    public static State cardStateParser(String state) throws ParserException {
-        State ret = State.getOccupiedStateByName(state);
+    public static MonsterState cardStateParser(String state) throws ParserException {
+        MonsterState ret = MonsterState.getOccupiedStateByName(state);
         if (ret == null)
             throw new ParserException("invalid card state!");
         return ret;
