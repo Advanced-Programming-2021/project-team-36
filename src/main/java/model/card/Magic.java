@@ -15,6 +15,15 @@ public class Magic extends Card {
         this.magicState = null;
     }
 
+    @Override
+    public Magic clone() {
+        Magic cloned = (Magic) super.clone();
+        cloned.icon = icon;
+        cloned.status = status;
+        cloned.magicState = magicState;
+        return cloned;
+    }
+
     public MagicState getState() {
         return magicState;
     }
