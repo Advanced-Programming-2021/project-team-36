@@ -8,7 +8,7 @@ public class Magic extends Card {
         super(name, description, price);
     }
 
-    public MagicState getMagicState() {
+    public MagicState getState() {
         return magicState;
     }
 }
