@@ -20,28 +20,29 @@ public class Command {
     Handler handler;
     List<String> optionNames;
 
-    private static String[] toStringArray(String str){
+    private static String[] toStringArray(String str) {
         return Arrays.stream(str.split(" ")).filter(e -> !e.isEmpty()).toArray(String[]::new);
     }
 
-    public Command(String prefixCommand, Handler handler, Option... options){
+    public Command(String prefixCommand, Handler handler, Option... options) {
         this.prefixCommand = toStringArray(prefixCommand);
         this.usage = prefixCommand;
         this.handler = handler;
         this.options = new Options();
         this.optionNames = new ArrayList<>();
-        for(Option option: options){
+        for (Option option : options) {
             this.options.addOption(option);
             this.optionNames.add(option.getOpt());
         }
     }
 
-    boolean isSpecialItem(String item){
+    boolean isSpecialItem(String item) {
         return item.matches("\\[.*]");
     }
-    String getSpecialItemName(String item){
+
+    String getSpecialItemName(String item) {
         assert isSpecialItem(item);
-        return item.substring(1, item.length()-1);
+        return item.substring(1, item.length() - 1);
     }
 
     boolean initStringMatch(String commandString) {
@@ -54,6 +55,7 @@ public class Command {
         }
         return true;
     }
+
     void tryRunCommand(String commandString) throws CommandLineException, ParserException, ModelException, LogicException, RoutingException {
         if (!initStringMatch(commandString))
             throw new InvalidCommandException();
@@ -63,22 +65,23 @@ public class Command {
         CommandLine commandLine;
         try {
             commandLine = parser.parse(options, splitCommandArray);
-        } catch (Exception e){
+        } catch (Exception e) {
             throw new InvalidCommandException();
         }
         Map<String, String> mp = new HashMap<>();
-        for(String optName: optionNames){
-            if(commandLine.hasOption(optName))
+        for (String optName : optionNames) {
+            if (commandLine.hasOption(optName))
                 mp.put(optName, commandLine.getOptionValue(optName));
         }
-        for(int i = 0; i < prefixCommand.length; i++){
-            if(isSpecialItem(prefixCommand[i])){
+        for (int i = 0; i < prefixCommand.length; i++) {
+            if (isSpecialItem(prefixCommand[i])) {
                 mp.put(getSpecialItemName(prefixCommand[i]), commandArray[i]);
             }
         }
         handler.run(mp);
     }
-    void printHelper(){
+
+    void printHelper() {
         HelpFormatter formatter = new HelpFormatter();
         formatter.printHelp(usage, options);
     }

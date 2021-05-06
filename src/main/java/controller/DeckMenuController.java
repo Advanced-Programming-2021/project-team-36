@@ -14,6 +14,7 @@ public class DeckMenuController {
         user.addDeck(new Deck(deckName));
         System.out.println("deck created successfully!");
     }
+
     public static void deleteDeck(Context context, String deckName) {
         User user = context.getUser();
         Deck deck = user.getDeckByName(deckName);
@@ -24,6 +25,7 @@ public class DeckMenuController {
         user.deleteDeck(deck);
         System.out.println("deck deleted successfully");
     }
+
     public static void setActiveDeck(Context context, String deckName) {
         User user = context.getUser();
         Deck deck = user.getDeckByName(deckName);
@@ -34,6 +36,7 @@ public class DeckMenuController {
         user.setActiveDeck(deck);
         System.out.println("deck activated successfully");
     }
+
     public static void addCardToDeck(Context context, Card card, String deckName, boolean side) {
         User user = context.getUser();
         Deck deck = user.getDeckByName(deckName);
@@ -45,14 +48,14 @@ public class DeckMenuController {
             // TODO : Should check whether the mainDeck is full.
             // Response in case : "main deck is full"
             deck.getMainDeck().addCard(card);
-        }
-        else {
+        } else {
             // TODO : Should check whether the sideDeck is full.
             // Response in case : "side deck is full"
             deck.getSideDeck().addCard(card);
         }
         System.out.println("card added to deck successfully");
     }
+
     public static void removeCardFromDeck(Context context, Card card, String deckName, boolean side) {
         User user = context.getUser();
         Deck deck = user.getDeckByName(deckName);
@@ -64,19 +67,20 @@ public class DeckMenuController {
             // TODO : Should check whether the card exists in the mainDeck.
             // Response in case : "card with name " + cardName + " does not exists in main deck"
             deck.getMainDeck().removeCard(card);
-        }
-        else {
+        } else {
             // TODO : Should check whether the card exists in the sideDeck.
             // Response in case : "card with name " + cardName + " does not exists in side deck"
             deck.getSideDeck().removeCard(card);
         }
         System.out.println("card removed from deck successfully"); // Doc mistakenly says "form"
     }
+
     public static void showDeck(Context context, String deckName, boolean side) {
         User user = context.getUser();
         Deck deck = user.getDeckByName(deckName);
         System.out.println(deck.info(side));
     }
+
     public static void showAllDecks(Context context) {
         System.out.println("Decks:");
         System.out.println("Active deck:");
@@ -89,6 +93,7 @@ public class DeckMenuController {
             if (deck != activeDeck)
                 System.out.println(deck);
     }
+
     public static void showAllCards(Context context) {
         User user = context.getUser();
         for (Card card : user.getCardsLexicographically())

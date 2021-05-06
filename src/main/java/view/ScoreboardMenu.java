@@ -25,23 +25,28 @@ public class ScoreboardMenu extends BaseMenu {
 
     @Override
     public BaseMenu getNavigatingMenuObject(Class<?> menu) throws RoutingException {
-        if(menu.equals(LoginMenu.class))
+        if (menu.equals(LoginMenu.class))
             throw new RoutingException("you must logout for that!");
-        if(menu.equals(MainMenu.class))
+        if (menu.equals(MainMenu.class))
             return new MainMenu(scanner);
-        if(menu.equals(ProfileMenu.class))
-            return new ProfileMenu(scanner);
-        if(menu.equals(ScoreboardMenu.class))
+        if (menu.equals(ScoreboardMenu.class))
             throw new RoutingException("can't navigate to your current menu!");
-        if(menu.equals(ShopMenu.class))
+        if (!Debugger.getMode())
+            throw new RoutingException("menu navigation is not possible");
+        if (menu.equals(ProfileMenu.class))
+            return new ProfileMenu(scanner);
+        if (menu.equals(ShopMenu.class))
             return new ShopMenu(scanner);
-        if(menu.equals(DeckMenu.class))
+        if (menu.equals(DeckMenu.class))
             return new DeckMenu(scanner);
-        if(menu.equals(DuelMenu.class))
-            return new DuelMenu(scanner);
-        if(menu.equals(ImportAndExportMenu.class))
+        if (menu.equals(ImportAndExportMenu.class))
             return new ImportAndExportMenu(scanner);
         throw new RoutingException("menu navigation is not possible");
+    }
+
+    @Override
+    protected String getMenuName() {
+        return "Scoreboard Menu";
     }
 
     @Override

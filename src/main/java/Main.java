@@ -9,10 +9,10 @@ public class Main {
     static {
         scanner = new Scanner(System.in);
     }
-    
+
     public static void main(String[] args) {
         Router.setCurrentMenu(new LoginMenu(scanner));
-        while (true){
+        while (true) {
             Router.getCurrentMenu().runNextCommand();
         }
     }

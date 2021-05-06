@@ -1,0 +1,2 @@
+user create --username batman --nickname wayne --password robin
+user login --username batman --password robin

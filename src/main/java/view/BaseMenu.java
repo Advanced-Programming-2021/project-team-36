@@ -16,20 +16,24 @@ abstract public class BaseMenu {
     protected final Scanner scanner;
     protected final CommandLine cmd;
 
-    public BaseMenu(Scanner scanner){
+    public BaseMenu(Scanner scanner) {
         this.scanner = scanner;
         this.cmd = new CommandLine();
         addCommands();
     }
+
     public void runNextCommand() {
         try {
             String line = scanner.nextLine();
+            if (Debugger.getCaptureMode())
+                Debugger.captureCommand(line);
             this.cmd.runNextCommand(line);
         } catch (CommandLineException | ParserException | ModelException | LogicException | RoutingException e) {
             System.out.println(e.getMessage());
         }
     }
-    protected void addCommands(){
+
+    protected void addCommands() {
         this.cmd.addCommand(new Command(
                 "menu enter [menuName]",
                 mp -> {
@@ -54,11 +58,26 @@ abstract public class BaseMenu {
                     this.cmd.printAllHelpers();
                 }
         ));
+        this.cmd.addCommand(new Command(
+                "debug",
+                mp -> {
+                    Debugger.setDebugMode(mp.get("mode"));
+                },
+                Options.mode(true)
+        ));
+        this.cmd.addCommand(new Command(
+                "debug",
+                mp -> {
+                    Debugger.setCaptureMode(mp.get("capture"));
+                },
+                Options.captureMode(true)
+        ));
+
     }
-    protected String getMenuName(){
-        return this.getClass().getName().replaceAll(".*\\.", "").replaceAll("Menu", "");
-        // this is a hack. fix it! todo
-    }
+
+    abstract protected String getMenuName();
+
     abstract public BaseMenu getNavigatingMenuObject(Class<?> menu) throws RoutingException;
+
     abstract public void exitMenu() throws RoutingException;
 }

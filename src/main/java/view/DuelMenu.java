@@ -131,9 +131,14 @@ public class DuelMenu extends BaseMenu {
             throw new RoutingException("you must logout for that!");
         if(menu.equals(MainMenu.class))
             return new MainMenu(scanner);
-        if(menu.equals(DuelMenu.class))
-            throw new RoutingException("can't navigate to your current menu!");
+        if (Debugger.getMode())
+            throw new RoutingException("you cannot navigate out of an ongoing game");
         throw new RoutingException("menu navigation is not possible");
+    }
+
+    @Override
+    protected String getMenuName() {
+        return "Duel Menu";
     }
 
     @Override

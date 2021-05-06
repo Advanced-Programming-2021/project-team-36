@@ -1,0 +1,15 @@
+user create -u wayne -n batman -p bruce
+user login -u wayne -p robin
+user login -u wayne -p bruce
+menu enter profile
+profile change --password --current bruce --new robin
+menu exit
+menu enter scoreboard
+scoreboard show
+exit
+menu exit
+menu enter loGin
+logout
+user logout
+exit
+menu exit

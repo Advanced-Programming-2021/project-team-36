@@ -9,32 +9,40 @@ public class Context {
 
     private static Context myObject;
 
-    private Context(){
+    private Context() {
     }
-    public static Context getInstance(){
-        if(myObject == null)
+
+    public static Context getInstance() {
+        if (myObject == null)
             myObject = new Context();
         return myObject;
     }
-    public boolean isLoggedIn(){
+
+    public boolean isLoggedIn() {
         return user != null;
     }
-    public void login(User user){
+
+    public void login(User user) {
         this.user = user;
     }
-    public void logout(){
+
+    public void logout() {
         this.user = null;
     }
-    public void startGame(Game game){
+
+    public void startGame(Game game) {
         this.game = game;
     }
-    public void endGame(){
+
+    public void endGame() {
         this.game = null;
     }
-    public User getUser(){
+
+    public User getUser() {
         return user;
     }
-    public Game getGame(){
+
+    public Game getGame() {
         return game;
     }
 }

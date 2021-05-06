@@ -13,6 +13,7 @@ public class ShopMenuController {
         }
         user.buy(card);
     }
+
     public static void showAll(Context context) {
         for (Card card : Card.getAllCardsLexicographically())
             System.out.println(card);

@@ -7,7 +7,7 @@ import view.CommandLine.Command;
 
 import java.util.Scanner;
 
-public class ImportAndExportMenu extends BaseMenu {
+public class ImportAndExportMenu extends BaseMenu { // Should this even be a menu?
     ImportAndExportMenu(Scanner scanner){
         super(scanner);
     }
@@ -24,6 +24,10 @@ public class ImportAndExportMenu extends BaseMenu {
             throw new RoutingException("you must logout for that!");
         if(menu.equals(MainMenu.class))
             return new MainMenu(scanner);
+        if(menu.equals(ImportAndExportMenu.class))
+            throw new RoutingException("can't navigate to your current menu!");
+        if (!Debugger.getMode())
+            throw new RoutingException("menu navigation is not possible");
         if(menu.equals(ProfileMenu.class))
             return new ProfileMenu(scanner);
         if(menu.equals(ScoreboardMenu.class))
@@ -34,9 +38,12 @@ public class ImportAndExportMenu extends BaseMenu {
             return new DeckMenu(scanner);
         if(menu.equals(DuelMenu.class))
             return new DuelMenu(scanner);
-        if(menu.equals(ImportAndExportMenu.class))
-            throw new RoutingException("can't navigate to your current menu!");
         throw new RoutingException("menu navigation is not possible");
+    }
+
+    @Override
+    protected String getMenuName() {
+        return "Import/Export Menu";
     }
 
     @Override

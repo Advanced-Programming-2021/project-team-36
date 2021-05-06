@@ -43,10 +43,10 @@ public class MainMenu extends BaseMenu {
 
     @Override
     public BaseMenu getNavigatingMenuObject(Class<?> menu) throws RoutingException {
-        if(menu.equals(LoginMenu.class) && Context.getInstance().isLoggedIn())
-            throw new RoutingException("you must logout for that!");
-        else if(menu.equals(LoginMenu.class))
+        if (menu.equals(LoginMenu.class) && !Context.getInstance().isLoggedIn())
             return new LoginMenu(scanner);
+        if(menu.equals(LoginMenu.class))
+            throw new RoutingException("you must logout for that!");
         if(menu.equals(MainMenu.class))
             throw new RoutingException("can't navigate to your current menu!");
         if(menu.equals(ProfileMenu.class))
@@ -57,11 +57,14 @@ public class MainMenu extends BaseMenu {
             return new ShopMenu(scanner);
         if(menu.equals(DeckMenu.class))
             return new DeckMenu(scanner);
-        if(menu.equals(DuelMenu.class))
-            return new DuelMenu(scanner);
         if(menu.equals(ImportAndExportMenu.class))
             return new ImportAndExportMenu(scanner);
         throw new RoutingException("menu navigation is not possible");
+    }
+
+    @Override
+    protected String getMenuName() {
+        return "Main Menu";
     }
 
     @Override

@@ -13,6 +13,7 @@ public class ProfileMenuController {
         user.setNickname(nickname);
         System.out.println("nickname changed successfully!");
     }
+
     public static void changePassword(Context context, String oldPassword, String newPassword) {
         User user = context.getUser();
         if (!user.authenticate(oldPassword)) {

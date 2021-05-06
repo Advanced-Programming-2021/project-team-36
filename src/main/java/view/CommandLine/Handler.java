@@ -8,5 +8,5 @@ import model.ModelException;
 import java.util.Map;
 
 public interface Handler {
-    void run(Map<String, String> cmd) throws ParserException, ModelException, LogicException, RoutingException;
+    void run(Map<String, String> cmd) throws ParserException, ModelException, LogicException, RoutingException, InvalidCommandException;
 }

@@ -17,10 +17,10 @@ public class User {
     private ArrayList<Card> cards = new ArrayList<>();
     private ArrayList<Deck> decks = new ArrayList<>();
 
-    public User(String username, String password, String nickname) {
+    public User(String username, String nickname, String password) {
         this.username = username;
-        this.password = password;
         this.nickname = nickname;
+        this.password = password;
         users.add(this);
     }
 
