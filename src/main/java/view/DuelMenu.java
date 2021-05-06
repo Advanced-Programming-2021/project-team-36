@@ -9,7 +9,7 @@ import view.CommandLine.Command;
 import java.util.Scanner;
 
 public class DuelMenu extends BaseMenu {
-    DuelMenu(Scanner scanner) {
+    public DuelMenu(Scanner scanner) {
         super(scanner);
     }
 

@@ -34,6 +34,7 @@ public class DuelMenuController {
     }
 
     public static void printCurrentPhase(Context context) {
+        // todo change this
         Game game = context.getGame();
         if (game.getPhase() == Phase.DRAWPHASE)
             System.out.println("phase: draw phase");

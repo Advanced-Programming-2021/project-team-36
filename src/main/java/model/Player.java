@@ -1,15 +1,19 @@
 package model;
 
 import model.deck.*;
+import model.enums.Constants;
 
 public class Player {
-    private User user;
-    private Deck deck;
-    private Board board;
+    private final User user;
+    private final Deck deck;
+    private final Board board;
     private int lifePoint;
 
     public Player(User user){
-        // to something
+        this.user = user;
+        this.deck = user.getActiveDeck();
+        this.board = new Board(user.getActiveDeck().getMainDeck());
+        this.lifePoint = Constants.InitialLifePoint.val;
     }
 
     public User getUser() {

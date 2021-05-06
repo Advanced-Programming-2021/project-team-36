@@ -2,25 +2,30 @@ package model;
 
 import model.card.Card;
 import model.deck.Deck;
+import model.enums.Constants;
 
 import java.util.ArrayList;
 import java.util.Comparator;
 
 public class User {
-    private static ArrayList<User> users = new ArrayList<>();
+    private static final ArrayList<User> users = new ArrayList<>();
 
     private String username;
     private String password;
     private String nickname;
     private int score;
     private int balance;
-    private ArrayList<Card> cards = new ArrayList<>();
-    private ArrayList<Deck> decks = new ArrayList<>();
+    private final ArrayList<Card> cards;
+    private final ArrayList<Deck> decks;
 
     public User(String username, String password, String nickname) {
         this.username = username;
         this.password = password;
         this.nickname = nickname;
+        this.score = Constants.InitialScore.val;
+        this.balance = Constants.InitialMoney.val;
+        this.cards = new ArrayList<>();
+        this.decks = new ArrayList<>();
         users.add(this);
     }
 

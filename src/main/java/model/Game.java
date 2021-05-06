@@ -6,12 +6,21 @@ import model.card.Monster;
 import model.enums.*;
 
 public class Game {
-    private Player firstPlayer;
-    private Player secondPlayer;
-    private boolean turn = false;
+    private final Player firstPlayer;
+    private final Player secondPlayer;
+    private boolean turn;
     private Phase phase;
-    private boolean summonedInThisTurn = false;
+    private boolean summonedInThisTurn;
     private CardAddress selectedCardAddress;
+
+    public Game(Player firstPlayer, Player secondPlayer){
+        this.firstPlayer = firstPlayer;
+        this.secondPlayer = secondPlayer;
+        this.turn = false;
+        this.phase = Phase.DRAWPHASE;
+        this.summonedInThisTurn = false;
+        this.selectedCardAddress = null;
+    }
 
     public Phase getPhase() {
         return phase;
