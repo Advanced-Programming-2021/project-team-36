@@ -9,4 +9,6 @@ public class SideDeck extends BaseDeck {
     public boolean isValid() {
         return minimumNumberOfCards <= cards.size() && cards.size() <= maximumNumberOfCards;
     }
+
+    public boolean isFull() { return cards.size() == maximumNumberOfCards; }
 }

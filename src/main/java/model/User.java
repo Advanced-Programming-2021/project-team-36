@@ -5,7 +5,9 @@ import model.deck.Deck;
 import model.enums.Constants;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Comparator;
+import java.util.stream.Collectors;
 
 public class User {
     private static final ArrayList<User> users = new ArrayList<>();
@@ -115,6 +117,14 @@ public class User {
 
     public void addCard(Card card) {
         cards.add(card);
+    }
+
+    public int getCardFrequency(Card card) {
+        int count = 0;
+        for (Card c : cards)
+            if (c.getName().equalsIgnoreCase(card.getName()))
+                count++;
+        return count;
     }
 
     public Deck getDeckByName(String deckName) {

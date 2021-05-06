@@ -4,6 +4,11 @@ import model.card.Card;
 import model.deck.MainDeck;
 import model.deck.SideDeck;
 
+import java.util.Collections;
+import java.util.function.Function;
+import java.util.stream.Collector;
+import java.util.stream.Collectors;
+
 public class Deck implements Comparable<Deck> {
     private String name;
     private MainDeck mainDeck;
@@ -29,6 +34,10 @@ public class Deck implements Comparable<Deck> {
 
     public SideDeck getSideDeck() {
         return sideDeck;
+    }
+
+    public int getCardFrequency(Card card) {
+        return getMainDeck().getCardFrequency(card) + getSideDeck().getCardFrequency(card);
     }
 
     public String info(boolean side) {
