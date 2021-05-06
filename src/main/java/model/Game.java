@@ -13,7 +13,9 @@ public class Game {
     private boolean summonedInThisTurn;
     private CardAddress selectedCardAddress;
 
-    public Game(Player firstPlayer, Player secondPlayer){
+    public Game(Player firstPlayer, Player secondPlayer) throws ModelException {
+        if(firstPlayer.getUser().getUsername().equals(secondPlayer.getUser().getUsername()))
+            throw new ModelException("you can't play with yourself");
         this.firstPlayer = firstPlayer;
         this.secondPlayer = secondPlayer;
         this.turn = false;

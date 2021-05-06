@@ -9,7 +9,9 @@ public class Player {
     private final Board board;
     private int lifePoint;
 
-    public Player(User user){
+    public Player(User user) throws ModelException {
+        if(user.getActiveDeck() == null)
+            throw new ModelException(String.format("%s has no active deck", user.getUsername()));
         this.user = user;
         this.deck = user.getActiveDeck();
         this.board = new Board(user.getActiveDeck().getMainDeck());

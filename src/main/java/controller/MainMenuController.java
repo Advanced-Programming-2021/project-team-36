@@ -3,12 +3,13 @@ package controller;
 import Utils.Router;
 import Utils.RoutingException;
 import model.Game;
+import model.ModelException;
 import model.Player;
 import model.User;
 import view.Context;
 
 public class MainMenuController {
-    public static void startNewDuel(Context context, User secondUser, int round) throws RoutingException {
+    public static void startNewDuel(Context context, User secondUser, int round) throws RoutingException, ModelException {
         context.startGame(new Game(
                 new Player(context.getUser()),
                 new Player(secondUser)
