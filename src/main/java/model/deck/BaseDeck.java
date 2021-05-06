@@ -9,6 +9,10 @@ import java.util.*;
 public class BaseDeck {
     protected ArrayList<Card> cards = new ArrayList<>();
 
+    public ArrayList<Card> getCards() {
+        return cards;
+    }
+
     public Card getTopCard() {
         if (!cards.isEmpty())
             return cards.get(cards.size() - 1);
@@ -29,6 +33,14 @@ public class BaseDeck {
 
     public int getNumberOfCards() {
         return cards.size();
+    }
+
+    public int getCardFrequency(Card card) {
+        int count = 0;
+        for (Card c : cards)
+            if (c.getName().equalsIgnoreCase(card.getName()))
+                count++;
+        return count;
     }
 
     @Override

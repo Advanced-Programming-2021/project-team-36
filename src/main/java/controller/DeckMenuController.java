@@ -28,32 +28,36 @@ public class DeckMenuController {
         System.out.println("deck activated successfully");
     }
 
-    public static void addCardToDeck(Context context, Card card, Deck deck, boolean side) {
+    public static void addCardToDeck(Context context, Card card, Deck deck, boolean side) throws LogicException{
         User user = context.getUser();
+        if (deck.getCardFrequency(card) >= user.getCardFrequency(card))
+            throw new LogicException(String.format("you do not have enough %s card", deck.getName()));
+        if (deck.getCardFrequency(card) == 3)
+            throw new LogicException(String.format("there are already three cards with name %s in deck %s", card.getName(), deck.getName()));
         if (!side) {
-            // TODO : Should check whether the mainDeck is full.
-            // Response in case : "main deck is full"
+            if (deck.getMainDeck().isFull())
+                throw new LogicException("main deck is full");
             deck.getMainDeck().addCard(card);
         } else {
-            // TODO : Should check whether the sideDeck is full.
-            // Response in case : "side deck is full"
+            if (deck.getSideDeck().isFull())
+                throw new LogicException("side deck is full");
             deck.getSideDeck().addCard(card);
         }
         System.out.println("card added to deck successfully");
     }
 
-    public static void removeCardFromDeck(Context context, Card card, Deck deck, boolean side) {
+    public static void removeCardFromDeck(Context context, Card card, Deck deck, boolean side) throws LogicException {
         User user = context.getUser();
         if (!side) {
-            // TODO : Should check whether the card exists in the mainDeck.
-            // Response in case : "card with name " + cardName + " does not exists in main deck"
+            if (deck.getMainDeck().getCardFrequency(card) == 0)
+                throw new LogicException(String.format("card with name %s does not exists in main deck", card.getName()));
             deck.getMainDeck().removeCard(card);
         } else {
-            // TODO : Should check whether the card exists in the sideDeck.
-            // Response in case : "card with name " + cardName + " does not exists in side deck"
+            if (deck.getSideDeck().getCardFrequency(card) == 0)
+                throw new LogicException(String.format("card with name %s does not exists in side deck", card.getName()));
             deck.getSideDeck().removeCard(card);
         }
-        System.out.println("card removed from deck successfully"); // Doc mistakenly says "form"
+        System.out.println("card removed from deck successfully");
     }
 
     public static void showDeck(Context context, Deck deck, boolean side) {
