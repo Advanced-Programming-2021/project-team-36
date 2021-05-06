@@ -13,15 +13,15 @@ public class Board {
     private MainDeck mainDeck;
     private List<Card> graveYard = new ArrayList<>();
     private Map<Integer, Monster> monsterCardZone = new HashMap<>();
-    private Map<Integer, Magic> spellAndTrapCardZone = new HashMap<>();
-    private Map<Integer, Card> cardsOnHand = new HashMap<>();
-    private Card fieldZoneCard;
+    private Map<Integer, Magic> magicCardZone = new HashMap<>();
+    private List<Card> cardsOnHand = new ArrayList<>();
+    private Magic fieldZoneCard;
 
     public List<Card> getGraveYard() {
         return graveYard;
     }
 
-    public Map<Integer, Card> getCardsOnHand() {
+    public List<Card> getCardsOnHand() {
         return cardsOnHand;
     }
 
@@ -29,8 +29,8 @@ public class Board {
         return monsterCardZone;
     }
 
-    public Map<Integer, Magic> getSpellAndTrapCardZone() {
-        return spellAndTrapCardZone;
+    public Map<Integer, Magic> getMagicCardZoneZone() {
+        return magicCardZone;
     }
 
     public Card getCardByCardAddress(CardAddress cardAddress) {
@@ -38,26 +38,63 @@ public class Board {
             return cardsOnHand.get(cardAddress.getId());
         else if (cardAddress.isInMonsterZone())
             return monsterCardZone.get(cardAddress.getId());
-        else if (cardAddress.isInSpellZone())
-            return spellAndTrapCardZone.get(cardAddress.getId());
+        else if (cardAddress.isInMagicZone())
+            return magicCardZone.get(cardAddress.getId());
         else if (cardAddress.isInFieldZone())
             return fieldZoneCard;
         else
             return graveYard.get(cardAddress.getId());
     }
-//
-//    public List<Card> getAllCardsOnField() {
-//
-//    }
-//
-//    public void addCardToBoard(Card card, CardAddress cardAddress) {
-//
-//    }
-//
-//    public void moveCardToGraveYard(CardAddress cardAddress) {
-//
-//    }
-//
+
+    public List<Card> getAllCardsOnBoard() {
+        List<Card> allCards = new ArrayList<>();
+        allCards.addAll(monsterCardZone.values());
+        allCards.addAll(magicCardZone.values());
+        allCards.add(fieldZoneCard);
+        return allCards;
+    }
+
+    public void addCardToBoard(Card card, CardAddress cardAddress) {
+        if (cardAddress.isInFieldZone()) {
+            if (fieldZoneCard != null)
+                moveCardToGraveYard(cardAddress);
+            fieldZoneCard = (Magic) card;
+        }
+        else if (cardAddress.isInMagicZone()) {
+            assert magicCardZone.get(cardAddress.getId()) == null;
+            magicCardZone.put(cardAddress.getId(), (Magic) card);
+        }
+        else {
+            assert monsterCardZone.get(cardAddress.getId()) == null;
+            monsterCardZone.put(cardAddress.getId(), (Monster) card);
+        }
+    }
+
+    public void moveCardToGraveYard(CardAddress cardAddress) {
+        if (cardAddress.isInFieldZone()) {
+            assert fieldZoneCard != null;
+            graveYard.add(fieldZoneCard);
+            fieldZoneCard = null;
+        }
+        else if (cardAddress.isInMagicZone()) {
+            assert magicCardZone.get(cardAddress.getId()) != null;
+            graveYard.add(magicCardZone.get(cardAddress.getId()));
+            magicCardZone.remove(cardAddress.getId());
+        }
+        else if (cardAddress.isInMonsterZone()) {
+            assert monsterCardZone.get(cardAddress.getId()) != null;
+            graveYard.add(monsterCardZone.get(cardAddress.getId()));
+            monsterCardZone.remove(cardAddress.getId());
+        }
+        else if (cardAddress.isInHand()) {
+            assert cardsOnHand.size() >= cardAddress.getId();
+            graveYard.add(cardsOnHand.get(cardAddress.getId() - 1));
+            cardsOnHand.remove(cardAddress.getId() - 1);
+        }
+        else
+            assert false;
+    }
+
 //    public void summonMonster(Monster monsterCard) {
 //
 //    }
@@ -93,9 +130,9 @@ public class Board {
         }
         stringBuilder.append("\n");
         for (int id : arrayList) {
-            if (spellAndTrapCardZone.get(id) == null)
+            if (magicCardZone.get(id) == null)
                 stringBuilder.append("E");
-            else if (spellAndTrapCardZone.get(id).getState() == MagicState.HIDDEN)
+            else if (magicCardZone.get(id).getState() == MagicState.HIDDEN)
                 stringBuilder.append("H");
             else
                 stringBuilder.append("O");

@@ -19,7 +19,7 @@ public class CardAddress {
     public boolean isInMonsterZone() {
         return zone.equals(ZoneType.MONSTER);
     }
-    public boolean isInSpellZone() {
+    public boolean isInMagicZone() {
         return zone.equals(ZoneType.MAGIC);
     }
     public boolean isOpponentAddress() {
