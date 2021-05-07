@@ -131,4 +131,14 @@ public class Main {
         DuelMenuController.selectCard(Context.getInstance(), Parser.cardAddressParser("monster", "1", false));
         DuelMenuController.attack(Context.getInstance(), 1);
     }
+
+    @Test
+    public void duelTest1(){
+
+    }
+
+    @Test
+    public void duelTest2(){
+
+    }
 }
