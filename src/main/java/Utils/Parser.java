@@ -40,7 +40,7 @@ public class Parser {
     public static CardAddress cardAddressParser(String zoneName, String idString, boolean opponent) throws ParserException {
         ZoneType zone = ZoneType.getZoneByName(zoneName);
         if (zone == null)
-            throw new ParserException("invalid zone name");
+            throw new ParserException("invalid selection");
         int id = IntegerParser(idString);
         return new CardAddress(zone, id, opponent);
     }

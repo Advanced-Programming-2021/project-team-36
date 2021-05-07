@@ -7,7 +7,7 @@ public class CardAddress {
     private int id;
     private boolean opponent;
 
-    public CardAddress(ZoneType zone, Integer id, boolean opponent) {
+    public CardAddress(ZoneType zone, int id, boolean opponent) {
         this.zone = zone;
         this.id = id;
         this.opponent = opponent;

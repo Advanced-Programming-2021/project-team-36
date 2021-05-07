@@ -42,9 +42,16 @@ public class Board {
         return magicCardZone;
     }
 
+    public void drawCardFromDeck() {
+        assert mainDeck.getTopCard() != null;
+        Card card = mainDeck.getTopCard();
+        mainDeck.removeCard(card);
+        cardsOnHand.add(card);
+    }
+
     public Card getCardByCardAddress(CardAddress cardAddress) {
         if (cardAddress.isInHand())
-            return cardsOnHand.get(cardAddress.getId());
+            return cardsOnHand.get(cardAddress.getId() - 1);
         else if (cardAddress.isInMonsterZone())
             return monsterCardZone.get(cardAddress.getId());
         else if (cardAddress.isInMagicZone())
@@ -123,35 +130,34 @@ public class Board {
             stringBuilder.append("E");
         else
             stringBuilder.append("O");
-        stringBuilder.append("\t".repeat(11));
+        stringBuilder.append("\t".repeat(6));
         stringBuilder.append(graveYard.size()).append("\n");
-        stringBuilder.append("\t".repeat(2));
+        stringBuilder.append("\t");
         ArrayList<Integer> arrayList = new ArrayList<>(Arrays.asList(5, 3, 1, 2, 4));
         for (int id : arrayList) {
             if (monsterCardZone.get(id) == null)
-                stringBuilder.append("E");
+                stringBuilder.append("E\t");
             else if (monsterCardZone.get(id).getState() == MonsterState.DEFENSIVE_HIDDEN)
-                stringBuilder.append("DH");
+                stringBuilder.append("DH\t");
             else if (monsterCardZone.get(id).getState() == MonsterState.DEFENSIVE_OCCUPIED)
-                stringBuilder.append("DO");
+                stringBuilder.append("DO\t");
             else
-                stringBuilder.append("OO");
+                stringBuilder.append("OO\t");
         }
-        stringBuilder.append("\n");
+        stringBuilder.append("\n\t");
         for (int id : arrayList) {
             if (magicCardZone.get(id) == null)
-                stringBuilder.append("E");
+                stringBuilder.append("E\t");
             else if (magicCardZone.get(id).getState() == MagicState.HIDDEN)
-                stringBuilder.append("H");
+                stringBuilder.append("H\t");
             else
-                stringBuilder.append("O");
+                stringBuilder.append("O\t");
         }
         stringBuilder.append("\n");
-        stringBuilder.append("\t".repeat(12));
+        stringBuilder.append("\t".repeat(6));
         stringBuilder.append(mainDeck.getNumberOfCards());
         stringBuilder.append("\n");
-        stringBuilder.append("c\t".repeat(cardsOnHand.size()));
-        stringBuilder.append("\n");
+        stringBuilder.append(("\tc").repeat(cardsOnHand.size()));
         return stringBuilder.toString();
     }
 }

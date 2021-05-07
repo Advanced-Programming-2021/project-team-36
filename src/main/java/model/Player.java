@@ -10,8 +10,10 @@ public class Player {
     private int lifePoint;
 
     public Player(User user) throws ModelException {
-        if(user.getActiveDeck() == null)
+        if (user.getActiveDeck() == null)
             throw new ModelException(String.format("%s has no active deck", user.getUsername()));
+//        if (!user.getActiveDeck().getMainDeck().isValid())
+//            throw new ModelException(String.format("%s's active deck is not valid", user.getUsername()));
         this.user = user;
         this.deck = user.getActiveDeck().clone();
         this.board = new Board(user.getActiveDeck().getMainDeck().clone());

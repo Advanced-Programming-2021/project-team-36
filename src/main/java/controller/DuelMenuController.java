@@ -1,10 +1,13 @@
 package controller;
 
+import model.Board;
 import model.CardAddress;
 import model.Game;
+import model.Player;
 import model.card.*;
 import model.enums.Phase;
 import model.enums.MonsterState;
+import model.enums.ZoneType;
 import view.Context;
 
 import java.util.List;
@@ -34,7 +37,6 @@ public class DuelMenuController {
     }
 
     public static void printCurrentPhase(Context context) {
-        // todo change this
         Game game = context.getGame();
         if (game.getPhase() == Phase.DRAWPHASE)
             System.out.println("phase: draw phase");
@@ -50,7 +52,7 @@ public class DuelMenuController {
             System.out.println("phase: end phase");
     }
 
-    public static void goNextPhase(Context context) {
+    public static void goNextPhase(Context context) throws LogicException {
         Game game = context.getGame();
         if (game.getPhase() == Phase.DRAWPHASE)
             game.setPhase(Phase.STANDBYPHASE);
@@ -64,10 +66,57 @@ public class DuelMenuController {
             game.setPhase(Phase.ENDPHASE);
         else
             game.setPhase(Phase.DRAWPHASE);
+
+        if (game.isFirstTurn() && game.getPhase().equals(Phase.BATTLEPHASE))
+            game.setPhase(Phase.MAINPHASE2);
+
+        printCurrentPhase(context);
+        if (game.getPhase() == Phase.ENDPHASE) {
+            changeTurn(context);
+            game.setPhase(Phase.DRAWPHASE);
+            printCurrentPhase(context);
+            drawCard(context);
+        }
     }
 
-    public static void summonCard(Context context, Card card) {
+    public static void drawCard(Context context) throws LogicException {
         Game game = context.getGame();
+        Card card = game.getCurrentPlayer().getMainDeck().getTopCard();
+        if (card == null) {
+            endGame(context, game.getOpponentPlayer(), game.getCurrentPlayer());
+            return;
+        }
+        game.getCurrentPlayer().getBoard().drawCardFromDeck();
+        System.out.println(String.format("new card added to the hand : %s", card.getName()));
+    }
+
+    public static void summonCard(Context context) throws LogicException {
+        Game game = context.getGame();
+        if (game.getSelectedCardAddress() == null)
+            throw new LogicException("no card is selected yet");
+
+        CardAddress cardAddress = game.getSelectedCardAddress();
+        if (!cardAddress.isInHand() || getSelectedCard(context) instanceof Magic)
+            throw new LogicException("you can't summon this card");
+
+        if (!game.getPhase().equals(Phase.MAINPHASE1) && !game.getPhase().equals(Phase.MAINPHASE2))
+            throw new LogicException("action not allowed in this phase");
+        if (game.getCurrentPlayer().getBoard().isMonsterCardZoneFull())
+            throw new LogicException("monster card zone is full");
+        if (game.isSummonedInThisTurn())
+            throw new LogicException("you already summoned/set on this turn");
+        // TODO : monster with higher level than 4
+        game.setSummonedInThisTurn(true);
+        System.out.println("summoned successfully");
+        Board board = game.getCurrentPlayer().getBoard();
+        for (int i = 1; i <= 5; i++) {
+            if (board.getMonsterCardZone().get(i) == null) {
+                board.addCardToBoard(getSelectedCard(context), new CardAddress(ZoneType.HAND, i, false));
+                board.getCardsOnHand().remove(getSelectedCard(context));
+                game.unselectCard();
+                break;
+            }
+        }
     }
 
     public static void setCard(Context context, Card card) {
@@ -107,23 +156,43 @@ public class DuelMenuController {
             System.out.println((i + 1) + ". " + graveYard.get(i).toString());
     }
 
-    private static void showBoard(Context context) {
+    public static void showBoard(Context context) {
         Game game = context.getGame();
         System.out.println(game.getOpponentPlayer().getUser().getNickname() + ":" + game.getOpponentPlayer().getLifePoint());
         System.out.println(game.getOpponentPlayer().getBoard().toString()); // TODO it should rotate 180 degree
         System.out.println();
         System.out.println("--------------------------");
         System.out.println();
-        System.out.println();
         System.out.println(game.getCurrentPlayer().getBoard().toString());
         System.out.println(game.getCurrentPlayer().getUser().getNickname() + ":" + game.getCurrentPlayer().getLifePoint());
     }
 
-    public static void showCard(Context context, Card card){
+    public static void showSelectedCard(Context context) throws LogicException {
         Game game = context.getGame();
+        Card card = getSelectedCard(context);
+        System.out.println(card.toString());
+    }
+
+    public static void showHand(Context context) {
+        Game game = context.getGame();
+        List<Card> cards = game.getCurrentPlayer().getBoard().getCardsOnHand();
+        for (int i = 0; i < cards.size(); i++)
+            System.out.println(String.format("%d. %s", i + 1, cards.get(i).toString()));
     }
 
     private static void surrender(Context context) {
         Game game = context.getGame();
+    }
+
+    private static void changeTurn(Context context) {
+        Game game = context.getGame();
+        game.changeTurn();
+        System.out.println(String.format("its %s's turn", game.getCurrentPlayer().getUser().getNickname()));
+        game.setSummonedInThisTurn(false);
+        game.unselectCard();
+    }
+
+    private static void endGame(Context context, Player winner, Player loser) {
+
     }
 }

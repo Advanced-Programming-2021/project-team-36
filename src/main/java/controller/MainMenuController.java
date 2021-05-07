@@ -14,6 +14,8 @@ public class MainMenuController {
                 new Player(context.getUser()),
                 new Player(secondUser)
         ));
+        System.out.println(String.format("its %s's turn", context.getGame().getCurrentPlayer().getUser().getNickname()));
+        DuelMenuController.printCurrentPhase(context);
         Router.navigateToMenu(view.DuelMenu.class);
     }
 

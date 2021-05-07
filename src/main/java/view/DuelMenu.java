@@ -61,7 +61,7 @@ public class DuelMenu extends BaseMenu {
         this.cmd.addCommand(new Command(
                 "summon",
                 mp -> {
-                    DuelMenuController.summonCard(Context.getInstance(), DuelMenuController.getSelectedCard(Context.getInstance()));
+                    DuelMenuController.summonCard(Context.getInstance());
                 }
         ));
         this.cmd.addCommand(new Command(
@@ -112,11 +112,22 @@ public class DuelMenu extends BaseMenu {
         this.cmd.addCommand(new Command(
                 "card show",
                 mp -> {
-                    DuelMenuController.showCard(Context.getInstance(), DuelMenuController.getSelectedCard(Context.getInstance()));
+                    DuelMenuController.showSelectedCard(Context.getInstance());
                 },
                 Options.selected(true)
         ));
-
+        this.cmd.addCommand(new Command(
+                "show hand",
+                mp -> {
+                    DuelMenuController.showHand(Context.getInstance());
+                }
+        ));
+        this.cmd.addCommand(new Command(
+                "show board",
+                mp -> {
+                    DuelMenuController.showBoard(Context.getInstance());
+                }
+        ));
     }
 
     @Override

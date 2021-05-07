@@ -4,19 +4,21 @@ import Utils.Router;
 import Utils.RoutingException;
 import controller.*;
 import model.ModelException;
+import model.card.Card;
 import org.junit.Test;
 import view.*;
 import org.junit.jupiter.api.*;
 
 public class Main {
-    public static void main(String[] args) {
+    public static void main(String[] args) throws ModelException, ParserException, RoutingException, LogicException {
         Router.setCurrentMenu(new LoginMenu());
+        readyForBattle();
         while (true)
             Router.getCurrentMenu().runNextCommand();
     }
 
     @Test
-    public void readyForBattle() throws ModelException, ParserException, RoutingException, LogicException {
+    public static void readyForBattle() throws ModelException, ParserException, RoutingException, LogicException {
         Router.setCurrentMenu(new LoginMenu());
         LoginMenuController.createUser(Context.getInstance(), "shayan", "Shayan.P", "1234");
         LoginMenuController.createUser(Context.getInstance(), "abolfazl", "Abolof", "12345");
@@ -26,12 +28,22 @@ public class Main {
         Router.navigateToMenu(ShopMenu.class);
         ShopMenuController.buyCard(Context.getInstance(), Parser.cardParser("axeraider"));
         ShopMenuController.buyCard(Context.getInstance(), Parser.cardParser("AxeRaider"));
+        ShopMenuController.buyCard(Context.getInstance(), Parser.cardParser("AxeRaider"));
+        ShopMenuController.buyCard(Context.getInstance(), Parser.cardParser("AxeRaider"));
+        ShopMenuController.buyCard(Context.getInstance(), Parser.cardParser("AxeRaider"));
         ShopMenuController.buyCard(Context.getInstance(), Parser.cardParser("BattleOx"));
         ShopMenuController.buyCard(Context.getInstance(), Parser.cardParser("BattleOx"));
         ShopMenuController.buyCard(Context.getInstance(), Parser.cardParser("BaTTleOX"));
         ShopMenuController.buyCard(Context.getInstance(), Parser.cardParser("battleox"));
         ShopMenuController.buyCard(Context.getInstance(), Parser.cardParser("fireyarou"));
-        ShopMenuController.buyCard(Context.getInstance(), Parser.cardParser("silverfang"));
+        ShopMenuController.buyCard(Context.getInstance(), Parser.cardParser("fireyarou"));
+        ShopMenuController.buyCard(Context.getInstance(), Parser.cardParser("fireyarou"));
+        ShopMenuController.buyCard(Context.getInstance(), Parser.cardParser("fireyarou"));
+        ShopMenuController.buyCard(Context.getInstance(), Parser.cardParser("hornimp"));
+        ShopMenuController.buyCard(Context.getInstance(), Parser.cardParser("hornimp"));
+        ShopMenuController.buyCard(Context.getInstance(), Parser.cardParser("hornimp"));
+        ShopMenuController.buyCard(Context.getInstance(), Parser.cardParser("hornimp"));
+        ShopMenuController.buyCard(Context.getInstance(), Parser.cardParser("hornimp"));
         Router.navigateToMenu(view.MainMenu.class);
         Router.navigateToMenu(DeckMenu.class);
         DeckMenuController.showAllCards(Context.getInstance());
@@ -40,8 +52,11 @@ public class Main {
         DeckMenuController.addCardToDeck(Context.getInstance(), Parser.cardParser("battleox"), Parser.deckParser("myBigDeck"), false);
         DeckMenuController.addCardToDeck(Context.getInstance(), Parser.cardParser("battleox"), Parser.deckParser("myBigDeck"), false);
         DeckMenuController.addCardToDeck(Context.getInstance(), Parser.cardParser("axeraider"), Parser.deckParser("myBigDeck"), false);
+        DeckMenuController.addCardToDeck(Context.getInstance(), Parser.cardParser("axeraider"), Parser.deckParser("myBigDeck"), false);
         DeckMenuController.addCardToDeck(Context.getInstance(), Parser.cardParser("axeraider"), Parser.deckParser("myBigDeck"), true);
         DeckMenuController.addCardToDeck(Context.getInstance(), Parser.cardParser("fireyarou"), Parser.deckParser("myBigDeck"), true);
+        DeckMenuController.addCardToDeck(Context.getInstance(), Parser.cardParser("fireyarou"), Parser.deckParser("myBigDeck"), false);
+        DeckMenuController.addCardToDeck(Context.getInstance(), Parser.cardParser("fireyarou"), Parser.deckParser("myBigDeck"), false);
         DeckMenuController.setActiveDeck(Context.getInstance(), Parser.deckParser("myBigDeck"));
         DeckMenuController.showAllDecks(Context.getInstance());
         Router.navigateToMenu(view.MainMenu.class);
@@ -52,10 +67,16 @@ public class Main {
         Router.navigateToMenu(ShopMenu.class);
         ShopMenuController.buyCard(Context.getInstance(), Parser.cardParser("axeraider"));
         ShopMenuController.buyCard(Context.getInstance(), Parser.cardParser("AxeRaider"));
+        ShopMenuController.buyCard(Context.getInstance(), Parser.cardParser("AxeRaider"));
+        ShopMenuController.buyCard(Context.getInstance(), Parser.cardParser("AxeRaider"));
+        ShopMenuController.buyCard(Context.getInstance(), Parser.cardParser("AxeRaider"));
         ShopMenuController.buyCard(Context.getInstance(), Parser.cardParser("BattleOx"));
         ShopMenuController.buyCard(Context.getInstance(), Parser.cardParser("BattleOx"));
         ShopMenuController.buyCard(Context.getInstance(), Parser.cardParser("BaTTleOX"));
         ShopMenuController.buyCard(Context.getInstance(), Parser.cardParser("battleox"));
+        ShopMenuController.buyCard(Context.getInstance(), Parser.cardParser("fireyarou"));
+        ShopMenuController.buyCard(Context.getInstance(), Parser.cardParser("fireyarou"));
+        ShopMenuController.buyCard(Context.getInstance(), Parser.cardParser("fireyarou"));
         ShopMenuController.buyCard(Context.getInstance(), Parser.cardParser("fireyarou"));
         ShopMenuController.buyCard(Context.getInstance(), Parser.cardParser("hornimp"));
         ShopMenuController.buyCard(Context.getInstance(), Parser.cardParser("hornimp"));
@@ -71,10 +92,11 @@ public class Main {
         DeckMenuController.addCardToDeck(Context.getInstance(), Parser.cardParser("battleox"), Parser.deckParser("myBigDeck"), false);
         DeckMenuController.addCardToDeck(Context.getInstance(), Parser.cardParser("battleox"), Parser.deckParser("myBigDeck"), false);
         DeckMenuController.addCardToDeck(Context.getInstance(), Parser.cardParser("axeraider"), Parser.deckParser("myBigDeck"), false);
+        DeckMenuController.addCardToDeck(Context.getInstance(), Parser.cardParser("axeraider"), Parser.deckParser("myBigDeck"), false);
         DeckMenuController.addCardToDeck(Context.getInstance(), Parser.cardParser("axeraider"), Parser.deckParser("myBigDeck"), true);
         DeckMenuController.addCardToDeck(Context.getInstance(), Parser.cardParser("fireyarou"), Parser.deckParser("myBigDeck"), true);
-        DeckMenuController.addCardToDeck(Context.getInstance(), Parser.cardParser("hornimp"), Parser.deckParser("myBigDeck"), true);
-        DeckMenuController.addCardToDeck(Context.getInstance(), Parser.cardParser("hornimp"), Parser.deckParser("myBigDeck"), true);
+        DeckMenuController.addCardToDeck(Context.getInstance(), Parser.cardParser("fireyarou"), Parser.deckParser("myBigDeck"), false);
+        DeckMenuController.addCardToDeck(Context.getInstance(), Parser.cardParser("fireyarou"), Parser.deckParser("myBigDeck"), false);
         DeckMenuController.setActiveDeck(Context.getInstance(), Parser.deckParser("myBigDeck"));
         DeckMenuController.setActiveDeck(Context.getInstance(), Parser.deckParser("myBigDeck"));
         DeckMenuController.setActiveDeck(Context.getInstance(), Parser.deckParser("myBigDeck"));
@@ -87,5 +109,18 @@ public class Main {
         LoginMenuController.login(Context.getInstance(), "shayan", "1234");
         Assertions.assertEquals(Router.getCurrentMenu().getClass(), MainMenu.class);
         MainMenuController.startNewDuel(Context.getInstance(), Parser.UserParser("abolfazl"), 3);
+
+        DuelMenuController.showHand(Context.getInstance());
+        DuelMenuController.selectCard(Context.getInstance(), Parser.cardAddressParser("hand", "1", false));
+        DuelMenuController.showSelectedCard(Context.getInstance());
+        DuelMenuController.goNextPhase(Context.getInstance());
+        DuelMenuController.summonCard(Context.getInstance());
+        DuelMenuController.showBoard(Context.getInstance());
+        DuelMenuController.showHand(Context.getInstance());
+        DuelMenuController.selectCard(Context.getInstance(), Parser.cardAddressParser("hand", "2", false));
+        DuelMenuController.goNextPhase(Context.getInstance());
+        DuelMenuController.showSelectedCard(Context.getInstance());
+        DuelMenuController.goNextPhase(Context.getInstance());
+        DuelMenuController.showHand(Context.getInstance());
     }
 }
