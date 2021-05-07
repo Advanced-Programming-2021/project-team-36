@@ -46,6 +46,6 @@ public class Player {
     }
     
     public void decreaseLifePoint(int value) {
-        this.lifePoint -= value;
+        this.lifePoint = Math.max(0, value);
     }
 }

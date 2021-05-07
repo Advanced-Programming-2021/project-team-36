@@ -88,7 +88,7 @@ public class DuelMenu extends BaseMenu {
         this.cmd.addCommand(new Command(
                 "attack [number]",
                 mp -> {
-                    DuelMenuController.attack(Context.getInstance(), DuelMenuController.getSelectedCard(Context.getInstance()), Parser.monsterPositionIdParser(mp.get("number")));
+                    DuelMenuController.attack(Context.getInstance(), Parser.monsterPositionIdParser(mp.get("number")));
                 }
         ));
         this.cmd.addCommand(new Command(

@@ -92,12 +92,15 @@ public class DuelMenuController {
 
     public static void summonCard(Context context) throws LogicException {
         Game game = context.getGame();
-        if (game.getSelectedCardAddress() == null)
+
+        if (!game.isAnyCardSelected())
             throw new LogicException("no card is selected yet");
 
         CardAddress cardAddress = game.getSelectedCardAddress();
         if (!cardAddress.isInHand() || getSelectedCard(context) instanceof Magic)
             throw new LogicException("you can't summon this card");
+
+        Monster monster = (Monster) getSelectedCard(context);
 
         if (!game.getPhase().equals(Phase.MAINPHASE1) && !game.getPhase().equals(Phase.MAINPHASE2))
             throw new LogicException("action not allowed in this phase");
@@ -111,8 +114,9 @@ public class DuelMenuController {
         Board board = game.getCurrentPlayer().getBoard();
         for (int i = 1; i <= 5; i++) {
             if (board.getMonsterCardZone().get(i) == null) {
-                board.addCardToBoard(getSelectedCard(context), new CardAddress(ZoneType.HAND, i, false));
-                board.getCardsOnHand().remove(getSelectedCard(context));
+                board.addCardToBoard(monster, new CardAddress(ZoneType.HAND, i, false));
+                board.getCardsOnHand().remove(monster);
+                monster.setMonsterState(MonsterState.OFFENSIVE_OCCUPIED);
                 game.unselectCard();
                 break;
             }
@@ -135,8 +139,49 @@ public class DuelMenuController {
         Game game = context.getGame();
     }
 
-    public static void attack(Context context, Card card, int id) {
+    public static void attack(Context context, int id) throws LogicException {
         Game game = context.getGame();
+        Card card = getSelectedCard(context);
+
+        if (card instanceof Magic)
+            throw new LogicException("you can’t attack with this card");
+        if (!game.getPhase().equals(Phase.BATTLEPHASE))
+            throw new LogicException("you can’t do this action in this phase");
+        // TODO : check one card don't attack twice in a turn
+        // error should be : this card already attacked
+        CardAddress cardAddress = new CardAddress(ZoneType.MONSTER, id, true);
+        Card opponentCard = game.getCardByCardAddress(cardAddress);
+        if (opponentCard == null)
+            throw new LogicException("there is no card to attack here");
+
+        damageStep(context, (Monster) card, (Monster) opponentCard);
+        if (game.getCurrentPlayer().getLifePoint() == 0)
+            endGame(context, game.getOpponentPlayer(), game.getCurrentPlayer());
+        if (game.getOpponentPlayer().getLifePoint() == 0)
+            endGame(context, game.getCurrentPlayer(), game.getOpponentPlayer());
+    }
+
+    public static void damageStep(Context context, Monster attacker, Monster defender) {
+        Game game = context.getGame();
+        if (defender.getState().equals(MonsterState.OFFENSIVE_OCCUPIED)) {
+            if (attacker.getAttackDamage() > defender.getAttackDamage()) {
+                int difference = attacker.getAttackDamage() - defender.getAttackDamage();
+                System.out.println(String.format("your opponent’s monster is destroyed and your opponent receives %d battle damage", difference));
+                game.getOpponentPlayer().getBoard().moveCardToGraveYard(defender);
+                game.getOpponentPlayer().decreaseLifePoint(difference);
+            }
+            else if (attacker.getAttackDamage() == defender.getAttackDamage()) {
+                System.out.println("both you and your opponent monster cards are destroyed and no one receives damage");
+                game.getCurrentPlayer().getBoard().moveCardToGraveYard(attacker);
+                game.getOpponentPlayer().getBoard().moveCardToGraveYard(defender);
+            }
+            else {
+                int difference = defender.getAttackDamage() - attacker.getAttackDamage();
+                System.out.println(String.format("Your monster card is destroyed and you received %s battle damage", difference));
+                game.getCurrentPlayer().getBoard().moveCardToGraveYard(attacker);
+                game.getCurrentPlayer().decreaseLifePoint(difference);
+            }
+        }
     }
 
     public static void directAttack(Context context, Card card) {
@@ -193,6 +238,8 @@ public class DuelMenuController {
     }
 
     private static void endGame(Context context, Player winner, Player loser) {
-
+        winner.getUser().increaseScore(1000);
+        winner.getUser().increaseBalance(1000 + winner.getLifePoint());
+        loser.getUser().increaseBalance(100);
     }
 }

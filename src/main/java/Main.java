@@ -122,5 +122,13 @@ public class Main {
         DuelMenuController.showSelectedCard(Context.getInstance());
         DuelMenuController.goNextPhase(Context.getInstance());
         DuelMenuController.showHand(Context.getInstance());
+        DuelMenuController.goNextPhase(Context.getInstance());
+        DuelMenuController.goNextPhase(Context.getInstance());
+        DuelMenuController.selectCard(Context.getInstance(), Parser.cardAddressParser("hand", "5", false));
+        DuelMenuController.summonCard(Context.getInstance());
+        DuelMenuController.showBoard(Context.getInstance());
+        DuelMenuController.goNextPhase(Context.getInstance());
+        DuelMenuController.selectCard(Context.getInstance(), Parser.cardAddressParser("monster", "1", false));
+        DuelMenuController.attack(Context.getInstance(), 1);
     }
 }

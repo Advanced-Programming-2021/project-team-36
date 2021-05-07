@@ -47,6 +47,10 @@ public class Monster extends Card {
         return defenseRate;
     }
 
+    public void setMonsterState(MonsterState monsterState) {
+        this.monsterState = monsterState;
+    }
+
     public int getLevel() {
         return level;
     }

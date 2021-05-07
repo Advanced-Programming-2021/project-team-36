@@ -108,6 +108,8 @@ public class User {
         score -= value;
     }
 
+    public void increaseBalance(int value) { this.balance += value; }
+
     public void buy(Card card) throws ModelException {
         if(balance < card.getPrice())
             throw new ModelException("not enough money");

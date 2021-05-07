@@ -1,5 +1,6 @@
 package model;
 
+import controller.LogicException;
 import model.card.Card;
 import model.card.Magic;
 import model.card.Monster;
@@ -73,7 +74,7 @@ public class Board {
     public void addCardToBoard(Card card, CardAddress cardAddress) {
         if (cardAddress.isInFieldZone()) {
             if (fieldZoneCard != null)
-                moveCardToGraveYard(cardAddress);
+                moveCardToGraveYard(fieldZoneCard);
             fieldZoneCard = (Magic) card;
         }
         else if (cardAddress.isInMagicZone()) {
@@ -86,29 +87,23 @@ public class Board {
         }
     }
 
-    public void moveCardToGraveYard(CardAddress cardAddress) {
-        if (cardAddress.isInFieldZone()) {
-            assert fieldZoneCard != null;
-            graveYard.add(fieldZoneCard);
+    public void moveCardToGraveYard(Card card) {
+        if (fieldZoneCard == card) {
+            graveYard.add(card);
             fieldZoneCard = null;
         }
-        else if (cardAddress.isInMagicZone()) {
-            assert magicCardZone.get(cardAddress.getId()) != null;
-            graveYard.add(magicCardZone.get(cardAddress.getId()));
-            magicCardZone.remove(cardAddress.getId());
+        else if (magicCardZone.containsValue(card)) {
+            graveYard.add(card);
+            magicCardZone.values().remove(card);
         }
-        else if (cardAddress.isInMonsterZone()) {
-            assert monsterCardZone.get(cardAddress.getId()) != null;
-            graveYard.add(monsterCardZone.get(cardAddress.getId()));
-            monsterCardZone.remove(cardAddress.getId());
+        else if (monsterCardZone.containsValue(card)) {
+            graveYard.add(card);
+            monsterCardZone.values().remove(card);
         }
-        else if (cardAddress.isInHand()) {
-            assert cardsOnHand.size() >= cardAddress.getId();
-            graveYard.add(cardsOnHand.get(cardAddress.getId() - 1));
-            cardsOnHand.remove(cardAddress.getId() - 1);
+        else if (cardsOnHand.contains(card)) {
+            graveYard.add(card);
+            cardsOnHand.remove(card);
         }
-        else
-            assert false;
     }
 
 //    public void summonMonster(Monster monsterCard) {
