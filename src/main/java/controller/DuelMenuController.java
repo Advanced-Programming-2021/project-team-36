@@ -3,7 +3,7 @@ package controller;
 import model.Board;
 import model.CardAddress;
 import model.Game;
-import model.Player;
+import model.Player.Player;
 import model.card.*;
 import model.enums.Phase;
 import model.enums.MonsterState;
@@ -38,15 +38,15 @@ public class DuelMenuController {
 
     public static void printCurrentPhase(Context context) {
         Game game = context.getGame();
-        if (game.getPhase() == Phase.DRAWPHASE)
+        if (game.getPhase() == Phase.DRAW_PHASE)
             System.out.println("phase: draw phase");
-        else if (game.getPhase() == Phase.STANDBYPHASE)
+        else if (game.getPhase() == Phase.STANDBY_PHASE)
             System.out.println("phase: standby phase");
-        else if (game.getPhase() == Phase.MAINPHASE1)
+        else if (game.getPhase() == Phase.MAIN_PHASE1)
             System.out.println("phase: main phase 1");
-        else if (game.getPhase() == Phase.BATTLEPHASE)
+        else if (game.getPhase() == Phase.BATTLE_PHASE)
             System.out.println("phase: battle phase");
-        else if (game.getPhase() == Phase.MAINPHASE2)
+        else if (game.getPhase() == Phase.MAIN_PHASE2)
             System.out.println("phase: main phase 2");
         else
             System.out.println("phase: end phase");
@@ -54,26 +54,26 @@ public class DuelMenuController {
 
     public static void goNextPhase(Context context) throws LogicException {
         Game game = context.getGame();
-        if (game.getPhase() == Phase.DRAWPHASE)
-            game.setPhase(Phase.STANDBYPHASE);
-        else if (game.getPhase() == Phase.STANDBYPHASE)
-            game.setPhase(Phase.MAINPHASE1);
-        else if (game.getPhase() == Phase.MAINPHASE1)
-            game.setPhase(Phase.BATTLEPHASE);
-        else if (game.getPhase() == Phase.BATTLEPHASE)
-            game.setPhase(Phase.MAINPHASE2);
-        else if (game.getPhase() == Phase.MAINPHASE2)
-            game.setPhase(Phase.ENDPHASE);
+        if (game.getPhase() == Phase.DRAW_PHASE)
+            game.setPhase(Phase.STANDBY_PHASE);
+        else if (game.getPhase() == Phase.STANDBY_PHASE)
+            game.setPhase(Phase.MAIN_PHASE1);
+        else if (game.getPhase() == Phase.MAIN_PHASE1)
+            game.setPhase(Phase.BATTLE_PHASE);
+        else if (game.getPhase() == Phase.BATTLE_PHASE)
+            game.setPhase(Phase.MAIN_PHASE2);
+        else if (game.getPhase() == Phase.MAIN_PHASE2)
+            game.setPhase(Phase.END_PHASE);
         else
-            game.setPhase(Phase.DRAWPHASE);
+            game.setPhase(Phase.DRAW_PHASE);
 
-        if (game.isFirstTurn() && game.getPhase().equals(Phase.BATTLEPHASE))
-            game.setPhase(Phase.MAINPHASE2);
+        if (game.isFirstTurn() && game.getPhase().equals(Phase.BATTLE_PHASE))
+            game.setPhase(Phase.MAIN_PHASE2);
 
         printCurrentPhase(context);
-        if (game.getPhase() == Phase.ENDPHASE) {
+        if (game.getPhase() == Phase.END_PHASE) {
             changeTurn(context);
-            game.setPhase(Phase.DRAWPHASE);
+            game.setPhase(Phase.DRAW_PHASE);
             printCurrentPhase(context);
             drawCard(context);
         }
@@ -102,7 +102,7 @@ public class DuelMenuController {
 
         Monster monster = (Monster) getSelectedCard(context);
 
-        if (!game.getPhase().equals(Phase.MAINPHASE1) && !game.getPhase().equals(Phase.MAINPHASE2))
+        if (!game.getPhase().equals(Phase.MAIN_PHASE1) && !game.getPhase().equals(Phase.MAIN_PHASE2))
             throw new LogicException("action not allowed in this phase");
         if (game.getCurrentPlayer().getBoard().isMonsterCardZoneFull())
             throw new LogicException("monster card zone is full");
@@ -145,7 +145,7 @@ public class DuelMenuController {
 
         if (card instanceof Magic)
             throw new LogicException("you can’t attack with this card");
-        if (!game.getPhase().equals(Phase.BATTLEPHASE))
+        if (!game.getPhase().equals(Phase.BATTLE_PHASE))
             throw new LogicException("you can’t do this action in this phase");
         // TODO : check one card don't attack twice in a turn
         // error should be : this card already attacked

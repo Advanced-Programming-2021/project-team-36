@@ -1,10 +1,13 @@
 package view;
 
-import Utils.Parser;
-import Utils.Router;
-import Utils.RoutingException;
+import Utils.*;
 import controller.DuelMenuController;
+import controller.LogicException;
+import model.ModelException;
+import model.Player.AIPlayer;
+import model.Player.HumanPlayer;
 import view.CommandLine.Command;
+import view.CommandLine.CommandLineException;
 
 public class DuelMenu extends BaseMenu {
     DuelMenu() {
@@ -131,13 +134,26 @@ public class DuelMenu extends BaseMenu {
     }
 
     @Override
-    public BaseMenu getNavigatingMenuObject(Class<? extends BaseMenu> menu) throws RoutingException {
-        // this is strange here
-        // todo move if only we finished the game
+    public void runNextCommand() {
+        try {
+            if(Context.getInstance().getGame().getCurrentPlayer() instanceof AIPlayer) {
+                ((AIPlayer) Context.getInstance().getGame().getCurrentPlayer()).play(Context.getInstance().getGame());
+            }
+            else {
+                String line = CustomScanner.nextLine();
+                if (Debugger.getCaptureMode())
+                    Debugger.captureCommand(line);
+                this.cmd.runNextCommand(line);
+            }
+        } catch (CommandLineException | ParserException | ModelException | LogicException | RoutingException e) {
+            System.out.println(e.getMessage());
+        }
+    }
 
-        if (menu.equals(LoginMenu.class))
-            throw new RoutingException("you must logout for that!");
-        if (menu.equals(MainMenu.class))
+    @Override
+    public BaseMenu getNavigatingMenuObject(Class<? extends BaseMenu> menu) throws RoutingException {
+        // game must be ended for you to exit
+        if (menu.equals(MainMenu.class) && Context.getInstance().noGame())
             return new MainMenu();
         if (Debugger.getMode())
             throw new RoutingException("you cannot navigate out of an ongoing game");
@@ -151,7 +167,6 @@ public class DuelMenu extends BaseMenu {
 
     @Override
     public void exitMenu() throws RoutingException {
-        // todo decide to delete the game from context or not
         Router.navigateToMenu(MainMenu.class);
     }
 }

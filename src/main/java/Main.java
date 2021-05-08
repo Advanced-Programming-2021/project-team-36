@@ -10,15 +10,20 @@ import view.*;
 import org.junit.jupiter.api.*;
 
 public class Main {
-    public static void main(String[] args) throws ModelException, ParserException, RoutingException, LogicException {
+    public static void main(String[] args) {
         Router.setCurrentMenu(new LoginMenu());
-        readyForBattle();
+        try {
+            getReady();
+        } catch (Exception e){
+            e.printStackTrace();
+            System.out.println("error in getting ready");
+            System.exit(0);
+        }
         while (true)
             Router.getCurrentMenu().runNextCommand();
     }
 
-    @Test
-    public static void readyForBattle() throws ModelException, ParserException, RoutingException, LogicException {
+    public static void getReady() throws ModelException, ParserException, RoutingException, LogicException {
         Router.setCurrentMenu(new LoginMenu());
         LoginMenuController.createUser(Context.getInstance(), "shayan", "Shayan.P", "1234");
         LoginMenuController.createUser(Context.getInstance(), "abolfazl", "Abolof", "12345");
@@ -108,6 +113,12 @@ public class Main {
 
         LoginMenuController.login(Context.getInstance(), "shayan", "1234");
         Assertions.assertEquals(Router.getCurrentMenu().getClass(), MainMenu.class);
+    }
+
+    @Test
+    public void test() throws ModelException, ParserException, RoutingException, LogicException {
+        getReady();
+
         MainMenuController.startNewDuel(Context.getInstance(), Parser.UserParser("abolfazl"), 3);
 
         DuelMenuController.showHand(Context.getInstance());
@@ -130,15 +141,5 @@ public class Main {
         DuelMenuController.goNextPhase(Context.getInstance());
         DuelMenuController.selectCard(Context.getInstance(), Parser.cardAddressParser("monster", "1", false));
         DuelMenuController.attack(Context.getInstance(), 1);
-    }
-
-    @Test
-    public void duelTest1(){
-
-    }
-
-    @Test
-    public void duelTest2(){
-
     }
 }

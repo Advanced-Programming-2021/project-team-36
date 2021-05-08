@@ -1,9 +1,12 @@
-package model;
+package model.Player;
 
+import model.Board;
+import model.ModelException;
+import model.User;
 import model.deck.*;
 import model.enums.Constants;
 
-public class Player {
+abstract public class Player {
     private final User user;
     private final Deck deck;
     private final Board board;

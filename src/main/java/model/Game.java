@@ -1,5 +1,6 @@
 package model;
 
+import model.Player.Player;
 import model.card.Card;
 import model.card.Magic;
 import model.card.Monster;
@@ -33,7 +34,7 @@ public class Game {
             secondPlayer.getBoard().drawCardFromDeck();
         }
         this.turn = 0;
-        this.phase = Phase.STANDBYPHASE;
+        this.phase = Phase.STANDBY_PHASE;
         this.summonedInThisTurn = false;
         this.selectedCardAddress = null;
     }
