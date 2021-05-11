@@ -1,7 +1,4 @@
-import Utils.Parser;
-import Utils.ParserException;
-import Utils.Router;
-import Utils.RoutingException;
+import Utils.*;
 import controller.*;
 import model.ModelException;
 import model.card.Card;
@@ -11,9 +8,10 @@ import org.junit.jupiter.api.*;
 
 public class Main {
     public static void main(String[] args) {
+        Router.initialize();
         Router.setCurrentMenu(new LoginMenu());
         try {
-            getReady();
+            //getReady();
         } catch (Exception e){
             e.printStackTrace();
             System.out.println("error in getting ready");

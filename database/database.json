@@ -1,0 +1,18 @@
+{
+	"username":"superman",
+	"password":"lois",
+	"nickname":"kalel",
+	"score":0,
+	"balance":1000000000,
+	"cards":[],
+	"decks":[]
+}
+{
+	"username":"batman",
+	"password":"robin",
+	"nickname":"wayne",
+	"score":0,
+	"balance":1000000000,
+	"cards":[],
+	"decks":[]
+}

@@ -4,12 +4,13 @@ import model.card.Card;
 import model.deck.Deck;
 import model.enums.Constants;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.stream.Collectors;
 
-public class User {
+public class User implements Serializable {
     private static final ArrayList<User> users = new ArrayList<>();
 
     private String username;
@@ -108,10 +109,16 @@ public class User {
         score -= value;
     }
 
-    public void increaseBalance(int value) { this.balance += value; }
+    public void increaseBalance(int value) {
+        this.balance += value;
+    }
+
+    public void save() {
+        users.add(this);
+    }
 
     public void buy(Card card) throws ModelException {
-        if(balance < card.getPrice())
+        if (balance < card.getPrice())
             throw new ModelException("not enough money");
         balance -= card.getPrice();
         addCard(card);

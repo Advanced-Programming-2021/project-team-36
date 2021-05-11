@@ -18,8 +18,13 @@ public class Router {
         currentMenu = currentMenu.getNavigatingMenuObject(menu);
     }
 
+    public static void initialize() {
+        DatabaseHandler.importFromDatabase();
+    }
+
     public static void exit() {
         // maybe you want to save the game or anything else now?
+        DatabaseHandler.exportToDatabase();
         System.exit(0);
     }
 }
