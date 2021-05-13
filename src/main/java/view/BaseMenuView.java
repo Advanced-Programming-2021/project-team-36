@@ -2,17 +2,16 @@ package view;
 
 import Utils.*;
 import controller.LogicException;
+import controller.ProgramController;
 import model.ModelException;
 import view.CommandLine.Command;
 import view.CommandLine.CommandLine;
 import view.CommandLine.CommandLineException;
 
-import java.util.Scanner;
-
-abstract public class BaseMenu {
+abstract public class BaseMenuView {
     protected final CommandLine cmd;
 
-    public BaseMenu() {
+    public BaseMenuView() {
         this.cmd = new CommandLine();
         addCommands();
     }
@@ -32,13 +31,13 @@ abstract public class BaseMenu {
         this.cmd.addCommand(new Command(
                 "menu enter [menuName]",
                 mp -> {
-                    Router.navigateToMenu(Parser.menuParser(mp.get("menuName")));
+                    ProgramController.getInstance().navigateToMenu(Parser.menuParser(mp.get("menuName")));
                 }
         ));
         this.cmd.addCommand(new Command(
                 "menu exit",
                 mp -> {
-                    exitMenu();
+                    ProgramController.getInstance().menuExit();
                 }
         ));
         this.cmd.addCommand(new Command(
@@ -78,8 +77,4 @@ abstract public class BaseMenu {
     }
 
     abstract protected String getMenuName();
-
-    abstract public BaseMenu getNavigatingMenuObject(Class<? extends BaseMenu> menu) throws RoutingException;
-
-    abstract public void exitMenu() throws RoutingException;
 }

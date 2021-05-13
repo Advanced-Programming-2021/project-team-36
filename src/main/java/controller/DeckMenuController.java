@@ -1,35 +1,44 @@
 package controller;
 
+import Utils.RoutingException;
+import lombok.Getter;
 import model.User;
 import model.card.Card;
 import model.deck.Deck;
-import view.Context;
+import view.*;
 
 import java.util.Arrays;
 
-public class DeckMenuController {
-    public static void createDeck(Context context, String deckName) throws LogicException {
-        User user = context.getUser();
+
+public class DeckMenuController extends BaseMenuController {
+    @Getter
+    public static DeckMenuController instance;
+    private final User user;
+
+    public DeckMenuController(User user){
+        this.view = new DeckMenuView();
+        this.user = user;
+        instance = this;
+    }
+
+    public void createDeck(String deckName) throws LogicException {
         if (user.getDeckByName(deckName) != null)
             throw new LogicException(String.format("deck with name %s already exists", deckName));
         user.addDeck(new Deck(deckName));
         System.out.println("deck created successfully!");
     }
 
-    public static void deleteDeck(Context context, Deck deck) {
-        User user = context.getUser();
+    public void deleteDeck(Deck deck) {
         user.deleteDeck(deck);
         System.out.println("deck deleted successfully");
     }
 
-    public static void setActiveDeck(Context context, Deck deck) {
-        User user = context.getUser();
+    public void setActiveDeck(Deck deck) {
         user.setActiveDeck(deck);
         System.out.println("deck activated successfully");
     }
 
-    public static void addCardToDeck(Context context, Card card, Deck deck, boolean side) throws LogicException{
-        User user = context.getUser();
+    public void addCardToDeck(Card card, Deck deck, boolean side) throws LogicException{
         if (deck.getCardFrequency(card) >= user.getCardFrequency(card))
             throw new LogicException(String.format("you do not have enough %s card", deck.getName()));
         if (deck.getCardFrequency(card) == 3)
@@ -46,8 +55,7 @@ public class DeckMenuController {
         System.out.println("card added to deck successfully");
     }
 
-    public static void removeCardFromDeck(Context context, Card card, Deck deck, boolean side) throws LogicException {
-        User user = context.getUser();
+    public void removeCardFromDeck(Card card, Deck deck, boolean side) throws LogicException {
         if (!side) {
             if (deck.getMainDeck().getCardFrequency(card) == 0)
                 throw new LogicException(String.format("card with name %s does not exists in main deck", card.getName()));
@@ -60,15 +68,13 @@ public class DeckMenuController {
         System.out.println("card removed from deck successfully");
     }
 
-    public static void showDeck(Context context, Deck deck, boolean side) {
-        User user = context.getUser();
+    public void showDeck(Deck deck, boolean side) {
         System.out.println(deck.info(side));
     }
 
-    public static void showAllDecks(Context context) {
+    public void showAllDecks() {
         System.out.println("Decks:");
         System.out.println("Active deck:");
-        User user = context.getUser();
         Deck activeDeck = user.getActiveDeck();
         if (activeDeck != null)
             System.out.println(activeDeck);
@@ -76,8 +82,31 @@ public class DeckMenuController {
         Arrays.stream(user.getDecks().toArray()).sorted().filter(e -> e != activeDeck).forEach(System.out::println);
     }
 
-    public static void showAllCards(Context context) {
-        User user = context.getUser();
+    public void showAllCards() {
         Arrays.stream(user.getCards().toArray()).sorted().forEach(System.out::println);
     }
+
+    public Deck deckParser(String deckName) throws ParserException {
+        Deck deck = user.getDeckByName(deckName);
+        if (deck == null)
+            throw new ParserException(String.format("deck with name %s does not exists", deckName));
+        return deck;
+    }
+
+    @Override
+    public void exitMenu() throws RoutingException {
+        ProgramController.getInstance().navigateToMenu(MainMenuController.class);
+    }
+
+    @Override
+    public BaseMenuController getNavigatingMenuObject(Class<? extends BaseMenuController> menu) throws RoutingException {
+        if (menu.equals(this.getClass()))
+            throw new RoutingException("can't navigate to your current menu!");
+        if (menu.equals(LoginMenuController.class))
+            throw new RoutingException("you must logout for that!");
+        if (menu.equals(MainMenuController.class))
+            return MainMenuController.getInstance();
+        throw new RoutingException("menu navigation is not possible");
+    }
+
 }

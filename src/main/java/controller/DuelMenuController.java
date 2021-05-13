@@ -1,43 +1,51 @@
 package controller;
 
+import lombok.Getter;
 import model.Board;
 import model.CardAddress;
 import model.Game;
+import model.Player.AIPlayer;
 import model.Player.Player;
 import model.card.*;
 import model.enums.Phase;
 import model.enums.MonsterState;
 import model.enums.ZoneType;
-import view.Context;
-
+import view.*;
+import Utils.RoutingException;
 import java.util.List;
 
-public class DuelMenuController {
-    public static void selectCard(Context context, CardAddress cardAddress) throws LogicException {
-        Game game = context.getGame();
+public class DuelMenuController extends BaseMenuController {
+    @Getter
+    public static DuelMenuController instance;
+    private final Game game;
+
+    public DuelMenuController(Game game){
+        this.view = new DuelMenuView();
+        this.game = game;
+        instance = this;
+    }
+
+    public void selectCard(CardAddress cardAddress) throws LogicException {
         if (game.getCardByCardAddress(cardAddress) == null)
             throw new LogicException("no card found in the given position");
         game.selectCard(cardAddress);
         System.out.println("card selected");
     }
 
-    public static void deselectCard(Context context) throws LogicException {
-        Game game = context.getGame();
+    public void deselectCard() throws LogicException {
         if (game.getSelectedCardAddress() == null)
             throw new LogicException("no card is selected");
         game.unselectCard();
         System.out.println("card deselected");
     }
 
-    public static Card getSelectedCard(Context context) throws LogicException {
-        Game game = context.getGame();
+    public Card getSelectedCard() throws LogicException {
         if (!game.isAnyCardSelected())
             throw new LogicException("no card is selected");
         return game.getCardByCardAddress(game.getSelectedCardAddress());
     }
 
-    public static void printCurrentPhase(Context context) {
-        Game game = context.getGame();
+    public void printCurrentPhase() {
         if (game.getPhase() == Phase.DRAW_PHASE)
             System.out.println("phase: draw phase");
         else if (game.getPhase() == Phase.STANDBY_PHASE)
@@ -52,8 +60,7 @@ public class DuelMenuController {
             System.out.println("phase: end phase");
     }
 
-    public static void goNextPhase(Context context) throws LogicException {
-        Game game = context.getGame();
+    public void goNextPhase() throws LogicException {
         if (game.getPhase() == Phase.DRAW_PHASE)
             game.setPhase(Phase.STANDBY_PHASE);
         else if (game.getPhase() == Phase.STANDBY_PHASE)
@@ -70,37 +77,34 @@ public class DuelMenuController {
         if (game.isFirstTurn() && game.getPhase().equals(Phase.BATTLE_PHASE))
             game.setPhase(Phase.MAIN_PHASE2);
 
-        printCurrentPhase(context);
+        printCurrentPhase();
         if (game.getPhase() == Phase.END_PHASE) {
-            changeTurn(context);
+            changeTurn();
             game.setPhase(Phase.DRAW_PHASE);
-            printCurrentPhase(context);
-            drawCard(context);
+            printCurrentPhase();
+            drawCard();
         }
     }
 
-    public static void drawCard(Context context) throws LogicException {
-        Game game = context.getGame();
+    public void drawCard() throws LogicException {
         Card card = game.getCurrentPlayer().getMainDeck().getTopCard();
         if (card == null) {
-            endGame(context, game.getOpponentPlayer(), game.getCurrentPlayer());
+            endGame(game.getOpponentPlayer(), game.getCurrentPlayer());
             return;
         }
         game.getCurrentPlayer().getBoard().drawCardFromDeck();
         System.out.println(String.format("new card added to the hand : %s", card.getName()));
     }
 
-    public static void summonCard(Context context) throws LogicException {
-        Game game = context.getGame();
-
+    public void summonCard() throws LogicException {
         if (!game.isAnyCardSelected())
             throw new LogicException("no card is selected yet");
 
         CardAddress cardAddress = game.getSelectedCardAddress();
-        if (!cardAddress.isInHand() || getSelectedCard(context) instanceof Magic)
+        if (!cardAddress.isInHand() || getSelectedCard() instanceof Magic)
             throw new LogicException("you can't summon this card");
 
-        Monster monster = (Monster) getSelectedCard(context);
+        Monster monster = (Monster) getSelectedCard();
 
         if (!game.getPhase().equals(Phase.MAIN_PHASE1) && !game.getPhase().equals(Phase.MAIN_PHASE2))
             throw new LogicException("action not allowed in this phase");
@@ -123,25 +127,20 @@ public class DuelMenuController {
         }
     }
 
-    public static void setCard(Context context, Card card) {
-        Game game = context.getGame();
+    public void setCard(Card card) {
     }
 
-    public static void changeCardPosition(Context context, Card card, MonsterState monsterState) {
-        Game game = context.getGame();
+    public void changeCardPosition(Card card, MonsterState monsterState) {
     }
 
-    public static void flipSummon(Context context, Card card) {
-        Game game = context.getGame();
+    public void flipSummon(Card card) {
     }
 
-    private static void ritualSummon(Context context, Card card) {
-        Game game = context.getGame();
+    private void ritualSummon(Card card) {
     }
 
-    public static void attack(Context context, int id) throws LogicException {
-        Game game = context.getGame();
-        Card card = getSelectedCard(context);
+    public void attack(int id) throws LogicException {
+        Card card = getSelectedCard();
 
         if (card instanceof Magic)
             throw new LogicException("you can’t attack with this card");
@@ -154,15 +153,14 @@ public class DuelMenuController {
         if (opponentCard == null)
             throw new LogicException("there is no card to attack here");
 
-        damageStep(context, (Monster) card, (Monster) opponentCard);
+        damageStep((Monster) card, (Monster) opponentCard);
         if (game.getCurrentPlayer().getLifePoint() == 0)
-            endGame(context, game.getOpponentPlayer(), game.getCurrentPlayer());
+            endGame(game.getOpponentPlayer(), game.getCurrentPlayer());
         if (game.getOpponentPlayer().getLifePoint() == 0)
-            endGame(context, game.getCurrentPlayer(), game.getOpponentPlayer());
+            endGame(game.getCurrentPlayer(), game.getOpponentPlayer());
     }
 
-    public static void damageStep(Context context, Monster attacker, Monster defender) {
-        Game game = context.getGame();
+    public void damageStep(Monster attacker, Monster defender) {
         if (defender.getState().equals(MonsterState.OFFENSIVE_OCCUPIED)) {
             if (attacker.getAttackDamage() > defender.getAttackDamage()) {
                 int difference = attacker.getAttackDamage() - defender.getAttackDamage();
@@ -184,16 +182,13 @@ public class DuelMenuController {
         }
     }
 
-    public static void directAttack(Context context, Card card) {
-        Game game = context.getGame();
+    public void directAttack(Card card) {
     }
 
-    public static void activateEffect(Context context, Card card) {
-        Game game = context.getGame();
+    public void activateEffect(Card card) {
     }
 
-    public static void showGraveYard(Context context) {
-        Game game = context.getGame();
+    public void showGraveYard() {
         List<Card> graveYard = game.getCurrentPlayer().getBoard().getGraveYard();
         if (graveYard.isEmpty())
             System.out.println("graveyard empty");
@@ -201,8 +196,7 @@ public class DuelMenuController {
             System.out.println((i + 1) + ". " + graveYard.get(i).toString());
     }
 
-    public static void showBoard(Context context) {
-        Game game = context.getGame();
+    public void showBoard() {
         System.out.println(game.getOpponentPlayer().getUser().getNickname() + ":" + game.getOpponentPlayer().getLifePoint());
         System.out.println(game.getOpponentPlayer().getBoard().toString()); // TODO it should rotate 180 degree
         System.out.println();
@@ -212,34 +206,58 @@ public class DuelMenuController {
         System.out.println(game.getCurrentPlayer().getUser().getNickname() + ":" + game.getCurrentPlayer().getLifePoint());
     }
 
-    public static void showSelectedCard(Context context) throws LogicException {
-        Game game = context.getGame();
-        Card card = getSelectedCard(context);
+    public void showSelectedCard() throws LogicException {
+        Card card = getSelectedCard();
         System.out.println(card.toString());
     }
 
-    public static void showHand(Context context) {
-        Game game = context.getGame();
+    public void showHand() {
         List<Card> cards = game.getCurrentPlayer().getBoard().getCardsOnHand();
         for (int i = 0; i < cards.size(); i++)
             System.out.println(String.format("%d. %s", i + 1, cards.get(i).toString()));
     }
 
-    private static void surrender(Context context) {
-        Game game = context.getGame();
+    private void surrender(){
+
     }
 
-    private static void changeTurn(Context context) {
-        Game game = context.getGame();
+    private void changeTurn() {
         game.changeTurn();
         System.out.println(String.format("its %s's turn", game.getCurrentPlayer().getUser().getNickname()));
         game.setSummonedInThisTurn(false);
         game.unselectCard();
     }
 
-    private static void endGame(Context context, Player winner, Player loser) {
+    private void endGame(Player winner, Player loser) {
         winner.getUser().increaseScore(1000);
         winner.getUser().increaseBalance(1000 + winner.getLifePoint());
         loser.getUser().increaseBalance(100);
+    }
+
+    @Override
+    public void exitMenu() throws RoutingException {
+        ProgramController.getInstance().navigateToMenu(MainMenuController.class);
+    }
+
+    @Override
+    public BaseMenuController getNavigatingMenuObject(Class<? extends BaseMenuController> menu) throws RoutingException {
+        // you will not be able to exit until end of the game todo
+        if (Debugger.getMode())
+            throw new RoutingException("you cannot navigate out of an ongoing game");
+        throw new RoutingException("menu navigation is not possible");
+    }
+
+    @Override
+    public void control(){
+        if(game.getCurrentPlayer() instanceof AIPlayer) {
+            try {
+                ((AIPlayer) game.getCurrentPlayer()).play(game);
+            } catch (Exception e){
+                e.printStackTrace();
+            }
+        }
+        else {
+            this.view.runNextCommand();
+        }
     }
 }

@@ -1,39 +1,74 @@
 package controller;
 
-import Utils.Router;
 import Utils.RoutingException;
+import lombok.Getter;
 import model.Game;
 import model.ModelException;
 import model.Player.AIPlayer;
 import model.Player.HumanPlayer;
-import model.Player.Player;
 import model.User;
-import view.Context;
+import view.*;
 
-public class MainMenuController {
-    public static void startNewDuel(Context context, User secondUser, int round) throws RoutingException, ModelException {
-        context.startGame(new Game(
-                new HumanPlayer(context.getUser()),
+public class MainMenuController extends BaseMenuController {
+    @Getter
+    public static MainMenuController instance;
+    private final User user;
+
+    public MainMenuController(User user){
+        this.view = new MainMenuView();
+        this.user = user;
+        instance = this;
+    }
+
+    public void startNewDuel(User secondUser, int round) throws RoutingException, ModelException {
+        Game game = new Game(
+                new HumanPlayer(user),
                 new HumanPlayer(secondUser)
-        ));
-        System.out.printf("its %s's turn%n", context.getGame().getCurrentPlayer().getUser().getNickname());
-        DuelMenuController.printCurrentPhase(context);
-        Router.navigateToMenu(view.DuelMenu.class);
+        );
+        DuelMenuController controller = new DuelMenuController(game);
+        // this should be moved to duel todo
+        System.out.printf("its %s's turn%n", game.getCurrentPlayer().getUser().getNickname());
+        controller.printCurrentPhase();
+        ProgramController.getInstance().navigateToMenu(controller);
     }
 
-    public static void startDuelWithAI(Context context, int round) throws RoutingException, ModelException {
-        context.startGame(new Game(
-                new HumanPlayer(context.getUser()),
+    public void startDuelWithAI(int round) throws RoutingException, ModelException {
+        Game game = new Game(
+                new HumanPlayer(user),
                 new AIPlayer()
-        ));
-        System.out.printf("its %s's turn%n", context.getGame().getCurrentPlayer().getUser().getNickname());
-        DuelMenuController.printCurrentPhase(context);
-        Router.navigateToMenu(view.DuelMenu.class);
+        );
+        DuelMenuController controller = new DuelMenuController(game);
+        System.out.printf("its %s's turn%n", game.getCurrentPlayer().getUser().getNickname());
+        controller.printCurrentPhase();
+        ProgramController.getInstance().navigateToMenu(controller);
     }
 
-    public static void logout(Context context) throws RoutingException {
-        context.logout();
-        Router.navigateToMenu(view.LoginMenu.class);
+    public void logout() throws RoutingException {
+        ProgramController.getInstance().navigateToMenu(new LoginMenuController());
         System.out.println("user logged out successfully!");
+    }
+
+    @Override
+    public BaseMenuController getNavigatingMenuObject(Class<? extends BaseMenuController> menu) throws RoutingException {
+        if (menu.equals(LoginMenuController.class))
+            throw new RoutingException("you must logout for that!");
+        if (menu.equals(MainMenuController.class))
+            throw new RoutingException("can't navigate to your current menu!");
+        if (menu.equals(ProfileMenuController.class))
+            return new ProfileMenuController(user);
+        if (menu.equals(ScoreboardMenuController.class))
+            return new ScoreboardMenuController(user);
+        if (menu.equals(ShopMenuController.class))
+            return new ShopMenuController(user);
+        if (menu.equals(DeckMenuController.class))
+            return new DeckMenuController(user);
+        if (menu.equals(ImportAndExportMenuController.class))
+            return new ImportAndExportMenuController();
+        throw new RoutingException("menu navigation is not possible");
+    }
+
+    @Override
+    public void exitMenu() throws RoutingException {
+        MainMenuController.getInstance().logout();
     }
 }

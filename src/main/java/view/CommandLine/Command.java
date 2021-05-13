@@ -1,6 +1,6 @@
 package view.CommandLine;
 
-import Utils.ParserException;
+import view.ParserException;
 import Utils.RoutingException;
 import controller.LogicException;
 import model.ModelException;

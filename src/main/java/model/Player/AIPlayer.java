@@ -1,12 +1,12 @@
 package model.Player;
 
+import controller.DuelMenuController;
 import controller.LogicException;
 import model.Game;
 import model.ModelException;
 import model.User;
 import model.card.monsterCards.*;
 import model.deck.Deck;
-import view.Context;
 
 public class AIPlayer extends Player {
     public AIPlayer() throws ModelException {
@@ -42,6 +42,7 @@ public class AIPlayer extends Player {
         return user;
     }
     public void play(Game game) throws LogicException {
-        controller.DuelMenuController.goNextPhase(Context.getInstance());
+        DuelMenuController.getInstance().goNextPhase();
+        // change this!
     }
 }

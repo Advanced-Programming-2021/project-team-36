@@ -1,13 +1,21 @@
 package controller;
 
-import Utils.Router;
 import Utils.RoutingException;
+import lombok.Getter;
 import model.ModelException;
 import model.User;
-import view.Context;
+import view.*;
 
-public class LoginMenuController {
-    public static void createUser(Context context, String username, String nickname, String password) throws ModelException {
+public class LoginMenuController extends BaseMenuController {
+    @Getter
+    public static LoginMenuController instance;
+
+    public LoginMenuController(){
+        this.view = new LoginMenuView();
+        instance = this;
+    }
+
+    public void createUser(String username, String nickname, String password) throws ModelException {
         if (User.getUserByUsername(username) != null)
             throw new ModelException(String.format("user with username %s already exists", username));
         if (User.getUserByNickname(nickname) != null)
@@ -16,15 +24,28 @@ public class LoginMenuController {
         System.out.println("user created successfully!");
     }
 
-    public static void login(Context context, String username, String password) throws ModelException, RoutingException {
+    public void login(String username, String password) throws ModelException, RoutingException {
         User user = User.getUserByUsername(username);
         if (User.getUserByUsername(username) == null)
             throw new ModelException("Username and password didn’t match!");
         assert user != null;
         if (!user.authenticate(password))
             throw new ModelException("Username and password didn’t match!");
-        context.login(user);
-        Router.navigateToMenu(view.MainMenu.class);
+        ProgramController.getInstance().navigateToMenu(new MainMenuController(user));
         System.out.println("user logged in successfully!");
+    }
+
+    @Override
+    public BaseMenuController getNavigatingMenuObject(Class<? extends BaseMenuController> menu) throws RoutingException {
+        if (menu.equals(this.getClass()))
+            throw new RoutingException("can't navigate to your current menu!");
+        if (menu.equals(ImportAndExportMenuController.class))
+            return new ImportAndExportMenuController();
+        throw new RoutingException("please login first");
+    }
+
+    @Override
+    public void exitMenu() {
+        ProgramController.getInstance().programExit();
     }
 }

@@ -1,5 +1,6 @@
-package Utils;
+package view;
 
+import controller.*;
 import model.CardAddress;
 import model.User;
 import model.card.Card;
@@ -7,9 +8,6 @@ import model.card.Utils;
 import model.deck.Deck;
 import model.enums.MonsterState;
 import model.enums.ZoneType;
-import view.BaseMenu;
-import view.Context;
-import view.ImportAndExportMenu;
 
 public class Parser {
     public static User UserParser(String username) throws ParserException {
@@ -76,30 +74,23 @@ public class Parser {
         throw new ParserException("There is no card with this name");
     }
 
-    public static Deck deckParser(String deckName) throws ParserException {
-        Deck deck = Context.getInstance().getUser().getDeckByName(deckName);
-        if (deck == null)
-            throw new ParserException(String.format("deck with name %s does not exists", deckName));
-        return deck;
-    }
-
-    public static Class<? extends BaseMenu> menuParser(String menuName) throws ParserException {
+    public static Class<? extends BaseMenuController> menuParser(String menuName) throws ParserException {
         if (menuName.equalsIgnoreCase("Login"))
-            return view.LoginMenu.class;
+            return LoginMenuController.class;
         if (menuName.equalsIgnoreCase("Main"))
-            return view.MainMenu.class;
+            return MainMenuController.class;
         if (menuName.equalsIgnoreCase("Duel"))
-            return view.DuelMenu.class;
+            return DuelMenuController.class;
         if (menuName.equalsIgnoreCase("Deck"))
-            return view.DeckMenu.class;
+            return DeckMenuController.class;
         if (menuName.equalsIgnoreCase("Scoreboard"))
-            return view.ScoreboardMenu.class;
+            return ScoreboardMenuController.class;
         if (menuName.equalsIgnoreCase("Profile"))
-            return view.ProfileMenu.class;
+            return ProfileMenuController.class;
         if (menuName.equalsIgnoreCase("Shop"))
-            return view.ShopMenu.class;
+            return ShopMenuController.class;
         if (menuName.equalsIgnoreCase("Import/Export"))
-            return ImportAndExportMenu.class;
+            return ImportAndExportMenuController.class;
         throw new ParserException("invalid menu name");
     }
 }
