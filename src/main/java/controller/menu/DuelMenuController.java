@@ -141,9 +141,9 @@ public class DuelMenuController extends BaseMenuController {
     @Override
     public BaseMenuController getNavigatingMenuObject(Class<? extends BaseMenuController> menu) throws RoutingException {
         // you will not be able to exit until end of the game
-        if(game.isFinished() && menu.equals(MainMenuController.class))
+        if(menu.equals(MainMenuController.class))
             return MainMenuController.getInstance();
-        if(!game.isFinished() && !Debugger.getMode())
+        if(!Debugger.getMode())
             throw new RoutingException("you cannot navigate out of an ongoing game");
         throw new RoutingException("menu navigation is not possible");
     }
@@ -151,5 +151,6 @@ public class DuelMenuController extends BaseMenuController {
     @Override
     public void control(){
         gameController.control();
+        ProgramController.getInstance().navigateToMenu(MainMenuController.getInstance());
     }
 }

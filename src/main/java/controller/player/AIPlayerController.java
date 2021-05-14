@@ -39,4 +39,14 @@ public class AIPlayerController extends PlayerController {
     public void controlEndPhase() {
         GameController.getInstance().goNextPhase();
     }
+
+    @Override
+    public boolean askRespondToChain() {
+        return false;
+    }
+
+    @Override
+    public void doRespondToChain() {
+        // todo
+    }
 }

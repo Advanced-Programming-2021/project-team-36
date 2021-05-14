@@ -55,4 +55,15 @@ public class HumanPlayerController extends PlayerController {
     public void controlEndPhase() {
         runUntilEndOfPhase();
     }
+
+    @Override
+    public boolean askRespondToChain() {
+        return ((DuelMenuView) DuelMenuController.getInstance().getView()).askUser(
+                "Do you want to add a card to chain?");
+    }
+
+    @Override
+    public void doRespondToChain() {
+        // todo
+    }
 }

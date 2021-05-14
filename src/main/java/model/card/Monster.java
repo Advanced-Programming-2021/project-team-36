@@ -66,33 +66,31 @@ public class Monster extends Card {
         return true;
     }
 
-    public void onBeingAttackedByMonster(Monster attacker){
-        // todo are the responses ok? maybe we have to swap your and mine?
-        // todo remove this System.outs!
-        if (monsterState.equals(MonsterState.OFFENSIVE_OCCUPIED)) {
-            if (attacker.getAttackDamage() > this.getAttackDamage()) {
-                int difference = attacker.getAttackDamage() - this.getAttackDamage();
-                System.out.println(String.format("your opponent’s monster is destroyed and your opponent receives %d battle damage", difference));
-                GameController.getInstance().moveCardToGraveYard(this);
-                GameController.getInstance().decreaseLifePoint(this.owner, difference);
-            }
-            else if (attacker.getAttackDamage() == this.getAttackDamage()) {
-                System.out.println("both you and your opponent monster cards are destroyed and no one receives damage");
-                GameController.getInstance().moveCardToGraveYard(attacker);
-                GameController.getInstance().moveCardToGraveYard(this);
-            }
-            else {
-                int difference = this.getAttackDamage() - attacker.getAttackDamage();
-                System.out.println(String.format("Your monster card is destroyed and you received %s battle damage", difference));
-                GameController.getInstance().moveCardToGraveYard(attacker);
-                GameController.getInstance().decreaseLifePoint(attacker.owner, difference);
-            }
-        }
-        else if(monsterState.equals(MonsterState.DEFENSIVE_OCCUPIED)){
-            // todo complete this
-        }
-        else if(monsterState.equals(MonsterState.DEFENSIVE_HIDDEN)){
+    public Effect onBeingAttackedByMonster(Monster attacker){
+        return ()-> {
+            // todo are the responses ok? maybe we have to swap your and mine?
+            // todo remove this System.outs!
+            if (monsterState.equals(MonsterState.OFFENSIVE_OCCUPIED)) {
+                if (attacker.getAttackDamage() > this.getAttackDamage()) {
+                    int difference = attacker.getAttackDamage() - this.getAttackDamage();
+                    System.out.println(String.format("your opponent’s monster is destroyed and your opponent receives %d battle damage", difference));
+                    GameController.getInstance().moveCardToGraveYard(this);
+                    GameController.getInstance().decreaseLifePoint(this.owner, difference);
+                } else if (attacker.getAttackDamage() == this.getAttackDamage()) {
+                    System.out.println("both you and your opponent monster cards are destroyed and no one receives damage");
+                    GameController.getInstance().moveCardToGraveYard(attacker);
+                    GameController.getInstance().moveCardToGraveYard(this);
+                } else {
+                    int difference = this.getAttackDamage() - attacker.getAttackDamage();
+                    System.out.println(String.format("Your monster card is destroyed and you received %s battle damage", difference));
+                    GameController.getInstance().moveCardToGraveYard(attacker);
+                    GameController.getInstance().decreaseLifePoint(attacker.owner, difference);
+                }
+            } else if (monsterState.equals(MonsterState.DEFENSIVE_OCCUPIED)) {
+                // todo complete this
+            } else if (monsterState.equals(MonsterState.DEFENSIVE_HIDDEN)) {
 
-        }
+            }
+        };
     }
 }

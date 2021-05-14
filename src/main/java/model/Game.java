@@ -4,10 +4,13 @@ import lombok.Getter;
 import lombok.Setter;
 import model.Player.Player;
 import model.card.Card;
+import model.card.Effect;
 import model.card.Magic;
 import model.card.Monster;
 import model.enums.*;
+
 import java.util.Random;
+import java.util.Stack;
 
 public class Game {
     @Getter
@@ -22,6 +25,10 @@ public class Game {
 
     @Setter
     private boolean summonedInThisTurn;
+
+    @Getter
+    @Setter
+    private Stack<Effect> chain;
 
     public Game(Player firstPlayer, Player secondPlayer) throws ModelException {
         if (firstPlayer.getUser().getUsername().equals(secondPlayer.getUser().getUsername()))
@@ -87,14 +94,6 @@ public class Game {
 
     public void changeTurn() {
         turn++;
-    }
-
-    public boolean isFinished(){
-        if(getCurrentPlayer().getMainDeck().getTopCard() == null)
-            return true;
-        if(getCurrentPlayer().getLifePoint() <= 0)
-            return true;
-        return false;
     }
 
     public void moveCardToGraveYard(Card card){

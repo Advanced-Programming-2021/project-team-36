@@ -67,6 +67,11 @@ public class GameController {
             return playerController1;
         return playerController2;
     }
+    public PlayerController getOtherPlayerController(PlayerController playerController){
+        if(playerController.getPlayer().equals(playerController1.getPlayer()))
+            return playerController2;
+        return playerController1;
+    }
 
     private void changeTurn() {
         game.changeTurn();

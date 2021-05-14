@@ -10,6 +10,7 @@ import model.CardAddress;
 import model.Game;
 import model.Player.Player;
 import model.card.Card;
+import model.card.Effect;
 import model.card.Monster;
 import model.enums.MonsterState;
 import model.enums.Phase;
@@ -31,7 +32,8 @@ public abstract class PlayerController {
     abstract public void controlMainPhase2();
     abstract public void controlBattlePhase();
     abstract public void controlEndPhase();
-
+    abstract public boolean askRespondToChain();
+    abstract public void doRespondToChain(); // todo check if this action is invalid for chain
 
     public void summonCard(Monster monster) throws LogicException {
         Game game = GameController.getInstance().getGame();
@@ -62,6 +64,14 @@ public abstract class PlayerController {
         }
     }
 
+    public void startChain(){
+        // todo
+    }
+
+    protected void addEffectToChain(Effect effect){
+        GameController.getInstance().getGame().getChain().add(effect);
+    }
+
     public void setCard(Card card) {
         // todo
     }
@@ -90,7 +100,7 @@ public abstract class PlayerController {
         // TODO : check one card don't attack twice in a turn
         // error should be : this card already attacked
         assert myMonster != null && opponentMonster != null;
-        opponentMonster.onBeingAttackedByMonster(myMonster);
+        opponentMonster.onBeingAttackedByMonster(myMonster).run();
         GameController.getInstance().checkBothLivesEndGame();
     }
 

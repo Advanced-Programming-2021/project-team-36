@@ -1,5 +1,6 @@
 package view;
 
+import Utils.CustomScanner;
 import controller.CardSelector;
 import controller.menu.DuelMenuController;
 import view.CommandLine.Command;
@@ -126,6 +127,19 @@ public class DuelMenuView extends BaseMenuView {
                     DuelMenuController.getInstance().showBoard();
                 }
         ));
+    }
+
+    public boolean askUser(String question){
+        System.out.println(question + "(yes/no)");
+        String response = CustomScanner.nextLine();
+        while(true) {
+            if (response.equalsIgnoreCase("yes"))
+                return true;
+            else if (response.equalsIgnoreCase("no"))
+                return false;
+            else
+                System.out.println("yes or no?");
+        }
     }
 
     @Override
