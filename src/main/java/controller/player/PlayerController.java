@@ -28,12 +28,10 @@ public abstract class PlayerController {
     }
 
     // in one control cycle this must run until one phase!
-    abstract public void controlDrawPhase();
     abstract public void controlStandbyPhase();
     abstract public void controlMainPhase1();
     abstract public void controlMainPhase2();
     abstract public void controlBattlePhase();
-    abstract public void controlEndPhase();
     abstract public boolean askRespondToChain();
     abstract public void doRespondToChain(); // todo check if this action is invalid for chain
 

@@ -90,7 +90,6 @@ public class Monster extends Card {
             } else if (monsterState.equals(MonsterState.DEFENSIVE_OCCUPIED)) {
                 // todo complete this
             } else if (monsterState.equals(MonsterState.DEFENSIVE_HIDDEN)) {
-
             }
         };
     }

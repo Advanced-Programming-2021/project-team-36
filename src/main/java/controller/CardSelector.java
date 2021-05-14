@@ -34,7 +34,7 @@ public class CardSelector {
     }
 
     public Card getSelectedCard() throws LogicException {
-        if (isAnyCardSelected())
+        if (!isAnyCardSelected())
             throw new LogicException("no card is selected");
         return game.getCardByCardAddress(selectedCardAddress);
     }

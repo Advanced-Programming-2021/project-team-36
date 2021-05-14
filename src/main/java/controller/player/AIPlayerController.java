@@ -11,11 +11,6 @@ public class AIPlayerController extends PlayerController {
     // todo complete this
 
     @Override
-    public void controlDrawPhase() {
-        GameController.getInstance().goNextPhase();
-    }
-
-    @Override
     public void controlStandbyPhase() {
         GameController.getInstance().goNextPhase();
     }
@@ -32,11 +27,6 @@ public class AIPlayerController extends PlayerController {
 
     @Override
     public void controlBattlePhase() {
-        GameController.getInstance().goNextPhase();
-    }
-
-    @Override
-    public void controlEndPhase() {
         GameController.getInstance().goNextPhase();
     }
 

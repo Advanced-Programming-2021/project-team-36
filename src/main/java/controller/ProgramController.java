@@ -13,7 +13,7 @@ public class ProgramController {
     @Getter
     private BaseMenuController currentController;
 
-    public ProgramController(){
+    public ProgramController() {
         DatabaseHandler.importFromDatabase();
         currentController = new LoginMenuController();
         instance = this;
@@ -22,6 +22,7 @@ public class ProgramController {
     public void menuExit() throws RoutingException {
         this.currentController.exitMenu();
     }
+
     public void programExit() {
         if (Debugger.getCaptureMode()) {
             try {
@@ -37,11 +38,12 @@ public class ProgramController {
     public void navigateToMenu(Class<? extends BaseMenuController> menu) throws RoutingException {
         currentController = currentController.getNavigatingMenuObject(menu);
     }
-    public void navigateToMenu(BaseMenuController menuController){
+
+    public void navigateToMenu(BaseMenuController menuController) {
         currentController = menuController;
     }
 
-    public void control(){
+    public void control() {
         while (true)
             currentController.control();
     }
