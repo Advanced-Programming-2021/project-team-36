@@ -1,24 +1,33 @@
-package controller;
+package controller.menu;
 
 import Utils.RoutingException;
+import controller.ProgramController;
 import lombok.Getter;
 import model.User;
-import view.ImportAndExportMenuView;
+import view.ScoreboardMenuView;
 
-public class ImportAndExportMenuController extends BaseMenuController {
+import java.util.ArrayList;
+
+public class ScoreboardMenuController extends BaseMenuController {
     @Getter
-    public static ImportAndExportMenuController instance;
+    public static ScoreboardMenuController instance;
+    private final User user;
 
-    public ImportAndExportMenuController(){
-        this.view = new ImportAndExportMenuView();
+    public ScoreboardMenuController(User user){
+        this.view = new ScoreboardMenuView();
+        this.user = user;
         instance = this;
     }
 
-    public void importCard(User user, String cardName) {
-
-    }
-    public void exportCard(User user, String cardName) {
-
+    public void showScoreboard() {
+        ArrayList<User> users = User.retrieveUsersBasedOnScore();
+        int rank = 1;
+        for (int i = 0; i < users.size(); i++) {
+            User user = users.get(i);
+            if (i > 0 && users.get(i - 1).getScore() > user.getScore())
+                rank = i + 1;
+            System.out.println(rank + "- " + user.getNickname() + ": " + user.getScore());
+        }
     }
 
     @Override
@@ -36,4 +45,5 @@ public class ImportAndExportMenuController extends BaseMenuController {
             return MainMenuController.getInstance();
         throw new RoutingException("menu navigation is not possible");
     }
+
 }

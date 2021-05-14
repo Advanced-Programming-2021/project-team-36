@@ -1,7 +1,6 @@
 package view;
 
-import Utils.RoutingException;
-import controller.MainMenuController;
+import controller.menu.MainMenuController;
 import view.CommandLine.Command;
 
 public class MainMenuView extends BaseMenuView {
@@ -36,6 +35,16 @@ public class MainMenuView extends BaseMenuView {
                     MainMenuController.getInstance().logout();
                 }
         ));
+        this.cmd.addCommand(new Command(
+                "duel",
+                mp -> {
+                    MainMenuController.getInstance().startDuelDoubleAI(Parser.RoundParser(mp.get("round")));
+                },
+                Options.newRound(true),
+                Options.ai(true),
+                Options.round(true)
+        ));
+
     }
 
     @Override

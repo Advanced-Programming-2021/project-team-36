@@ -1,4 +1,4 @@
-package controller;
+package controller.menu;
 
 import Utils.RoutingException;
 import view.*;

@@ -1,6 +1,6 @@
 package view;
 
-import controller.ScoreboardMenuController;
+import controller.menu.ScoreboardMenuController;
 import view.CommandLine.Command;
 
 public class ScoreboardMenuView extends BaseMenuView {

@@ -1,6 +1,7 @@
-package controller;
+package controller.menu;
 
 import Utils.RoutingException;
+import controller.*;
 import lombok.Getter;
 import model.Game;
 import model.ModelException;
@@ -21,26 +22,36 @@ public class MainMenuController extends BaseMenuController {
     }
 
     public void startNewDuel(User secondUser, int round) throws RoutingException, ModelException {
-        Game game = new Game(
-                new HumanPlayer(user),
-                new HumanPlayer(secondUser)
+        ProgramController.getInstance().navigateToMenu(
+            new DuelMenuController(
+                    new Game(
+                            new HumanPlayer(user),
+                            new HumanPlayer(secondUser)
+                    )
+            )
         );
-        DuelMenuController controller = new DuelMenuController(game);
-        // this should be moved to duel todo
-        System.out.printf("its %s's turn%n", game.getCurrentPlayer().getUser().getNickname());
-        controller.printCurrentPhase();
-        ProgramController.getInstance().navigateToMenu(controller);
     }
 
     public void startDuelWithAI(int round) throws RoutingException, ModelException {
-        Game game = new Game(
-                new HumanPlayer(user),
-                new AIPlayer()
+        ProgramController.getInstance().navigateToMenu(
+                new DuelMenuController(
+                        new Game(
+                                new HumanPlayer(user),
+                                new AIPlayer()
+                        )
+                )
         );
-        DuelMenuController controller = new DuelMenuController(game);
-        System.out.printf("its %s's turn%n", game.getCurrentPlayer().getUser().getNickname());
-        controller.printCurrentPhase();
-        ProgramController.getInstance().navigateToMenu(controller);
+    }
+
+    public void startDuelDoubleAI(int round) throws RoutingException, ModelException {
+        ProgramController.getInstance().navigateToMenu(
+                new DuelMenuController(
+                        new Game(
+                                new AIPlayer(),
+                                new AIPlayer()
+                        )
+                )
+        );
     }
 
     public void logout() throws RoutingException {

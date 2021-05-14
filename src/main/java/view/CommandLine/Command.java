@@ -1,5 +1,6 @@
 package view.CommandLine;
 
+import controller.events.GameEvent;
 import view.ParserException;
 import Utils.RoutingException;
 import controller.LogicException;
@@ -56,7 +57,7 @@ public class Command {
         return true;
     }
 
-    void tryRunCommand(String commandString) throws CommandLineException, ParserException, ModelException, LogicException, RoutingException {
+    void tryRunCommand(String commandString) throws CommandLineException, ParserException, ModelException, LogicException, RoutingException, GameEvent {
         if (!initStringMatch(commandString))
             throw new InvalidCommandException();
         CommandLineParser parser = new GnuParser();

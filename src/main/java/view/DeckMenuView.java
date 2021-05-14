@@ -1,6 +1,6 @@
 package view;
 
-import controller.DeckMenuController;
+import controller.menu.DeckMenuController;
 import view.CommandLine.Command;
 
 public class DeckMenuView extends BaseMenuView {

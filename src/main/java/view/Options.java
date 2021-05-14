@@ -165,4 +165,9 @@ public class Options {
         return ret;
     }
 
+    static Option doubleAI(boolean required){
+        Option ret = new Option("double_ai", true, "double ai");
+        ret.setRequired(required);
+        return ret;
+    }
 }

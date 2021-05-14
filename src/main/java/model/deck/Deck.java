@@ -1,5 +1,6 @@
 package model.deck;
 
+import model.Player.Player;
 import model.card.Card;
 import model.deck.MainDeck;
 import model.deck.SideDeck;
@@ -79,5 +80,12 @@ public class Deck implements Comparable<Deck>, Cloneable {
         deck.mainDeck = mainDeck.clone();
         deck.sideDeck = sideDeck.clone();
         return deck;
+    }
+
+    public Deck readyForBattle(Player player){
+        // todo or only mainDeck should be ready for battle?
+        mainDeck.readyForBattle(player);
+        sideDeck.readyForBattle(player);
+        return this;
     }
 }

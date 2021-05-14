@@ -1,12 +1,11 @@
 package model.Player;
 
-import controller.DuelMenuController;
-import controller.LogicException;
-import model.Game;
 import model.ModelException;
 import model.User;
 import model.card.monsterCards.*;
 import model.deck.Deck;
+
+import java.util.Random;
 
 public class AIPlayer extends Player {
     public AIPlayer() throws ModelException {
@@ -16,7 +15,7 @@ public class AIPlayer extends Player {
         User user = User.getUserByUsername("artificial_intelligence");
         if(user != null)
             return user;
-        user = new User("artificial_intelligence", "Mr.AI", "thisIsAStrongPassword");
+        user = new User("artificial_intelligence" + new Random().nextInt(), "Mr.AI" + new Random().nextInt(), "thisIsAStrongPassword");
         try {
             user.buy(new AxeRaider());
             user.buy(new BattleOx());
@@ -40,9 +39,5 @@ public class AIPlayer extends Player {
         user.addDeck(deck);
         user.setActiveDeck(deck);
         return user;
-    }
-    public void play(Game game) throws LogicException {
-        DuelMenuController.getInstance().goNextPhase();
-        // change this!
     }
 }

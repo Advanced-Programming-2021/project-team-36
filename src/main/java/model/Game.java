@@ -1,5 +1,7 @@
 package model;
 
+import lombok.Getter;
+import lombok.Setter;
 import model.Player.Player;
 import model.card.Card;
 import model.card.Magic;
@@ -8,12 +10,18 @@ import model.enums.*;
 import java.util.Random;
 
 public class Game {
+    @Getter
     private final Player firstPlayer;
+    @Getter
     private final Player secondPlayer;
     private int turn;
+
+    @Getter
+    @Setter
     private Phase phase;
+
+    @Setter
     private boolean summonedInThisTurn;
-    private CardAddress selectedCardAddress;
 
     public Game(Player firstPlayer, Player secondPlayer) throws ModelException {
         if (firstPlayer.getUser().getUsername().equals(secondPlayer.getUser().getUsername()))
@@ -35,24 +43,12 @@ public class Game {
         }
         this.turn = 0;
         this.phase = Phase.STANDBY_PHASE;
+        // todo in nabayad draw phase bashe?
         this.summonedInThisTurn = false;
-        this.selectedCardAddress = null;
-    }
-
-    public Phase getPhase() {
-        return phase;
-    }
-
-    public void setPhase(Phase phase) {
-        this.phase = phase;
     }
 
     public boolean isFirstTurn() {
         return turn == 0;
-    }
-
-    public void setSummonedInThisTurn(boolean status) {
-        summonedInThisTurn = status;
     }
 
     public boolean isSummonedInThisTurn() {
@@ -64,10 +60,6 @@ public class Game {
             return getOpponentPlayer().getBoard().getCardByCardAddress(cardAddress);
         else
             return getCurrentPlayer().getBoard().getCardByCardAddress(cardAddress);
-    }
-
-    public CardAddress getSelectedCardAddress() {
-        return selectedCardAddress;
     }
 
     public Player getCurrentPlayer() {
@@ -84,22 +76,9 @@ public class Game {
             return firstPlayer;
     }
 
-    public void selectCard(CardAddress cardAddress) {
-        selectedCardAddress = cardAddress;
-    }
-
-    public void unselectCard() {
-        selectedCardAddress = null;
-    }
-
-    public boolean isAnyCardSelected() {
-        return selectedCardAddress != null;
-    }
-
-    public boolean canSelectedCardSummon() {
-        if (!selectedCardAddress.isInHand())
+    public boolean canCardBeSummoned(Card card) {
+        if(!getCurrentPlayer().hasInHand(card))
             return false;
-        Card card = getCardByCardAddress(selectedCardAddress);
         if (card instanceof Magic)
             return false;
         Monster monster = (Monster) card;
@@ -108,5 +87,19 @@ public class Game {
 
     public void changeTurn() {
         turn++;
+    }
+
+    public boolean isFinished(){
+        if(getCurrentPlayer().getMainDeck().getTopCard() == null)
+            return true;
+        if(getCurrentPlayer().getLifePoint() <= 0)
+            return true;
+        return false;
+    }
+
+    public void moveCardToGraveYard(Card card){
+        // exactly one of them contain this card
+        firstPlayer.getBoard().moveCardToGraveYard(card);
+        secondPlayer.getBoard().moveCardToGraveYard(card);
     }
 }

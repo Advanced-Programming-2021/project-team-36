@@ -1,5 +1,6 @@
 package view.CommandLine;
 
+import controller.events.GameEvent;
 import view.ParserException;
 import Utils.RoutingException;
 import controller.LogicException;
@@ -19,7 +20,7 @@ public class CommandLine {
         commandList.add(command);
     }
 
-    public void runNextCommand(String line) throws CommandLineException, ParserException, ModelException, LogicException, RoutingException {
+    public void runNextCommand(String line) throws CommandLineException, ParserException, ModelException, LogicException, RoutingException, GameEvent {
         for (Command command : commandList) {
             try {
                 command.tryRunCommand(line);

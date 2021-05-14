@@ -88,6 +88,7 @@ public class Board {
     }
 
     public void moveCardToGraveYard(Card card) {
+        // todo this choosing should be based on pointer value not equals method!
         if (fieldZoneCard == card) {
             graveYard.add(card);
             fieldZoneCard = null;

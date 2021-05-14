@@ -1,6 +1,6 @@
 package view;
 
-import controller.LoginMenuController;
+import controller.menu.LoginMenuController;
 import view.CommandLine.Command;
 
 public class LoginMenuView extends BaseMenuView {

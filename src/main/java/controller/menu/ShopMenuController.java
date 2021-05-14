@@ -1,5 +1,6 @@
-package controller;
+package controller.menu;
 
+import controller.ProgramController;
 import lombok.Getter;
 import model.ModelException;
 import model.User;

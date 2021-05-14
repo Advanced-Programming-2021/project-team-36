@@ -1,6 +1,6 @@
 package view;
 
-import controller.ShopMenuController;
+import controller.menu.ShopMenuController;
 import view.CommandLine.Command;
 
 public class ShopMenuView extends BaseMenuView {

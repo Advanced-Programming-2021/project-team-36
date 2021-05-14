@@ -1,11 +1,10 @@
 package view;
 
-import controller.*;
+import controller.menu.*;
 import model.CardAddress;
 import model.User;
 import model.card.Card;
 import model.card.Utils;
-import model.deck.Deck;
 import model.enums.MonsterState;
 import model.enums.ZoneType;
 

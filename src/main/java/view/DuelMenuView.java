@@ -1,12 +1,8 @@
 package view;
 
-import Utils.*;
-import controller.DuelMenuController;
-import controller.LogicException;
-import model.ModelException;
-import model.Player.AIPlayer;
+import controller.CardSelector;
+import controller.menu.DuelMenuController;
 import view.CommandLine.Command;
-import view.CommandLine.CommandLineException;
 
 public class DuelMenuView extends BaseMenuView {
     public DuelMenuView() {
@@ -19,7 +15,7 @@ public class DuelMenuView extends BaseMenuView {
         this.cmd.addCommand(new Command(
                 "select",
                 mp -> {
-                    DuelMenuController.getInstance().selectCard(Parser.cardAddressParser("monster", mp.get("monster"), mp.containsKey("opponent")));
+                    CardSelector.getInstance().selectCard(Parser.cardAddressParser("monster", mp.get("monster"), mp.containsKey("opponent")));
                 },
                 Options.monsterZone(true),
                 Options.opponent(false)
@@ -27,7 +23,7 @@ public class DuelMenuView extends BaseMenuView {
         this.cmd.addCommand(new Command(
                 "select",
                 mp -> {
-                    DuelMenuController.getInstance().selectCard(Parser.cardAddressParser("spell", mp.get("spell"), mp.containsKey("opponent")));
+                    CardSelector.getInstance().selectCard(Parser.cardAddressParser("spell", mp.get("spell"), mp.containsKey("opponent")));
                 },
                 Options.spellZone(true),
                 Options.opponent(false)
@@ -35,7 +31,7 @@ public class DuelMenuView extends BaseMenuView {
         this.cmd.addCommand(new Command(
                 "select",
                 mp -> {
-                    DuelMenuController.getInstance().selectCard(Parser.cardAddressParser("field", mp.get("field"), mp.containsKey("opponent")));
+                    CardSelector.getInstance().selectCard(Parser.cardAddressParser("field", mp.get("field"), mp.containsKey("opponent")));
                 },
                 Options.fieldZone(true),
                 Options.opponent(false)
@@ -43,14 +39,14 @@ public class DuelMenuView extends BaseMenuView {
         this.cmd.addCommand(new Command(
                 "select",
                 mp -> {
-                    DuelMenuController.getInstance().selectCard(Parser.cardAddressParser("hand", mp.get("hand"), mp.containsKey("opponent")));
+                    CardSelector.getInstance().selectCard(Parser.cardAddressParser("hand", mp.get("hand"), mp.containsKey("opponent")));
                 },
                 Options.handZone(true)
         ));
         this.cmd.addCommand(new Command(
                 "select",
                 mp -> {
-                    DuelMenuController.getInstance().deselectCard();
+                    CardSelector.getInstance().deselectCard();
                 },
                 Options.Deselect(true)
         ));
@@ -63,19 +59,19 @@ public class DuelMenuView extends BaseMenuView {
         this.cmd.addCommand(new Command(
                 "summon",
                 mp -> {
-                    DuelMenuController.getInstance().summonCard();
+                    DuelMenuController.getInstance().summonCard(CardSelector.getInstance().getSelectedCard());
                 }
         ));
         this.cmd.addCommand(new Command(
                 "set",
                 mp -> {
-                    DuelMenuController.getInstance().setCard(DuelMenuController.getInstance().getSelectedCard());
+                    DuelMenuController.getInstance().setCard(CardSelector.getInstance().getSelectedCard());
                 }
         ));
         this.cmd.addCommand(new Command(
                 "set",
                 mp -> {
-                    DuelMenuController.getInstance().changeCardPosition(DuelMenuController.getInstance().getSelectedCard(), Parser.cardStateParser(mp.get("position")));
+                    DuelMenuController.getInstance().changeCardPosition(CardSelector.getInstance().getSelectedCard(), Parser.cardStateParser(mp.get("position")));
                 },
                 Options.cardPosition(true)
         ));
@@ -84,25 +80,25 @@ public class DuelMenuView extends BaseMenuView {
         this.cmd.addCommand(new Command(
                 "attack direct",
                 mp -> {
-                    DuelMenuController.getInstance().directAttack(DuelMenuController.getInstance().getSelectedCard());
+                    DuelMenuController.getInstance().directAttack(CardSelector.getInstance().getSelectedCard());
                 }
         ));
         this.cmd.addCommand(new Command(
                 "attack [number]",
                 mp -> {
-                    DuelMenuController.getInstance().attack(Parser.monsterPositionIdParser(mp.get("number")));
+                    DuelMenuController.getInstance().attack(CardSelector.getInstance().getSelectedCard(), Parser.monsterPositionIdParser(mp.get("number")));
                 }
         ));
         this.cmd.addCommand(new Command(
                 "flip-summon",
                 mp -> {
-                    DuelMenuController.getInstance().flipSummon(DuelMenuController.getInstance().getSelectedCard());
+                    DuelMenuController.getInstance().flipSummon(CardSelector.getInstance().getSelectedCard());
                 }
         ));
         this.cmd.addCommand(new Command(
                 "activate effect",
                 mp -> {
-                    DuelMenuController.getInstance().activateEffect(DuelMenuController.getInstance().getSelectedCard());
+                    DuelMenuController.getInstance().activateEffect(CardSelector.getInstance().getSelectedCard());
                 }
         ));
         this.cmd.addCommand(new Command(
@@ -114,7 +110,7 @@ public class DuelMenuView extends BaseMenuView {
         this.cmd.addCommand(new Command(
                 "card show",
                 mp -> {
-                    DuelMenuController.getInstance().showSelectedCard();
+                    CardSelector.getInstance().showSelectedCard();
                 },
                 Options.selected(true)
         ));

@@ -1,5 +1,6 @@
 package model.deck;
 
+import model.Player.Player;
 import model.card.Card;
 import model.card.Magic;
 import model.card.Monster;
@@ -71,5 +72,12 @@ public class BaseDeck implements Cloneable {
             baseDeck.cards.add(card.clone());
         }
         return baseDeck;
+    }
+
+    public BaseDeck readyForBattle(Player player){
+        for(Card card: cards){
+            card.readyForBattle(player);
+        }
+        return this;
     }
 }

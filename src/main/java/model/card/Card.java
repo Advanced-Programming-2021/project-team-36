@@ -1,9 +1,18 @@
 package model.card;
 
+import model.Player.Player;
+
 public abstract class Card implements Comparable<Card>, Cloneable{
     protected String name;
     protected String description;
     protected int price;
+    public Player owner;
+    boolean isInBattle;
+
+    {
+        owner = null;
+        isInBattle = false;
+    }
 
     protected Card(String name, String description, int price) {
         this.name = name;
@@ -20,6 +29,12 @@ public abstract class Card implements Comparable<Card>, Cloneable{
 
     public int getPrice() {
         return price;
+    }
+
+    public Card readyForBattle(Player owner){
+        isInBattle = true;
+        this.owner = owner;
+        return this;
     }
 
     @Override

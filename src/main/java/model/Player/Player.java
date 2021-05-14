@@ -3,6 +3,7 @@ package model.Player;
 import model.Board;
 import model.ModelException;
 import model.User;
+import model.card.Card;
 import model.deck.*;
 import model.enums.Constants;
 
@@ -15,12 +16,12 @@ abstract public class Player {
     public Player(User user) throws ModelException {
         if (user.getActiveDeck() == null)
             throw new ModelException(String.format("%s has no active deck", user.getUsername()));
+        // todo remove this comments and add some tests that are compatible with this condition
 //        if (!user.getActiveDeck().getMainDeck().isValid())
 //            throw new ModelException(String.format("%s's active deck is not valid", user.getUsername()));
         this.user = user;
-        this.deck = user.getActiveDeck().clone();
-        this.board = new Board(user.getActiveDeck().getMainDeck().clone());
-        // the deck in board and this.deck are cloned and different objects
+        this.deck = user.getActiveDeck().clone().readyForBattle(this);
+        this.board = new Board(deck.getMainDeck());
         this.lifePoint = Constants.InitialLifePoint.val;
     }
 
@@ -50,5 +51,10 @@ abstract public class Player {
     
     public void decreaseLifePoint(int value) {
         this.lifePoint = Math.max(0, value);
+    }
+
+    public boolean hasInHand(Card card){
+        // todo implement this function with the help of POINTERS not EQUAL function
+        return true;
     }
 }
