@@ -13,7 +13,7 @@ import model.enums.MonsterState;
 import model.enums.ZoneType;
 import view.*;
 import Utils.RoutingException;
-
+import Utils.CustomPrinter;
 import java.util.List;
 
 // this class is responsible for passing everything to GameController.
@@ -36,7 +36,7 @@ public class DuelMenuController extends BaseMenuController {
     }
 
     public void printCurrentPhase() {
-        System.out.println("phase: " + game.getPhase().verboseName);
+        CustomPrinter.println("phase: " + game.getPhase().verboseName);
     }
 
     public void goNextPhase() {
@@ -108,25 +108,25 @@ public class DuelMenuController extends BaseMenuController {
     public void showGraveYard() {
         List<Card> graveYard = game.getCurrentPlayer().getBoard().getGraveYard();
         if (graveYard.isEmpty())
-            System.out.println("graveyard empty");
+            CustomPrinter.println("graveyard empty");
         for (int i = 0; i < graveYard.size(); i++)
-            System.out.println((i + 1) + ". " + graveYard.get(i).toString());
+            CustomPrinter.println((i + 1) + ". " + graveYard.get(i).toString());
     }
 
     public void showBoard() {
-        System.out.println(game.getOpponentPlayer().getUser().getNickname() + ":" + game.getOpponentPlayer().getLifePoint());
-        System.out.println(game.getOpponentPlayer().getBoard().toString()); // TODO it should rotate 180 degree
-        System.out.println();
-        System.out.println("--------------------------");
-        System.out.println();
-        System.out.println(game.getCurrentPlayer().getBoard().toString());
-        System.out.println(game.getCurrentPlayer().getUser().getNickname() + ":" + game.getCurrentPlayer().getLifePoint());
+        CustomPrinter.println(game.getOpponentPlayer().getUser().getNickname() + ":" + game.getOpponentPlayer().getLifePoint());
+        CustomPrinter.println(game.getOpponentPlayer().getBoard().toString()); // TODO it should rotate 180 degree
+        CustomPrinter.println();
+        CustomPrinter.println("--------------------------");
+        CustomPrinter.println();
+        CustomPrinter.println(game.getCurrentPlayer().getBoard().toString());
+        CustomPrinter.println(game.getCurrentPlayer().getUser().getNickname() + ":" + game.getCurrentPlayer().getLifePoint());
     }
 
     public void showHand() {
         List<Card> cards = game.getCurrentPlayer().getBoard().getCardsOnHand();
         for (int i = 0; i < cards.size(); i++)
-            System.out.printf("%d. %s%n", i + 1, cards.get(i).toString());
+            CustomPrinter.println(String.format("%d. %s%n", i + 1, cards.get(i).toString()));
     }
 
     private void surrender(){

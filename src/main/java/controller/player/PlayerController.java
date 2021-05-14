@@ -1,6 +1,8 @@
 package controller.player;
 
+import Utils.CustomPrinter;
 import controller.CardSelector;
+import controller.ChainController;
 import controller.GameController;
 import controller.LogicException;
 import controller.events.GameOver;
@@ -50,7 +52,7 @@ public abstract class PlayerController {
 
         // TODO : monster with higher level than 4
         game.setSummonedInThisTurn(true);
-        System.out.println("summoned successfully");
+        CustomPrinter.println("summoned successfully");
         Board board = game.getCurrentPlayer().getBoard();
         // todo is 5 hardcoded?
         for (int i = 1; i <= 5; i++) {
@@ -65,7 +67,8 @@ public abstract class PlayerController {
     }
 
     public void startChain(){
-        // todo
+        ChainController chainController = new ChainController(this);
+        chainController.control();
     }
 
     protected void addEffectToChain(Effect effect){
@@ -74,22 +77,27 @@ public abstract class PlayerController {
 
     public void setCard(Card card) {
         // todo
+        // todo you can call startChain here if you want
     }
 
     public void surrender(){
         // todo
+        // todo you can call startChain here if you want
     }
 
     public void changeCardPosition(Card card, MonsterState monsterState) {
         // todo
+        // todo you can call startChain here if you want
     }
 
     public void flipSummon(Card card) {
         // todo
+        // todo you can call startChain here if you want
     }
 
     public void ritualSummon(Card card) {
         // todo
+        // todo you can call startChain here if you want
     }
 
 
@@ -106,9 +114,11 @@ public abstract class PlayerController {
 
     public void directAttack(Card card) {
         // todo
+        // todo you can call startChain here if you want
     }
 
     public void activateEffect(Card card) {
         // todo
+        // todo you can call startChain here if you want
     }
 }

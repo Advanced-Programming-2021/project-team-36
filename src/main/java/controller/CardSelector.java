@@ -1,5 +1,6 @@
 package controller;
 
+import Utils.CustomPrinter;
 import lombok.Getter;
 import model.CardAddress;
 import model.Game;
@@ -22,14 +23,14 @@ public class CardSelector {
         if (game.getCardByCardAddress(cardAddress) == null)
             throw new LogicException("no card found in the given position");
         selectedCardAddress = cardAddress;
-        System.out.println("card selected");
+        CustomPrinter.println("card selected");
     }
 
     public void deselectCard() throws LogicException {
         if (selectedCardAddress == null)
             throw new LogicException("no card is selected");
         selectedCardAddress = null;
-        System.out.println("card deselected");
+        CustomPrinter.println("card deselected");
     }
 
     public Card getSelectedCard() throws LogicException {
@@ -39,7 +40,7 @@ public class CardSelector {
     }
 
     public void showSelectedCard() throws LogicException {
-        System.out.println(getSelectedCard().toString());
+        CustomPrinter.println(getSelectedCard().toString());
     }
 
     public boolean isAnyCardSelected() {

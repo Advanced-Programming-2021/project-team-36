@@ -1,5 +1,7 @@
 package controller.menu;
 
+import Utils.CustomPrinter;
+import Utils.CustomScanner;
 import Utils.RoutingException;
 import controller.LogicException;
 import controller.ProgramController;
@@ -27,17 +29,17 @@ public class DeckMenuController extends BaseMenuController {
         if (user.getDeckByName(deckName) != null)
             throw new LogicException(String.format("deck with name %s already exists", deckName));
         user.addDeck(new Deck(deckName));
-        System.out.println("deck created successfully!");
+        CustomPrinter.println("deck created successfully!");
     }
 
     public void deleteDeck(Deck deck) {
         user.deleteDeck(deck);
-        System.out.println("deck deleted successfully");
+        CustomPrinter.println("deck deleted successfully");
     }
 
     public void setActiveDeck(Deck deck) {
         user.setActiveDeck(deck);
-        System.out.println("deck activated successfully");
+        CustomPrinter.println("deck activated successfully");
     }
 
     public void addCardToDeck(Card card, Deck deck, boolean side) throws LogicException{
@@ -54,7 +56,7 @@ public class DeckMenuController extends BaseMenuController {
                 throw new LogicException("side deck is full");
             deck.getSideDeck().addCard(card);
         }
-        System.out.println("card added to deck successfully");
+        CustomPrinter.println("card added to deck successfully");
     }
 
     public void removeCardFromDeck(Card card, Deck deck, boolean side) throws LogicException {
@@ -67,25 +69,25 @@ public class DeckMenuController extends BaseMenuController {
                 throw new LogicException(String.format("card with name %s does not exists in side deck", card.getName()));
             deck.getSideDeck().removeCard(card);
         }
-        System.out.println("card removed from deck successfully");
+        CustomPrinter.println("card removed from deck successfully");
     }
 
     public void showDeck(Deck deck, boolean side) {
-        System.out.println(deck.info(side));
+        CustomPrinter.println(deck.info(side));
     }
 
     public void showAllDecks() {
-        System.out.println("Decks:");
-        System.out.println("Active deck:");
+        CustomPrinter.println("Decks:");
+        CustomPrinter.println("Active deck:");
         Deck activeDeck = user.getActiveDeck();
         if (activeDeck != null)
-            System.out.println(activeDeck);
-        System.out.println("Other decks:");
-        Arrays.stream(user.getDecks().toArray()).sorted().filter(e -> e != activeDeck).forEach(System.out::println);
+            CustomPrinter.println(activeDeck);
+        CustomPrinter.println("Other decks:");
+        Arrays.stream(user.getDecks().toArray()).sorted().filter(e -> e != activeDeck).forEach(CustomPrinter::println);
     }
 
     public void showAllCards() {
-        Arrays.stream(user.getCards().toArray()).sorted().forEach(System.out::println);
+        Arrays.stream(user.getCards().toArray()).sorted().forEach(CustomPrinter::println);
     }
 
     public Deck deckParser(String deckName) throws ParserException {

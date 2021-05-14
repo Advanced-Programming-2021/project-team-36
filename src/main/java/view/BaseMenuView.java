@@ -24,7 +24,7 @@ abstract public class BaseMenuView {
                 Debugger.captureCommand(line);
             this.cmd.runNextCommand(line);
         } catch (CommandLineException | ParserException | ModelException | LogicException | RoutingException | GameEvent e) {
-            System.out.println(e.getMessage());
+            CustomPrinter.println(e.getMessage());
         }
     }
 
@@ -44,7 +44,7 @@ abstract public class BaseMenuView {
         this.cmd.addCommand(new Command(
                 "menu show-current",
                 mp -> {
-                    System.out.println(getMenuName());
+                    CustomPrinter.println(getMenuName());
                 }
         ));
         this.cmd.addCommand(new Command(

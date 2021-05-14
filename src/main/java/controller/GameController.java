@@ -1,5 +1,6 @@
 package controller;
 
+import Utils.CustomPrinter;
 import controller.events.GameOver;
 import controller.player.AIPlayerController;
 import controller.player.HumanPlayerController;
@@ -41,7 +42,7 @@ public class GameController {
         if (card == null)
             throw new GameOver(GameResult.LOOSE, game.getCurrentPlayer(), game.getOpponentPlayer());
         game.getCurrentPlayer().getBoard().drawCardFromDeck();
-        System.out.printf("new card added to the hand : %s%n", card.getName());
+        CustomPrinter.println(String.format("new card added to the hand : %s%n", card.getName()));
     }
     public void checkBothLivesEndGame() throws GameOver {
         if (game.getCurrentPlayer().getLifePoint() <= 0 && game.getOpponentPlayer().getLifePoint() <= 0)
@@ -103,7 +104,7 @@ public class GameController {
             new CardSelector(game);
             try {
                 if(game.getPhase().equals(Phase.DRAW_PHASE)) {
-                    System.out.printf("its %s's turn%n", game.getCurrentPlayer().getUser().getNickname());
+                    CustomPrinter.println(String.format("its %s's turn%n", game.getCurrentPlayer().getUser().getNickname()));
                     drawCard();
                     getCurrentPlayerController().controlDrawPhase();
                 } else if(game.getPhase().equals(Phase.STANDBY_PHASE)){

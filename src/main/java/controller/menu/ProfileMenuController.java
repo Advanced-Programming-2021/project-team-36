@@ -1,5 +1,6 @@
 package controller.menu;
 
+import Utils.CustomPrinter;
 import Utils.RoutingException;
 import controller.ProgramController;
 import lombok.Getter;
@@ -20,23 +21,23 @@ public class ProfileMenuController extends BaseMenuController {
 
     public void changeNickname(String nickname) {
         if (User.getUserByNickname(nickname) != null) {
-            System.out.println("user with nickname " + nickname + " already exists");
+            CustomPrinter.println("user with nickname " + nickname + " already exists");
         }
         user.setNickname(nickname);
-        System.out.println("nickname changed successfully!");
+        CustomPrinter.println("nickname changed successfully!");
     }
 
     public void changePassword(String oldPassword, String newPassword) {
         if (!user.authenticate(oldPassword)) {
-            System.out.println("current password is invalid");
+            CustomPrinter.println("current password is invalid");
             return;
         }
         if (user.getPassword().equals(newPassword)) {
-            System.out.println("please enter a new password");
+            CustomPrinter.println("please enter a new password");
             return;
         }
         user.setPassword(newPassword);
-        System.out.println("password changed successfully!");
+        CustomPrinter.println("password changed successfully!");
     }
     @Override
     public void exitMenu() throws RoutingException {

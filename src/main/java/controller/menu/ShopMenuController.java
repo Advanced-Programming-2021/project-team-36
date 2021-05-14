@@ -10,6 +10,7 @@ import model.card.Utils;
 import java.util.Arrays;
 
 import Utils.RoutingException;
+import Utils.CustomPrinter;
 import view.ShopMenuView;
 
 public class ShopMenuController extends BaseMenuController {
@@ -30,7 +31,7 @@ public class ShopMenuController extends BaseMenuController {
     }
 
     public void showAll() {
-        Arrays.stream(Utils.getAllCards()).sorted().forEach(System.out::println);
+        Arrays.stream(Utils.getAllCards()).sorted().forEach(CustomPrinter::println);
     }
 
     @Override
@@ -48,5 +49,4 @@ public class ShopMenuController extends BaseMenuController {
             return MainMenuController.getInstance();
         throw new RoutingException("menu navigation is not possible");
     }
-
 }

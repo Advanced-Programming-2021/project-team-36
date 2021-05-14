@@ -1,5 +1,6 @@
 package controller.menu;
 
+import Utils.CustomPrinter;
 import Utils.RoutingException;
 import controller.*;
 import lombok.Getter;
@@ -56,7 +57,7 @@ public class MainMenuController extends BaseMenuController {
 
     public void logout() throws RoutingException {
         ProgramController.getInstance().navigateToMenu(new LoginMenuController());
-        System.out.println("user logged out successfully!");
+        CustomPrinter.println("user logged out successfully!");
     }
 
     @Override

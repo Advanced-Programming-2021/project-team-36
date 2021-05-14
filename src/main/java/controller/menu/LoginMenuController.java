@@ -1,5 +1,6 @@
 package controller.menu;
 
+import Utils.CustomPrinter;
 import Utils.RoutingException;
 import controller.ProgramController;
 import lombok.Getter;
@@ -22,7 +23,7 @@ public class LoginMenuController extends BaseMenuController {
         if (User.getUserByNickname(nickname) != null)
             throw new ModelException(String.format("user with nickname %s already exists", username));
         new User(username, nickname, password);
-        System.out.println("user created successfully!");
+        CustomPrinter.println("user created successfully!");
     }
 
     public void login(String username, String password) throws ModelException, RoutingException {
@@ -33,7 +34,7 @@ public class LoginMenuController extends BaseMenuController {
         if (!user.authenticate(password))
             throw new ModelException("Username and password didn’t match!");
         ProgramController.getInstance().navigateToMenu(new MainMenuController(user));
-        System.out.println("user logged in successfully!");
+        CustomPrinter.println("user logged in successfully!");
     }
 
     @Override

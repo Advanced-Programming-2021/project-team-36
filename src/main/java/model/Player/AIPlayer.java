@@ -1,5 +1,6 @@
 package model.Player;
 
+import Utils.CustomPrinter;
 import model.ModelException;
 import model.User;
 import model.card.monsterCards.*;
@@ -23,7 +24,7 @@ public class AIPlayer extends Player {
             user.buy(new HornImp());
             user.buy(new SilverFang());
         } catch (ModelException e) {
-            System.out.println("error in constructing ai");
+            CustomPrinter.println("error in constructing ai");
         }
         Deck deck = new Deck("aiDeck");
         deck.getMainDeck().addCard(new AxeRaider());

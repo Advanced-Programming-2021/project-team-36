@@ -1,5 +1,6 @@
 package controller.menu;
 
+import Utils.CustomPrinter;
 import Utils.RoutingException;
 import controller.ProgramController;
 import lombok.Getter;
@@ -26,7 +27,7 @@ public class ScoreboardMenuController extends BaseMenuController {
             User user = users.get(i);
             if (i > 0 && users.get(i - 1).getScore() > user.getScore())
                 rank = i + 1;
-            System.out.println(rank + "- " + user.getNickname() + ": " + user.getScore());
+            CustomPrinter.println(rank + "- " + user.getNickname() + ": " + user.getScore());
         }
     }
 

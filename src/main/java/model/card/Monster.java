@@ -6,6 +6,7 @@ import model.enums.MonsterAttribute;
 import model.enums.MonsterCardType;
 import model.enums.MonsterType;
 import model.enums.MonsterState;
+import Utils.CustomPrinter;
 
 public class Monster extends Card {
     // this should be abstract too. todo
@@ -73,16 +74,16 @@ public class Monster extends Card {
             if (monsterState.equals(MonsterState.OFFENSIVE_OCCUPIED)) {
                 if (attacker.getAttackDamage() > this.getAttackDamage()) {
                     int difference = attacker.getAttackDamage() - this.getAttackDamage();
-                    System.out.println(String.format("your opponent’s monster is destroyed and your opponent receives %d battle damage", difference));
+                    CustomPrinter.println(String.format("your opponent’s monster is destroyed and your opponent receives %d battle damage", difference));
                     GameController.getInstance().moveCardToGraveYard(this);
                     GameController.getInstance().decreaseLifePoint(this.owner, difference);
                 } else if (attacker.getAttackDamage() == this.getAttackDamage()) {
-                    System.out.println("both you and your opponent monster cards are destroyed and no one receives damage");
+                    CustomPrinter.println("both you and your opponent monster cards are destroyed and no one receives damage");
                     GameController.getInstance().moveCardToGraveYard(attacker);
                     GameController.getInstance().moveCardToGraveYard(this);
                 } else {
                     int difference = this.getAttackDamage() - attacker.getAttackDamage();
-                    System.out.println(String.format("Your monster card is destroyed and you received %s battle damage", difference));
+                    CustomPrinter.println(String.format("Your monster card is destroyed and you received %s battle damage", difference));
                     GameController.getInstance().moveCardToGraveYard(attacker);
                     GameController.getInstance().decreaseLifePoint(attacker.owner, difference);
                 }

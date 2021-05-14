@@ -19,7 +19,7 @@ public class DatabaseHandler {
             } catch (Exception exception) {
             }
         } catch (IOException exception) {
-            System.out.println("failed to read from the database");
+            CustomPrinter.println("failed to read from the database");
             return;
         }
     }
@@ -37,7 +37,7 @@ public class DatabaseHandler {
             bufferedWriter.flush();
             bufferedWriter.close();
         } catch (IOException exception) {
-            System.out.println("failed to save to database");
+            CustomPrinter.println("failed to save to database");
             return;
         }
     }

@@ -1,11 +1,17 @@
 package view;
 
+import Utils.CustomPrinter;
 import Utils.CustomScanner;
+import lombok.Getter;
+import lombok.Setter;
 import view.CommandLine.InvalidCommandException;
 
 import java.io.*;
 
 public class Debugger {
+    @Getter
+    @Setter
+    private static boolean testMode = false;
     private static boolean mode = false;
     private static boolean captureMode = false;
     private static int currentTestBatch = 1;
@@ -17,7 +23,7 @@ public class Debugger {
             throw new InvalidCommandException();
         boolean mode = modeAsString.equals("on");
         if (Debugger.mode == mode) {
-            System.out.println(String.format("debug mode is already set to %s", modeAsString));
+            CustomPrinter.println(String.format("debug mode is already set to %s", modeAsString));
             return;
         }
         Debugger.mode = mode;
@@ -40,7 +46,7 @@ public class Debugger {
             throw new InvalidCommandException();
         boolean captureMode = captureModeAsString.equals("on");
         if (Debugger.captureMode == captureMode) {
-            System.out.println(String.format("debug capture mode is already set to %", captureModeAsString));
+            CustomPrinter.println(String.format("debug capture mode is already set to %", captureModeAsString));
             return;
         }
         Debugger.captureMode = captureMode;
@@ -56,8 +62,8 @@ public class Debugger {
         try {
             bufferedWriter = new BufferedWriter(new FileWriter(testFileHeader + currentTestBatch + ".txt"));
         } catch (IOException exception) {
-            System.out.println(exception);
-            System.out.println("failed to create a test file");
+            CustomPrinter.println(exception);
+            CustomPrinter.println("failed to create a test file");
             captureMode = false;
             return;
         }
@@ -68,7 +74,7 @@ public class Debugger {
             bufferedWriter.flush();
             bufferedWriter.close();
         } catch (IOException exception) {
-            System.out.println("failed to close the test file");
+            CustomPrinter.println("failed to close the test file");
             captureMode = true;
             return;
         }
@@ -80,7 +86,7 @@ public class Debugger {
         try {
             bufferedWriter.write(command + "\n");
         } catch (IOException exception) {
-            System.out.println("failed to write into the test file");
+            CustomPrinter.println("failed to write into the test file");
             return;
         }
     }
