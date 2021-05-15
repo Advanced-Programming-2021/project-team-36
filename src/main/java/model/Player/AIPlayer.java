@@ -1,6 +1,6 @@
 package model.Player;
 
-import Utils.CustomPrinter;
+import utils.CustomPrinter;
 import model.ModelException;
 import model.User;
 import model.card.monsterCards.*;

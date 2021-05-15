@@ -5,8 +5,8 @@ import model.enums.MonsterAttribute;
 import model.enums.MonsterCardType;
 import model.enums.MonsterType;
 import model.enums.MonsterState;
-import Utils.CustomPrinter;
-import Utils.ClassFinder;
+import utils.CustomPrinter;
+import utils.ClassFinder;
 
 import java.util.TreeMap;
 
@@ -20,7 +20,7 @@ public class Monster extends Card {
     protected MonsterState monsterState = null;
     protected int level;
     private static TreeMap<String, TreeMap<String, String>> monstersData = new TreeMap<>();
-    private static Class[] specialMonsterClasses = ClassFinder.getClasses("model.card.monsterCards");
+    private static Class[] specialMonstersClasses = ClassFinder.getClasses("model.card.monsterCards");
 
     protected Monster(String name, String description, int price, int attackDamage, int defenseRate, MonsterAttribute attribute, MonsterType monsterType, MonsterCardType monsterCardType, int level) {
         super(name, description, price);
@@ -40,9 +40,9 @@ public class Monster extends Card {
 
     public static Monster getMonster(String name) {
         System.out.println(name);
-        if (specialMonsterClasses != null)
-            for (Class specialMonsterClass : specialMonsterClasses) {
-                if (specialMonsterClass.getName().replaceAll(".*\\.", "").equals(name))
+        if (specialMonstersClasses != null)
+            for (Class specialMonsterClass : specialMonstersClasses) {
+                if (specialMonsterClass.getName().replaceAll(".*\\.", "").equals(Utils.formatClassName(name)))
                     try {
                         return (Monster) specialMonsterClass.getConstructor().newInstance();
                     } catch (Exception exception) {
@@ -52,7 +52,7 @@ public class Monster extends Card {
         TreeMap<String, String> monsterData = monstersData.get(name);
         if (!monsterData.get("Card Type").equals("Normal"))
             return null;
-        Monster monster = new Monster(monsterData.get("Name"),
+        return new Monster(monsterData.get("Name"),
                 monsterData.get("Description"),
                 Integer.parseInt(monsterData.get("Price")),
                 Integer.parseInt(monsterData.get("Atk")),
@@ -61,7 +61,6 @@ public class Monster extends Card {
                 MonsterType.valueOf(monsterData.get("Monster Type").toUpperCase().replaceAll("-", "")),
                 MonsterCardType.valueOf(monsterData.get("Card Type").toUpperCase()),
                 Integer.parseInt(monsterData.get("Level")));
-        return monster;
     }
 
     @Override

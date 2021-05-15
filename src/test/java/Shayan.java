@@ -1,10 +1,10 @@
-import Utils.CustomPrinter;
-import Utils.CustomScanner;
+import utils.CustomPrinter;
+import utils.CustomScanner;
 import controller.ProgramController;
 import controller.menu.BaseMenuController;
 import org.junit.Before;
 import org.junit.jupiter.api.Assertions;
-import Utils.Debugger;
+import utils.Debugger;
 
 public class Shayan {
     public final ProgramController controller;

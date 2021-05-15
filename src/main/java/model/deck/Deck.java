@@ -88,4 +88,8 @@ public class Deck implements Comparable<Deck>, Cloneable {
         sideDeck.readyForBattle(player);
         return this;
     }
+
+    public void save() {
+        // TODO
+    }
 }
