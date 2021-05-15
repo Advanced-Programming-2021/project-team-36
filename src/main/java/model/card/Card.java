@@ -2,12 +2,15 @@ package model.card;
 
 import model.Player.Player;
 
+import java.util.TreeMap;
+
 public abstract class Card implements Comparable<Card>, Cloneable{
     protected String name;
     protected String description;
     protected int price;
     public Player owner;
     boolean isInBattle;
+    private static TreeMap<String, String> cardsData = new TreeMap();
 
     {
         owner = null;
@@ -19,6 +22,20 @@ public abstract class Card implements Comparable<Card>, Cloneable{
         this.description = description;
         this.price = price;
     }
+
+    public static void addCard(String type, String name) {
+        cardsData.put(name, type);
+    }
+
+    public static Card getCard(String name) {
+        if (!cardsData.containsKey(name))
+            return null;
+        if (cardsData.get(name).equals("Monster"))
+            return Monster.getMonster(name);
+        // TODO : for other types of cards, like spells.
+        return null;
+    }
+
     public String getName() {
         return name;
     }

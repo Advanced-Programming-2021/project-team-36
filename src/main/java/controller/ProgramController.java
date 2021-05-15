@@ -5,7 +5,7 @@ import Utils.RoutingException;
 import controller.menu.BaseMenuController;
 import controller.menu.LoginMenuController;
 import lombok.Getter;
-import view.Debugger;
+import Utils.Debugger;
 
 public class ProgramController {
     @Getter

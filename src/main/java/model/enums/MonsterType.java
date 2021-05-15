@@ -7,4 +7,5 @@ public enum MonsterType {
     FIEND,
     BEAST,
     PYRO,
+    DRAGON,
 }

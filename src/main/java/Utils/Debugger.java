@@ -1,7 +1,5 @@
-package view;
+package Utils;
 
-import Utils.CustomPrinter;
-import Utils.CustomScanner;
 import lombok.Getter;
 import lombok.Setter;
 import view.CommandLine.InvalidCommandException;

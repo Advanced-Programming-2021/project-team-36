@@ -1,11 +1,9 @@
 import Utils.CustomPrinter;
 import Utils.CustomScanner;
 import controller.ProgramController;
-import lombok.Getter;
 import org.junit.Before;
 import org.junit.jupiter.api.Assertions;
-import org.junit.jupiter.api.BeforeAll;
-import view.Debugger;
+import Utils.Debugger;
 
 public class Shayan {
     public final ProgramController controller;

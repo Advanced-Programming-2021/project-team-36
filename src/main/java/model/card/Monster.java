@@ -1,15 +1,17 @@
 package model.card;
 
 import controller.GameController;
-import controller.menu.DuelMenuController;
 import model.enums.MonsterAttribute;
 import model.enums.MonsterCardType;
 import model.enums.MonsterType;
 import model.enums.MonsterState;
 import Utils.CustomPrinter;
+import Utils.ClassFinder;
+
+import java.util.TreeMap;
 
 public class Monster extends Card {
-    // this should be abstract too. todo
+    // this should be abstract too. todo // no it should not.
     protected int attackDamage;
     protected int defenseRate;
     protected MonsterAttribute attribute;
@@ -17,6 +19,8 @@ public class Monster extends Card {
     protected MonsterCardType monsterCardType;
     protected MonsterState monsterState = null;
     protected int level;
+    private static TreeMap<String, TreeMap<String, String>> monstersData = new TreeMap<>();
+    private static Class[] specialMonsterClasses = ClassFinder.getClasses("model.card.monsterCards");
 
     protected Monster(String name, String description, int price, int attackDamage, int defenseRate, MonsterAttribute attribute, MonsterType monsterType, MonsterCardType monsterCardType, int level) {
         super(name, description, price);
@@ -27,6 +31,37 @@ public class Monster extends Card {
         this.monsterCardType = monsterCardType;
         this.monsterState = null;
         this.level = level;
+    }
+
+    public static void addMonsterData(TreeMap<String, String> monsterData) {
+        Card.addCard("Monster", monsterData.get("Name"));
+        monstersData.put(monsterData.get("Name"), monsterData);
+    }
+
+    public static Monster getMonster(String name) {
+        System.out.println(name);
+        if (specialMonsterClasses != null)
+            for (Class specialMonsterClass : specialMonsterClasses) {
+                if (specialMonsterClass.getName().replaceAll(".*\\.", "").equals(name))
+                    try {
+                        return (Monster) specialMonsterClass.getConstructor().newInstance();
+                    } catch (Exception exception) {
+                        return null;
+                    }
+            }
+        TreeMap<String, String> monsterData = monstersData.get(name);
+        if (!monsterData.get("Card Type").equals("Normal"))
+            return null;
+        Monster monster = new Monster(monsterData.get("Name"),
+                monsterData.get("Description"),
+                Integer.parseInt(monsterData.get("Price")),
+                Integer.parseInt(monsterData.get("Atk")),
+                Integer.parseInt(monsterData.get("Def")),
+                MonsterAttribute.valueOf(monsterData.get("Attribute")),
+                MonsterType.valueOf(monsterData.get("Monster Type").toUpperCase().replaceAll("-", "")),
+                MonsterCardType.valueOf(monsterData.get("Card Type").toUpperCase()),
+                Integer.parseInt(monsterData.get("Level")));
+        return monster;
     }
 
     @Override
@@ -67,8 +102,8 @@ public class Monster extends Card {
         return true;
     }
 
-    public Effect onBeingAttackedByMonster(Monster attacker){
-        return ()-> {
+    public Effect onBeingAttackedByMonster(Monster attacker) {
+        return () -> {
             // todo are the responses ok? maybe we have to swap your and mine?
             // todo remove this System.outs!
             if (monsterState.equals(MonsterState.OFFENSIVE_OCCUPIED)) {
