@@ -1,6 +1,6 @@
 package controller.menu;
 
-import Utils.RoutingException;
+import utils.RoutingException;
 import lombok.Getter;
 import view.*;
 

@@ -1,6 +1,6 @@
 package controller.player;
 
-import Utils.CustomPrinter;
+import utils.CustomPrinter;
 import controller.CardSelector;
 import controller.ChainController;
 import controller.GameController;

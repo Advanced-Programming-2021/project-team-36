@@ -2,7 +2,7 @@ package view.CommandLine;
 
 import controller.events.GameEvent;
 import view.ParserException;
-import Utils.RoutingException;
+import utils.RoutingException;
 import controller.LogicException;
 import model.ModelException;
 import org.apache.commons.cli.CommandLineParser;

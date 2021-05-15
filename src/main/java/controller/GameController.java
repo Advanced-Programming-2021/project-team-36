@@ -1,6 +1,6 @@
 package controller;
 
-import Utils.CustomPrinter;
+import utils.CustomPrinter;
 import controller.events.GameOver;
 import controller.menu.DuelMenuController;
 import controller.player.AIPlayerController;

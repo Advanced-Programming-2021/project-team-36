@@ -1,7 +1,7 @@
 package controller.menu;
 
-import Utils.CustomPrinter;
-import Utils.RoutingException;
+import utils.CustomPrinter;
+import utils.RoutingException;
 import controller.ProgramController;
 import lombok.Getter;
 import model.User;
@@ -13,7 +13,7 @@ public class ProfileMenuController extends BaseMenuController {
     public static ProfileMenuController instance;
     private final User user;
 
-    public ProfileMenuController(User user){
+    public ProfileMenuController(User user) {
         this.view = new ProfileMenuView();
         this.user = user;
         instance = this;
@@ -39,6 +39,7 @@ public class ProfileMenuController extends BaseMenuController {
         user.setPassword(newPassword);
         CustomPrinter.println("password changed successfully!");
     }
+
     @Override
     public void exitMenu() throws RoutingException {
         ProgramController.getInstance().navigateToMenu(MainMenuController.class);

@@ -1,10 +1,10 @@
-package Utils;
+package utils;
 
 import java.io.File;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.Enumeration;
-import java.util.List;;
+import java.util.List;
 
 public class ClassFinder {
     public static Class[] getClasses(String packageName) {

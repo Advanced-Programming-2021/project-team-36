@@ -1,6 +1,6 @@
 package controller;
 
-import Utils.CustomPrinter;
+import utils.CustomPrinter;
 import lombok.Getter;
 import model.CardAddress;
 import model.Game;

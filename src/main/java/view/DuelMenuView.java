@@ -1,7 +1,7 @@
 package view;
 
-import Utils.CustomPrinter;
-import Utils.CustomScanner;
+import utils.CustomPrinter;
+import utils.CustomScanner;
 import controller.CardSelector;
 import controller.menu.DuelMenuController;
 import view.CommandLine.Command;

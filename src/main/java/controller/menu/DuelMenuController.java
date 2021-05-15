@@ -13,10 +13,10 @@ import model.enums.Phase;
 import model.enums.MonsterState;
 import model.enums.ZoneType;
 import view.*;
-import Utils.RoutingException;
-import Utils.CustomPrinter;
+import utils.RoutingException;
+import utils.CustomPrinter;
 import java.util.List;
-import Utils.Debugger;
+import utils.Debugger;
 
 // this class is responsible for passing everything to GameController.
 // in the middle of the way it can handle simple api like those involving printing for user
