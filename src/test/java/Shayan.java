@@ -2,8 +2,6 @@ import Utils.CustomPrinter;
 import Utils.CustomScanner;
 import controller.ProgramController;
 import controller.menu.BaseMenuController;
-import controller.menu.MainMenuController;
-import lombok.Getter;
 import org.junit.Before;
 import org.junit.jupiter.api.Assertions;
 import Utils.Debugger;
@@ -11,9 +9,11 @@ import Utils.Debugger;
 public class Shayan {
     public final ProgramController controller;
     private String outputBuffer;
+    private String lastPrintedLine;
 
     {
         outputBuffer = "";
+        lastPrintedLine = "";
         controller = new ProgramController();
     }
 
@@ -23,8 +23,10 @@ public class Shayan {
         } catch (Error error) {
             if (!error.getMessage().equals("end of test"))
                 throw error;
+        } finally {
+            lastPrintedLine = CustomPrinter.getLastBuffer();
+            outputBuffer += lastPrintedLine;
         }
-        outputBuffer += CustomPrinter.getLastBuffer();
     }
 
     public String getBuffer(){
@@ -34,20 +36,18 @@ public class Shayan {
         outputBuffer = "";
     }
     public void checkEqualExact(String a) {
-        Assertions.assertEquals(a, getBuffer());
+        Assertions.assertEquals(a, lastPrintedLine);
     }
     public void checkEqualIgnoreNewLine(String a) {
-        String b = CustomPrinter.getLastBuffer();
-        Assertions.assertEquals(a.replaceAll("\n", ""), getBuffer().replaceAll("\n", ""));
+        Assertions.assertEquals(a.replaceAll("\n", ""), lastPrintedLine.replaceAll("\n", ""));
     }
     public void checkNoInvalidCommandsInBuffer(){
-        Assertions.assertFalse(getBuffer().matches(".*invalid command.*"));
+        Assertions.assertFalse(getBuffer().contains("invalid"));
     }
-    public void inject(String data) {
+    public void run(String data) {
         CustomScanner.injectString(data);
         runUntilNoInput();
     }
-
     public void checkCurrentMenu(Class<? extends BaseMenuController> clazz) {
         Assertions.assertEquals(ProgramController.getInstance().getCurrentController().getClass(), clazz);
     }

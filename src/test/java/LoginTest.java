@@ -3,7 +3,7 @@ import org.junit.Test;
 public class LoginTest extends Shayan {
     @Test
     public void invalidCommand() {
-        inject("salam pesaram khoobi?");
+        run("salam pesaram khoobi?");
         runUntilNoInput();
         checkEqualExact("invalid command!\n");
         checkEqualIgnoreNewLine("invalid command!");
@@ -11,9 +11,9 @@ public class LoginTest extends Shayan {
 
     @Test
     public void wrongPassword(){
-        inject("user create -u shayan -p=1234 -n Shayan.P");
-        inject("user create --password 12345 -u abolfazl --nickname Abolof");
-        inject("user login --username shayan -p 123");
+        run("user create -u shayan -p=1234 -n Shayan.P");
+        run("user create --password 12345 -u abolfazl --nickname Abolof");
+        run("user login --username shayan -p 123");
         runUntilNoInput();
         checkNoInvalidCommandsInBuffer();
     }
