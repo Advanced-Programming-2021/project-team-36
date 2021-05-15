@@ -49,13 +49,9 @@ public class Game {
             secondPlayer.getBoard().drawCardFromDeck();
         }
         this.turn = 0;
-        this.phase = Phase.STANDBY_PHASE;
+        this.phase = Phase.MAIN_PHASE2;
         // todo in nabayad draw phase bashe?
         this.summonedInThisTurn = false;
-    }
-
-    public boolean isFirstTurn() {
-        return turn == 0;
     }
 
     public boolean isSummonedInThisTurn() {

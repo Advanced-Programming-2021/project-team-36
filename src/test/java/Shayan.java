@@ -1,6 +1,9 @@
 import Utils.CustomPrinter;
 import Utils.CustomScanner;
 import controller.ProgramController;
+import controller.menu.BaseMenuController;
+import controller.menu.MainMenuController;
+import lombok.Getter;
 import org.junit.Before;
 import org.junit.jupiter.api.Assertions;
 import Utils.Debugger;
@@ -42,6 +45,11 @@ public class Shayan {
     }
     public void inject(String data) {
         CustomScanner.injectString(data);
+        runUntilNoInput();
+    }
+
+    public void checkCurrentMenu(Class<? extends BaseMenuController> clazz) {
+        Assertions.assertEquals(ProgramController.getInstance().getCurrentController().getClass(), clazz);
     }
 
     @Before

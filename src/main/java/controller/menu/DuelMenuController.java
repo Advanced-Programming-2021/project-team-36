@@ -1,5 +1,6 @@
 package controller.menu;
 
+import controller.CardSelector;
 import controller.GameController;
 import controller.LogicException;
 import controller.ProgramController;
@@ -34,6 +35,7 @@ public class DuelMenuController extends BaseMenuController {
         this.game = game;
         instance = this;
         gameController = new GameController(game);
+        new CardSelector(game);
     }
 
     public void printCurrentPhase() {
@@ -45,12 +47,12 @@ public class DuelMenuController extends BaseMenuController {
     }
 
     public void summonCard(Card card) throws LogicException {
-        // todo is summon only for monsters?
-        if (!game.getPhase().equals(Phase.MAIN_PHASE1) || !game.getPhase().equals(Phase.MAIN_PHASE2))
+        if (!game.getPhase().equals(Phase.MAIN_PHASE1) && !game.getPhase().equals(Phase.MAIN_PHASE2))
             throw new LogicException("you can’t do this action in this phase");
         if (!(card instanceof Monster))
             throw new LogicException("summoning is for monsters!");
         gameController.getCurrentPlayerController().summonCard((Monster) card);
+        new CardSelector(game);
     }
 
     public void setCard(Card card) throws LogicException {
@@ -58,6 +60,7 @@ public class DuelMenuController extends BaseMenuController {
             throw new LogicException("you can’t do this action in this phase");
 
         gameController.getCurrentPlayerController().setCard(card);
+        new CardSelector(game);
     }
 
     public void changeCardPosition(Card card, MonsterState monsterState) throws LogicException {
@@ -65,6 +68,7 @@ public class DuelMenuController extends BaseMenuController {
             throw new LogicException("you can’t do this action in this phase");
 
         gameController.getCurrentPlayerController().changeCardPosition(card, monsterState);
+        new CardSelector(game);
     }
 
     public void flipSummon(Card card) throws LogicException {
@@ -73,6 +77,7 @@ public class DuelMenuController extends BaseMenuController {
             throw new LogicException("you can’t do this action in this phase");
 
         gameController.getCurrentPlayerController().flipSummon(card);
+        new CardSelector(game);
     }
 
     private void ritualSummon(Card card) throws LogicException {
@@ -80,6 +85,7 @@ public class DuelMenuController extends BaseMenuController {
             throw new LogicException("you can’t do this action in this phase");
 
         gameController.getCurrentPlayerController().ritualSummon(card);
+        new CardSelector(game);
     }
 
     public void attack(Card myCard, int id) throws LogicException, GameOver {

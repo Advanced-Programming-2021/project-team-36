@@ -27,11 +27,6 @@ public class HumanPlayerController extends PlayerController {
     }
 
     @Override
-    public void controlDrawPhase() {
-        runUntilEndOfPhase();
-    }
-
-    @Override
     public void controlStandbyPhase() {
         runUntilEndOfPhase();
     }
@@ -48,11 +43,6 @@ public class HumanPlayerController extends PlayerController {
 
     @Override
     public void controlBattlePhase(){
-        runUntilEndOfPhase();
-    }
-
-    @Override
-    public void controlEndPhase() {
         runUntilEndOfPhase();
     }
 
