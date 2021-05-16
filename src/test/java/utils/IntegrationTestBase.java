@@ -23,7 +23,7 @@ public class IntegrationTestBase {
         try {
             controller.control();
         } catch (Error error) {
-            if (!error.getMessage().equals("end of test"))
+            if (error.getMessage() == null || !error.getMessage().equals("end of test"))
                 throw error;
         } finally {
             lastPrintedLine = CustomPrinter.getLastBuffer();

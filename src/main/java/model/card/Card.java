@@ -2,11 +2,6 @@ package model.card;
 
 import model.Player.Player;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.TreeMap;
-import utils.ClassFinder;
-
 public abstract class Card implements Comparable<Card>, Cloneable{
     protected String name;
     protected String description;

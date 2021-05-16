@@ -27,7 +27,7 @@ public class ShopMenuController extends BaseMenuController {
     public void buyCard(Card card) throws ModelException {
         if(user.getBalance() < card.getPrice())
             throw new ModelException("not enough money");
-        user.buy(card.clone());
+        user.buy(card);
     }
 
     public void showAll() {

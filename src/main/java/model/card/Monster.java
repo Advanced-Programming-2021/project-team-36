@@ -3,6 +3,7 @@ package model.card;
 import controller.GameController;
 import controller.LogicException;
 import controller.events.GameOverEvent;
+import jdk.jshell.execution.Util;
 import lombok.Getter;
 import lombok.Setter;
 import model.enums.MonsterAttribute;
@@ -51,19 +52,21 @@ public class Monster extends Card {
     }
 
     public static void addMonsterData(TreeMap<String, String> monsterData) {
-        Utils.addCard("Monster", monsterData.get("Name"));
+        monsterData.put("Name", Utils.formatClassName(monsterData.get("Name")));
         monsterData.put("Attribute", monsterData.get("Attribute").toUpperCase());
         monsterData.put("Monster Type", monsterData.get("Monster Type").toUpperCase().replaceAll("-|\\s", ""));
         monsterData.put("Card Type", monsterData.get("Card Type").toUpperCase());
         monstersData.put(monsterData.get("Name"), monsterData);
+        Utils.addCard("Monster", monsterData.get("Name"));
     }
 
     public static Monster getMonster(String name) {
         // todo remove this? @Kasra. Why? @Shayan?
+        name = Utils.formatClassName(name);
         TreeMap<String, String> monsterData = monstersData.get(name);
         if (specialMonstersClasses != null)
             for (Class specialMonsterClass : specialMonstersClasses) {
-                if (specialMonsterClass.getName().replaceAll(".*\\.", "").equals(Utils.formatClassName(name)))
+                if (specialMonsterClass.getName().replaceAll(".*\\.", "").equals(name))
                     try {
                         return (Monster) specialMonsterClass.getConstructors()[0].newInstance(
                                 monsterData.get("Name"),

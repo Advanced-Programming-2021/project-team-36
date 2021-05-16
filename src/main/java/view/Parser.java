@@ -67,9 +67,9 @@ public class Parser {
 
     // TODO : Proof-reading
     public static Card cardParser(String cardName) throws ParserException {
-        for (Card c : Utils.getAllCards())
-            if (c.getName().equalsIgnoreCase(cardName))
-                return c;
+        Card card = Utils.getCard(cardName);
+        if (card != null)
+            return card;
         throw new ParserException("There is no card with this name");
     }
 
