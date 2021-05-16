@@ -9,6 +9,7 @@ import initialize.Sample.*;
 public class GameTest extends Sample {
     @Test
     public void test() {
+        run(String.format("debug --automatic_save on"));
         initializeUser("abolfazl", "1234", "atreus");
         initializeUser("shayan", "1234", "shayan.p");
         startNewDuel("abolfazl", "1234", "shayan");

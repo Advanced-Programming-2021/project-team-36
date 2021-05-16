@@ -88,8 +88,6 @@ public class Parser {
             return ProfileMenuController.class;
         if (menuName.equalsIgnoreCase("Shop"))
             return ShopMenuController.class;
-        if (menuName.equalsIgnoreCase("Import/Export"))
-            return ImportAndExportMenuController.class;
         throw new ParserException("invalid menu name");
     }
 }

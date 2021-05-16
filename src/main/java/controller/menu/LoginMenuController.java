@@ -41,8 +41,6 @@ public class LoginMenuController extends BaseMenuController {
     public BaseMenuController getNavigatingMenuObject(Class<? extends BaseMenuController> menu) throws RoutingException {
         if (menu.equals(this.getClass()))
             throw new RoutingException("can't navigate to your current menu!");
-        if (menu.equals(ImportAndExportMenuController.class))
-            return new ImportAndExportMenuController(); // TODO : is this correct?
         throw new RoutingException("please login first");
     }
 

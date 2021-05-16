@@ -31,7 +31,8 @@ public class ProgramController {
             }
         }
 
-        DatabaseHandler.exportToDatabase();
+        if (Debugger.getAutomaticSave())
+            DatabaseHandler.exportToDatabase();
         System.exit(0);
     }
 

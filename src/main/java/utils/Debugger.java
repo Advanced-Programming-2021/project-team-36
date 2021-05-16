@@ -2,6 +2,7 @@ package utils;
 
 import lombok.Getter;
 import lombok.Setter;
+import model.deck.Deck;
 import view.CommandLine.InvalidCommandException;
 
 import java.io.*;
@@ -12,6 +13,7 @@ public class Debugger {
     private static boolean testMode = false;
     private static boolean mode = false;
     private static boolean captureMode = false;
+    private static boolean automaticSave = false;
     private static int currentTestBatch = 1;
     final private static String testFileHeader = "tests/TestBatch";
     private static BufferedWriter bufferedWriter;
@@ -37,6 +39,21 @@ public class Debugger {
 
     private static void finalizeDebuggingMode() {
         // TODO : Add some cool stuff.
+    }
+
+    public static void setAutomaticSave(String mode) throws InvalidCommandException {
+        if (!mode.equals("on") && !mode.equals("off"))
+            throw new InvalidCommandException();
+        boolean automaticSave = mode.equals("on");
+        if (Debugger.automaticSave == automaticSave) {
+            CustomPrinter.println(String.format("debug automatic database mode is already set to %", automaticSave));
+            return;
+        }
+        Debugger.automaticSave = automaticSave;
+    }
+
+    public static boolean getAutomaticSave() {
+        return Debugger.automaticSave;
     }
 
     public static void setCaptureMode(String captureModeAsString) throws InvalidCommandException {

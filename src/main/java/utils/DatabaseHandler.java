@@ -10,22 +10,25 @@ import java.io.*;
 import java.util.ArrayList;
 import java.util.TreeMap;
 
-import static java.lang.System.exit;
-
 public class DatabaseHandler {
     private static String databaseFilePath = "database/database.dat";
     private static String databaseAsJSONFilePath = "database/database.json";
+    private static String databaseFileName = "database";
     private static String monsterDatabase = "database/Monster.csv";
 
     public static void importFromDatabase() {
-        importUsersFromDatabase();
+        //importUsersFromDatabase();
         importMonstersFromDatabase();
     }
 
-    public static void exportToDatabase() {
+    public static void saveToDatabase(String fileName) {
+        if (fileName == null)
+            fileName = databaseFileName;
         try {
-            ObjectOutputStream objectOutputStream = new ObjectOutputStream(new FileOutputStream(databaseFilePath));
-            BufferedWriter bufferedWriter = new BufferedWriter(new FileWriter(databaseAsJSONFilePath));
+            ObjectOutputStream objectOutputStream = new ObjectOutputStream(new FileOutputStream(
+                    "database/" + fileName + ".dat"));
+            BufferedWriter bufferedWriter = new BufferedWriter(new FileWriter(
+                    "database/" + fileName + ".json"));
             for (User user : User.retrieveUsersBasedOnScore()) {
                 objectOutputStream.writeObject(user);
                 bufferedWriter.write(jsonFormatter(new Gson().toJson(user)));
@@ -40,9 +43,12 @@ public class DatabaseHandler {
         }
     }
 
-    private static void importUsersFromDatabase() {
+    public static void loadFromDatabase(String fileName) {
+        if (fileName == null)
+            fileName = databaseFileName;
         try {
-            ObjectInputStream objectInputStream = new ObjectInputStream(new FileInputStream(databaseFilePath));
+            ObjectInputStream objectInputStream = new ObjectInputStream(new FileInputStream(
+                    "database/" + fileName + ".dat"));
             try {
                 while (true) {
                     Object object = objectInputStream.readObject();
@@ -50,13 +56,7 @@ public class DatabaseHandler {
                     if (object instanceof User) {
                         User user = (User)object;
                         user.save();
-                    } /*else if (object instanceof Deck) {
-                        Deck deck = (Deck)object;
-                        deck.save();
-                    } else if (object instanceof Card) {
-                        Card card = (Card)object;
-                        card.save();
-                    }*/
+                    }
                 }
             } catch (Exception exception) {
             }
@@ -64,6 +64,14 @@ public class DatabaseHandler {
             CustomPrinter.println("failed to read from the database");
             return;
         }
+    }
+
+    public static void exportToDatabase() {
+        saveToDatabase(databaseFileName);
+    }
+
+    public static void importUsersFromDatabase() {
+        loadFromDatabase(databaseFileName);
     }
 
     private static void importMonstersFromDatabase() {
