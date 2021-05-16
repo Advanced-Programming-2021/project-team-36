@@ -41,35 +41,35 @@ public class Scanner extends Monster {
 
     @Override
     public int getAttackDamage(){
-        if(lastTurnActivated == GameController.instance.getGame().getTurn())
+        if(isInBattle() && lastTurnActivated == GameController.getInstance().getGame().getTurn())
             return copiedMonster.getAttackDamage();
         return attackDamage;
     }
 
     @Override
     public int getDefenseRate(){
-        if(lastTurnActivated == GameController.instance.getGame().getTurn())
+        if(isInBattle() && lastTurnActivated == GameController.getInstance().getGame().getTurn())
             return copiedMonster.getDefenseRate();
         return defenseRate;
     }
 
     @Override
     public MonsterAttribute getAttribute(){
-        if(lastTurnActivated == GameController.instance.getGame().getTurn())
+        if(isInBattle() && lastTurnActivated == GameController.getInstance().getGame().getTurn())
             return copiedMonster.getAttribute();
         return attribute;
     }
 
     @Override
     public String getName(){
-        if(lastTurnActivated == GameController.instance.getGame().getTurn())
+        if(isInBattle() && lastTurnActivated == GameController.getInstance().getGame().getTurn())
             return copiedMonster.getName();
         return name;
     }
 
     @Override
     public int getLevel(){
-        if(lastTurnActivated == GameController.instance.getGame().getTurn())
+        if(isInBattle() && lastTurnActivated == GameController.getInstance().getGame().getTurn())
             return copiedMonster.getLevel();
         return level;
     }
