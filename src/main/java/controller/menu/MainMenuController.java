@@ -74,8 +74,6 @@ public class MainMenuController extends BaseMenuController {
             return new ShopMenuController(user);
         if (menu.equals(DeckMenuController.class))
             return new DeckMenuController(user);
-        if (menu.equals(ImportAndExportMenuController.class))
-            return new ImportAndExportMenuController();
         throw new RoutingException("menu navigation is not possible");
     }
 

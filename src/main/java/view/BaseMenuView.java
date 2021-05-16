@@ -75,6 +75,20 @@ abstract public class BaseMenuView {
                 Options.file(true),
                 Options.count(false)
         ));
+        this.cmd.addCommand(new Command(
+                "debug",
+                mp -> {
+                    Debugger.setAutomaticSave(mp.get("automatic_save"));
+                },
+                Options.automatic_save(false)
+        ));
+        this.cmd.addCommand(new Command(
+                "load from database",
+                mp -> {
+                    DatabaseHandler.importUsersFromDatabase();
+                    System.out.println("successfully loaded from database");
+                }
+        ));
     }
 
     abstract protected String getMenuName();

@@ -44,7 +44,20 @@ public class MainMenuView extends BaseMenuView {
                 Options.ai(true),
                 Options.round(true)
         ));
-
+        this.cmd.addCommand(new Command(
+                "save to database",
+                mp -> {
+                    utils.DatabaseHandler.saveToDatabase(mp.get("file"));
+                },
+                Options.file(false)
+        ));
+        this.cmd.addCommand(new Command(
+                "load from database",
+                mp -> {
+                    utils.DatabaseHandler.loadFromDatabase(mp.get("file"));
+                },
+                Options.file(false)
+        ));
     }
 
     @Override

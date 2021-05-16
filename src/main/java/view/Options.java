@@ -170,4 +170,10 @@ public class Options {
         ret.setRequired(required);
         return ret;
     }
+
+    static Option automatic_save(boolean required){
+        Option ret = new Option("automatic_save", true, "automatic_save");
+        ret.setRequired(required);
+        return ret;
+    }
 }
