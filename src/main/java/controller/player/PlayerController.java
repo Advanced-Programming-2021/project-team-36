@@ -151,7 +151,7 @@ public abstract class PlayerController {
 
     public void startChain(Effect effect) throws GameOverEvent {
         ChainController chainController = new ChainController(this, effect);
-        chainController.control();
+        chainController.control(effect);
     }
 
     protected void addEffectToChain(Effect effect) {
