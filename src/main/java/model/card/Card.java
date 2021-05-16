@@ -1,5 +1,7 @@
 package model.card;
 
+import lombok.Getter;
+import lombok.Setter;
 import model.Player.Player;
 
 import java.util.ArrayList;
@@ -12,6 +14,8 @@ public abstract class Card implements Comparable<Card>, Cloneable{
     protected String description;
     protected int price;
     public Player owner;
+
+    @Getter
     boolean isInBattle;
 
     {
