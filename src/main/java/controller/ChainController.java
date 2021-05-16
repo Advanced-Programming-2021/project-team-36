@@ -1,5 +1,6 @@
 package controller;
 
+import controller.events.GameOver;
 import controller.player.PlayerController;
 import lombok.Getter;
 import model.card.Effect;
@@ -17,7 +18,7 @@ public class ChainController {
         GameController.getInstance().getGame().setChain(new Stack<>());
     }
 
-    public void control() {
+    public void control() throws GameOver {
         // TODO : it's not complete
         while (this.active.askRespondToChain()) {
             this.active.doRespondToChain();

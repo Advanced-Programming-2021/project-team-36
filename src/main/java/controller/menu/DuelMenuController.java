@@ -1,6 +1,6 @@
 package controller.menu;
 
-import controller.CardSelector;
+import controller.cardSelector.CardSelector;
 import controller.GameController;
 import controller.LogicException;
 import controller.ProgramController;

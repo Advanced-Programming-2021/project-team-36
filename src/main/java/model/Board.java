@@ -7,6 +7,7 @@ import model.card.Monster;
 import model.deck.MainDeck;
 import model.enums.MagicState;
 import model.enums.MonsterState;
+import model.enums.ZoneType;
 
 import java.util.*;
 
@@ -63,11 +64,33 @@ public class Board {
             return graveYard.get(cardAddress.getId());
     }
 
+    public ZoneType getCardZoneType(Card card){
+        if(monsterCardZone.containsValue(card))
+            return ZoneType.MONSTER;
+        if(magicCardZone.containsValue(card))
+            return ZoneType.MAGIC;
+        if(graveYard.contains(card))
+            return ZoneType.GRAVEYARD;
+        if(card.equals(fieldZoneCard))
+            return ZoneType.FIELD;
+        if(cardsOnHand.contains(card))
+            return ZoneType.HAND;
+        return null;
+    }
+
     public List<Card> getAllCardsOnBoard() {
         List<Card> allCards = new ArrayList<>();
         allCards.addAll(monsterCardZone.values());
         allCards.addAll(magicCardZone.values());
-        allCards.add(fieldZoneCard);
+        if(fieldZoneCard != null)
+            allCards.add(fieldZoneCard);
+        return allCards;
+    }
+
+    public List<Card> getAllCards(){
+        List<Card> allCards = getAllCardsOnBoard();
+        allCards.addAll(graveYard);
+        allCards.addAll(cardsOnHand);
         return allCards;
     }
 
@@ -85,6 +108,13 @@ public class Board {
             assert monsterCardZone.get(cardAddress.getId()) == null;
             monsterCardZone.put(cardAddress.getId(), (Monster) card);
         }
+    }
+
+    public void addCardToHand(Card card){
+        cardsOnHand.add(card);
+    }
+    public void removeFromHand(Card card){
+        cardsOnHand.remove(card);
     }
 
     public void moveCardToGraveYard(Card card) {
@@ -107,17 +137,9 @@ public class Board {
         }
     }
 
-//    public void summonMonster(Monster monsterCard) {
-//
-//    }
-//
     public boolean isMonsterCardZoneFull() {
         return monsterCardZone.size() == 5;
     }
-//
-//    public void finishTurn() {
-//
-//    }
 
     @Override
     public String toString() {
@@ -133,9 +155,9 @@ public class Board {
         for (int id : arrayList) {
             if (monsterCardZone.get(id) == null)
                 stringBuilder.append("E\t");
-            else if (monsterCardZone.get(id).getState() == MonsterState.DEFENSIVE_HIDDEN)
+            else if (monsterCardZone.get(id).getMonsterState() == MonsterState.DEFENSIVE_HIDDEN)
                 stringBuilder.append("DH\t");
-            else if (monsterCardZone.get(id).getState() == MonsterState.DEFENSIVE_OCCUPIED)
+            else if (monsterCardZone.get(id).getMonsterState() == MonsterState.DEFENSIVE_OCCUPIED)
                 stringBuilder.append("DO\t");
             else
                 stringBuilder.append("OO\t");

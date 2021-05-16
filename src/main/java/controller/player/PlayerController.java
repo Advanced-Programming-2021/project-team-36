@@ -1,10 +1,12 @@
 package controller.player;
 
 import Utils.CustomPrinter;
-import controller.CardSelector;
+import controller.cardSelector.CardSelector;
 import controller.ChainController;
 import controller.GameController;
 import controller.LogicException;
+import controller.cardSelector.ResistToChooseCard;
+import controller.cardSelector.SelectCondition;
 import controller.events.GameOver;
 import lombok.Getter;
 import model.Board;
@@ -34,6 +36,7 @@ public abstract class PlayerController {
     abstract public void controlBattlePhase();
     abstract public boolean askRespondToChain();
     abstract public void doRespondToChain(); // todo check if this action is invalid for chain
+    abstract public Card[] chooseKCards(String message, int numberOfCards, SelectCondition condition) throws ResistToChooseCard;
 
     public void summonCard(Monster monster) throws LogicException {
         Game game = GameController.getInstance().getGame();
@@ -64,7 +67,7 @@ public abstract class PlayerController {
         }
     }
 
-    public void startChain(){
+    public void startChain() throws GameOver {
         ChainController chainController = new ChainController(this);
         chainController.control();
     }

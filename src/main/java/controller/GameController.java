@@ -1,6 +1,7 @@
 package controller;
 
 import Utils.CustomPrinter;
+import controller.cardSelector.CardSelector;
 import controller.events.GameOver;
 import controller.menu.DuelMenuController;
 import controller.player.AIPlayerController;
@@ -12,6 +13,7 @@ import model.Player.AIPlayer;
 import model.Player.HumanPlayer;
 import model.Player.Player;
 import model.card.Card;
+import model.card.Monster;
 import model.enums.GameResult;
 import model.enums.Phase;
 
@@ -65,7 +67,6 @@ public class GameController {
         player.decreaseLifePoint(amount);
     }
 
-
     public PlayerController getCurrentPlayerController() {
         if (game.getCurrentPlayer().equals(playerController1.getPlayer()))
             return playerController1;
@@ -101,6 +102,11 @@ public class GameController {
         new CardSelector(game);
     }
 
+    public PlayerController getPlayerControllerByPlayer(Player player){
+        if(playerController1.getPlayer().equals(player))
+            return playerController1;
+        return playerController2;
+    }
     public void control() {
         while (true) {
             try {

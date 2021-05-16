@@ -1,5 +1,7 @@
 package model.Player;
 
+import lombok.Getter;
+import lombok.Setter;
 import model.Board;
 import model.ModelException;
 import model.User;
@@ -7,10 +9,16 @@ import model.card.Card;
 import model.deck.*;
 import model.enums.Constants;
 
+import java.util.ArrayList;
+import java.util.List;
+
 abstract public class Player {
     private final User user;
     private final Deck deck;
     private final Board board;
+
+    @Getter
+    @Setter
     private int lifePoint;
 
     public Player(User user) throws ModelException {
@@ -39,10 +47,6 @@ abstract public class Player {
 
     public Board getBoard() {
         return board;
-    }
-
-    public int getLifePoint() {
-        return lifePoint;
     }
 
     public void increaseLifePoint(int value) {

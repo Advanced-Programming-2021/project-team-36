@@ -1,5 +1,7 @@
 package model.card;
 
+import controller.events.GameOver;
+
 public interface Effect {
-    void run();
+    void run() throws GameOver;
 }

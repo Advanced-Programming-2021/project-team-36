@@ -17,6 +17,8 @@ public class Game {
     private final Player firstPlayer;
     @Getter
     private final Player secondPlayer;
+
+    @Getter
     private int turn;
 
     @Getter
@@ -65,6 +67,16 @@ public class Game {
             return getCurrentPlayer().getBoard().getCardByCardAddress(cardAddress);
     }
 
+    public ZoneType getCardZoneType(Card card){
+        ZoneType firstPlayerZone = firstPlayer.getBoard().getCardZoneType(card);
+        ZoneType secondPlayerZone = secondPlayer.getBoard().getCardZoneType(card);
+        if(firstPlayerZone != null)
+            return firstPlayerZone;
+        if(secondPlayerZone != null)
+            return secondPlayerZone;
+        throw new Error("There is no such card in game");
+    }
+
     public Player getCurrentPlayer() {
         if (turn % 2 == 0)
             return firstPlayer;
@@ -96,5 +108,13 @@ public class Game {
         // exactly one of them contain this card
         firstPlayer.getBoard().moveCardToGraveYard(card);
         secondPlayer.getBoard().moveCardToGraveYard(card);
+    }
+
+    public Player getOtherPlayer(Player player){
+        if(player.equals(firstPlayer))
+            return secondPlayer;
+        if(player.equals(secondPlayer))
+            return firstPlayer;
+        throw new Error("no such player in the game");
     }
 }

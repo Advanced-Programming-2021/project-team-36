@@ -1,9 +1,12 @@
 package controller.player;
 
 import controller.GameController;
+import controller.cardSelector.ResistToChooseCard;
+import controller.cardSelector.SelectCondition;
 import controller.menu.DuelMenuController;
 import model.Game;
 import model.Player.HumanPlayer;
+import model.card.Card;
 import model.enums.Phase;
 import view.DuelMenuView;
 
@@ -55,5 +58,10 @@ public class HumanPlayerController extends PlayerController {
     @Override
     public void doRespondToChain() {
         // todo
+    }
+
+    @Override
+    public Card[] chooseKCards(String message, int numberOfCards, SelectCondition condition) throws ResistToChooseCard {
+        return ((DuelMenuView) DuelMenuController.getInstance().getView()).askUserToChooseKCards(message, numberOfCards, condition);
     }
 }

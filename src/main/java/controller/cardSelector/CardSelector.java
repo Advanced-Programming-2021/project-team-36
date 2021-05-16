@@ -1,6 +1,7 @@
-package controller;
+package controller.cardSelector;
 
 import Utils.CustomPrinter;
+import controller.LogicException;
 import lombok.Getter;
 import model.CardAddress;
 import model.Game;
@@ -12,7 +13,7 @@ public class CardSelector {
     Game game;
 
     @Getter
-    private CardAddress selectedCardAddress; // todo it will become a set ...
+    private CardAddress selectedCardAddress;
 
     public CardSelector(Game game){
         this.game = game;
