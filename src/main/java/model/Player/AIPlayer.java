@@ -18,16 +18,18 @@ public class AIPlayer extends Player {
             return user;
         user = new User("artificial_intelligence" + new Random().nextInt(), "Mr.AI" + new Random().nextInt(), "thisIsAStrongPassword");
         try {
-            user.buy(new AxeRaider());
+            /*user.buy(new AxeRaider());
             user.buy(new BattleOx());
             user.buy(new Fireyarou());
             user.buy(new HornImp());
-            user.buy(new SilverFang());
+            user.buy(new SilverFang());*/
+            // TODO : Write new stuff here
+            throw new ModelException("something");
         } catch (ModelException e) {
             CustomPrinter.println("error in constructing ai");
         }
         Deck deck = new Deck("aiDeck");
-        deck.getMainDeck().addCard(new AxeRaider());
+        /*deck.getMainDeck().addCard(new AxeRaider());
         deck.getMainDeck().addCard(new AxeRaider());
         deck.getSideDeck().addCard(new AxeRaider());
         deck.getMainDeck().addCard(new BattleOx());
@@ -35,7 +37,8 @@ public class AIPlayer extends Player {
         deck.getSideDeck().addCard(new SilverFang());
         deck.getMainDeck().addCard(new HornImp());
         deck.getMainDeck().addCard(new SilverFang());
-        deck.getSideDeck().addCard(new HornImp());
+        deck.getSideDeck().addCard(new HornImp());*/
+        // TODO : Also write new stuff here
 
         user.addDeck(deck);
         user.setActiveDeck(deck);

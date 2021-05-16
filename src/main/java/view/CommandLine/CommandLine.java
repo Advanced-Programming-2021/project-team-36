@@ -1,5 +1,6 @@
 package view.CommandLine;
 
+import controller.cardSelector.ResistToChooseCard;
 import controller.events.GameEvent;
 import view.ParserException;
 import utils.RoutingException;
@@ -25,7 +26,7 @@ public class CommandLine {
             try {
                 command.tryRunCommand(line);
                 return;
-            } catch (InvalidCommandException ignored) {
+            } catch (InvalidCommandException | ResistToChooseCard ignored) {
 
             }
         }

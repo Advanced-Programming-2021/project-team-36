@@ -1,5 +1,6 @@
 package view.CommandLine;
 
+import controller.cardSelector.ResistToChooseCard;
 import controller.events.GameEvent;
 import view.ParserException;
 import utils.RoutingException;
@@ -57,7 +58,7 @@ public class Command {
         return true;
     }
 
-    void tryRunCommand(String commandString) throws CommandLineException, ParserException, ModelException, LogicException, RoutingException, GameEvent {
+    void tryRunCommand(String commandString) throws CommandLineException, ParserException, ModelException, LogicException, RoutingException, GameEvent, ResistToChooseCard {
         if (!initStringMatch(commandString))
             throw new InvalidCommandException();
         CommandLineParser parser = new GnuParser();
