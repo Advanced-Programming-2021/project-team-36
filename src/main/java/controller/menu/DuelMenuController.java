@@ -5,7 +5,7 @@ import controller.GameController;
 import controller.LogicException;
 import controller.ProgramController;
 import controller.cardSelector.ResistToChooseCard;
-import controller.events.GameOver;
+import controller.events.GameOverEvent;
 import controller.player.PlayerController;
 import lombok.Getter;
 import model.CardAddress;
@@ -110,7 +110,7 @@ public class DuelMenuController extends BaseMenuController {
             throw new LogicException("this card already attacked");
     }
 
-    public void attack(Card card, int id) throws LogicException, GameOver {
+    public void attack(Card card, int id) throws LogicException, GameOverEvent {
         canAttack(card);
         CardAddress cardAddress = new CardAddress(ZoneType.MONSTER, id, true);
         Monster opponentMonster = (Monster) game.getCardByCardAddress(cardAddress);
@@ -119,7 +119,7 @@ public class DuelMenuController extends BaseMenuController {
         gameController.getCurrentPlayerController().attack((Monster) card, opponentMonster);
     }
 
-    public void directAttack(Card card) throws LogicException, GameOver {
+    public void directAttack(Card card) throws LogicException, GameOverEvent {
         canAttack(card);
         PlayerController playerController = gameController.getCurrentPlayerController();
         if (gameController.getOtherPlayerController(playerController).getPlayer().getBoard().getMonsterCardZone().size() != 0)

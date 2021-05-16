@@ -2,7 +2,7 @@ package model.card;
 
 import controller.GameController;
 import controller.LogicException;
-import controller.events.GameOver;
+import controller.events.GameOverEvent;
 import lombok.Getter;
 import lombok.Setter;
 import model.enums.MonsterAttribute;
@@ -115,7 +115,7 @@ public class Monster extends Card {
         monster.tryToDecreaseLifePointOfMe(amount);
     }
 
-    public void damageStep(Monster attacker) throws GameOver {
+    public void damageStep(Monster attacker) throws GameOverEvent {
         // todo are the responses ok? maybe we have to swap your and mine?
         // todo remove this System.outs!
         if (monsterState.equals(MonsterState.OFFENSIVE_OCCUPIED)) {

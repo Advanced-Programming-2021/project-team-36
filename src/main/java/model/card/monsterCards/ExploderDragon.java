@@ -1,8 +1,7 @@
 package model.card.monsterCards;
 
 import controller.GameController;
-import controller.events.GameOver;
-import model.Game;
+import controller.events.GameOverEvent;
 import model.card.Effect;
 import model.card.Monster;
 import model.enums.MonsterAttribute;
@@ -22,7 +21,7 @@ public class ExploderDragon extends Monster {
             int opponentLifePoint = attacker.owner.getLifePoint();
             try{
                 super.onBeingAttackedByMonster(attacker).run();
-            } catch (GameOver ignored){
+            } catch (GameOverEvent ignored){
             }
             if(GameController.getInstance().getGame().getCardZoneType(this).equals(ZoneType.GRAVEYARD)) {
                 attacker.tryToSendToGraveYardOfMe();

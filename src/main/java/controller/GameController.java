@@ -2,7 +2,7 @@ package controller;
 
 import controller.cardSelector.CardSelector;
 import utils.CustomPrinter;
-import controller.events.GameOver;
+import controller.events.GameOverEvent;
 import controller.menu.DuelMenuController;
 import controller.player.AIPlayerController;
 import controller.player.HumanPlayerController;
@@ -41,21 +41,21 @@ public class GameController {
         new CardSelector(game);
     }
 
-    public void drawCard() throws GameOver {
+    public void drawCard() throws GameOverEvent {
         Card card = game.getCurrentPlayer().getMainDeck().getTopCard();
         if (card == null)
-            throw new GameOver(GameResult.LOOSE, game.getCurrentPlayer(), game.getOpponentPlayer());
+            throw new GameOverEvent(GameResult.LOOSE, game.getCurrentPlayer(), game.getOpponentPlayer());
         game.getCurrentPlayer().getBoard().drawCardFromDeck();
         CustomPrinter.println(String.format("new card added to the hand : %s%n", card.getName()));
     }
 
-    public void checkBothLivesEndGame() throws GameOver {
+    public void checkBothLivesEndGame() throws GameOverEvent {
         if (game.getCurrentPlayer().getLifePoint() <= 0 && game.getOpponentPlayer().getLifePoint() <= 0)
-            throw new GameOver(GameResult.DRAW, game.getCurrentPlayer(), game.getOpponentPlayer());
+            throw new GameOverEvent(GameResult.DRAW, game.getCurrentPlayer(), game.getOpponentPlayer());
         if (game.getCurrentPlayer().getLifePoint() <= 0)
-            throw new GameOver(GameResult.WIN, game.getCurrentPlayer(), game.getOpponentPlayer());
+            throw new GameOverEvent(GameResult.WIN, game.getCurrentPlayer(), game.getOpponentPlayer());
         if (game.getOpponentPlayer().getLifePoint() <= 0)
-            throw new GameOver(GameResult.LOOSE, game.getOpponentPlayer(), game.getCurrentPlayer());
+            throw new GameOverEvent(GameResult.LOOSE, game.getOpponentPlayer(), game.getCurrentPlayer());
     }
 
     public void moveCardToGraveYard(Card card) {
@@ -135,9 +135,9 @@ public class GameController {
                 } else if (game.getPhase().equals(Phase.END_PHASE)) {
                     changeTurn();
                 }
-            } catch (GameOver gameOver) {
+            } catch (GameOverEvent gameOverEvent) {
                 // todo handle draw
-                endGame(gameOver.winner, gameOver.looser);
+                endGame(gameOverEvent.winner, gameOverEvent.looser);
                 break;
             }
         }

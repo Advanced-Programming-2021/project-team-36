@@ -3,13 +3,12 @@ package controller.player;
 import controller.cardSelector.Conditions;
 import model.enums.*;
 import utils.CustomPrinter;
-import controller.cardSelector.CardSelector;
 import controller.ChainController;
 import controller.GameController;
 import controller.LogicException;
 import controller.cardSelector.ResistToChooseCard;
 import controller.cardSelector.SelectCondition;
-import controller.events.GameOver;
+import controller.events.GameOverEvent;
 import lombok.Getter;
 import model.Board;
 import model.CardAddress;
@@ -130,7 +129,7 @@ public abstract class PlayerController {
         // todo you can call startChain here if you want
     }
 
-    public void attack(Monster myMonster, Monster opponentMonster) throws LogicException, GameOver {
+    public void attack(Monster myMonster, Monster opponentMonster) throws LogicException, GameOverEvent {
         Game game = GameController.getInstance().getGame();
         // TODO : check one card don't attack twice in a turn
         // error should be : this card already attacked
@@ -138,7 +137,7 @@ public abstract class PlayerController {
         GameController.getInstance().checkBothLivesEndGame();
     }
 
-    public void directAttack(Monster monster) throws GameOver {
+    public void directAttack(Monster monster) throws GameOverEvent {
         Game game = GameController.getInstance().getGame();
         startChain(GameController.getInstance().onDirectAttack(this, monster));
         GameController.getInstance().checkBothLivesEndGame();
@@ -150,7 +149,7 @@ public abstract class PlayerController {
         // todo you can call startChain here if you want
     }
 
-    public void startChain(Effect effect) throws GameOver {
+    public void startChain(Effect effect) throws GameOverEvent {
         ChainController chainController = new ChainController(this, effect);
         chainController.control();
     }

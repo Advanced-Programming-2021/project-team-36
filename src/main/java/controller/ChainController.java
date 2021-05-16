@@ -1,6 +1,6 @@
 package controller;
 
-import controller.events.GameOver;
+import controller.events.GameOverEvent;
 import controller.player.PlayerController;
 import lombok.Getter;
 import model.card.Effect;
@@ -19,7 +19,7 @@ public class ChainController {
         // todo : effect should push
     }
 
-    public void control() throws GameOver {
+    public void control() throws GameOverEvent {
         // TODO : it's not complete
         while (this.active.askRespondToChain()) {
             this.active.doRespondToChain();
