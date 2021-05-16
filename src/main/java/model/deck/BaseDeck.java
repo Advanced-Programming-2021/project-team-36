@@ -33,8 +33,13 @@ public class BaseDeck implements Cloneable, Serializable {
         cards.add(card);
     }
 
-    public void removeCard(Card card) {
-        cards.removeIf(card1 -> card1.equals(card));
+    public void removeCard(Card toBeRemoved) {
+        Card tmp = null;
+        for(Card card : cards){
+            if(card.getClass().equals(toBeRemoved.getClass()))
+                tmp = card;
+        }
+        cards.remove(tmp);
     }
 
     public int getNumberOfCards() {
@@ -44,7 +49,7 @@ public class BaseDeck implements Cloneable, Serializable {
     public int getCardFrequency(Card card) {
         int count = 0;
         for (Card c : cards)
-            if (c.getName().equalsIgnoreCase(card.getName()))
+            if (c.getClass().equals(card.getClass()))
                 count++;
         return count;
     }

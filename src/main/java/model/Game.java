@@ -45,10 +45,12 @@ public class Game {
         }
         firstPlayer.getMainDeck().shuffleCards();
         secondPlayer.getMainDeck().shuffleCards();
+
         for (int i = 0; i < 5; i++) {
             firstPlayer.getBoard().drawCardFromDeck();
             secondPlayer.getBoard().drawCardFromDeck();
         }
+
         this.turn = 0;
         this.phase = Phase.MAIN_PHASE2;
         this.summonedInThisTurn = false;

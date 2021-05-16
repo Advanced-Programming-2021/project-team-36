@@ -148,7 +148,7 @@ public class User implements Serializable {
     }
 
     public void deleteDeck(Deck deck) {
-        decks.removeIf(deck1 -> deck1.equals(deck));
+        decks.remove(deck);
     }
 
     public boolean authenticate(String password) {

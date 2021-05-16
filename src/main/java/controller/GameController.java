@@ -1,6 +1,7 @@
 package controller;
 
 import controller.cardSelector.CardSelector;
+import model.card.Magic;
 import utils.CustomPrinter;
 import controller.events.GameOverEvent;
 import controller.menu.DuelMenuController;
@@ -17,6 +18,7 @@ import model.card.Effect;
 import model.card.Monster;
 import model.enums.GameResult;
 import model.enums.Phase;
+import view.DuelMenuView;
 
 // this controller provides functions for player controller to access to.
 // so for example players don't attack each other directly!
@@ -108,6 +110,22 @@ public class GameController {
             throw new Error("Why are you in the END_Phase ?");
         game.setPhase(game.getPhase().nextPhase());
         new CardSelector(game);
+    }
+
+    public void callAllOnSummon(Monster monster) {
+        // todo this is not complete
+        for (Card magic : playerController1.getPlayer().getBoard().getAllCardsOnBoard()) {
+            if (magic instanceof Magic) {
+                if(((Magic) magic).hasEffectOnMonsterSummon(monster)) {
+                    boolean confirm = ((DuelMenuView) DuelMenuController.getInstance().getView()).askUser(String.format(
+                            "Do you want to activate effect of %s on %s?", magic.toString(), monster.toString()));
+                    if(confirm){
+
+                    }
+                    ((Magic) magic).onMonsterSummon(monster);
+                }
+            }
+        }
     }
 
     public PlayerController getPlayerControllerByPlayer(Player player){

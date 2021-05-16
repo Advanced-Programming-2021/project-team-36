@@ -2,11 +2,13 @@ package view;
 
 import controller.GameController;
 import controller.LogicException;
+import controller.ProgramController;
 import controller.cardSelector.CardSelector;
 import controller.cardSelector.MultiCardSelector;
 import controller.cardSelector.ResistToChooseCard;
 import controller.cardSelector.SelectCondition;
 import controller.events.GameEvent;
+import controller.menu.MainMenuController;
 import utils.CustomPrinter;
 import utils.CustomScanner;
 import controller.menu.DuelMenuController;
@@ -140,6 +142,12 @@ public class DuelMenuView extends BaseMenuView {
                     DuelMenuController.getInstance().showBoard();
                 }
         ));
+        this.cmd.addCommand(new Command(
+                "goh khordam",
+                mp -> {
+                    ProgramController.getInstance().navigateToMenu(MainMenuController.getInstance());
+                }
+        ));
     }
 
     public boolean askUser(String question){
@@ -162,14 +170,6 @@ public class DuelMenuView extends BaseMenuView {
         while((selected = multiCardSelector.getSelectedCards().size()) < numberOfCards){
             CustomPrinter.println(String.format("you have to select %d cards(q to quit)", numberOfCards - selected));
             String line = CustomScanner.nextLine();
-
-            Command command = new Command(
-                    "select",
-                    mp -> {
-                        CardSelector.getInstance().selectCard(Parser.cardAddressParser("field", mp.get("field"), mp.containsKey("opponent")));
-                    },
-                    Options.fieldZone(true),
-                    Options.opponent(false));
 
             if(line.equalsIgnoreCase("q"))
                 throw new ResistToChooseCard();

@@ -28,6 +28,13 @@ public class Magic extends Card {
         return cloned;
     }
 
+    public boolean hasEffectOnMonsterSummon(Monster monster){
+        return false;
+    }
+    public Effect onMonsterSummon(Monster monster){
+        return ()->{};
+    }
+
     public MagicState getState() {
         return magicState;
     }

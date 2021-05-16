@@ -23,24 +23,24 @@ public class MainMenuController extends BaseMenuController {
     }
 
     public void startNewDuel(User secondUser, int round) throws RoutingException, ModelException {
+        Game game = new Game(
+                new HumanPlayer(user),
+                new HumanPlayer(secondUser)
+        );
+        CustomPrinter.println(String.format("start new duel between %s and %s", game.getFirstPlayer().getUser().getNickname(), game.getSecondPlayer().getUser().getNickname()));
         ProgramController.getInstance().navigateToMenu(
-            new DuelMenuController(
-                    new Game(
-                            new HumanPlayer(user),
-                            new HumanPlayer(secondUser)
-                    )
-            )
+            new DuelMenuController(game)
         );
     }
 
     public void startDuelWithAI(int round) throws RoutingException, ModelException {
+        Game game = new Game(
+                new HumanPlayer(user),
+                new AIPlayer()
+        );
+        CustomPrinter.println(String.format("start new duel between %s and %s", game.getFirstPlayer().getUser().getNickname(), game.getSecondPlayer().getUser().getNickname()));
         ProgramController.getInstance().navigateToMenu(
-                new DuelMenuController(
-                        new Game(
-                                new HumanPlayer(user),
-                                new AIPlayer()
-                        )
-                )
+                new DuelMenuController(game)
         );
     }
 

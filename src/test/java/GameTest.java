@@ -36,8 +36,6 @@ public class GameTest extends Sample {
         run("menu exit");
         run("menu exit");
         run("menu exit");
-//        run("menu exit");
-//        run("menu exit");
     }
 
 }
