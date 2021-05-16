@@ -1,5 +1,7 @@
 package controller.player;
 
+import controller.cardSelector.Conditions;
+import model.enums.*;
 import utils.CustomPrinter;
 import controller.cardSelector.CardSelector;
 import controller.ChainController;
@@ -17,9 +19,6 @@ import model.card.Card;
 import model.card.Effect;
 import model.card.Magic;
 import model.card.Monster;
-import model.enums.MonsterState;
-import model.enums.Phase;
-import model.enums.ZoneType;
 
 public abstract class PlayerController {
     @Getter
@@ -44,7 +43,7 @@ public abstract class PlayerController {
     abstract public void doRespondToChain(); // todo check if this action is invalid for chain
     abstract public Card[] chooseKCards(String message, int numberOfCards, SelectCondition condition) throws ResistToChooseCard;
 
-    public void addMonsterToBoard(Monster monster, MonsterState monsterState) throws LogicException {
+    public void addMonsterToBoard(Monster monster, MonsterState monsterState) throws LogicException, ResistToChooseCard {
         Game game = GameController.getInstance().getGame();
         if (monster.getLevel() >= 5 && monster.getLevel() <= 6)
             tributeMonster(1);
@@ -55,7 +54,7 @@ public abstract class PlayerController {
         // todo is 5 hardcoded?
         for (int i = 1; i <= 5; i++) {
             if (board.getMonsterCardZone().get(i) == null) {
-                board.addCardToBoard(monster, new CardAddress(ZoneType.HAND, i, false));
+                board.addCardToBoard(monster, new CardAddress(ZoneType.MONSTER, i, false));
                 board.getCardsOnHand().remove(monster);
                 monster.setMonsterState(monsterState);
                 break;
@@ -64,23 +63,46 @@ public abstract class PlayerController {
         CustomPrinter.println("summoned successfully");
     }
 
-    public void summonCard(Monster monster) throws LogicException {
+    public void addMagicToBoard(Magic magic, MagicState magicState) {
+        Game game = GameController.getInstance().getGame();
+        Board board = game.getCurrentPlayer().getBoard();
+        for (int i = 1; i <= 5; i++) {
+            if (board.getMagicCardZone().get(i) == null) {
+                board.addCardToBoard(magic, new CardAddress(ZoneType.MAGIC, i, false));
+                board.getCardsOnHand().remove(magic);
+                magic.setMagicState(magicState);
+                break;
+            }
+        }
+        CustomPrinter.println("set successfully");
+    }
+
+    public void summonCard(Monster monster) throws LogicException, ResistToChooseCard {
         addMonsterToBoard(monster, MonsterState.OFFENSIVE_OCCUPIED);
     }
 
 
-    public void setMonster(Monster monster) throws LogicException {
+    public void setMonster(Monster monster) throws LogicException, ResistToChooseCard {
         addMonsterToBoard(monster, MonsterState.DEFENSIVE_HIDDEN);
     }
 
-    public void tributeMonster(int count) throws LogicException {
+    public void tributeMonster(int count) throws LogicException, ResistToChooseCard {
         if (player.getBoard().getMonsterCardZone().size() < count)
             throw new LogicException("there are not enough cards for tribute");
-        // todo : after selector here should implement
-
+        Card[] tributeCards = chooseKCards(String.format("Choose %d cards to tribute", count), count, Conditions.myMonsterFromMonsterZone);
+        for (Card card : tributeCards)
+            GameController.getInstance().moveCardToGraveYard(card);
     }
 
-    public void setMagic(Magic magic) {
+    public void setMagic(Card card) throws LogicException {
+        if (!player.hasInHand(card))
+            throw new LogicException("you can't set this card");
+        if (!GameController.getInstance().getGame().getPhase().isMainPhase())
+            throw new LogicException("you can't do this action in this phase");
+        if (!((Magic) card).getIcon().equals(Icon.FIELD) && player.getBoard().getMagicCardZone().size() == 5)
+            throw new LogicException("spell card zone is full");
+        Magic magic = (Magic) card;
+        addMagicToBoard(magic, MagicState.HIDDEN);
         // todo
         // todo you can call startChain here if you want
     }
@@ -95,13 +117,15 @@ public abstract class PlayerController {
         CustomPrinter.println("monster card position changed successfully");
     }
 
-    public void flipSummon(Card card) {
-
+    public void flipSummon(Monster monster) {
+        monster.setMonsterState(MonsterState.OFFENSIVE_OCCUPIED);
+        GameController.getInstance().getGame().setSummonedInThisTurn(true);
+        CustomPrinter.println("flip summoned successfully");
         // todo
         // todo you can call startChain here if you want
     }
 
-    public void ritualSummon(Card card) {
+    public void ritualSummon(Card card) throws LogicException {
         // todo
         // todo you can call startChain here if you want
     }

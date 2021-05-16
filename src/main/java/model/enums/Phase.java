@@ -25,4 +25,8 @@ public enum Phase {
             return END_PHASE;
         return DRAW_PHASE;
     }
+
+    public boolean isMainPhase() {
+        return this.equals(MAIN_PHASE1) || this.equals(MAIN_PHASE2);
+    }
 }

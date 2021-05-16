@@ -1,12 +1,16 @@
 package model.card;
 
+import lombok.Getter;
+import lombok.Setter;
 import model.enums.Icon;
 import model.enums.MagicState;
 import model.enums.Status;
 
 public class Magic extends Card {
+    @Getter
     protected Icon icon;
     protected Status status;
+    @Getter @Setter
     protected MagicState magicState;
     protected Magic(String name, String description, int price, Icon icon, Status status) {
         super(name, description, price);

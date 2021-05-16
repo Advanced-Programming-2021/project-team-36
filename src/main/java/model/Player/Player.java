@@ -6,8 +6,10 @@ import model.Board;
 import model.ModelException;
 import model.User;
 import model.card.Card;
+import model.card.Monster;
 import model.deck.*;
 import model.enums.Constants;
+import model.enums.MonsterCardType;
 
 abstract public class Player {
     private final User user;
@@ -57,5 +59,12 @@ abstract public class Player {
     public boolean hasInHand(Card card){
         // todo implement this function with the help of POINTERS not EQUAL function
         return true;
+    }
+
+    public boolean hasAnyRitualMonsterInHand() {
+        for (Card card : board.getCardsOnHand())
+            if (card instanceof Monster && ((Monster) card).getMonsterCardType().equals(MonsterCardType.RITUAL))
+                return true;
+        return false;
     }
 }

@@ -40,7 +40,7 @@ public class Board {
         return monsterCardZone;
     }
 
-    public Map<Integer, Magic> getMagicCardZoneZone() {
+    public Map<Integer, Magic> getMagicCardZone() {
         return magicCardZone;
     }
 
