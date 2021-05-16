@@ -4,7 +4,9 @@ import lombok.Getter;
 import lombok.Setter;
 import model.Player.Player;
 
-public abstract class Card implements Comparable<Card>, Cloneable{
+import java.io.Serializable;
+
+public abstract class Card implements Comparable<Card>, Cloneable, Serializable {
     protected String name;
     protected String description;
     protected int price;
@@ -36,7 +38,7 @@ public abstract class Card implements Comparable<Card>, Cloneable{
         return price;
     }
 
-    public Card readyForBattle(Player owner){
+    public Card readyForBattle(Player owner) {
         isInBattle = true;
         this.owner = owner;
         return this;
@@ -50,7 +52,7 @@ public abstract class Card implements Comparable<Card>, Cloneable{
             cloned.description = description;
             cloned.price = price;
             return cloned;
-        } catch (CloneNotSupportedException e){
+        } catch (CloneNotSupportedException e) {
             e.printStackTrace();
             return null;
         }
