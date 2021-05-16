@@ -1,18 +1,15 @@
 package model.card.monsterCards;
 
-import Utils.CustomPrinter;
 import controller.GameController;
 import controller.LogicException;
 import controller.cardSelector.Conditions;
 import controller.cardSelector.ResistToChooseCard;
-import controller.menu.DuelMenuController;
-import model.card.Card;
 import model.card.Effect;
 import model.card.Monster;
 import model.enums.MonsterAttribute;
 import model.enums.MonsterCardType;
 import model.enums.MonsterType;
-import view.DuelMenuView;
+import utils.CustomPrinter;
 
 public class ManEasterBug extends Monster {
     protected ManEasterBug(String name, String description, int price, int attackDamage, int defenseRate, MonsterAttribute attribute, MonsterType monsterType, MonsterCardType monsterCardType, int level) {

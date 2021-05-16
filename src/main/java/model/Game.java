@@ -39,8 +39,7 @@ public class Game {
         if (random.nextInt(2) == 0) {
             this.firstPlayer = firstPlayer;
             this.secondPlayer = secondPlayer;
-        }
-        else {
+        } else {
             this.firstPlayer = secondPlayer;
             this.secondPlayer = firstPlayer;
         }
@@ -52,7 +51,6 @@ public class Game {
         }
         this.turn = 0;
         this.phase = Phase.MAIN_PHASE2;
-        // todo in nabayad draw phase bashe?
         this.summonedInThisTurn = false;
     }
 
@@ -92,7 +90,7 @@ public class Game {
     }
 
     public boolean canCardBeSummoned(Card card) {
-        if(!getCurrentPlayer().hasInHand(card))
+        if (!getCurrentPlayer().hasInHand(card))
             return false;
         if (card instanceof Magic)
             return false;
@@ -102,9 +100,10 @@ public class Game {
 
     public void changeTurn() {
         turn++;
+        this.summonedInThisTurn = false;
     }
 
-    public void moveCardToGraveYard(Card card){
+    public void moveCardToGraveYard(Card card) {
         // exactly one of them contain this card
         firstPlayer.getBoard().moveCardToGraveYard(card);
         secondPlayer.getBoard().moveCardToGraveYard(card);

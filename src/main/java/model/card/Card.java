@@ -3,6 +3,7 @@ package model.card;
 import model.Player.Player;
 
 import java.util.TreeMap;
+import utils.ClassFinder;
 
 public abstract class Card implements Comparable<Card>, Cloneable{
     protected String name;
@@ -11,6 +12,7 @@ public abstract class Card implements Comparable<Card>, Cloneable{
     public Player owner;
     boolean isInBattle;
     private static TreeMap<String, String> cardsData = new TreeMap();
+    private static Class[] magicCardsClasses = ClassFinder.getClasses("model.card.magicCards");
 
     {
         owner = null;
@@ -32,7 +34,13 @@ public abstract class Card implements Comparable<Card>, Cloneable{
             return null;
         if (cardsData.get(name).equals("Monster"))
             return Monster.getMonster(name);
-        // TODO : for other types of cards, like spells.
+        for (Class magicCardClass : magicCardsClasses)
+            if (magicCardClass.getName().replaceAll(".*\\.", "").equals(Utils.formatClassName(name)))
+                try {
+                    return (Magic) magicCardClass.getConstructor().newInstance();
+                } catch (Exception exception) {
+                    return null;
+                }
         return null;
     }
 
@@ -66,6 +74,10 @@ public abstract class Card implements Comparable<Card>, Cloneable{
             e.printStackTrace();
             return null;
         }
+    }
+
+    public void save() {
+        // TODO
     }
 
     @Override

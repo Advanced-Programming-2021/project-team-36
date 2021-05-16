@@ -9,9 +9,6 @@ import model.card.Card;
 import model.deck.*;
 import model.enums.Constants;
 
-import java.util.ArrayList;
-import java.util.List;
-
 abstract public class Player {
     private final User user;
     private final Deck deck;

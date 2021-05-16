@@ -1,7 +1,7 @@
 package controller;
 
-import Utils.CustomPrinter;
 import controller.cardSelector.CardSelector;
+import utils.CustomPrinter;
 import controller.events.GameOver;
 import controller.menu.DuelMenuController;
 import controller.player.AIPlayerController;
@@ -13,6 +13,7 @@ import model.Player.AIPlayer;
 import model.Player.HumanPlayer;
 import model.Player.Player;
 import model.card.Card;
+import model.card.Effect;
 import model.card.Monster;
 import model.enums.GameResult;
 import model.enums.Phase;
@@ -77,6 +78,13 @@ public class GameController {
         if (playerController.getPlayer().equals(playerController1.getPlayer()))
             return playerController2;
         return playerController1;
+    }
+
+    public Effect onDirectAttack(PlayerController playerController, Monster monster) {
+        return () -> {
+            decreaseLifePoint(getOtherPlayerController(playerController).getPlayer(), monster.getAttackDamage());
+            monster.setAllowAttack(false);
+        };
     }
 
     private void changeTurn() {

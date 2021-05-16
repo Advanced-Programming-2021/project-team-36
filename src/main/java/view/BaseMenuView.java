@@ -1,6 +1,6 @@
 package view;
 
-import Utils.*;
+import utils.*;
 import controller.LogicException;
 import controller.ProgramController;
 import controller.events.GameEvent;

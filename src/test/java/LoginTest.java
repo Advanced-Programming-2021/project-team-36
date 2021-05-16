@@ -4,7 +4,6 @@ public class LoginTest extends Shayan {
     @Test
     public void invalidCommand() {
         run("salam pesaram khoobi?");
-        runUntilNoInput();
         checkEqualExact("invalid command!\n");
         checkEqualIgnoreNewLine("invalid command!");
     }
@@ -14,7 +13,6 @@ public class LoginTest extends Shayan {
         run("user create -u shayan -p=1234 -n Shayan.P");
         run("user create --password 12345 -u abolfazl --nickname Abolof");
         run("user login --username shayan -p 123");
-        runUntilNoInput();
         checkNoInvalidCommandsInBuffer();
     }
 }

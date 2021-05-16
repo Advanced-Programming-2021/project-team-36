@@ -1,8 +1,10 @@
-package Utils;
+package utils;
 
 import model.User;
 import com.google.gson.*;
+import model.card.Card;
 import model.card.Monster;
+import model.deck.Deck;
 
 import java.io.*;
 import java.util.ArrayList;
@@ -41,8 +43,17 @@ public class DatabaseHandler {
             ObjectInputStream objectInputStream = new ObjectInputStream(new FileInputStream(databaseFilePath));
             try {
                 while (true) {
-                    User user = (User) objectInputStream.readObject();
-                    user.save();
+                    Object object = objectInputStream.readObject();
+                    if (object instanceof User) {
+                        User user = (User)object;
+                        user.save();
+                    } else if (object instanceof Deck) {
+                        Deck deck = (Deck)object;
+                        deck.save();
+                    } else if (object instanceof Card) {
+                        Card card = (Card)object;
+                        card.save();
+                    }
                 }
             } catch (Exception exception) {
             }

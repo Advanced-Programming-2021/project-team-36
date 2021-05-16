@@ -1,11 +1,11 @@
 package controller;
 
-import Utils.DatabaseHandler;
-import Utils.RoutingException;
+import utils.DatabaseHandler;
+import utils.RoutingException;
 import controller.menu.BaseMenuController;
 import controller.menu.LoginMenuController;
 import lombok.Getter;
-import Utils.Debugger;
+import utils.Debugger;
 
 public class ProgramController {
     @Getter

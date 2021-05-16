@@ -1,7 +1,7 @@
 package controller.cardSelector;
 
-import Utils.CustomPrinter;
 import controller.LogicException;
+import utils.CustomPrinter;
 import lombok.Getter;
 import model.CardAddress;
 import model.Game;

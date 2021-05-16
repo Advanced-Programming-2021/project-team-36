@@ -31,7 +31,7 @@ public class User implements Serializable {
         this.cards = new ArrayList<>();
         this.decks = new ArrayList<>();
         this.activeDeck = null;
-        users.add(this);
+        this.save();
     }
 
     public static User getUserByUsername(String username) {

@@ -1,7 +1,7 @@
 package controller.menu;
 
-import Utils.CustomPrinter;
-import Utils.RoutingException;
+import utils.CustomPrinter;
+import utils.RoutingException;
 import controller.ProgramController;
 import lombok.Getter;
 import model.User;

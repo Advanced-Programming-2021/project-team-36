@@ -9,8 +9,8 @@ import model.card.Utils;
 
 import java.util.Arrays;
 
-import Utils.RoutingException;
-import Utils.CustomPrinter;
+import utils.RoutingException;
+import utils.CustomPrinter;
 import view.ShopMenuView;
 
 public class ShopMenuController extends BaseMenuController {

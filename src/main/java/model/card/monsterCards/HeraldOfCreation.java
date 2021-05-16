@@ -1,6 +1,6 @@
 package model.card.monsterCards;
 
-import Utils.CustomPrinter;
+import utils.CustomPrinter;
 import controller.GameController;
 import controller.LogicException;
 import controller.cardSelector.Conditions;

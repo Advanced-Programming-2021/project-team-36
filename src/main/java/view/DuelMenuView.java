@@ -1,8 +1,5 @@
 package view;
 
-import Utils.CustomPrinter;
-import Utils.CustomScanner;
-import Utils.RoutingException;
 import controller.GameController;
 import controller.LogicException;
 import controller.cardSelector.CardSelector;
@@ -10,10 +7,13 @@ import controller.cardSelector.MultiCardSelector;
 import controller.cardSelector.ResistToChooseCard;
 import controller.cardSelector.SelectCondition;
 import controller.events.GameEvent;
+import utils.CustomPrinter;
+import utils.CustomScanner;
 import controller.menu.DuelMenuController;
 import model.CardAddress;
 import model.ModelException;
 import model.card.Card;
+import utils.RoutingException;
 import view.CommandLine.Command;
 import view.CommandLine.CommandLine;
 import view.CommandLine.CommandLineException;
@@ -240,7 +240,7 @@ public class DuelMenuView extends BaseMenuView {
                         Options.Deselect(true)
                 ));
                 commandLine.runNextCommand(line);
-            } catch (CommandLineException | ParserException | RoutingException | LogicException | ModelException | GameEvent e) {
+            } catch (CommandLineException | ParserException | LogicException | ModelException | GameEvent | RoutingException e) {
                 CustomPrinter.println(e.getMessage());
             }
         }
