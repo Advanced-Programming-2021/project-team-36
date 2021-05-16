@@ -85,9 +85,10 @@ abstract public class BaseMenuView {
         this.cmd.addCommand(new Command(
                 "load from database",
                 mp -> {
-                    DatabaseHandler.importUsersFromDatabase();
+                    DatabaseHandler.loadFromDatabase(mp.get("file"));
                     System.out.println("successfully loaded from database");
-                }
+                },
+                Options.file(false)
         ));
     }
 

@@ -51,13 +51,6 @@ public class MainMenuView extends BaseMenuView {
                 },
                 Options.file(false)
         ));
-        this.cmd.addCommand(new Command(
-                "load from database",
-                mp -> {
-                    utils.DatabaseHandler.loadFromDatabase(mp.get("file"));
-                },
-                Options.file(false)
-        ));
     }
 
     @Override
