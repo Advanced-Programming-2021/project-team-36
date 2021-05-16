@@ -5,9 +5,10 @@ import model.card.Card;
 import model.card.Magic;
 import model.card.Monster;
 
+import java.io.Serializable;
 import java.util.*;
 
-public class BaseDeck implements Cloneable {
+public class BaseDeck implements Cloneable, Serializable {
     protected ArrayList<Card> cards;
 
     {

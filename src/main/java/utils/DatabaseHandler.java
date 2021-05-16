@@ -10,6 +10,8 @@ import java.io.*;
 import java.util.ArrayList;
 import java.util.TreeMap;
 
+import static java.lang.System.exit;
+
 public class DatabaseHandler {
     private static String databaseFilePath = "database/database.dat";
     private static String databaseAsJSONFilePath = "database/database.json";
@@ -44,16 +46,17 @@ public class DatabaseHandler {
             try {
                 while (true) {
                     Object object = objectInputStream.readObject();
+                    assert object instanceof User;
                     if (object instanceof User) {
                         User user = (User)object;
                         user.save();
-                    } else if (object instanceof Deck) {
+                    } /*else if (object instanceof Deck) {
                         Deck deck = (Deck)object;
                         deck.save();
                     } else if (object instanceof Card) {
                         Card card = (Card)object;
                         card.save();
-                    }
+                    }*/
                 }
             } catch (Exception exception) {
             }

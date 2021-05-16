@@ -5,12 +5,13 @@ import model.card.Card;
 import model.deck.MainDeck;
 import model.deck.SideDeck;
 
+import java.io.Serializable;
 import java.util.Collections;
 import java.util.function.Function;
 import java.util.stream.Collector;
 import java.util.stream.Collectors;
 
-public class Deck implements Comparable<Deck>, Cloneable {
+public class Deck implements Comparable<Deck>, Cloneable, Serializable {
     private String name;
     private MainDeck mainDeck;
     private SideDeck sideDeck;
