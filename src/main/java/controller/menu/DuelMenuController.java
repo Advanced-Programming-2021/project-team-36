@@ -4,6 +4,7 @@ import controller.cardSelector.CardSelector;
 import controller.GameController;
 import controller.LogicException;
 import controller.ProgramController;
+import controller.cardSelector.ResistToChooseCard;
 import controller.events.GameOver;
 import controller.player.PlayerController;
 import lombok.Getter;
@@ -58,19 +59,20 @@ public class DuelMenuController extends BaseMenuController {
             throw new LogicException("you already summoned/set on this turn");
     }
 
-    public void summonCard(Card card) throws LogicException {
+    public void summonCard(Card card) throws LogicException, ResistToChooseCard {
         canSummonOrSetMonster(card);
         gameController.getCurrentPlayerController().summonCard((Monster) card);
         new CardSelector(game);
     }
 
-    public void setCard(Card card) throws LogicException {
+    public void setCard(Card card) throws LogicException, ResistToChooseCard {
         if (card instanceof Monster) {
             canSummonOrSetMonster(card);
             gameController.getCurrentPlayerController().setMonster((Monster) card);
         }
-        else
-            gameController.getCurrentPlayerController().setMagic((Magic) card);
+        else {
+            gameController.getCurrentPlayerController().setMagic(card);
+        }
         new CardSelector(game);
     }
 
@@ -94,14 +96,7 @@ public class DuelMenuController extends BaseMenuController {
         Monster monster = (Monster) card;
         if (!monster.getMonsterState().equals(MonsterState.DEFENSIVE_HIDDEN) || game.isSummonedInThisTurn())
             throw new LogicException("you can't flip summon this card");
-        gameController.getCurrentPlayerController().flipSummon(card);
-        new CardSelector(game);
-    }
-
-    private void ritualSummon(Card card) throws LogicException {
-        if (!game.getPhase().equals(Phase.MAIN_PHASE1) && !game.getPhase().equals(Phase.MAIN_PHASE2))
-            throw new LogicException("you can’t do this action in this phase");
-        gameController.getCurrentPlayerController().ritualSummon(card);
+        gameController.getCurrentPlayerController().flipSummon((Monster) card);
         new CardSelector(game);
     }
 

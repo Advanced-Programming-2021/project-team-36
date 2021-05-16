@@ -38,4 +38,7 @@ public class Conditions {
     public static final SelectCondition OpponentMonsterFromGraveYard = (Card card)->
             getGame().getOpponentPlayer().getBoard().getGraveYard().contains(card) && card instanceof Monster;
 
+
+    public static final SelectCondition myMonsterFromMonsterZone = (Card card) ->
+            card instanceof Monster && getGame().getCurrentPlayer().getBoard().getMonsterCardZone().containsValue(card);
 }
