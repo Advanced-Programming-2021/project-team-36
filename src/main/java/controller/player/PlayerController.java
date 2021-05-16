@@ -13,6 +13,7 @@ import model.Game;
 import model.Player.Player;
 import model.card.Card;
 import model.card.Effect;
+import model.card.Magic;
 import model.card.Monster;
 import model.enums.MonsterState;
 import model.enums.Phase;
@@ -23,72 +24,76 @@ public abstract class PlayerController {
     Player player;
     Phase previousPhase;
 
-    PlayerController(Player player){
+    PlayerController(Player player) {
         this.player = player;
     }
 
     // in one control cycle this must run until one phase!
     abstract public void controlStandbyPhase();
+
     abstract public void controlMainPhase1();
+
     abstract public void controlMainPhase2();
+
     abstract public void controlBattlePhase();
+
     abstract public boolean askRespondToChain();
+
     abstract public void doRespondToChain(); // todo check if this action is invalid for chain
 
-    public void summonCard(Monster monster) throws LogicException {
+    public void addMonsterToBoard(Monster monster, MonsterState monsterState) throws LogicException {
         Game game = GameController.getInstance().getGame();
-        if (!game.getPhase().equals(Phase.MAIN_PHASE1) && !game.getPhase().equals(Phase.MAIN_PHASE2))
-            throw new LogicException("action not allowed in this phase");
-        if (!game.canCardBeSummoned(monster))
-            throw new LogicException("you can't summon this card");
-        if (game.getCurrentPlayer().getBoard().isMonsterCardZoneFull())
-            throw new LogicException("monster card zone is full");
-
-        // todo tell shayan what is this
-        if (game.isSummonedInThisTurn())
-            throw new LogicException("you already summoned/set on this turn");
-
-        // TODO : monster with higher level than 4
+        if (monster.getLevel() >= 5 && monster.getLevel() <= 6)
+            tributeMonster(1);
+        else if (monster.getLevel() >= 7 && monster.getLevel() <= 8)
+            tributeMonster(2);
         game.setSummonedInThisTurn(true);
-        CustomPrinter.println("summoned successfully");
         Board board = game.getCurrentPlayer().getBoard();
         // todo is 5 hardcoded?
         for (int i = 1; i <= 5; i++) {
             if (board.getMonsterCardZone().get(i) == null) {
                 board.addCardToBoard(monster, new CardAddress(ZoneType.HAND, i, false));
                 board.getCardsOnHand().remove(monster);
-                monster.setMonsterState(MonsterState.OFFENSIVE_OCCUPIED);
-                new CardSelector(game);
+                monster.setMonsterState(monsterState);
                 break;
             }
         }
+        CustomPrinter.println("summoned successfully");
     }
 
-    public void startChain(){
-        ChainController chainController = new ChainController(this);
-        chainController.control();
+    public void summonCard(Monster monster) throws LogicException {
+        addMonsterToBoard(monster, MonsterState.OFFENSIVE_OCCUPIED);
     }
 
-    protected void addEffectToChain(Effect effect){
-        GameController.getInstance().getGame().getChain().add(effect);
+
+    public void setMonster(Monster monster) throws LogicException {
+        addMonsterToBoard(monster, MonsterState.DEFENSIVE_HIDDEN);
     }
 
-    public void setCard(Card card) {
+    public void tributeMonster(int count) throws LogicException {
+        if (player.getBoard().getMonsterCardZone().size() < count)
+            throw new LogicException("there are not enough cards for tribute");
+        // todo : after selector here should implement
+
+    }
+
+    public void setMagic(Magic magic) {
         // todo
         // todo you can call startChain here if you want
     }
 
-    public void surrender(){
+    public void surrender() {
         // todo
         // todo you can call startChain here if you want
     }
 
-    public void changeCardPosition(Card card, MonsterState monsterState) {
-        // todo
-        // todo you can call startChain here if you want
+    public void changeMonsterPosition(Monster monster, MonsterState monsterState) {
+        monster.setMonsterState(monsterState);
+        CustomPrinter.println("monster card position changed successfully");
     }
 
     public void flipSummon(Card card) {
+
         // todo
         // todo you can call startChain here if you want
     }
@@ -98,25 +103,36 @@ public abstract class PlayerController {
         // todo you can call startChain here if you want
     }
 
-
     public void attack(Monster myMonster, Monster opponentMonster) throws LogicException, GameOver {
         Game game = GameController.getInstance().getGame();
-        if (!game.getPhase().equals(Phase.BATTLE_PHASE))
-            throw new LogicException("you can’t do this action in this phase");
         // TODO : check one card don't attack twice in a turn
         // error should be : this card already attacked
-        assert myMonster != null && opponentMonster != null;
-        opponentMonster.onBeingAttackedByMonster(myMonster).run();
+        startChain(opponentMonster.onBeingAttackedByMonster(myMonster));
         GameController.getInstance().checkBothLivesEndGame();
     }
 
-    public void directAttack(Card card) {
+    public void directAttack(Monster monster) throws GameOver {
+        Game game = GameController.getInstance().getGame();
+        startChain(GameController.getInstance().onDirectAttack(this, monster));
+        GameController.getInstance().checkBothLivesEndGame();
+    }
+
+    public void activateEffect(Card card) {
+
         // todo
         // todo you can call startChain here if you want
     }
 
-    public void activateEffect(Card card) {
-        // todo
-        // todo you can call startChain here if you want
+    public void startChain(Effect effect) {
+        ChainController chainController = new ChainController(this, effect);
+        chainController.control();
+    }
+
+    protected void addEffectToChain(Effect effect) {
+        GameController.getInstance().getGame().getChain().add(effect);
+    }
+
+    public boolean hasAttackedByCard(Monster monster) {
+        return !monster.isAllowAttack();
     }
 }

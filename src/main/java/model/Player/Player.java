@@ -1,11 +1,16 @@
 package model.Player;
 
+import lombok.Getter;
+import lombok.Setter;
 import model.Board;
 import model.ModelException;
 import model.User;
 import model.card.Card;
+import model.card.Monster;
 import model.deck.*;
 import model.enums.Constants;
+
+import java.util.ArrayList;
 
 abstract public class Player {
     private final User user;

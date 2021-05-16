@@ -11,10 +11,11 @@ public class ChainController {
     ChainController instance;
     PlayerController active;
 
-    public ChainController(PlayerController starter) {
+    public ChainController(PlayerController starter, Effect effect) {
         instance = this;
         this.active = GameController.instance.getOtherPlayerController(starter);
         GameController.getInstance().getGame().setChain(new Stack<>());
+        // todo : effect should push
     }
 
     public void control() {

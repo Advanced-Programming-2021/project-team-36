@@ -1,6 +1,9 @@
 package model.card;
 
 import controller.GameController;
+import controller.menu.DuelMenuController;
+import lombok.Getter;
+import lombok.Setter;
 import model.enums.MonsterAttribute;
 import model.enums.MonsterCardType;
 import model.enums.MonsterType;
@@ -12,13 +15,22 @@ import java.util.TreeMap;
 
 public class Monster extends Card {
     // this should be abstract too. todo // no it should not.
+    @Getter
     protected int attackDamage;
+    @Getter
     protected int defenseRate;
+    @Getter
     protected MonsterAttribute attribute;
+    @Getter
     protected MonsterType monsterType;
+    @Getter
     protected MonsterCardType monsterCardType;
+    @Getter @Setter
     protected MonsterState monsterState = null;
+    @Getter
     protected int level;
+    @Getter @Setter
+    protected boolean allowAttack = true;
     private static TreeMap<String, TreeMap<String, String>> monstersData = new TreeMap<>();
     private static Class[] specialMonstersClasses = ClassFinder.getClasses("model.card.monsterCards");
 
@@ -76,29 +88,8 @@ public class Monster extends Card {
         return cloned;
     }
 
-    public int getAttackDamage() {
-        return attackDamage;
-    }
-
-    public int getDefenseRate() {
-        return defenseRate;
-    }
-
-    public void setMonsterState(MonsterState monsterState) {
-        this.monsterState = monsterState;
-    }
-
-    public int getLevel() {
-        return level;
-    }
-
-    public MonsterState getState() {
-        return monsterState;
-    }
-
     public boolean canSummonNormally() {
-        // todo why is it always true?
-        return true;
+        return !getMonsterCardType().equals(MonsterCardType.RITUAL);
     }
 
     public Effect onBeingAttackedByMonster(Monster attacker) {
@@ -125,6 +116,7 @@ public class Monster extends Card {
                 // todo complete this
             } else if (monsterState.equals(MonsterState.DEFENSIVE_HIDDEN)) {
             }
+            attacker.setAllowAttack(false);
         };
     }
 }

@@ -12,8 +12,12 @@ import model.Player.AIPlayer;
 import model.Player.HumanPlayer;
 import model.Player.Player;
 import model.card.Card;
+import model.card.Effect;
+import model.card.Monster;
 import model.enums.GameResult;
 import model.enums.Phase;
+
+import javax.management.monitor.Monitor;
 
 // this controller provides functions for player controller to access to.
 // so for example players don't attack each other directly!
@@ -76,6 +80,13 @@ public class GameController {
         if (playerController.getPlayer().equals(playerController1.getPlayer()))
             return playerController2;
         return playerController1;
+    }
+
+    public Effect onDirectAttack(PlayerController playerController, Monster monster) {
+        return () -> {
+            decreaseLifePoint(getOtherPlayerController(playerController).getPlayer(), monster.getAttackDamage());
+            monster.setAllowAttack(false);
+        };
     }
 
     private void changeTurn() {
