@@ -33,12 +33,11 @@ public class GameTest extends Sample {
         run("next phase");
         Assertions.assertEquals(GameController.getInstance().getGame().getPhase(), Phase.BATTLE_PHASE);
         checkNoInvalidCommandsInBuffer();
-        run("menu exit");
-        run("menu exit");
-        run("menu exit");
-        run("menu exit");
-        run("menu exit");
-
+//        run("menu exit");
+//        run("menu exit");
+//        run("menu exit");
+//        run("menu exit");
+//        run("menu exit");
     }
 
 }
