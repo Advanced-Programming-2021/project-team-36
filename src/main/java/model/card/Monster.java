@@ -15,7 +15,8 @@ import utils.ClassFinder;
 import java.util.TreeMap;
 
 public class Monster extends Card {
-    @Setter @Getter
+    @Setter
+    @Getter
     protected int attackDamage;
     @Getter
     protected int defenseRate;
@@ -25,11 +26,13 @@ public class Monster extends Card {
     protected MonsterType monsterType;
     @Getter
     protected MonsterCardType monsterCardType;
-    @Getter @Setter
+    @Getter
+    @Setter
     protected MonsterState monsterState = null;
     @Getter
     protected int level;
-    @Getter @Setter
+    @Getter
+    @Setter
     protected boolean allowAttack = true;
     // todo allowAttack should be a function that gets monster and tells whether you can attack it or not
 
@@ -48,33 +51,44 @@ public class Monster extends Card {
     }
 
     public static void addMonsterData(TreeMap<String, String> monsterData) {
-        Card.addCard("Monster", monsterData.get("Name"));
+        Utils.addCard("Monster", monsterData.get("Name"));
+        monsterData.put("Attribute", monsterData.get("Attribute").toUpperCase());
+        monsterData.put("Monster Type", monsterData.get("Monster Type").toUpperCase().replaceAll("-|\\s", ""));
+        monsterData.put("Card Type", monsterData.get("Card Type").toUpperCase());
         monstersData.put(monsterData.get("Name"), monsterData);
     }
 
     public static Monster getMonster(String name) {
-        // todo remove this? @Kasra
-        System.out.println(name);
+        // todo remove this? @Kasra. Why? @Shayan?
+        TreeMap<String, String> monsterData = monstersData.get(name);
         if (specialMonstersClasses != null)
             for (Class specialMonsterClass : specialMonstersClasses) {
                 if (specialMonsterClass.getName().replaceAll(".*\\.", "").equals(Utils.formatClassName(name)))
                     try {
-                        return (Monster) specialMonsterClass.getConstructor().newInstance();
+                        return (Monster) specialMonsterClass.getConstructors()[0].newInstance(
+                                monsterData.get("Name"),
+                                monsterData.get("Description"),
+                                Integer.parseInt(monsterData.get("Price")),
+                                Integer.parseInt(monsterData.get("Atk")),
+                                Integer.parseInt(monsterData.get("Def")),
+                                MonsterAttribute.valueOf(monsterData.get("Attribute")),
+                                MonsterType.valueOf(monsterData.get("Monster Type")),
+                                MonsterCardType.valueOf(monsterData.get("Card Type")),
+                                Integer.parseInt(monsterData.get("Level")));
                     } catch (Exception exception) {
                         return null;
                     }
             }
-        TreeMap<String, String> monsterData = monstersData.get(name);
-        if (!monsterData.get("Card Type").equals("Normal"))
-            return null;
+        /*if (!monsterData.get("Card Type").equals("Normal"))
+            return null;*/ // TODO : Temporarily commented this out but it should be present in production.
         return new Monster(monsterData.get("Name"),
                 monsterData.get("Description"),
                 Integer.parseInt(monsterData.get("Price")),
                 Integer.parseInt(monsterData.get("Atk")),
                 Integer.parseInt(monsterData.get("Def")),
                 MonsterAttribute.valueOf(monsterData.get("Attribute")),
-                MonsterType.valueOf(monsterData.get("Monster Type").toUpperCase().replaceAll("-", "")),
-                MonsterCardType.valueOf(monsterData.get("Card Type").toUpperCase()),
+                MonsterType.valueOf(monsterData.get("Monster Type")),
+                MonsterCardType.valueOf(monsterData.get("Card Type")),
                 Integer.parseInt(monsterData.get("Level")));
     }
 
@@ -97,21 +111,24 @@ public class Monster extends Card {
         return !getMonsterCardType().equals(MonsterCardType.RITUAL);
     }
 
-    public boolean isFacedUp(){
+    public boolean isFacedUp() {
         // todo if it is not in the middle of the game, we get runtime error because monsterState is null
         return monsterState.equals(MonsterState.OFFENSIVE_OCCUPIED) || monsterState.equals(MonsterState.DEFENSIVE_OCCUPIED);
     }
 
-    public void tryToSendToGraveYardOfMe(){
+    public void tryToSendToGraveYardOfMe() {
         GameController.getInstance().moveCardToGraveYard(this);
     }
-    public void tryToSendToGraveYard(Monster monster){
+
+    public void tryToSendToGraveYard(Monster monster) {
         monster.tryToSendToGraveYardOfMe();
     }
-    public void tryToDecreaseLifePointOfMe(int amount){
+
+    public void tryToDecreaseLifePointOfMe(int amount) {
         GameController.getInstance().decreaseLifePoint(this.owner, amount);
     }
-    public void tryToDecreaseLifePoint(Monster monster, int amount){
+
+    public void tryToDecreaseLifePoint(Monster monster, int amount) {
         monster.tryToDecreaseLifePointOfMe(amount);
     }
 
@@ -143,26 +160,27 @@ public class Monster extends Card {
         attacker.setAllowAttack(false);
     }
 
-    public Effect changeFromHiddenToOccupiedIfCanEffect(){
+    public Effect changeFromHiddenToOccupiedIfCanEffect() {
         return () -> {
-            if(this.monsterState.equals(MonsterState.DEFENSIVE_HIDDEN))
+            if (this.monsterState.equals(MonsterState.DEFENSIVE_HIDDEN))
                 this.monsterState = MonsterState.DEFENSIVE_OCCUPIED;
         };
     }
 
     public void flip() throws LogicException {
         // todo is it correct?
-        if(monsterState.equals(MonsterState.DEFENSIVE_HIDDEN))
+        if (monsterState.equals(MonsterState.DEFENSIVE_HIDDEN))
             throw new LogicException("can't flip and defensive hidden monster");
-        if(monsterState.equals(MonsterState.DEFENSIVE_OCCUPIED))
+        if (monsterState.equals(MonsterState.DEFENSIVE_OCCUPIED))
             monsterState = MonsterState.OFFENSIVE_OCCUPIED;
-        else if(monsterState.equals(MonsterState.OFFENSIVE_OCCUPIED))
+        else if (monsterState.equals(MonsterState.OFFENSIVE_OCCUPIED))
             monsterState = MonsterState.DEFENSIVE_OCCUPIED;
 
     }
 
     public Effect activateEffect() throws LogicException {
-        return ()->{};
+        return () -> {
+        };
     }
 
     public Effect onBeingAttackedByMonster(Monster attacker) {

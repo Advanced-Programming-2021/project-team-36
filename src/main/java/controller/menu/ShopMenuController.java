@@ -31,7 +31,7 @@ public class ShopMenuController extends BaseMenuController {
     }
 
     public void showAll() {
-        Arrays.stream(Utils.getAllCards()).sorted().forEach(CustomPrinter::println);
+        Arrays.stream(Utils.getAllCards()).forEach(CustomPrinter::println);
     }
 
     @Override
