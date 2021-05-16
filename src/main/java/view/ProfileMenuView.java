@@ -14,7 +14,7 @@ public class ProfileMenuView extends BaseMenuView {
         this.cmd.addCommand(new Command(
                 "profile change",
                 mp -> {
-                    ProfileMenuController.getInstance().changeNickname(mp.get("nickname"));
+                    ProfileMenuController.getInstance().changeNickname(mp.get("n"));
                 },
                 Options.nickname(true)
         ));

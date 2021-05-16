@@ -1,3 +1,5 @@
+package utils;
+
 import utils.CustomPrinter;
 import utils.CustomScanner;
 import controller.ProgramController;
@@ -6,7 +8,7 @@ import org.junit.Before;
 import org.junit.jupiter.api.Assertions;
 import utils.Debugger;
 
-public class Shayan {
+public class IntegrationTestBase {
     public final ProgramController controller;
     private String outputBuffer;
     private String lastPrintedLine;

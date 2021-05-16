@@ -1,6 +1,7 @@
 import org.junit.Test;
+import utils.IntegrationTestBase;
 
-public class LoginTest extends Shayan {
+public class LoginTest extends IntegrationTestBase {
     @Test
     public void invalidCommand() {
         run("salam pesaram khoobi?");
@@ -10,7 +11,7 @@ public class LoginTest extends Shayan {
 
     @Test
     public void wrongPassword(){
-        run("user create -u shayan -p=1234 -n Shayan.P");
+        run("user create -u shayan -p=1234 -n utils.IntegrationTestBase.P");
         run("user create --password 12345 -u abolfazl --nickname Abolof");
         run("user login --username shayan -p 123");
         checkNoInvalidCommandsInBuffer();
@@ -19,7 +20,7 @@ public class LoginTest extends Shayan {
 
 // todo write test with this comments
 
-//        CustomScanner.injectString("user create -u shayan -p=1234 -n Shayan.P");
+//        CustomScanner.injectString("user create -u shayan -p=1234 -n utils.IntegrationTestBase.P");
 //        CustomScanner.injectString("user create --password 12345 -u abolfazl --nickname Abolof");
 //        CustomScanner.injectString("user login --username shayan -p 123");
 //        CustomScanner.injectString("menu exit");
@@ -28,7 +29,7 @@ public class LoginTest extends Shayan {
 //    public static void getReady() throws ModelException, ParserException, RoutingException, LogicException {
 //        if (ProgramController.getInstance() == null)
 //            new ProgramController();
-//        LoginMenuController.getInstance().createUser("shayan", "Shayan.P", "1234");
+//        LoginMenuController.getInstance().createUser("shayan", "utils.IntegrationTestBase.P", "1234");
 //        LoginMenuController.getInstance().createUser("abolfazl", "Abolof", "12345");
 //        LoginMenuController.getInstance().createUser("kasra", "KasaMaza", "123456");
 //        LoginMenuController.getInstance().login("shayan", "1234");
@@ -150,7 +151,7 @@ public class LoginTest extends Shayan {
 //    public void doubleAITest() throws ModelException, ParserException, RoutingException, LogicException, GameEvent {
 //        if (ProgramController.getInstance() == null)
 //            new ProgramController();
-//        LoginMenuController.getInstance().createUser("shayan", "Shayan.P", "1234");
+//        LoginMenuController.getInstance().createUser("shayan", "utils.IntegrationTestBase.P", "1234");
 //        LoginMenuController.getInstance().login("shayan", "1234");
 //        MainMenuController.getInstance().startDuelDoubleAI(3);
 //        ProgramController.getInstance().control();

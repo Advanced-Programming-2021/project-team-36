@@ -1,4 +1,4 @@
-user create -u shayan -p 1234 -n Shayan.P
+user create -u shayan -p 1234 -n utils.IntegrationTestBase.P
 user create -u abolfazl -p 1234 -n abolof
 user create -u kasra -p 1234 -n kasamaza
 user login -u shayan -p 1234

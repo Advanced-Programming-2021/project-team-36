@@ -21,7 +21,7 @@ public class LoginMenuController extends BaseMenuController {
         if (User.getUserByUsername(username) != null)
             throw new ModelException(String.format("user with username %s already exists", username));
         if (User.getUserByNickname(nickname) != null)
-            throw new ModelException(String.format("user with nickname %s already exists", username));
+            throw new ModelException(String.format("user with nickname %s already exists", nickname));
         new User(username, nickname, password);
         CustomPrinter.println("user created successfully!");
     }
