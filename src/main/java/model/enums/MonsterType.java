@@ -8,4 +8,12 @@ public enum MonsterType {
     BEAST,
     PYRO,
     DRAGON,
+    CYBERSE,
+    FAIRY,
+    THUNDER,
+    SPELLCASTER,
+    SEASERPENT,
+    ROCK,
+    INSECT,
+    MACHINE,
 }
