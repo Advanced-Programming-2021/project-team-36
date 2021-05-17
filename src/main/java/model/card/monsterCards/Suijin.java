@@ -23,7 +23,7 @@ public class Suijin extends Monster {
             int _attackDamage = attacker.getAttackDamage();
             if(stillHasPower) {
                 boolean confirm = ((DuelMenuView) DuelMenuController.getInstance().getView()).askUser(
-                        "Do you want to activate Suijin's effecr?");
+                        "Do you want to activate Suijin's effect?");
                 if (confirm) {
                     stillHasPower = false;
                     attacker.setAttackDamage(0);
@@ -39,5 +39,10 @@ public class Suijin extends Monster {
         Suijin cloned = (Suijin) super.clone();
         cloned.stillHasPower = true;
         return cloned;
+    }
+
+    @Override
+    public int getSpeed(){
+        return 2;
     }
 }

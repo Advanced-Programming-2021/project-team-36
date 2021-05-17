@@ -12,4 +12,11 @@ abstract public class Spell extends Magic {
     protected Spell(String name, String description, int price, Icon icon, Status status) {
         super(name, description, price, icon, status);
     }
+
+    @Override
+    public int getSpeed(){
+        if(icon.equals(Icon.QUICKPLAY))
+            return 2;
+        return 1;
+    }
 }

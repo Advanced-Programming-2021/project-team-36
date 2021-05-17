@@ -88,10 +88,15 @@ public class GameController {
         new CardSelector(game);
     }
 
-    private void endGame(Player winner, Player loser) {
-        winner.getUser().increaseScore(1000);
-        winner.getUser().increaseBalance(1000 + winner.getLifePoint());
-        loser.getUser().increaseBalance(100);
+    private void endGame(GameOverEvent event) {
+        if(event.gameResult.equals(GameResult.DRAW)) {
+            // todo
+        }
+        else {
+            event.winner.getUser().increaseScore(1000);
+            event.winner.getUser().increaseBalance(1000 + event.winner.getLifePoint());
+            event.looser.getUser().increaseBalance(100);
+        }
     }
 
     public void goNextPhase() {
@@ -102,21 +107,6 @@ public class GameController {
         game.setPhase(game.getPhase().nextPhase());
         new CardSelector(game);
     }
-
-//    public void callAllOnSummon(Monster monster) {
-//        // todo this is not complete
-//        for (Card magic : playerController1.getPlayer().getBoard().getAllCardsOnBoard()) {
-//            if (magic instanceof Magic) {
-//                if(((Magic) magic).hasEffectOnMonsterSummon(monster)) {
-//                    boolean confirm = ((DuelMenuView) DuelMenuController.getInstance().getView()).askUser(String.format(
-//                            "Do you want to activate effect of %s on %s?", magic.toString(), monster.toString()));
-//                    if(confirm) {
-//                        ((Magic) magic).onMonsterSummon(monster);
-//                    }
-//                }
-//            }
-//        }
-//    }
 
     public PlayerController getPlayerControllerByPlayer(Player player){
         if(playerController1.getPlayer().equals(player))
@@ -150,7 +140,8 @@ public class GameController {
                 }
             } catch (GameEvent gameEvent) {
                 GameOverEvent gameOverEvent = (GameOverEvent) gameEvent;
-                endGame(gameOverEvent.winner, gameOverEvent.looser);
+                endGame(gameOverEvent);
+                break;
             }
         }
     }
