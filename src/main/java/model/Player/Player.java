@@ -23,9 +23,8 @@ abstract public class Player {
     public Player(User user) throws ModelException {
         if (user.getActiveDeck() == null)
             throw new ModelException(String.format("%s has no active deck", user.getUsername()));
-        // todo remove this comments and add some tests that are compatible with this condition
-//        if (!user.getActiveDeck().getMainDeck().isValid())
-//            throw new ModelException(String.format("%s's active deck is not valid", user.getUsername()));
+        if (!user.getActiveDeck().getMainDeck().isValid())
+            throw new ModelException(String.format("%s's active deck is not valid", user.getUsername()));
         this.user = user;
         this.deck = user.getActiveDeck().clone().readyForBattle(this);
         this.board = new Board(deck.getMainDeck());

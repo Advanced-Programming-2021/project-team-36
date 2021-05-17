@@ -2,8 +2,7 @@ from telnetlib import Telnet
 
 import requests
 
-bot_token = "1876192370:AAFG76ZUbnVEx6aveiZXHNiMLWwjvJrQyTI"
-
+bot_token = "1876192370:AAFQG3r2zT8Ai1rx1BAKKWac0XOkl6aJ0Zo"
 
 def __request(method_name, files=None, **params):
     return requests.post(
@@ -42,7 +41,6 @@ def get_next_update():
     message_pile = message_pile[1:]
     return _update
 
-
 with Telnet('127.0.0.1', 5000) as tn:
     while True:
         update = get_next_update()
@@ -50,4 +48,7 @@ with Telnet('127.0.0.1', 5000) as tn:
         if 'message' in update and 'text' in update['message']:
             print('got message', update['message']['text'])
             tn.write(bytes(update['message']['text'][1:] + "\n", 'utf-8'))
-            send_message(tn.read_until(b"tamaaam\n").decode('utf-8'), chat_id=update['message']['chat']['id'])
+            java = tn.read_until(b"tamaaam\n").decode('utf-8')
+            print("message is ", java) 
+            response = send_message(java, chat_id=update['message']['chat']['id'])
+            print("response: ", response)
