@@ -10,4 +10,9 @@ public abstract class AttackEvent extends Event{
     public AttackEvent(Monster attacker){
         this.attacker = attacker;
     }
+
+    @Override
+    public int getSpeed() {
+        return 1;
+    }
 }

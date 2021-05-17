@@ -26,6 +26,8 @@ public abstract class Card implements Comparable<Card>, Cloneable, Serializable 
         this.price = price;
     }
 
+    abstract public int getSpeed();
+
     public String getName() {
         return name;
     }

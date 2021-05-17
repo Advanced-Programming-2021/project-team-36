@@ -1,4 +1,6 @@
 package model.card.action;
 
-public class Event {
+abstract public class Event {
+    abstract public int getSpeed();
+    abstract public String getActivationQuestion();
 }

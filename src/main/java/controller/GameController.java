@@ -102,21 +102,6 @@ public class GameController {
         new CardSelector(game);
     }
 
-//    public void callAllOnSummon(Monster monster) {
-//        // todo this is not complete
-//        for (Card magic : playerController1.getPlayer().getBoard().getAllCardsOnBoard()) {
-//            if (magic instanceof Magic) {
-//                if(((Magic) magic).hasEffectOnMonsterSummon(monster)) {
-//                    boolean confirm = ((DuelMenuView) DuelMenuController.getInstance().getView()).askUser(String.format(
-//                            "Do you want to activate effect of %s on %s?", magic.toString(), monster.toString()));
-//                    if(confirm) {
-//                        ((Magic) magic).onMonsterSummon(monster);
-//                    }
-//                }
-//            }
-//        }
-//    }
-
     public PlayerController getPlayerControllerByPlayer(Player player){
         if(playerController1.getPlayer().equals(player))
             return playerController1;

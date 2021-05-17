@@ -7,8 +7,11 @@ import controller.menu.DuelMenuController;
 import model.Game;
 import model.Player.HumanPlayer;
 import model.card.Card;
+import model.card.action.Action;
 import model.enums.Phase;
 import view.DuelMenuView;
+
+import java.util.List;
 
 public class HumanPlayerController extends PlayerController {
 
@@ -52,8 +55,25 @@ public class HumanPlayerController extends PlayerController {
     }
 
     @Override
-    public void doRespondToChain() {
-        // todo
+    public void doRespondToChain() throws ResistToChooseCard {
+        DuelMenuView view = (DuelMenuView) DuelMenuController.getInstance().getView();
+        List<Action> actions = listOfAvailableActionsInResponse();
+        StringBuilder question = new StringBuilder("You have these choices. which one do you choose? (0 to quit)\n");
+        for(int i = 0; i < actions.size(); i++){
+            question.append(i + 1).append(". ").append(actions.get(i).getEvent().getActivationQuestion()).append("\n");
+        }
+        int choice = view.askUserToChooseNumber(
+                question.toString(), 0, actions.size()
+        );
+        if(choice == 0) {
+            boolean retry = view.askUser("Do you want to choose another one?");
+            if(retry){
+                doRespondToChain();
+                return;
+            }
+            throw new ResistToChooseCard();
+        }
+        addActionToChain(actions.get(choice));
     }
 
     @Override

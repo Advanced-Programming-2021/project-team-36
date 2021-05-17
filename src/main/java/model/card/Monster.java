@@ -152,4 +152,9 @@ public class Monster extends Card {
             damageStep(attacker);
         };
     }
+
+    @Override
+    public int getSpeed(){
+        return 1;
+    }
 }

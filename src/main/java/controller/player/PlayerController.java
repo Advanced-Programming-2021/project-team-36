@@ -2,9 +2,7 @@ package controller.player;
 
 import controller.cardSelector.Conditions;
 import controller.menu.DuelMenuController;
-import model.card.action.Action;
-import model.card.action.MonsterAttackEvent;
-import model.card.action.DirectAttackEvent;
+import model.card.action.*;
 import model.enums.*;
 import utils.CustomPrinter;
 import controller.ChainController;
@@ -21,6 +19,9 @@ import model.Player.Player;
 import model.card.Card;
 import model.card.Magic;
 import model.card.Monster;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public abstract class PlayerController {
     @Getter
@@ -41,8 +42,24 @@ public abstract class PlayerController {
 
     abstract public boolean askRespondToChain();
 
-    abstract public void doRespondToChain(); // todo check if this action is invalid for chain
+    abstract public void doRespondToChain() throws ResistToChooseCard; // todo check if this action is invalid for chain
     abstract public Card[] chooseKCards(String message, int numberOfCards, SelectCondition condition) throws ResistToChooseCard;
+
+    public List<Action> listOfAvailableActionsInResponse(){
+        int previousSpeed = Math.max(GameController.getInstance().getGame().getChain().peek().getEvent().getSpeed(), 2);
+        List<Action> actions = new ArrayList<>();
+        for (Card magic : player.getBoard().getAllCardsOnBoard()) {
+            if (magic instanceof Magic) {
+                if(((Magic) magic).canActivateEffect() && previousSpeed <= magic.getSpeed()){
+                    actions.add(new Action(
+                            new MagicActivation((Magic) magic),
+                            ((Magic) magic).activateEffect()
+                    ));
+                }
+            }
+        }
+        return actions;
+    }
 
     public void canSummonOrSetMonster(Card card) throws LogicException {
         Game game = GameController.instance.getGame();

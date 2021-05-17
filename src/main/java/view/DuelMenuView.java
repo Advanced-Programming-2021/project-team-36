@@ -249,6 +249,21 @@ public class DuelMenuView extends BaseMenuView {
         return (Card[]) MultiCardSelector.getInstance().getSelectedCards().toArray();
     }
 
+    public int askUserToChooseNumber(String question, int l, int r){
+        CustomPrinter.println(question);
+        while(true){
+            String number = CustomScanner.nextLine();
+            try{
+                int id = Integer.parseInt(number);
+                if(l > id || id > r)
+                    throw new Exception();
+                return id;
+            } catch (Exception e){
+                CustomPrinter.println(String.format("number should be from %d to %d", l, r));
+            }
+        }
+    }
+
     @Override
     protected String getMenuName() {
         return "Duel Menu";

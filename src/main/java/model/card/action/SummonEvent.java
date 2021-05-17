@@ -13,4 +13,14 @@ public class SummonEvent extends Event {
         this.monster = monster;
         this.summonType = summonType;
     }
+
+    @Override
+    public int getSpeed() {
+        return 0;
+    }
+
+    @Override
+    public String getActivationQuestion() {
+        return String.format("Do you want to summon %s?", monster.getName());
+    }
 }
