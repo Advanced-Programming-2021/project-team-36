@@ -4,12 +4,13 @@ import controller.GameController;
 import controller.LogicException;
 import controller.cardSelector.ResistToChooseCard;
 import controller.cardSelector.SelectCondition;
+import lombok.extern.java.Log;
 import model.Game;
 import model.Player.AIPlayer;
 import model.Player.Player;
-import model.card.Card;
-import model.card.Magic;
-import model.card.Monster;
+import model.card.*;
+import model.card.action.Action;
+import model.enums.MonsterState;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -29,24 +30,31 @@ public class AIPlayerController extends PlayerController {
 
     public void mainPhase(){
         Random rnd = new Random();
-        try {
-            while (true) {
-                List<Card> cards = player.getBoard().getCardsOnHand();
-                Card card = cards.get(rnd.nextInt(cards.size()));
-                if(card instanceof Monster) {
-                    int r = rnd.nextInt(3);
-                    if(r == 0)
-                        summonCard((Monster) card);
-                    if(r == 1)
-                        flipSummon((Monster) card);
-                    if(r == 2)
-                        setMonster((Monster) card);
-                }
-                else if(card instanceof Magic) {
-                    setMagic(card);
-                }
+        List<Card> allCards = new ArrayList<>(player.getBoard().getAllCards());
+        while(!allCards.isEmpty()){
+            Card card = allCards.get(rnd.nextInt(allCards.size()));
+            allCards.remove(card);
+            if (card instanceof Monster) {
+                int r = rnd.nextInt(3);
+                if (r == 0)
+                    noErrorSummonCard((Monster) card);
+                if (r == 1)
+                    noErrorFlipSummon((Monster) card);
+                if (r == 2)
+                    noErrorSetMonster((Monster) card);
+                r = rnd.nextInt(3);
+                if (r == 0)
+                    noErrorChangeMonsterPosition((Monster) card, MonsterState.OFFENSIVE_OCCUPIED);
+                if (r == 1)
+                    noErrorChangeMonsterPosition((Monster) card, MonsterState.DEFENSIVE_OCCUPIED);
+                if (r == 2)
+                    noErrorChangeMonsterPosition((Monster) card, MonsterState.DEFENSIVE_HIDDEN); // todo remove this
+            } else if (card instanceof Magic) {
+                noErrorSetMagic((Magic) card);
             }
-        } catch (ResistToChooseCard | LogicException ignored) {
+            if(card instanceof Spell){
+                noErrorActivateEffect((Spell) card);
+            }
         }
         GameController.getInstance().goNextPhase();
     }
@@ -63,18 +71,101 @@ public class AIPlayerController extends PlayerController {
 
     @Override
     public void controlBattlePhase() {
-
+        Random rnd = new Random();
+        List<Card> allCards = new ArrayList<>(player.getBoard().getAllCards()); // or cards on board
+        while(!allCards.isEmpty()){
+            Card card = allCards.get(rnd.nextInt(allCards.size()));
+            allCards.remove(card);
+            if (card instanceof Monster) {
+                int r = rnd.nextInt(3);
+                if (r == 0)
+                    noErrorSummonCard((Monster) card);
+                if (r == 1)
+                    noErrorFlipSummon((Monster) card);
+                if (r == 2)
+                    noErrorSetMonster((Monster) card);
+                r = rnd.nextInt(3);
+                if (r == 0)
+                    noErrorChangeMonsterPosition((Monster) card, MonsterState.OFFENSIVE_OCCUPIED);
+                if (r == 1)
+                    noErrorChangeMonsterPosition((Monster) card, MonsterState.DEFENSIVE_OCCUPIED);
+                if (r == 2)
+                    noErrorChangeMonsterPosition((Monster) card, MonsterState.DEFENSIVE_HIDDEN); // todo remove this
+                for (Card opponentCard : GameController.getInstance().getGame().getOtherPlayer(player).getBoard().getAllCardsOnBoard()) {
+                    if (opponentCard instanceof Monster)
+                        noErrorAttack((Monster) card, (Monster) opponentCard);
+                    noErrorDirectAttack((Monster) card);
+                }
+            }
+            else if (card instanceof Magic) {
+                noErrorSetMagic((Magic) card);
+            }
+            if(card instanceof Spell){
+                noErrorActivateEffect((Spell) card);
+            }
+        }
         GameController.getInstance().goNextPhase();
+    }
+
+    private void noErrorSummonCard(Monster monster){
+        try{
+            summonCard(monster);
+        } catch (ResistToChooseCard | LogicException ignored) {
+        }
+    }
+    private void noErrorFlipSummon(Monster monster){
+        try{
+            flipSummon(monster);
+        } catch (LogicException ignored) {
+        }
+    }
+    private void noErrorChangeMonsterPosition(Monster monster, MonsterState monsterState){
+        try {
+            changeMonsterPosition(monster, monsterState);
+        } catch (LogicException ignored) {
+        }
+    }
+    private void noErrorSetMonster(Monster monster){
+        try{
+            setMonster(monster);
+        } catch (LogicException | ResistToChooseCard ignored) {
+        }
+    }
+    private void noErrorSetMagic(Magic magic){
+        try{
+            setMagic(magic);
+        } catch (LogicException ignored) {
+        }
+    }
+    private void noErrorActivateEffect(Spell spell){
+        try{
+            activateEffect(spell);
+        } catch (LogicException ignored) {
+        }
+    }
+    private void noErrorAttack(Monster attacker, Monster defender){
+        try{
+            attack(attacker, defender);
+        } catch (LogicException ignored) {
+        }
+    }
+    private void noErrorDirectAttack(Monster monster){
+        try{
+            directAttack(monster);
+        } catch (LogicException ignored) {
+        }
     }
 
     @Override
     public boolean askRespondToChain() {
-        return false;
+        return true;
     }
 
     @Override
     public void doRespondToChain() {
-        // todo
+        List<Action> actions = listOfAvailableActionsInResponse();
+        Random rnd = new Random();
+        addActionToChain(actions.get(rnd.nextInt(actions.size())));
     }
 
     @Override

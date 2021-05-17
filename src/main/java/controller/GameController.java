@@ -61,11 +61,14 @@ public class GameController {
     public void moveCardToGraveYard(Card card) {
         // also you can do some extra things here
         game.moveCardToGraveYard(card);
+        CustomPrinter.println(String.format("%s moved to graveyard", card.getName()));
     }
 
     public void decreaseLifePoint(Player player, int amount) {
         // also you can do some extra things here
         player.decreaseLifePoint(amount);
+        CustomPrinter.println(String.format("%s's lp decreased by %d and it is %d now", player.getUser().getNickname(), amount, player.getLifePoint()));
+        checkBothLivesEndGame();
     }
 
     public PlayerController getCurrentPlayerController() {
