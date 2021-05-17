@@ -193,4 +193,9 @@ public class AIPlayerController extends PlayerController {
         }
         return cards.toArray(Card[]::new);
     }
+
+    @Override
+    public Monster[] chooseKSumLevelMonsters(String message, int sumOfLevelsOfCards, SelectCondition condition) throws ResistToChooseCard {
+        return new Monster[0];
+    }
 }

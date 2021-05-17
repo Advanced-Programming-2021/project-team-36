@@ -4,6 +4,7 @@ import controller.GameController;
 import controller.LogicException;
 import controller.ProgramController;
 import controller.cardSelector.*;
+import controller.events.GameEvent;
 import controller.menu.MainMenuController;
 import model.Game;
 import model.Player.AIPlayer;
@@ -148,10 +149,10 @@ public class DuelMenuView extends BaseMenuView {
         ));
     }
 
-    public boolean askUser(String question){
+    public boolean askUser(String question) {
         CustomPrinter.println(question + "(yes/no)");
         String response = CustomScanner.nextLine();
-        while(true) {
+        while (true) {
             if (response.equalsIgnoreCase("yes"))
                 return true;
             else if (response.equalsIgnoreCase("no"))
@@ -161,100 +162,101 @@ public class DuelMenuView extends BaseMenuView {
         }
     }
 
-    public Card[] askUserToChooseKCards(String message, int numberOfCards, SelectCondition condition) throws ResistToChooseCard {
+    public Card askUserToChooseCard(String message, SelectCondition condition) throws ResistToChooseCard {
         CustomPrinter.println(message);
-        MultiCardSelector multiCardSelector = new MultiCardSelector(GameController.instance.getGame());
-        int selected;
-        while((selected = multiCardSelector.getSelectedCards().size()) < numberOfCards){
-            CustomPrinter.println(String.format("you have to select %d cards(q to quit)", numberOfCards - selected));
-            String line = CustomScanner.nextLine();
+        CardSelector cardSelector = new CardSelector(GameController.instance.getGame());
+        CustomPrinter.println("you have to select a card(q to quit)");
+        String line = CustomScanner.nextLine();
 
-            if(line.equalsIgnoreCase("q"))
-                throw new ResistToChooseCard();
-            try {
-                // todo clean this shit
-                CommandLine commandLine = new CommandLine();
-                commandLine.addCommand(new Command(
-                        "select",
-                        mp -> {
-                            CardAddress cardAddress = Parser.cardAddressParser("monster", mp.get("monster"), mp.containsKey("opponent"));
-                            Card card = GameController.getInstance().getGame().getCardByCardAddress(cardAddress);
-                            if(card == null)
-                                throw new LogicException("no card found in the given position");
-                            if(condition.canSelect(card))
-                                throw new LogicException("you can't select this card");
-                            MultiCardSelector.getInstance().selectCard(cardAddress);
-                        },
-                        Options.monsterZone(true),
-                        Options.opponent(false)
-                ));
-                commandLine.addCommand(new Command(
-                        "select",
-                        mp -> {
-                            CardAddress cardAddress = Parser.cardAddressParser("spell", mp.get("spell"), mp.containsKey("opponent"));
-                            Card card = GameController.getInstance().getGame().getCardByCardAddress(cardAddress);
-                            if(card == null)
-                                throw new LogicException("no card found in the given position");
-                            if(condition.canSelect(card))
-                                throw new LogicException("you can't select this card");
-                            MultiCardSelector.getInstance().selectCard(cardAddress);
-                        },
-                        Options.spellZone(true),
-                        Options.opponent(false)
-                ));
-                commandLine.addCommand(new Command(
-                        "select",
-                        mp -> {
-                            CardAddress cardAddress = Parser.cardAddressParser("field", mp.get("field"), mp.containsKey("opponent"));
-                            Card card = GameController.getInstance().getGame().getCardByCardAddress(cardAddress);
-                            if(card == null)
-                                throw new LogicException("no card found in the given position");
-                            if(condition.canSelect(card))
-                                throw new LogicException("you can't select this card");
-                            MultiCardSelector.getInstance().selectCard(cardAddress);
-                        },
-                        Options.fieldZone(true),
-                        Options.opponent(false)
-                ));
-                commandLine.addCommand(new Command(
-                        "select",
-                        mp -> {
-                            CardAddress cardAddress = Parser.cardAddressParser("hand", mp.get("hand"), false);
-                            Card card = GameController.getInstance().getGame().getCardByCardAddress(cardAddress);
-                            if(card == null)
-                                throw new LogicException("no card found in the given position");
-                            if(condition.canSelect(card))
-                                throw new LogicException("you can't select this card");
-                            MultiCardSelector.getInstance().selectCard(cardAddress);
-                        },
-                        Options.handZone(true)
-                ));
-                commandLine.addCommand(new Command(
-                        "select",
-                        mp -> {
-                            CustomPrinter.println("not implemented yet");
-                            // todo implement deselect in multiCard
-                        },
-                        Options.Deselect(true)
-                ));
-                commandLine.runNextCommand(line);
-            } catch (CommandLineException | ParserException | LogicException | ModelException | RoutingException e) {
-                CustomPrinter.println(e.getMessage());
-            }
+        if (line.equalsIgnoreCase("q"))
+            throw new ResistToChooseCard();
+        try {
+            // todo clean this shit
+            CommandLine commandLine = new CommandLine();
+            commandLine.addCommand(new Command(
+                    "select",
+                    mp -> {
+                        CardAddress cardAddress = Parser.cardAddressParser("monster", mp.get("monster"), mp.containsKey("opponent"));
+                        Card card = GameController.getInstance().getGame().getCardByCardAddress(cardAddress);
+                        if (card == null)
+                            throw new LogicException("no card found in the given position");
+                        if (condition.canSelect(card))
+                            throw new LogicException("you can't select this card");
+                        cardSelector.selectCard(cardAddress);
+                    },
+                    Options.monsterZone(true),
+                    Options.opponent(false)
+            ));
+            commandLine.addCommand(new Command(
+                    "select",
+                    mp -> {
+                        CardAddress cardAddress = Parser.cardAddressParser("spell", mp.get("spell"), mp.containsKey("opponent"));
+                        Card card = GameController.getInstance().getGame().getCardByCardAddress(cardAddress);
+                        if (card == null)
+                            throw new LogicException("no card found in the given position");
+                        if (condition.canSelect(card))
+                            throw new LogicException("you can't select this card");
+                        cardSelector.selectCard(cardAddress);
+                    },
+                    Options.spellZone(true),
+                    Options.opponent(false)
+            ));
+            commandLine.addCommand(new Command(
+                    "select",
+                    mp -> {
+                        CardAddress cardAddress = Parser.cardAddressParser("field", mp.get("field"), mp.containsKey("opponent"));
+                        Card card = GameController.getInstance().getGame().getCardByCardAddress(cardAddress);
+                        if (card == null)
+                            throw new LogicException("no card found in the given position");
+                        if (condition.canSelect(card))
+                            throw new LogicException("you can't select this card");
+                        cardSelector.selectCard(cardAddress);
+                    },
+                    Options.fieldZone(true),
+                    Options.opponent(false)
+            ));
+            commandLine.addCommand(new Command(
+                    "select",
+                    mp -> {
+                        CardAddress cardAddress = Parser.cardAddressParser("hand", mp.get("hand"), false);
+                        Card card = GameController.getInstance().getGame().getCardByCardAddress(cardAddress);
+                        if (card == null)
+                            throw new LogicException("no card found in the given position");
+                        if (condition.canSelect(card))
+                            throw new LogicException("you can't select this card");
+                        cardSelector.selectCard(cardAddress);
+                    },
+                    Options.handZone(true)
+            ));
+            commandLine.addCommand(new Command(
+                    "select",
+                    mp -> {
+                        CustomPrinter.println("not implemented yet");
+                        // todo implement deselect in multiCard
+                    },
+                    Options.Deselect(true)
+            ));
+            commandLine.runNextCommand(line);
+        } catch (CommandLineException | ParserException | LogicException | ModelException | GameEvent | RoutingException e) {
+            CustomPrinter.println(e.getMessage());
         }
-        return (Card[]) MultiCardSelector.getInstance().getSelectedCards().toArray();
+        try {
+            return cardSelector.getSelectedCard();
+        } catch (LogicException logicException) {
+            throw new ResistToChooseCard();
+        }
     }
 
-    public int askUserToChooseNumber(String question, int l, int r){
+    public int askUserToChooseNumber(String question, int l, int r) {
         CustomPrinter.println(question);
-        while(true){
+        while (true) {
             String number = CustomScanner.nextLine();
-            try{
+            try {
                 int id = Integer.parseInt(number);
-                if(l > id || id > r)
+                if (l > id || id > r)
                     throw new Exception();
                 return id;
-            } catch (Exception e){
+            } catch (Exception e) {
                 CustomPrinter.println(String.format("number should be from %d to %d", l, r));
             }
         }

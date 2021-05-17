@@ -61,6 +61,10 @@ abstract public class Player {
         return true;
     }
 
+    public void moveCardToGraveYard(Card card) {
+        board.moveCardToGraveYard(card);
+    }
+
     public boolean hasAnyRitualMonsterInHand() {
         for (Card card : board.getCardsOnHand())
             if (card instanceof Monster && ((Monster) card).getMonsterCardType().equals(MonsterCardType.RITUAL))

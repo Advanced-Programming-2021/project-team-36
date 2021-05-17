@@ -45,6 +45,8 @@ public abstract class PlayerController {
 
     abstract public void doRespondToChain() throws ResistToChooseCard; // todo check if this action is invalid for chain
     abstract public Card[] chooseKCards(String message, int numberOfCards, SelectCondition condition) throws ResistToChooseCard;
+    abstract public Monster[] chooseKSumLevelMonsters(String message, int sumOfLevelsOfCards, SelectCondition condition) throws ResistToChooseCard;
+
 
     public List<Action> listOfAvailableActionsInResponse(){
         int previousSpeed = Math.max(GameController.getInstance().getGame().getChain().peek().getEvent().getSpeed(), 2);
@@ -127,7 +129,7 @@ public abstract class PlayerController {
     public void tributeMonster(int count) throws LogicException, ResistToChooseCard {
         if (player.getBoard().getMonsterCardZone().size() < count)
             throw new LogicException("there are not enough cards for tribute");
-        Card[] tributeCards = chooseKCards(String.format("Choose %d cards to tribute", count), count, Conditions.myMonsterFromMonsterZone);
+        Card[] tributeCards = chooseKCards(String.format("Choose %d cards to tribute", count), count, Conditions.myMonsterFromMyMonsterZone(player));
         for (Card card : tributeCards)
             GameController.getInstance().moveCardToGraveYard(card);
         CustomPrinter.println(String.format("I tribute this monsters: %s", Arrays.toString(Arrays.stream(tributeCards).toArray())));
@@ -176,12 +178,6 @@ public abstract class PlayerController {
         GameController.getInstance().getGame().setSummonedInThisTurn(true);
         CustomPrinter.println(String.format("I flip summon my %s", monster.getName()));
         CustomPrinter.println("flip summoned successfully");
-    }
-
-    public void ritualSummon(Card card) throws LogicException {
-        // todo
-        // todo you can call startChain here if you want
-
     }
 
     public void canAttack(Monster monster) throws LogicException {

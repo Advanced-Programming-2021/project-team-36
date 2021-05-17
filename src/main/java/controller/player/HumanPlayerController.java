@@ -7,10 +7,12 @@ import controller.menu.DuelMenuController;
 import model.Game;
 import model.Player.HumanPlayer;
 import model.card.Card;
+import model.card.Monster;
 import model.card.action.Action;
 import model.enums.Phase;
 import view.DuelMenuView;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class HumanPlayerController extends PlayerController {
@@ -78,6 +80,32 @@ public class HumanPlayerController extends PlayerController {
 
     @Override
     public Card[] chooseKCards(String message, int numberOfCards, SelectCondition condition) throws ResistToChooseCard {
-        return ((DuelMenuView) DuelMenuController.getInstance().getView()).askUserToChooseKCards(message, numberOfCards, condition);
+        ArrayList<Card> cards = new ArrayList<>();
+        while (cards.size() < numberOfCards) {
+            Card card = ((DuelMenuView) DuelMenuController.getInstance().getView()).askUserToChooseCard(message, condition);
+            if (cards.contains(card))
+                cards.remove(card);
+            else
+                cards.add(card);
+        }
+        return (Card[]) cards.toArray();
+    }
+
+    @Override
+    public Monster[] chooseKSumLevelMonsters(String message, int sumOfLevelsOfCards, SelectCondition condition) throws ResistToChooseCard {
+        ArrayList<Monster> monsters = new ArrayList<>();
+        int sumLevels = 0;
+        while (sumLevels < sumOfLevelsOfCards) {
+            Monster monster = (Monster) ((DuelMenuView) DuelMenuController.getInstance().getView()).askUserToChooseCard(message, condition);
+            if (monsters.contains(monster)) {
+                monsters.remove(monster);
+                sumLevels -= ((Monster) monster).getLevel();
+            }
+            else {
+                monsters.add(monster);
+                sumLevels += ((Monster) monster).getLevel();
+            }
+        }
+        return (Monster[]) monsters.toArray();
     }
 }
