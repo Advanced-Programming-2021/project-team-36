@@ -1,6 +1,9 @@
 package controller.player;
 
 import controller.cardSelector.Conditions;
+import model.card.action.Action;
+import model.card.action.MonsterAttackEvent;
+import model.card.action.DirectAttackEvent;
 import model.enums.*;
 import utils.CustomPrinter;
 import controller.ChainController;
@@ -15,7 +18,6 @@ import model.CardAddress;
 import model.Game;
 import model.Player.Player;
 import model.card.Card;
-import model.card.Effect;
 import model.card.Magic;
 import model.card.Monster;
 
@@ -133,13 +135,23 @@ public abstract class PlayerController {
         Game game = GameController.getInstance().getGame();
         // TODO : check one card don't attack twice in a turn
         // error should be : this card already attacked
-        startChain(opponentMonster.onBeingAttackedByMonster(myMonster));
+        startChain(
+                new Action(
+                        new MonsterAttackEvent(myMonster, opponentMonster),
+                        opponentMonster.onBeingAttackedByMonster(myMonster)
+                )
+        );
         GameController.getInstance().checkBothLivesEndGame();
     }
 
     public void directAttack(Monster monster) throws GameOverEvent {
         Game game = GameController.getInstance().getGame();
-        startChain(GameController.getInstance().onDirectAttack(this, monster));
+        startChain(
+                new Action(
+                        new DirectAttackEvent(monster, game.getOpponentPlayer()),
+                        monster.directAttack(this.player)
+                )
+        );
         GameController.getInstance().checkBothLivesEndGame();
     }
 
@@ -149,13 +161,13 @@ public abstract class PlayerController {
         // todo you can call startChain here if you want
     }
 
-    public void startChain(Effect effect) throws GameOverEvent {
-        ChainController chainController = new ChainController(this, effect);
-        chainController.control(effect);
+    public void startChain(Action action) throws GameOverEvent {
+        ChainController chainController = new ChainController(this, action);
+        chainController.control(action);
     }
 
-    protected void addEffectToChain(Effect effect) {
-        GameController.getInstance().getGame().getChain().add(effect);
+    protected void addActionToChain(Action action) {
+        GameController.getInstance().getGame().getChain().add(action);
     }
 
     public boolean hasAttackedByCard(Monster monster) {

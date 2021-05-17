@@ -1,15 +1,17 @@
 import controller.GameController;
+import initialize.Sample;
 import org.junit.Test;
 import utils.IntegrationTestBase;
 
-public class CardNullTest extends IntegrationTestBase {
+public class CardNullTest extends Sample {
     @Test
     public void test(){
-        run("user login -u abolfazl -p 1234");
-        run("duel --new --second_player shayan --round 1");
-
-        System.out.println(GameController.getInstance().getCurrentPlayerController().getPlayer().getBoard());
+        initializeUser("shayan", "1234", "shayan.p");
+        run("user login -u shayan -p 1234");
+        run("menu enter shop");
+        run("shop buy Suijin");
+        checkNoInvalidCommandsInBuffer();
+//        run("duel --new --second_player shayan --round 1");
 //        run("show hand");
-//        System.out.println(GameController.getInstance().getCurrentPlayerController().getPlayer().getBoard().getCardsOnHand().size());
     }
 }

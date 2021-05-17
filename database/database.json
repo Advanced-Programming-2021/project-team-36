@@ -3,7 +3,7 @@
 	"password":"1234",
 	"nickname":"atreus",
 	"score":0,
-	"balance":999944500,
+	"balance":999961900,
 	"cards":[{
 	"attackDamage":1700,
 	"defenseRate":1150,
@@ -19,60 +19,17 @@
 }
 ,
 	{
-	"attackDamage":1300,
-	"defenseRate":1000,
-	"attribute":"FIRE",
-	"monsterType":"PYRO",
-	"monsterCardType":"NORMAL",
-	"level":4,
-	"allowAttack":true,
-	"name":"Fireyarou",
-	"description":"A malevolent creature wrapped in flames that attacks enemies with intense fire.",
-	"price":2500,
-	"isInBattle":false
-}
-,
-	{
-	"attackDamage":1300,
-	"defenseRate":1000,
-	"attribute":"DARK",
-	"monsterType":"FIEND",
-	"monsterCardType":"NORMAL",
-	"level":4,
-	"allowAttack":true,
-	"name":"HornImp",
-	"description":"A small fiend that dwells in the dark,
-	 its single horn makes it a formidable opponent.",
-	"price":2500,
-	"isInBattle":false
-}
-,
-	{
-	"attackDamage":1200,
-	"defenseRate":800,
-	"attribute":"EARTH",
-	"monsterType":"BEAST",
-	"monsterCardType":"NORMAL",
-	"level":3,
-	"allowAttack":true,
-	"name":"SilverFang",
-	"description":"A snow wolf that\u0027s beautiful to the eye,
-	 but absolutely vicious in battle.",
-	"price":1700,
-	"isInBattle":false
-}
-,
-	{
 	"attackDamage":1700,
-	"defenseRate":1150,
+	"defenseRate":1000,
 	"attribute":"EARTH",
-	"monsterType":"WARRIOR",
+	"monsterType":"BEASTWARRIOR",
 	"monsterCardType":"NORMAL",
 	"level":4,
 	"allowAttack":true,
-	"name":"AxeRaider",
-	"description":"An axe-wielding monster of tremendous strength and agility.",
-	"price":3100,
+	"name":"BattleOX",
+	"description":"A monster with tremendous power,
+	 it destroys enemies with a swing of its axe.",
+	"price":2900,
 	"isInBattle":false
 }
 ,
@@ -135,6 +92,21 @@
 }
 ,
 	{
+	"attackDamage":1700,
+	"defenseRate":1000,
+	"attribute":"EARTH",
+	"monsterType":"BEASTWARRIOR",
+	"monsterCardType":"NORMAL",
+	"level":4,
+	"allowAttack":true,
+	"name":"BattleOX",
+	"description":"A monster with tremendous power,
+	 it destroys enemies with a swing of its axe.",
+	"price":2900,
+	"isInBattle":false
+}
+,
+	{
 	"attackDamage":1300,
 	"defenseRate":1000,
 	"attribute":"FIRE",
@@ -179,50 +151,75 @@
 }
 ,
 	{
-	"stillHasPower":true,
-	"attackDamage":2500,
-	"defenseRate":2400,
-	"attribute":"WATER",
-	"monsterType":"AQUA",
-	"monsterCardType":"EFFECT",
-	"level":7,
+	"attackDamage":1700,
+	"defenseRate":1150,
+	"attribute":"EARTH",
+	"monsterType":"WARRIOR",
+	"monsterCardType":"NORMAL",
+	"level":4,
 	"allowAttack":true,
-	"name":"Suijin",
-	"description":"During damage calculation in your opponent\u0027s turn,
-	 if this card is being attacked: You can target the attacking monster; make that target\u0027s ATK 0 during damage calculation only (this is a Quick Effect). This effect can only be used once while this card is face-up on the field.",
-	"price":8700,
+	"name":"AxeRaider",
+	"description":"An axe-wielding monster of tremendous strength and agility.",
+	"price":3100,
 	"isInBattle":false
 }
 ,
 	{
-	"stillHasPower":true,
-	"attackDamage":2500,
-	"defenseRate":2400,
-	"attribute":"WATER",
-	"monsterType":"AQUA",
-	"monsterCardType":"EFFECT",
-	"level":7,
+	"attackDamage":1700,
+	"defenseRate":1000,
+	"attribute":"EARTH",
+	"monsterType":"BEASTWARRIOR",
+	"monsterCardType":"NORMAL",
+	"level":4,
 	"allowAttack":true,
-	"name":"Suijin",
-	"description":"During damage calculation in your opponent\u0027s turn,
-	 if this card is being attacked: You can target the attacking monster; make that target\u0027s ATK 0 during damage calculation only (this is a Quick Effect). This effect can only be used once while this card is face-up on the field.",
-	"price":8700,
+	"name":"BattleOX",
+	"description":"A monster with tremendous power,
+	 it destroys enemies with a swing of its axe.",
+	"price":2900,
 	"isInBattle":false
 }
 ,
 	{
-	"stillHasPower":true,
-	"attackDamage":2500,
-	"defenseRate":2400,
-	"attribute":"WATER",
-	"monsterType":"AQUA",
-	"monsterCardType":"EFFECT",
-	"level":7,
+	"attackDamage":1300,
+	"defenseRate":1000,
+	"attribute":"FIRE",
+	"monsterType":"PYRO",
+	"monsterCardType":"NORMAL",
+	"level":4,
 	"allowAttack":true,
-	"name":"Suijin",
-	"description":"During damage calculation in your opponent\u0027s turn,
-	 if this card is being attacked: You can target the attacking monster; make that target\u0027s ATK 0 during damage calculation only (this is a Quick Effect). This effect can only be used once while this card is face-up on the field.",
-	"price":8700,
+	"name":"Fireyarou",
+	"description":"A malevolent creature wrapped in flames that attacks enemies with intense fire.",
+	"price":2500,
+	"isInBattle":false
+}
+,
+	{
+	"attackDamage":1300,
+	"defenseRate":1000,
+	"attribute":"DARK",
+	"monsterType":"FIEND",
+	"monsterCardType":"NORMAL",
+	"level":4,
+	"allowAttack":true,
+	"name":"HornImp",
+	"description":"A small fiend that dwells in the dark,
+	 its single horn makes it a formidable opponent.",
+	"price":2500,
+	"isInBattle":false
+}
+,
+	{
+	"attackDamage":1200,
+	"defenseRate":800,
+	"attribute":"EARTH",
+	"monsterType":"BEAST",
+	"monsterCardType":"NORMAL",
+	"level":3,
+	"allowAttack":true,
+	"name":"SilverFang",
+	"description":"A snow wolf that\u0027s beautiful to the eye,
+	 but absolutely vicious in battle.",
+	"price":1700,
 	"isInBattle":false
 }
 ],
@@ -244,60 +241,17 @@
 }
 ,
 	{
-	"attackDamage":1300,
-	"defenseRate":1000,
-	"attribute":"FIRE",
-	"monsterType":"PYRO",
-	"monsterCardType":"NORMAL",
-	"level":4,
-	"allowAttack":true,
-	"name":"Fireyarou",
-	"description":"A malevolent creature wrapped in flames that attacks enemies with intense fire.",
-	"price":2500,
-	"isInBattle":false
-}
-,
-	{
-	"attackDamage":1300,
-	"defenseRate":1000,
-	"attribute":"DARK",
-	"monsterType":"FIEND",
-	"monsterCardType":"NORMAL",
-	"level":4,
-	"allowAttack":true,
-	"name":"HornImp",
-	"description":"A small fiend that dwells in the dark,
-	 its single horn makes it a formidable opponent.",
-	"price":2500,
-	"isInBattle":false
-}
-,
-	{
-	"attackDamage":1200,
-	"defenseRate":800,
-	"attribute":"EARTH",
-	"monsterType":"BEAST",
-	"monsterCardType":"NORMAL",
-	"level":3,
-	"allowAttack":true,
-	"name":"SilverFang",
-	"description":"A snow wolf that\u0027s beautiful to the eye,
-	 but absolutely vicious in battle.",
-	"price":1700,
-	"isInBattle":false
-}
-,
-	{
 	"attackDamage":1700,
-	"defenseRate":1150,
+	"defenseRate":1000,
 	"attribute":"EARTH",
-	"monsterType":"WARRIOR",
+	"monsterType":"BEASTWARRIOR",
 	"monsterCardType":"NORMAL",
 	"level":4,
 	"allowAttack":true,
-	"name":"AxeRaider",
-	"description":"An axe-wielding monster of tremendous strength and agility.",
-	"price":3100,
+	"name":"BattleOX",
+	"description":"A monster with tremendous power,
+	 it destroys enemies with a swing of its axe.",
+	"price":2900,
 	"isInBattle":false
 }
 ,
@@ -360,6 +314,21 @@
 }
 ,
 	{
+	"attackDamage":1700,
+	"defenseRate":1000,
+	"attribute":"EARTH",
+	"monsterType":"BEASTWARRIOR",
+	"monsterCardType":"NORMAL",
+	"level":4,
+	"allowAttack":true,
+	"name":"BattleOX",
+	"description":"A monster with tremendous power,
+	 it destroys enemies with a swing of its axe.",
+	"price":2900,
+	"isInBattle":false
+}
+,
+	{
 	"attackDamage":1300,
 	"defenseRate":1000,
 	"attribute":"FIRE",
@@ -404,50 +373,75 @@
 }
 ,
 	{
-	"stillHasPower":true,
-	"attackDamage":2500,
-	"defenseRate":2400,
-	"attribute":"WATER",
-	"monsterType":"AQUA",
-	"monsterCardType":"EFFECT",
-	"level":7,
+	"attackDamage":1700,
+	"defenseRate":1150,
+	"attribute":"EARTH",
+	"monsterType":"WARRIOR",
+	"monsterCardType":"NORMAL",
+	"level":4,
 	"allowAttack":true,
-	"name":"Suijin",
-	"description":"During damage calculation in your opponent\u0027s turn,
-	 if this card is being attacked: You can target the attacking monster; make that target\u0027s ATK 0 during damage calculation only (this is a Quick Effect). This effect can only be used once while this card is face-up on the field.",
-	"price":8700,
+	"name":"AxeRaider",
+	"description":"An axe-wielding monster of tremendous strength and agility.",
+	"price":3100,
 	"isInBattle":false
 }
 ,
 	{
-	"stillHasPower":true,
-	"attackDamage":2500,
-	"defenseRate":2400,
-	"attribute":"WATER",
-	"monsterType":"AQUA",
-	"monsterCardType":"EFFECT",
-	"level":7,
+	"attackDamage":1700,
+	"defenseRate":1000,
+	"attribute":"EARTH",
+	"monsterType":"BEASTWARRIOR",
+	"monsterCardType":"NORMAL",
+	"level":4,
 	"allowAttack":true,
-	"name":"Suijin",
-	"description":"During damage calculation in your opponent\u0027s turn,
-	 if this card is being attacked: You can target the attacking monster; make that target\u0027s ATK 0 during damage calculation only (this is a Quick Effect). This effect can only be used once while this card is face-up on the field.",
-	"price":8700,
+	"name":"BattleOX",
+	"description":"A monster with tremendous power,
+	 it destroys enemies with a swing of its axe.",
+	"price":2900,
 	"isInBattle":false
 }
 ,
 	{
-	"stillHasPower":true,
-	"attackDamage":2500,
-	"defenseRate":2400,
-	"attribute":"WATER",
-	"monsterType":"AQUA",
-	"monsterCardType":"EFFECT",
-	"level":7,
+	"attackDamage":1300,
+	"defenseRate":1000,
+	"attribute":"FIRE",
+	"monsterType":"PYRO",
+	"monsterCardType":"NORMAL",
+	"level":4,
 	"allowAttack":true,
-	"name":"Suijin",
-	"description":"During damage calculation in your opponent\u0027s turn,
-	 if this card is being attacked: You can target the attacking monster; make that target\u0027s ATK 0 during damage calculation only (this is a Quick Effect). This effect can only be used once while this card is face-up on the field.",
-	"price":8700,
+	"name":"Fireyarou",
+	"description":"A malevolent creature wrapped in flames that attacks enemies with intense fire.",
+	"price":2500,
+	"isInBattle":false
+}
+,
+	{
+	"attackDamage":1300,
+	"defenseRate":1000,
+	"attribute":"DARK",
+	"monsterType":"FIEND",
+	"monsterCardType":"NORMAL",
+	"level":4,
+	"allowAttack":true,
+	"name":"HornImp",
+	"description":"A small fiend that dwells in the dark,
+	 its single horn makes it a formidable opponent.",
+	"price":2500,
+	"isInBattle":false
+}
+,
+	{
+	"attackDamage":1200,
+	"defenseRate":800,
+	"attribute":"EARTH",
+	"monsterType":"BEAST",
+	"monsterCardType":"NORMAL",
+	"level":3,
+	"allowAttack":true,
+	"name":"SilverFang",
+	"description":"A snow wolf that\u0027s beautiful to the eye,
+	 but absolutely vicious in battle.",
+	"price":1700,
 	"isInBattle":false
 }
 ]
@@ -477,60 +471,17 @@
 }
 ,
 	{
-	"attackDamage":1300,
-	"defenseRate":1000,
-	"attribute":"FIRE",
-	"monsterType":"PYRO",
-	"monsterCardType":"NORMAL",
-	"level":4,
-	"allowAttack":true,
-	"name":"Fireyarou",
-	"description":"A malevolent creature wrapped in flames that attacks enemies with intense fire.",
-	"price":2500,
-	"isInBattle":false
-}
-,
-	{
-	"attackDamage":1300,
-	"defenseRate":1000,
-	"attribute":"DARK",
-	"monsterType":"FIEND",
-	"monsterCardType":"NORMAL",
-	"level":4,
-	"allowAttack":true,
-	"name":"HornImp",
-	"description":"A small fiend that dwells in the dark,
-	 its single horn makes it a formidable opponent.",
-	"price":2500,
-	"isInBattle":false
-}
-,
-	{
-	"attackDamage":1200,
-	"defenseRate":800,
-	"attribute":"EARTH",
-	"monsterType":"BEAST",
-	"monsterCardType":"NORMAL",
-	"level":3,
-	"allowAttack":true,
-	"name":"SilverFang",
-	"description":"A snow wolf that\u0027s beautiful to the eye,
-	 but absolutely vicious in battle.",
-	"price":1700,
-	"isInBattle":false
-}
-,
-	{
 	"attackDamage":1700,
-	"defenseRate":1150,
+	"defenseRate":1000,
 	"attribute":"EARTH",
-	"monsterType":"WARRIOR",
+	"monsterType":"BEASTWARRIOR",
 	"monsterCardType":"NORMAL",
 	"level":4,
 	"allowAttack":true,
-	"name":"AxeRaider",
-	"description":"An axe-wielding monster of tremendous strength and agility.",
-	"price":3100,
+	"name":"BattleOX",
+	"description":"A monster with tremendous power,
+	 it destroys enemies with a swing of its axe.",
+	"price":2900,
 	"isInBattle":false
 }
 ,
@@ -593,6 +544,21 @@
 }
 ,
 	{
+	"attackDamage":1700,
+	"defenseRate":1000,
+	"attribute":"EARTH",
+	"monsterType":"BEASTWARRIOR",
+	"monsterCardType":"NORMAL",
+	"level":4,
+	"allowAttack":true,
+	"name":"BattleOX",
+	"description":"A monster with tremendous power,
+	 it destroys enemies with a swing of its axe.",
+	"price":2900,
+	"isInBattle":false
+}
+,
+	{
 	"attackDamage":1300,
 	"defenseRate":1000,
 	"attribute":"FIRE",
@@ -637,50 +603,75 @@
 }
 ,
 	{
-	"stillHasPower":true,
-	"attackDamage":2500,
-	"defenseRate":2400,
-	"attribute":"WATER",
-	"monsterType":"AQUA",
-	"monsterCardType":"EFFECT",
-	"level":7,
+	"attackDamage":1700,
+	"defenseRate":1150,
+	"attribute":"EARTH",
+	"monsterType":"WARRIOR",
+	"monsterCardType":"NORMAL",
+	"level":4,
 	"allowAttack":true,
-	"name":"Suijin",
-	"description":"During damage calculation in your opponent\u0027s turn,
-	 if this card is being attacked: You can target the attacking monster; make that target\u0027s ATK 0 during damage calculation only (this is a Quick Effect). This effect can only be used once while this card is face-up on the field.",
-	"price":8700,
+	"name":"AxeRaider",
+	"description":"An axe-wielding monster of tremendous strength and agility.",
+	"price":3100,
 	"isInBattle":false
 }
 ,
 	{
-	"stillHasPower":true,
-	"attackDamage":2500,
-	"defenseRate":2400,
-	"attribute":"WATER",
-	"monsterType":"AQUA",
-	"monsterCardType":"EFFECT",
-	"level":7,
+	"attackDamage":1700,
+	"defenseRate":1000,
+	"attribute":"EARTH",
+	"monsterType":"BEASTWARRIOR",
+	"monsterCardType":"NORMAL",
+	"level":4,
 	"allowAttack":true,
-	"name":"Suijin",
-	"description":"During damage calculation in your opponent\u0027s turn,
-	 if this card is being attacked: You can target the attacking monster; make that target\u0027s ATK 0 during damage calculation only (this is a Quick Effect). This effect can only be used once while this card is face-up on the field.",
-	"price":8700,
+	"name":"BattleOX",
+	"description":"A monster with tremendous power,
+	 it destroys enemies with a swing of its axe.",
+	"price":2900,
 	"isInBattle":false
 }
 ,
 	{
-	"stillHasPower":true,
-	"attackDamage":2500,
-	"defenseRate":2400,
-	"attribute":"WATER",
-	"monsterType":"AQUA",
-	"monsterCardType":"EFFECT",
-	"level":7,
+	"attackDamage":1300,
+	"defenseRate":1000,
+	"attribute":"FIRE",
+	"monsterType":"PYRO",
+	"monsterCardType":"NORMAL",
+	"level":4,
 	"allowAttack":true,
-	"name":"Suijin",
-	"description":"During damage calculation in your opponent\u0027s turn,
-	 if this card is being attacked: You can target the attacking monster; make that target\u0027s ATK 0 during damage calculation only (this is a Quick Effect). This effect can only be used once while this card is face-up on the field.",
-	"price":8700,
+	"name":"Fireyarou",
+	"description":"A malevolent creature wrapped in flames that attacks enemies with intense fire.",
+	"price":2500,
+	"isInBattle":false
+}
+,
+	{
+	"attackDamage":1300,
+	"defenseRate":1000,
+	"attribute":"DARK",
+	"monsterType":"FIEND",
+	"monsterCardType":"NORMAL",
+	"level":4,
+	"allowAttack":true,
+	"name":"HornImp",
+	"description":"A small fiend that dwells in the dark,
+	 its single horn makes it a formidable opponent.",
+	"price":2500,
+	"isInBattle":false
+}
+,
+	{
+	"attackDamage":1200,
+	"defenseRate":800,
+	"attribute":"EARTH",
+	"monsterType":"BEAST",
+	"monsterCardType":"NORMAL",
+	"level":3,
+	"allowAttack":true,
+	"name":"SilverFang",
+	"description":"A snow wolf that\u0027s beautiful to the eye,
+	 but absolutely vicious in battle.",
+	"price":1700,
 	"isInBattle":false
 }
 ]
@@ -698,7 +689,7 @@
 	"password":"1234",
 	"nickname":"shayan.p",
 	"score":0,
-	"balance":999970600,
+	"balance":999961900,
 	"cards":[{
 	"attackDamage":1700,
 	"defenseRate":1150,
@@ -714,6 +705,21 @@
 }
 ,
 	{
+	"attackDamage":1700,
+	"defenseRate":1000,
+	"attribute":"EARTH",
+	"monsterType":"BEASTWARRIOR",
+	"monsterCardType":"NORMAL",
+	"level":4,
+	"allowAttack":true,
+	"name":"BattleOX",
+	"description":"A monster with tremendous power,
+	 it destroys enemies with a swing of its axe.",
+	"price":2900,
+	"isInBattle":false
+}
+,
+	{
 	"attackDamage":1300,
 	"defenseRate":1000,
 	"attribute":"FIRE",
@@ -772,6 +778,21 @@
 }
 ,
 	{
+	"attackDamage":1700,
+	"defenseRate":1000,
+	"attribute":"EARTH",
+	"monsterType":"BEASTWARRIOR",
+	"monsterCardType":"NORMAL",
+	"level":4,
+	"allowAttack":true,
+	"name":"BattleOX",
+	"description":"A monster with tremendous power,
+	 it destroys enemies with a swing of its axe.",
+	"price":2900,
+	"isInBattle":false
+}
+,
+	{
 	"attackDamage":1300,
 	"defenseRate":1000,
 	"attribute":"FIRE",
@@ -826,6 +847,21 @@
 	"name":"AxeRaider",
 	"description":"An axe-wielding monster of tremendous strength and agility.",
 	"price":3100,
+	"isInBattle":false
+}
+,
+	{
+	"attackDamage":1700,
+	"defenseRate":1000,
+	"attribute":"EARTH",
+	"monsterType":"BEASTWARRIOR",
+	"monsterCardType":"NORMAL",
+	"level":4,
+	"allowAttack":true,
+	"name":"BattleOX",
+	"description":"A monster with tremendous power,
+	 it destroys enemies with a swing of its axe.",
+	"price":2900,
 	"isInBattle":false
 }
 ,
@@ -891,6 +927,21 @@
 }
 ,
 	{
+	"attackDamage":1700,
+	"defenseRate":1000,
+	"attribute":"EARTH",
+	"monsterType":"BEASTWARRIOR",
+	"monsterCardType":"NORMAL",
+	"level":4,
+	"allowAttack":true,
+	"name":"BattleOX",
+	"description":"A monster with tremendous power,
+	 it destroys enemies with a swing of its axe.",
+	"price":2900,
+	"isInBattle":false
+}
+,
+	{
 	"attackDamage":1300,
 	"defenseRate":1000,
 	"attribute":"FIRE",
@@ -949,6 +1000,21 @@
 }
 ,
 	{
+	"attackDamage":1700,
+	"defenseRate":1000,
+	"attribute":"EARTH",
+	"monsterType":"BEASTWARRIOR",
+	"monsterCardType":"NORMAL",
+	"level":4,
+	"allowAttack":true,
+	"name":"BattleOX",
+	"description":"A monster with tremendous power,
+	 it destroys enemies with a swing of its axe.",
+	"price":2900,
+	"isInBattle":false
+}
+,
+	{
 	"attackDamage":1300,
 	"defenseRate":1000,
 	"attribute":"FIRE",
@@ -1003,6 +1069,21 @@
 	"name":"AxeRaider",
 	"description":"An axe-wielding monster of tremendous strength and agility.",
 	"price":3100,
+	"isInBattle":false
+}
+,
+	{
+	"attackDamage":1700,
+	"defenseRate":1000,
+	"attribute":"EARTH",
+	"monsterType":"BEASTWARRIOR",
+	"monsterCardType":"NORMAL",
+	"level":4,
+	"allowAttack":true,
+	"name":"BattleOX",
+	"description":"A monster with tremendous power,
+	 it destroys enemies with a swing of its axe.",
+	"price":2900,
 	"isInBattle":false
 }
 ,
@@ -1076,6 +1157,21 @@
 }
 ,
 	{
+	"attackDamage":1700,
+	"defenseRate":1000,
+	"attribute":"EARTH",
+	"monsterType":"BEASTWARRIOR",
+	"monsterCardType":"NORMAL",
+	"level":4,
+	"allowAttack":true,
+	"name":"BattleOX",
+	"description":"A monster with tremendous power,
+	 it destroys enemies with a swing of its axe.",
+	"price":2900,
+	"isInBattle":false
+}
+,
+	{
 	"attackDamage":1300,
 	"defenseRate":1000,
 	"attribute":"FIRE",
@@ -1134,6 +1230,21 @@
 }
 ,
 	{
+	"attackDamage":1700,
+	"defenseRate":1000,
+	"attribute":"EARTH",
+	"monsterType":"BEASTWARRIOR",
+	"monsterCardType":"NORMAL",
+	"level":4,
+	"allowAttack":true,
+	"name":"BattleOX",
+	"description":"A monster with tremendous power,
+	 it destroys enemies with a swing of its axe.",
+	"price":2900,
+	"isInBattle":false
+}
+,
+	{
 	"attackDamage":1300,
 	"defenseRate":1000,
 	"attribute":"FIRE",
@@ -1188,6 +1299,21 @@
 	"name":"AxeRaider",
 	"description":"An axe-wielding monster of tremendous strength and agility.",
 	"price":3100,
+	"isInBattle":false
+}
+,
+	{
+	"attackDamage":1700,
+	"defenseRate":1000,
+	"attribute":"EARTH",
+	"monsterType":"BEASTWARRIOR",
+	"monsterCardType":"NORMAL",
+	"level":4,
+	"allowAttack":true,
+	"name":"BattleOX",
+	"description":"A monster with tremendous power,
+	 it destroys enemies with a swing of its axe.",
+	"price":2900,
 	"isInBattle":false
 }
 ,

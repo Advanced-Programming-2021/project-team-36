@@ -5,6 +5,8 @@ import model.ModelException;
 import model.User;
 import model.card.monsterCards.*;
 import model.deck.Deck;
+import view.Parser;
+import view.ParserException;
 
 import java.util.Random;
 
@@ -18,30 +20,30 @@ public class AIPlayer extends Player {
             return user;
         user = new User("artificial_intelligence" + new Random().nextInt(), "Mr.AI" + new Random().nextInt(), "thisIsAStrongPassword");
         try {
-            /*user.buy(new AxeRaider());
-            user.buy(new BattleOx());
-            user.buy(new Fireyarou());
-            user.buy(new HornImp());
-            user.buy(new SilverFang());*/
-            // TODO : Write new stuff here
-            throw new ModelException("something");
-        } catch (ModelException e) {
-            CustomPrinter.println("error in constructing ai");
-        }
-        Deck deck = new Deck("aiDeck");
-        /*deck.getMainDeck().addCard(new AxeRaider());
-        deck.getMainDeck().addCard(new AxeRaider());
-        deck.getSideDeck().addCard(new AxeRaider());
-        deck.getMainDeck().addCard(new BattleOx());
-        deck.getMainDeck().addCard(new BattleOx());
-        deck.getSideDeck().addCard(new SilverFang());
-        deck.getMainDeck().addCard(new HornImp());
-        deck.getMainDeck().addCard(new SilverFang());
-        deck.getSideDeck().addCard(new HornImp());*/
-        // TODO : Also write new stuff here
+            user.buy(Parser.cardParser("AxeRaider"));
+            user.buy(Parser.cardParser("BattleOx"));
+            user.buy(Parser.cardParser("Suijin"));
+            user.buy(Parser.cardParser("HornImp"));
+            user.buy(Parser.cardParser("SilverFang"));
+            user.buy(Parser.cardParser("Scanner"));
+            user.buy(Parser.cardParser("TexChanger"));
 
-        user.addDeck(deck);
-        user.setActiveDeck(deck);
+            Deck deck = new Deck("aiDeck");
+            deck.getMainDeck().addCard(Parser.cardParser("AxeRaider"));
+            deck.getMainDeck().addCard(Parser.cardParser("BattleOx"));
+            deck.getMainDeck().addCard(Parser.cardParser("Suijin"));
+            deck.getMainDeck().addCard(Parser.cardParser("HornImp"));
+            deck.getMainDeck().addCard(Parser.cardParser("SilverFang"));
+            deck.getMainDeck().addCard(Parser.cardParser("AxeRaider"));
+            deck.getMainDeck().addCard(Parser.cardParser("Scanner"));
+            deck.getMainDeck().addCard(Parser.cardParser("TexChanger"));
+
+            user.addDeck(deck);
+            user.setActiveDeck(deck);
+
+        } catch (ModelException | ParserException e) {
+            e.printStackTrace();
+        }
         return user;
     }
 }

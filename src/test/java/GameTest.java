@@ -19,6 +19,7 @@ public class GameTest extends Sample {
         run(String.format("user login -u %s -p %s", username, password));
         runUntilNoInput();
         checkCurrentMenu(MainMenuController.class);
+        // run("save to database");
         run(String.format("duel --new --second_player %s --round 1", opponentUsername));
         run("select --hand 1");
         run("summon");
@@ -34,9 +35,6 @@ public class GameTest extends Sample {
         run("next phase");
         Assertions.assertEquals(GameController.getInstance().getGame().getPhase(), Phase.BATTLE_PHASE);
         checkNoInvalidCommandsInBuffer();
-        run("menu exit");
-        run("menu exit");
-        run("menu exit");
     }
 
 }

@@ -7,7 +7,7 @@ import controller.cardSelector.Conditions;
 import controller.cardSelector.ResistToChooseCard;
 import controller.player.PlayerController;
 import model.card.Card;
-import model.card.Effect;
+import model.card.action.Effect;
 import model.card.Monster;
 import model.enums.MonsterAttribute;
 import model.enums.MonsterCardType;

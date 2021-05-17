@@ -70,7 +70,7 @@ public class Parser {
         Card card = Utils.getCard(cardName);
         if (card != null)
             return card;
-        throw new ParserException("There is no card with this name");
+        throw new ParserException(String.format("There is no card with name %s", cardName));
     }
 
     public static Class<? extends BaseMenuController> menuParser(String menuName) throws ParserException {

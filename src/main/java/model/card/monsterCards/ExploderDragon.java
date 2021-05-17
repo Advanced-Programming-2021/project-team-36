@@ -2,7 +2,7 @@ package model.card.monsterCards;
 
 import controller.GameController;
 import controller.events.GameOverEvent;
-import model.card.Effect;
+import model.card.action.Effect;
 import model.card.Monster;
 import model.enums.MonsterAttribute;
 import model.enums.MonsterCardType;

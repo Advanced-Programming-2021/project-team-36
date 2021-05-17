@@ -28,6 +28,7 @@ public class ShopMenuController extends BaseMenuController {
         if(user.getBalance() < card.getPrice())
             throw new ModelException("not enough money");
         user.buy(card);
+        CustomPrinter.println(String.format("you bought %s successfully", card.getName()));
     }
 
     public void showAll() {

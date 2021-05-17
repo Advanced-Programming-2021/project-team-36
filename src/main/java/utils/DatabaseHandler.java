@@ -4,6 +4,7 @@ import model.User;
 import com.google.gson.*;
 import model.card.Card;
 import model.card.Monster;
+import model.card.Utils;
 import model.deck.Deck;
 
 import java.io.*;
@@ -89,7 +90,7 @@ public class DatabaseHandler {
                         for (int i = 0; i < data.size(); i++) {
                             monsterData.put(header.get(i).trim(), data.get(i).trim());
                         }
-                        Monster.addMonsterData(monsterData);
+                        Utils.addMonsterData(monsterData);
                     } else
                         break;
                 } catch (EOFException exception) {

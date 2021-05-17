@@ -1,12 +1,17 @@
 package model.card;
 
+import controller.GameController;
 import lombok.Getter;
 import lombok.Setter;
+import model.card.action.Action;
+import model.card.action.Effect;
 import model.enums.Icon;
 import model.enums.MagicState;
 import model.enums.Status;
 
-public class Magic extends Card {
+import java.util.Stack;
+
+abstract public class Magic extends Card {
     @Getter
     protected Icon icon;
     protected Status status;
@@ -19,6 +24,9 @@ public class Magic extends Card {
         this.magicState = null;
     }
 
+    abstract public Effect activateEffect();
+    abstract public boolean canActivateEffect();
+
     @Override
     public Magic clone() {
         Magic cloned = (Magic) super.clone();
@@ -28,11 +36,8 @@ public class Magic extends Card {
         return cloned;
     }
 
-    public boolean hasEffectOnMonsterSummon(Monster monster){
-        return false;
-    }
-    public Effect onMonsterSummon(Monster monster){
-        return ()->{};
+    protected Stack<Action> getChain(){
+        return GameController.getInstance().getGame().getChain();
     }
 
     public MagicState getState() {

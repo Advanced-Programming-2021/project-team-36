@@ -4,11 +4,14 @@ import lombok.Getter;
 import lombok.Setter;
 import model.Player.Player;
 import model.card.Card;
-import model.card.Effect;
+import model.card.action.Action;
+import model.card.action.Effect;
 import model.card.Magic;
 import model.card.Monster;
 import model.enums.*;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Random;
 import java.util.Stack;
 
@@ -30,7 +33,7 @@ public class Game {
 
     @Getter
     @Setter
-    private Stack<Effect> chain;
+    private Stack<Action> chain;
 
     public Game(Player firstPlayer, Player secondPlayer) throws ModelException {
         if (firstPlayer.getUser().getUsername().equals(secondPlayer.getUser().getUsername()))
@@ -117,5 +120,12 @@ public class Game {
         if(player.equals(secondPlayer))
             return firstPlayer;
         throw new Error("no such player in the game");
+    }
+
+    public List<Card> getAllCardsOnBoard(){
+        List<Card> cards = new ArrayList<>();
+        cards.addAll(firstPlayer.getBoard().getAllCardsOnBoard());
+        cards.addAll(secondPlayer.getBoard().getAllCardsOnBoard());
+        return cards;
     }
 }

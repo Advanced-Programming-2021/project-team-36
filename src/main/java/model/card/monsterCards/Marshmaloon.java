@@ -1,12 +1,11 @@
 package model.card.monsterCards;
 
 import controller.GameController;
-import model.card.Effect;
+import model.card.action.Effect;
 import model.card.Monster;
 import model.enums.MonsterAttribute;
 import model.enums.MonsterCardType;
 import model.enums.MonsterType;
-import model.enums.ZoneType;
 
 public class Marshmaloon extends Monster {
     public Marshmaloon(String name, String description, int price, int attackDamage, int defenseRate, MonsterAttribute attribute, MonsterType monsterType, MonsterCardType monsterCardType, int level) {

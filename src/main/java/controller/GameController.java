@@ -14,7 +14,7 @@ import model.Player.AIPlayer;
 import model.Player.HumanPlayer;
 import model.Player.Player;
 import model.card.Card;
-import model.card.Effect;
+import model.card.action.Effect;
 import model.card.Monster;
 import model.enums.GameResult;
 import model.enums.Phase;
@@ -82,13 +82,6 @@ public class GameController {
         return playerController1;
     }
 
-    public Effect onDirectAttack(PlayerController playerController, Monster monster) {
-        return () -> {
-            decreaseLifePoint(getOtherPlayerController(playerController).getPlayer(), monster.getAttackDamage());
-            monster.setAllowAttack(false);
-        };
-    }
-
     private void changeTurn() {
         game.setPhase(Phase.DRAW_PHASE);
         game.changeTurn();
@@ -112,27 +105,27 @@ public class GameController {
         new CardSelector(game);
     }
 
-    public void callAllOnSummon(Monster monster) {
-        // todo this is not complete
-        for (Card magic : playerController1.getPlayer().getBoard().getAllCardsOnBoard()) {
-            if (magic instanceof Magic) {
-                if(((Magic) magic).hasEffectOnMonsterSummon(monster)) {
-                    boolean confirm = ((DuelMenuView) DuelMenuController.getInstance().getView()).askUser(String.format(
-                            "Do you want to activate effect of %s on %s?", magic.toString(), monster.toString()));
-                    if(confirm){
-
-                    }
-                    ((Magic) magic).onMonsterSummon(monster);
-                }
-            }
-        }
-    }
+//    public void callAllOnSummon(Monster monster) {
+//        // todo this is not complete
+//        for (Card magic : playerController1.getPlayer().getBoard().getAllCardsOnBoard()) {
+//            if (magic instanceof Magic) {
+//                if(((Magic) magic).hasEffectOnMonsterSummon(monster)) {
+//                    boolean confirm = ((DuelMenuView) DuelMenuController.getInstance().getView()).askUser(String.format(
+//                            "Do you want to activate effect of %s on %s?", magic.toString(), monster.toString()));
+//                    if(confirm) {
+//                        ((Magic) magic).onMonsterSummon(monster);
+//                    }
+//                }
+//            }
+//        }
+//    }
 
     public PlayerController getPlayerControllerByPlayer(Player player){
         if(playerController1.getPlayer().equals(player))
             return playerController1;
         return playerController2;
     }
+
     public void control() {
         while (true) {
             try {

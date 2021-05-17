@@ -50,6 +50,7 @@ public class MainMenuView extends BaseMenuView {
                     utils.DatabaseHandler.saveToDatabase(mp.get("file"));
                 },
                 Options.file(false)
+                // todo why is it not required? @Kasra
         ));
     }
 

@@ -1,14 +1,15 @@
 package model.card;
 
+import controller.GameController;
+import model.card.action.Action;
+import model.card.action.Effect;
 import model.enums.Icon;
 import model.enums.Status;
 
-public abstract class Trap extends Magic {
-    protected Trap(String name, String description, int price, Icon icon, Status status) {
-        super(name, description, price, icon, status);
-    }
+import java.util.Stack;
 
-    public Effect activateEffect(){
-        return ()->{};
+abstract public class Trap extends Magic {
+    public Trap(String name, String description, int price, Icon icon, Status status) {
+        super(name, description, price, icon, status);
     }
 }
