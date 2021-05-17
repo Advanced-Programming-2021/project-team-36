@@ -138,8 +138,7 @@ public class GameController {
                 } else if (game.getPhase().equals(Phase.END_PHASE)) {
                     changeTurn();
                 }
-            } catch (GameEvent gameEvent) {
-                GameOverEvent gameOverEvent = (GameOverEvent) gameEvent;
+            } catch (GameOverEvent gameOverEvent) {
                 endGame(gameOverEvent);
                 break;
             }

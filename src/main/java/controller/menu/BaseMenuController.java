@@ -1,6 +1,5 @@
 package controller.menu;
 
-import controller.events.GameEvent;
 import utils.RoutingException;
 import lombok.Getter;
 import view.*;

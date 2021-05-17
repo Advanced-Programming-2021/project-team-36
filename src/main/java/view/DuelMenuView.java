@@ -4,7 +4,6 @@ import controller.GameController;
 import controller.LogicException;
 import controller.ProgramController;
 import controller.cardSelector.*;
-import controller.events.GameEvent;
 import controller.menu.MainMenuController;
 import model.Game;
 import model.Player.AIPlayer;
@@ -239,7 +238,7 @@ public class DuelMenuView extends BaseMenuView {
                         Options.Deselect(true)
                 ));
                 commandLine.runNextCommand(line);
-            } catch (CommandLineException | ParserException | LogicException | ModelException | GameEvent | RoutingException e) {
+            } catch (CommandLineException | ParserException | LogicException | ModelException | RoutingException e) {
                 CustomPrinter.println(e.getMessage());
             }
         }
@@ -268,7 +267,7 @@ public class DuelMenuView extends BaseMenuView {
             if (Debugger.getCaptureMode())
                 Debugger.captureCommand(line);
             this.cmd.runNextCommand(line);
-        } catch (CommandLineException | ParserException | ModelException | LogicException | RoutingException | GameEvent e) {
+        } catch (CommandLineException | ParserException | ModelException | LogicException | RoutingException e) {
             CustomPrinter.println(e.getMessage());
         }
     }
