@@ -1,5 +1,4 @@
 import controller.ProgramController;
-import controller.events.GameEvent;
 import utils.CustomPrinter;
 import utils.CustomScanner;
 import utils.Debugger;

@@ -3,7 +3,6 @@ package view;
 import utils.*;
 import controller.LogicException;
 import controller.ProgramController;
-import controller.events.GameEvent;
 import model.ModelException;
 import view.CommandLine.Command;
 import view.CommandLine.CommandLine;
@@ -23,7 +22,7 @@ abstract public class BaseMenuView {
             if (Debugger.getCaptureMode())
                 Debugger.captureCommand(line);
             this.cmd.runNextCommand(line);
-        } catch (CommandLineException | ParserException | ModelException | LogicException | RoutingException | GameEvent e) {
+        } catch (CommandLineException | ParserException | ModelException | LogicException | RoutingException e) {
             CustomPrinter.println(e.getMessage());
         }
     }

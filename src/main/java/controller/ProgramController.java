@@ -1,6 +1,6 @@
 package controller;
 
-import controller.events.GameEvent;
+
 import utils.DatabaseHandler;
 import utils.RoutingException;
 import controller.menu.BaseMenuController;

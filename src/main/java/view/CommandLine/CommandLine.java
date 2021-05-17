@@ -1,7 +1,6 @@
 package view.CommandLine;
 
 import controller.cardSelector.ResistToChooseCard;
-import controller.events.GameEvent;
 import view.ParserException;
 import utils.RoutingException;
 import controller.LogicException;
@@ -21,7 +20,7 @@ public class CommandLine {
         commandList.add(command);
     }
 
-    public void runNextCommand(String line) throws CommandLineException, ParserException, ModelException, LogicException, RoutingException, GameEvent {
+    public void runNextCommand(String line) throws CommandLineException, ParserException, ModelException, LogicException, RoutingException {
         for (Command command : commandList) {
             try {
                 command.tryRunCommand(line);
