@@ -19,4 +19,9 @@ abstract public class Spell extends Magic {
             return 2;
         return 1;
     }
+
+    @Override
+    public String toString() {
+        return String.format("%s (Spell - %s) : %s", getName(), getIcon(), getDescription());
+    }
 }

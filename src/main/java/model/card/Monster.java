@@ -169,4 +169,9 @@ public class Monster extends Card {
     public int getSpeed(){
         return 1;
     }
+
+    @Override
+    public String toString() {
+        return String.format("%s (Monster - %s) : %s", getName(), getMonsterCardType(), getDescription());
+    }
 }

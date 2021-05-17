@@ -19,4 +19,9 @@ abstract public class Trap extends Magic {
             return 3;
         return 2;
     }
+
+    @Override
+    public String toString() {
+        return String.format("%s (Trap - %s) : %s", getName(), getIcon(), getDescription());
+    }
 }
