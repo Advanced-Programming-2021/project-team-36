@@ -1,5 +1,6 @@
 package controller.menu;
 
+import utils.Cheat;
 import utils.CustomPrinter;
 import utils.RoutingException;
 import controller.ProgramController;
@@ -33,6 +34,14 @@ public class LoginMenuController extends BaseMenuController {
         assert user != null;
         if (!user.authenticate(password))
             throw new ModelException("Username and password didn’t match!");
+        ProgramController.getInstance().navigateToMenu(new MainMenuController(user));
+        CustomPrinter.println("user logged in successfully!");
+    }
+
+    public void cheatLogin(String username, String nickname, String password) throws ModelException {
+        createUser(username, nickname, password);
+        User user = User.getUserByUsername(username);
+        Cheat.buildSuperUser(user);
         ProgramController.getInstance().navigateToMenu(new MainMenuController(user));
         CustomPrinter.println("user logged in successfully!");
     }

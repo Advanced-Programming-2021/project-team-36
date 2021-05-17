@@ -25,7 +25,6 @@ import model.card.Monster;
 public abstract class PlayerController {
     @Getter
     Player player;
-    Phase previousPhase;
 
     PlayerController(Player player) {
         this.player = player;

@@ -28,6 +28,15 @@ public class LoginMenuView extends BaseMenuView {
                 Options.nickname(true),
                 Options.password(true)
         ));
+        this.cmd.addCommand(new Command(
+                "user cheat",
+                mp -> {
+                    LoginMenuController.getInstance().cheatLogin(mp.get("u"), mp.get("n"), mp.get("p"));
+                },
+                Options.username(true),
+                Options.nickname(true),
+                Options.password(true)
+        ));
     }
 
     @Override
