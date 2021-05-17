@@ -140,8 +140,9 @@ public class Monster extends Card {
     }
 
     public Effect directAttack(Player player) {
+        Player opponent = GameController.getInstance().getGame().getOtherPlayer(player);
         return () -> {
-            GameController.getInstance().decreaseLifePoint(player, this.getAttackDamage());
+            GameController.getInstance().decreaseLifePoint(opponent, this.getAttackDamage());
             this.setAllowAttack(false);
         };
     }

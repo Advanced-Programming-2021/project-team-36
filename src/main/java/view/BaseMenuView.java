@@ -24,7 +24,8 @@ abstract public class BaseMenuView {
                 Debugger.captureCommand(line);
             this.cmd.runNextCommand(line);
         } catch (CommandLineException | ParserException | ModelException | LogicException | RoutingException | GameEvent e) {
-            CustomPrinter.println(e.getMessage());
+            if (e.getMessage() != null)
+                CustomPrinter.println(e.getMessage());
         }
     }
 

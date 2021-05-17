@@ -21,9 +21,8 @@ public class ChainController {
         // todo : effect should push
     }
 
-    public void control(Action startingEffect) throws GameOverEvent {
+    public void control() throws GameOverEvent {
         // TODO : it's not complete
-        GameController.getInstance().getGame().getChain().push(startingEffect);
         while (this.active.askRespondToChain()) {
             this.active.doRespondToChain();
             this.active = GameController.instance.getOtherPlayerController(this.active);

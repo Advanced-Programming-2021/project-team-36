@@ -91,10 +91,10 @@ public class DuelMenuController extends BaseMenuController {
         gameController.getCurrentPlayerController().directAttack((Monster) card);
     }
 
-    public void activateEffect(Card card) {
+    public void activateEffect(Card card) throws LogicException, GameOverEvent {
         // todo age selected Magic nabood error bedim
         // todo momkene az in monster khafana bashe?
-        gameController.getCurrentPlayerController().activateEffect((Magic) card);
+        gameController.getCurrentPlayerController().activateEffect(card);
     }
 
     public void showGraveYard() {
@@ -121,7 +121,7 @@ public class DuelMenuController extends BaseMenuController {
             CustomPrinter.println(String.format("%d. %s%n", i + 1, cards.get(i).toString()));
     }
 
-    private void surrender(){
+    public void surrender() throws GameOverEvent {
         gameController.getCurrentPlayerController().surrender();
     }
 

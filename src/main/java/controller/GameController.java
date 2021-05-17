@@ -1,6 +1,7 @@
 package controller;
 
 import controller.cardSelector.CardSelector;
+import controller.events.GameEvent;
 import utils.CustomPrinter;
 import controller.events.GameOverEvent;
 import controller.menu.DuelMenuController;
@@ -43,7 +44,7 @@ public class GameController {
     public void drawCard() throws GameOverEvent {
         Card card = game.getCurrentPlayer().getMainDeck().getTopCard();
         if (card == null)
-            throw new GameOverEvent(GameResult.LOOSE, game.getCurrentPlayer(), game.getOpponentPlayer());
+            throw new GameOverEvent(GameResult.NOT_DRAW, game.getCurrentPlayer(), game.getOpponentPlayer());
         game.getCurrentPlayer().getBoard().drawCardFromDeck();
         CustomPrinter.println(String.format("new card added to the hand : %s%n", card.getName()));
     }
@@ -52,9 +53,9 @@ public class GameController {
         if (game.getCurrentPlayer().getLifePoint() <= 0 && game.getOpponentPlayer().getLifePoint() <= 0)
             throw new GameOverEvent(GameResult.DRAW, game.getCurrentPlayer(), game.getOpponentPlayer());
         if (game.getCurrentPlayer().getLifePoint() <= 0)
-            throw new GameOverEvent(GameResult.WIN, game.getCurrentPlayer(), game.getOpponentPlayer());
+            throw new GameOverEvent(GameResult.NOT_DRAW, game.getCurrentPlayer(), game.getOpponentPlayer());
         if (game.getOpponentPlayer().getLifePoint() <= 0)
-            throw new GameOverEvent(GameResult.LOOSE, game.getOpponentPlayer(), game.getCurrentPlayer());
+            throw new GameOverEvent(GameResult.NOT_DRAW, game.getOpponentPlayer(), game.getCurrentPlayer());
     }
 
     public void moveCardToGraveYard(Card card) {
@@ -147,10 +148,9 @@ public class GameController {
                 } else if (game.getPhase().equals(Phase.END_PHASE)) {
                     changeTurn();
                 }
-            } catch (GameOverEvent gameOverEvent) {
-                // todo handle draw
+            } catch (GameEvent gameEvent) {
+                GameOverEvent gameOverEvent = (GameOverEvent) gameEvent;
                 endGame(gameOverEvent.winner, gameOverEvent.looser);
-                break;
             }
         }
     }

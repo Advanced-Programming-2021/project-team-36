@@ -145,9 +145,9 @@ public class DuelMenuView extends BaseMenuView {
                 }
         ));
         this.cmd.addCommand(new Command(
-                "goh khordam",
+                "surrender",
                 mp -> {
-                    ProgramController.getInstance().navigateToMenu(MainMenuController.getInstance());
+                    DuelMenuController.getInstance().surrender();
                 }
         ));
     }
