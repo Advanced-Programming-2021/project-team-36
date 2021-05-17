@@ -18,9 +18,11 @@ import utils.ClassFinder;
 import java.util.TreeMap;
 
 public class Monster extends Card {
-    @Setter @Getter
+    @Setter
+    @Getter
     protected int attackDamage;
-    @Setter @Getter
+    @Setter
+    @Getter
     protected int defenseRate;
     @Getter
     protected MonsterAttribute attribute;
@@ -28,11 +30,13 @@ public class Monster extends Card {
     protected MonsterType monsterType;
     @Getter
     protected MonsterCardType monsterCardType;
-    @Getter @Setter
-    protected MonsterState monsterState = null;
+    @Getter
+    @Setter
+    protected MonsterState monsterState;
     @Getter
     protected int level;
-    @Getter @Setter
+    @Getter
+    @Setter
     protected boolean allowAttack = true;
     // todo allowAttack should be a function that gets monster and tells whether you can attack it or not
 
@@ -93,7 +97,7 @@ public class Monster extends Card {
         if (monsterState.equals(MonsterState.OFFENSIVE_OCCUPIED)) {
             if (attacker.getAttackDamage() > this.getAttackDamage()) {
                 int difference = attacker.getAttackDamage() - this.getAttackDamage();
-                CustomPrinter.println(String.format("Your monster card is destroyed and you received %s battle damage", difference));
+                CustomPrinter.println(String.format("your opponent’s monster is destroyed and your opponent received %d battle damage", difference));
                 tryToSendToGraveYard(this);
                 tryToDecreaseLifePoint(this, difference);
             } else if (attacker.getAttackDamage() == this.getAttackDamage()) {
@@ -102,15 +106,22 @@ public class Monster extends Card {
                 tryToSendToGraveYard(attacker);
             } else {
                 int difference = this.getAttackDamage() - attacker.getAttackDamage();
-                CustomPrinter.println(String.format("your opponent’s monster is destroyed and your opponent receives %d battle damage", difference));
+                CustomPrinter.println(String.format("your monster is destroyed and you receive %d battle damage", difference));
                 tryToSendToGraveYard(attacker);
                 tryToDecreaseLifePoint(attacker, difference);
             }
         } else if (monsterState.equals(MonsterState.DEFENSIVE_OCCUPIED)) {
-            // todo complete this
-        } else if (monsterState.equals(MonsterState.DEFENSIVE_HIDDEN)) {
+            if (attacker.getAttackDamage() > this.getDefenseRate()) {
+                CustomPrinter.println("the defense position monster is destroyed");
+                tryToSendToGraveYard(this);
+            } else if (attacker.getAttackDamage() == this.getDefenseRate()) {
+                CustomPrinter.println("no card is destroyed");
+            } else {
+                int difference = this.getDefenseRate() - attacker.getAttackDamage();
+                CustomPrinter.println(String.format("no card is destroyed and you receive %d battle damage", difference));
+                tryToDecreaseLifePoint(attacker, difference);
+            }
         }
-
         GameController.getInstance().checkBothLivesEndGame();
         attacker.setAllowAttack(false);
     }
