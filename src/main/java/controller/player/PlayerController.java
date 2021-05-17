@@ -21,6 +21,7 @@ import model.card.Magic;
 import model.card.Monster;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 public abstract class PlayerController {
@@ -113,12 +114,14 @@ public abstract class PlayerController {
     public void summonCard(Monster monster) throws LogicException, ResistToChooseCard {
         canSummonOrSetMonster(monster);
         addMonsterToBoard(monster, MonsterState.OFFENSIVE_OCCUPIED);
+        CustomPrinter.println(String.format("I summon monster %s ", monster.getName()));
     }
 
 
     public void setMonster(Monster monster) throws LogicException, ResistToChooseCard {
         canSummonOrSetMonster(monster);
         addMonsterToBoard(monster, MonsterState.DEFENSIVE_HIDDEN);
+        CustomPrinter.println(String.format("I set monster %s ", monster.getName()));
     }
 
     public void tributeMonster(int count) throws LogicException, ResistToChooseCard {
@@ -127,17 +130,19 @@ public abstract class PlayerController {
         Card[] tributeCards = chooseKCards(String.format("Choose %d cards to tribute", count), count, Conditions.myMonsterFromMonsterZone);
         for (Card card : tributeCards)
             GameController.getInstance().moveCardToGraveYard(card);
+        CustomPrinter.println(String.format("I tribute this monsters: %s", Arrays.toString(Arrays.stream(tributeCards).toArray())));
     }
 
-    public void setMagic(Card card) throws LogicException {
-        if (!player.hasInHand(card))
+    public void setMagic(Magic magic) throws LogicException {
+        if (!player.hasInHand(magic))
             throw new LogicException("you can't set this card");
         if (!GameController.getInstance().getGame().getPhase().isMainPhase())
             throw new LogicException("you can't do this action in this phase");
-        if (!((Magic) card).getIcon().equals(Icon.FIELD) && player.getBoard().getMagicCardZone().size() == 5)
+        if (!magic.getIcon().equals(Icon.FIELD) && player.getBoard().getMagicCardZone().size() == 5)
             throw new LogicException("spell card zone is full");
-        Magic magic = (Magic) card;
+        // todo field spell
         addMagicToBoard(magic, MagicState.HIDDEN);
+        CustomPrinter.println(String.format("I set magic %s", magic.getName()));
     }
 
     public void surrender() throws GameOverEvent {
@@ -153,9 +158,9 @@ public abstract class PlayerController {
             throw new LogicException("you can’t do this action in this phase");
         if (monster.getMonsterState().equals(MonsterState.DEFENSIVE_HIDDEN) || monster.getMonsterState().equals(monsterState))
             throw new LogicException("this card is already in the wanted position (maybe it's defensive hidden)");
-
         monster.setMonsterState(monsterState);
         CustomPrinter.println("monster card position changed successfully");
+        CustomPrinter.println(String.format("I change my %s position to %s", monster.getName(), monsterState));
     }
 
     public void flipSummon(Monster monster) throws LogicException {
@@ -167,9 +172,9 @@ public abstract class PlayerController {
             throw new LogicException("you can’t do this action in this phase");
         if (!monster.getMonsterState().equals(MonsterState.DEFENSIVE_HIDDEN) || game.isSummonedInThisTurn())
             throw new LogicException("you can't flip summon this card");
-
         monster.setMonsterState(MonsterState.OFFENSIVE_OCCUPIED);
         GameController.getInstance().getGame().setSummonedInThisTurn(true);
+        CustomPrinter.println(String.format("I flip summon my %s", monster.getName()));
         CustomPrinter.println("flip summoned successfully");
     }
 
@@ -193,7 +198,7 @@ public abstract class PlayerController {
         canAttack(myMonster);
         if (!myMonster.isAllowAttack())
             throw new LogicException("this card already attacked");
-        Game game = GameController.getInstance().getGame();
+        CustomPrinter.println(String.format("I declare an attack with my %s to your %s", myMonster.getName(), opponentMonster.getName()));
         startChain(
                 new Action(
                         new MonsterAttackEvent(myMonster, opponentMonster),
@@ -209,6 +214,9 @@ public abstract class PlayerController {
             throw new LogicException("you can’t attack the opponent directly");
         if (!monster.isAllowAttack())
             throw new LogicException("this card already attacked");
+
+        CustomPrinter.println(String.format("I declare a direct attack to you with my %s to you", monster.getName()));
+
         Game game = GameController.getInstance().getGame();
         startChain(
                 new Action(
@@ -219,19 +227,19 @@ public abstract class PlayerController {
         GameController.getInstance().checkBothLivesEndGame();
     }
 
-    public void activateEffect(Card card) throws LogicException, GameOverEvent {
+    public void activateEffect(Spell spell) throws LogicException, GameOverEvent {
         Game game = GameController.getInstance().getGame();
-        if (!(card instanceof Spell))
-            throw new LogicException("activate effect is only for spell cards");
         if (!game.getPhase().equals(Phase.MAIN_PHASE1) && !game.getPhase().equals(Phase.MAIN_PHASE2))
             throw new LogicException("you can't activate an effect on this turn");
-        Spell spell = (Spell) card;
         if (spell.getMagicState().equals(MagicState.OCCUPIED))
             throw new LogicException("you have already activated this card");
-        if (getPlayer().hasInHand(card) && !spell.getIcon().equals(Icon.FIELD))
+        if (getPlayer().hasInHand(spell) && !spell.getIcon().equals(Icon.FIELD))
             throw new LogicException("spell card zone is full");
         if (!spell.canActivateEffect())
             throw new LogicException("preparations of this spell are not done yet");
+
+        CustomPrinter.println(String.format("I want to activate the effect of %s", spell.getName()));
+
         startChain(
                 new Action(
                         new MagicActivation(spell),
@@ -247,6 +255,7 @@ public abstract class PlayerController {
     }
 
     protected void addActionToChain(Action action) {
+        CustomPrinter.println(String.format("%s: I add an action to the chain. It's activation question was: %s", player.getUser().getNickname(), action.getEvent().getActivationQuestion()));
         GameController.getInstance().getGame().getChain().add(action);
     }
 

@@ -57,7 +57,7 @@ public class DuelMenuController extends BaseMenuController {
         if (card instanceof Monster)
             gameController.getCurrentPlayerController().setMonster((Monster) card);
         else
-            gameController.getCurrentPlayerController().setMagic(card);
+            gameController.getCurrentPlayerController().setMagic((Magic) card);
         new CardSelector(game);
     }
 
@@ -92,9 +92,9 @@ public class DuelMenuController extends BaseMenuController {
     }
 
     public void activateEffect(Card card) throws LogicException, GameOverEvent {
-        // todo age selected Magic nabood error bedim
-        // todo momkene az in monster khafana bashe?
-        gameController.getCurrentPlayerController().activateEffect(card);
+        if (!(card instanceof Spell))
+            throw new LogicException("activate effect is only for spell cards");
+        gameController.getCurrentPlayerController().activateEffect((Spell) card);
     }
 
     public void showGraveYard() {
