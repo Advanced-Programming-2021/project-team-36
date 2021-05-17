@@ -26,7 +26,7 @@ public class ExploderDragon extends Monster {
             if(GameController.getInstance().getGame().getCardZoneType(this).equals(ZoneType.GRAVEYARD)) {
                 attacker.tryToSendToGraveYardOfMe();
             }
-            attacker.owner.setLifePoint(myLifePoint);
+            this.owner.setLifePoint(myLifePoint);
             attacker.owner.setLifePoint(opponentLifePoint);
         };
     }

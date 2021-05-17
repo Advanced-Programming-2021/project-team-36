@@ -68,12 +68,14 @@ public abstract class PlayerController {
         Game game = GameController.instance.getGame();
         if (!game.getPhase().equals(Phase.MAIN_PHASE1) && !game.getPhase().equals(Phase.MAIN_PHASE2))
             throw new LogicException("action not allowed in this phase");
-        if (!game.canCardBeSummoned((Monster) card))
+        if (!game.canCardBeSummoned(card))
             throw new LogicException("you can't summon this card");
         if (game.getCurrentPlayer().getBoard().isMonsterCardZoneFull())
             throw new LogicException("monster card zone is full");
         if (game.isSummonedInThisTurn())
             throw new LogicException("you already summoned/set on this turn");
+        if (!player.hasInHand(card))
+            throw new LogicException("you can only summon from your hand");
     }
 
     public void addMonsterToBoard(Monster monster, MonsterState monsterState) throws LogicException, ResistToChooseCard {
@@ -188,12 +190,16 @@ public abstract class PlayerController {
             throw new LogicException("you can’t do this action in this phase");
         if (hasAttackedByCard(monster))
             throw new LogicException("this card already attacked");
+        if (monster.getMonsterState().equals(MonsterState.DEFENSIVE_HIDDEN) || monster.getMonsterType().equals(MonsterState.DEFENSIVE_OCCUPIED))
+            throw new LogicException("monster is in defensive position");
     }
 
     public void attack(Monster myMonster, Monster opponentMonster) throws LogicException, GameOverEvent {
         canAttack(myMonster);
         if (!myMonster.isAllowAttack())
             throw new LogicException("this card already attacked");
+        if (!GameController.getInstance().getGame().getOtherPlayer(player).getBoard().getMonsterCardZone().containsValue(opponentMonster))
+            throw new LogicException("you can't attack that monster");
         CustomPrinter.println(String.format("I declare an attack with my %s to your %s", myMonster.getName(), opponentMonster.getName()));
         startChain(
                 new Action(
@@ -225,6 +231,8 @@ public abstract class PlayerController {
 
     public void activateEffect(Spell spell) throws LogicException, GameOverEvent {
         Game game = GameController.getInstance().getGame();
+        if(!player.getBoard().getMagicCardZone().containsValue(spell))
+            throw new LogicException("you can't activate this card!");
         if (!game.getPhase().equals(Phase.MAIN_PHASE1) && !game.getPhase().equals(Phase.MAIN_PHASE2))
             throw new LogicException("you can't activate an effect on this turn");
         if (spell.getMagicState().equals(MagicState.OCCUPIED))
@@ -246,7 +254,6 @@ public abstract class PlayerController {
 
     public void startChain(Action action) throws GameOverEvent {
         ChainController chainController = new ChainController(this, action);
-        addActionToChain(action);
         chainController.control();
     }
 

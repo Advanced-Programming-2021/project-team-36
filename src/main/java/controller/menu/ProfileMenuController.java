@@ -1,5 +1,6 @@
 package controller.menu;
 
+import controller.LogicException;
 import utils.CustomPrinter;
 import utils.RoutingException;
 import controller.ProgramController;
@@ -19,23 +20,18 @@ public class ProfileMenuController extends BaseMenuController {
         instance = this;
     }
 
-    public void changeNickname(String nickname) {
-        if (User.getUserByNickname(nickname) != null) {
-            CustomPrinter.println("user with nickname " + nickname + " already exists");
-        }
+    public void changeNickname(String nickname) throws LogicException {
+        if (User.getUserByNickname(nickname) != null)
+            throw new LogicException("user with nickname " + nickname + " already exists");
         user.setNickname(nickname);
         CustomPrinter.println("nickname changed successfully!");
     }
 
-    public void changePassword(String oldPassword, String newPassword) {
-        if (!user.authenticate(oldPassword)) {
-            CustomPrinter.println("current password is invalid");
-            return;
-        }
-        if (user.getPassword().equals(newPassword)) {
-            CustomPrinter.println("please enter a new password");
-            return;
-        }
+    public void changePassword(String oldPassword, String newPassword) throws LogicException {
+        if (!user.authenticate(oldPassword))
+            throw new LogicException("current password is invalid");
+        if (user.getPassword().equals(newPassword))
+            throw new LogicException("please enter a new password");
         user.setPassword(newPassword);
         CustomPrinter.println("password changed successfully!");
     }

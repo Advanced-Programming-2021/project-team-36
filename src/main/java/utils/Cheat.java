@@ -17,12 +17,12 @@ public class Cheat {
         try {
             ShopMenuController shopController = new ShopMenuController(user);
             Card[] allCards = Utils.getAllCards();
-            while (user.getCards().size() < 200) {
+            while (user.getCards().size() < 100) {
                 shopController.buyCard(allCards[rnd.nextInt(allCards.length)]);
             }
         } catch (ModelException ignored) {
         }
-        for (int i = 0; i < 8; i++) {
+        for (int i = 0; i < 1; i++) {
             String deckName = user.getNickname() + i;
             Deck deck = new Deck(deckName);
             user.addDeck(deck);
@@ -45,5 +45,8 @@ public class Cheat {
 
         int index = rnd.nextInt(user.getDecks().size());
         user.setActiveDeck(user.getDecks().get(index));
+
+        CustomPrinter.getLastBuffer();
+        // this will clear the buffer
     }
 }

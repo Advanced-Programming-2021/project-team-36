@@ -52,16 +52,24 @@ public class Board {
     }
 
     public Card getCardByCardAddress(CardAddress cardAddress) {
-        if (cardAddress.isInHand())
-            return cardsOnHand.get(cardAddress.getId() - 1);
-        else if (cardAddress.isInMonsterZone())
-            return monsterCardZone.get(cardAddress.getId());
-        else if (cardAddress.isInMagicZone())
-            return magicCardZone.get(cardAddress.getId());
-        else if (cardAddress.isInFieldZone())
+        if (cardAddress.isInHand()) {
+            if (1 <= cardAddress.getId() && cardAddress.getId() <= cardsOnHand.size())
+                return cardsOnHand.get(cardAddress.getId() - 1);
+            else
+                return null;
+        } else if (cardAddress.isInMonsterZone()) {
+            return monsterCardZone.getOrDefault(cardAddress.getId(), null);
+        } else if (cardAddress.isInMagicZone()) {
+            return magicCardZone.getOrDefault(cardAddress.getId(), null);
+        } else if (cardAddress.isInFieldZone()) {
             return fieldZoneCard;
-        else
-            return graveYard.get(cardAddress.getId());
+        } else if (cardAddress.isInGraveYard()) {
+            if (1 <= cardAddress.getId() && cardAddress.getId() <= graveYard.size())
+                return graveYard.get(cardAddress.getId());
+            else
+                return null;
+        }
+        return null;
     }
 
     public ZoneType getCardZoneType(Card card){

@@ -57,8 +57,7 @@ abstract public class Player {
     }
 
     public boolean hasInHand(Card card){
-        // todo implement this function with the help of POINTERS not EQUAL function
-        return true;
+        return this.board.getCardsOnHand().contains(card);
     }
 
     public void moveCardToGraveYard(Card card) {
