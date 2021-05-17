@@ -36,15 +36,6 @@ public class MainMenuView extends BaseMenuView {
                 }
         ));
         this.cmd.addCommand(new Command(
-                "duel",
-                mp -> {
-                    MainMenuController.getInstance().startDuelDoubleAI(Parser.RoundParser(mp.get("round")));
-                },
-                Options.newRound(true),
-                Options.ai(true),
-                Options.round(true)
-        ));
-        this.cmd.addCommand(new Command(
                 "save to database",
                 mp -> {
                     utils.DatabaseHandler.saveToDatabase(mp.get("file"));

@@ -1,5 +1,10 @@
 package model.Player;
 
+import controller.LogicException;
+import controller.menu.DeckMenuController;
+import controller.menu.ShopMenuController;
+import model.card.Card;
+import model.card.Utils;
 import utils.CustomPrinter;
 import model.ModelException;
 import model.User;
@@ -9,6 +14,7 @@ import view.Parser;
 import view.ParserException;
 
 import java.util.Random;
+import java.util.RandomAccess;
 
 public class AIPlayer extends Player {
     public AIPlayer() throws ModelException {
@@ -16,34 +22,44 @@ public class AIPlayer extends Player {
     }
     private static User getAIUser() {
         User user = User.getUserByUsername("artificial_intelligence");
-        if(user != null)
+        if (user != null)
             return user;
-        user = new User("artificial_intelligence" + new Random().nextInt(), "Mr.AI" + new Random().nextInt(), "thisIsAStrongPassword");
+        Random rnd = new Random();
+        int aiId = rnd.nextInt(9) + 1;
+        user = new User("artificial_intelligence" + aiId, "Mr.AI" + aiId, "thisIsAStrongPassword");
         try {
-            user.buy(Parser.cardParser("AxeRaider"));
-            user.buy(Parser.cardParser("BattleOx"));
-            user.buy(Parser.cardParser("Suijin"));
-            user.buy(Parser.cardParser("HornImp"));
-            user.buy(Parser.cardParser("SilverFang"));
-            user.buy(Parser.cardParser("Scanner"));
-            user.buy(Parser.cardParser("TexChanger"));
-
-            Deck deck = new Deck("aiDeck");
-            deck.getMainDeck().addCard(Parser.cardParser("AxeRaider"));
-            deck.getMainDeck().addCard(Parser.cardParser("BattleOx"));
-            deck.getMainDeck().addCard(Parser.cardParser("Suijin"));
-            deck.getMainDeck().addCard(Parser.cardParser("HornImp"));
-            deck.getMainDeck().addCard(Parser.cardParser("SilverFang"));
-            deck.getMainDeck().addCard(Parser.cardParser("AxeRaider"));
-            deck.getMainDeck().addCard(Parser.cardParser("Scanner"));
-            deck.getMainDeck().addCard(Parser.cardParser("TexChanger"));
-
-            user.addDeck(deck);
-            user.setActiveDeck(deck);
-
-        } catch (ModelException | ParserException e) {
-            e.printStackTrace();
+            ShopMenuController shopController = new ShopMenuController(user);
+            Card[] allCards = Utils.getAllCards();
+            while (user.getCards().size() < 200) {
+                shopController.buyCard(allCards[rnd.nextInt(allCards.length)]);
+            }
+        } catch (ModelException ignored) {
         }
+
+        for (int i = 0; i < 8; i++) {
+            String deckName = "Mr.AIDeck" + i;
+            Deck deck = new Deck(deckName);
+            user.addDeck(deck);
+            DeckMenuController deckController = new DeckMenuController(user);
+            while (deck.getMainDeck().getCards().size() < 40) {
+                try {
+                    int index = rnd.nextInt(user.getCards().size());
+                    deckController.addCardToDeck(user.getCards().get(index), deck, false);
+                } catch (LogicException ignored) {
+                }
+            }
+            while (deck.getSideDeck().getCards().size() < 7) {
+                try {
+                    int index = rnd.nextInt(user.getCards().size());
+                    deckController.addCardToDeck(user.getCards().get(index), deck, true);
+                } catch (LogicException ignored) {
+                }
+            }
+        }
+
+        int index = rnd.nextInt(user.getDecks().size());
+        user.setActiveDeck(user.getDecks().get(index));
+
         return user;
     }
 }

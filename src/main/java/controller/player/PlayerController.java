@@ -1,6 +1,7 @@
 package controller.player;
 
 import controller.cardSelector.Conditions;
+import controller.menu.DuelMenuController;
 import model.card.action.Action;
 import model.card.action.MonsterAttackEvent;
 import model.card.action.DirectAttackEvent;
@@ -44,6 +45,18 @@ public abstract class PlayerController {
     abstract public void doRespondToChain(); // todo check if this action is invalid for chain
     abstract public Card[] chooseKCards(String message, int numberOfCards, SelectCondition condition) throws ResistToChooseCard;
 
+    public void canSummonOrSetMonster(Card card) throws LogicException {
+        Game game = GameController.instance.getGame();
+        if (!game.getPhase().equals(Phase.MAIN_PHASE1) && !game.getPhase().equals(Phase.MAIN_PHASE2))
+            throw new LogicException("action not allowed in this phase");
+        if (!game.canCardBeSummoned((Monster) card))
+            throw new LogicException("you can't summon this card");
+        if (game.getCurrentPlayer().getBoard().isMonsterCardZoneFull())
+            throw new LogicException("monster card zone is full");
+        if (game.isSummonedInThisTurn())
+            throw new LogicException("you already summoned/set on this turn");
+    }
+
     public void addMonsterToBoard(Monster monster, MonsterState monsterState) throws LogicException, ResistToChooseCard {
         Game game = GameController.getInstance().getGame();
         if (monster.getLevel() >= 5 && monster.getLevel() <= 6)
@@ -79,11 +92,13 @@ public abstract class PlayerController {
     }
 
     public void summonCard(Monster monster) throws LogicException, ResistToChooseCard {
+        canSummonOrSetMonster(monster);
         addMonsterToBoard(monster, MonsterState.OFFENSIVE_OCCUPIED);
     }
 
 
     public void setMonster(Monster monster) throws LogicException, ResistToChooseCard {
+        canSummonOrSetMonster(monster);
         addMonsterToBoard(monster, MonsterState.DEFENSIVE_HIDDEN);
     }
 
@@ -113,12 +128,28 @@ public abstract class PlayerController {
         // todo you can call startChain here if you want
     }
 
-    public void changeMonsterPosition(Monster monster, MonsterState monsterState) {
+    public void changeMonsterPosition(Monster monster, MonsterState monsterState) throws LogicException {
+        Game game = GameController.getInstance().getGame();
+        if (!GameController.getInstance().getCurrentPlayerController().getPlayer().getBoard().getMonsterCardZone().containsValue(monster))
+            throw new LogicException("you can't change this card position");
+        if (!game.getPhase().equals(Phase.MAIN_PHASE1) && !game.getPhase().equals(Phase.MAIN_PHASE2))
+            throw new LogicException("you can’t do this action in this phase");
+        if (monster.getMonsterState().equals(MonsterState.DEFENSIVE_HIDDEN) || monster.getMonsterState().equals(monsterState))
+            throw new LogicException("this card is already in the wanted position (maybe it's defensive hidden)");
+
         monster.setMonsterState(monsterState);
         CustomPrinter.println("monster card position changed successfully");
     }
 
-    public void flipSummon(Monster monster) {
+    public void flipSummon(Monster monster) throws LogicException {
+        Game game = GameController.getInstance().getGame();
+        if (!GameController.getInstance().getCurrentPlayerController().getPlayer().getBoard().getMonsterCardZone().containsValue(monster))
+            throw new LogicException("you can't change this card position");
+        if (!game.getPhase().equals(Phase.MAIN_PHASE1) && !game.getPhase().equals(Phase.MAIN_PHASE2))
+            throw new LogicException("you can’t do this action in this phase");
+        if (!monster.getMonsterState().equals(MonsterState.DEFENSIVE_HIDDEN) || game.isSummonedInThisTurn())
+            throw new LogicException("you can't flip summon this card");
+
         monster.setMonsterState(MonsterState.OFFENSIVE_OCCUPIED);
         GameController.getInstance().getGame().setSummonedInThisTurn(true);
         CustomPrinter.println("flip summoned successfully");
@@ -131,7 +162,19 @@ public abstract class PlayerController {
         // todo you can call startChain here if you want
     }
 
+    public void canAttack(Monster monster) throws LogicException {
+        Game game = GameController.getInstance().getGame();
+        if (!player.getBoard().getMonsterCardZone().containsValue(monster))
+            throw new LogicException("you can’t attack with this monster");
+        if (!game.getPhase().equals(Phase.BATTLE_PHASE))
+            throw new LogicException("you can’t do this action in this phase");
+        if (hasAttackedByCard(monster))
+            throw new LogicException("this card already attacked");
+    }
+
     public void attack(Monster myMonster, Monster opponentMonster) throws LogicException, GameOverEvent {
+        canAttack(myMonster);
+
         Game game = GameController.getInstance().getGame();
         // TODO : check one card don't attack twice in a turn
         // error should be : this card already attacked
@@ -144,7 +187,11 @@ public abstract class PlayerController {
         GameController.getInstance().checkBothLivesEndGame();
     }
 
-    public void directAttack(Monster monster) throws GameOverEvent {
+    public void directAttack(Monster monster) throws GameOverEvent, LogicException {
+        canAttack(monster);
+        if (GameController.getInstance().getOtherPlayerController(this).getPlayer().getBoard().getMonsterCardZone().size() > 0)
+            throw new LogicException("you can’t attack the opponent directly");
+
         Game game = GameController.getInstance().getGame();
         startChain(
                 new Action(

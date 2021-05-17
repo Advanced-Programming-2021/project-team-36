@@ -51,6 +51,7 @@ public abstract class Card implements Comparable<Card>, Cloneable, Serializable 
             cloned.name = name;
             cloned.description = description;
             cloned.price = price;
+            cloned.isInBattle = false;
             return cloned;
         } catch (CloneNotSupportedException e) {
             e.printStackTrace();

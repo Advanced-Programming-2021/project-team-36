@@ -1,7 +1,6 @@
 package controller;
 
 import controller.cardSelector.CardSelector;
-import model.card.Magic;
 import utils.CustomPrinter;
 import controller.events.GameOverEvent;
 import controller.menu.DuelMenuController;
@@ -14,11 +13,8 @@ import model.Player.AIPlayer;
 import model.Player.HumanPlayer;
 import model.Player.Player;
 import model.card.Card;
-import model.card.action.Effect;
-import model.card.Monster;
 import model.enums.GameResult;
 import model.enums.Phase;
-import view.DuelMenuView;
 
 // this controller provides functions for player controller to access to.
 // so for example players don't attack each other directly!
@@ -29,6 +25,7 @@ public class GameController {
     @Getter
     private final Game game;
     private final PlayerController playerController1, playerController2;
+    private Phase previousIterationPhase;
 
     public GameController(Game game) {
         this.game = game;
@@ -128,6 +125,10 @@ public class GameController {
 
     public void control() {
         while (true) {
+            if(!game.getPhase().equals(previousIterationPhase)){
+                previousIterationPhase = game.getPhase();
+                DuelMenuController.getInstance().printCurrentPhase();
+            }
             try {
                 if (game.getPhase().equals(Phase.DRAW_PHASE)) {
                     CustomPrinter.println(String.format("its %s's turn%n", game.getCurrentPlayer().getUser().getNickname()));

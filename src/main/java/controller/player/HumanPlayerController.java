@@ -20,10 +20,6 @@ public class HumanPlayerController extends PlayerController {
         DuelMenuView view = new DuelMenuView();
         Game game = GameController.instance.getGame();
         Phase phase = game.getPhase();
-        if(!phase.equals(previousPhase)){
-            previousPhase = phase;
-            DuelMenuController.getInstance().printCurrentPhase();
-        }
         while(game.getPhase().equals(phase)) {
             view.runNextCommand();
         }

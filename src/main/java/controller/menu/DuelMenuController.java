@@ -48,70 +48,36 @@ public class DuelMenuController extends BaseMenuController {
         gameController.goNextPhase();
     }
 
-    public void canSummonOrSetMonster(Card card) throws LogicException {
-        if (!game.getPhase().equals(Phase.MAIN_PHASE1) && !game.getPhase().equals(Phase.MAIN_PHASE2))
-            throw new LogicException("action not allowed in this phase");
-        if (!game.canCardBeSummoned((Monster) card))
-            throw new LogicException("you can't summon this card");
-        if (game.getCurrentPlayer().getBoard().isMonsterCardZoneFull())
-            throw new LogicException("monster card zone is full");
-        if (game.isSummonedInThisTurn())
-            throw new LogicException("you already summoned/set on this turn");
-    }
-
     public void summonCard(Card card) throws LogicException, ResistToChooseCard {
-        canSummonOrSetMonster(card);
         gameController.getCurrentPlayerController().summonCard((Monster) card);
         new CardSelector(game);
     }
 
     public void setCard(Card card) throws LogicException, ResistToChooseCard {
-        if (card instanceof Monster) {
-            canSummonOrSetMonster(card);
+        if (card instanceof Monster)
             gameController.getCurrentPlayerController().setMonster((Monster) card);
-        }
-        else {
+        else
             gameController.getCurrentPlayerController().setMagic(card);
-        }
         new CardSelector(game);
     }
 
     public void changeCardPosition(Card card, MonsterState monsterState) throws LogicException {
-        if (!GameController.getInstance().getCurrentPlayerController().getPlayer().getBoard().getMonsterCardZone().containsValue((Monster) card))
-            throw new LogicException("you can't change this card position");
-        if (!game.getPhase().equals(Phase.MAIN_PHASE1) && !game.getPhase().equals(Phase.MAIN_PHASE2))
-            throw new LogicException("you can’t do this action in this phase");
-        Monster monster = (Monster) card;
-        if (monster.getMonsterState().equals(MonsterState.DEFENSIVE_HIDDEN) || monster.getMonsterState().equals(monsterState))
-            throw new LogicException("this card is already in the wanted position (maybe it's defensive hidden)");
-        gameController.getCurrentPlayerController().changeMonsterPosition(monster, monsterState);
+        if (!(card instanceof Monster))
+            throw new LogicException("you can only change position of a monster card");
+        gameController.getCurrentPlayerController().changeMonsterPosition((Monster) card, monsterState);
         new CardSelector(game);
     }
 
     public void flipSummon(Card card) throws LogicException {
-        if (!GameController.getInstance().getCurrentPlayerController().getPlayer().getBoard().getMonsterCardZone().containsValue((Monster) card))
-            throw new LogicException("you can't change this card position");
-        if (!game.getPhase().equals(Phase.MAIN_PHASE1) && !game.getPhase().equals(Phase.MAIN_PHASE2))
-            throw new LogicException("you can’t do this action in this phase");
-        Monster monster = (Monster) card;
-        if (!monster.getMonsterState().equals(MonsterState.DEFENSIVE_HIDDEN) || game.isSummonedInThisTurn())
-            throw new LogicException("you can't flip summon this card");
+        if (!(card instanceof Monster))
+            throw new LogicException("you can only flip summon a monster card");
         gameController.getCurrentPlayerController().flipSummon((Monster) card);
         new CardSelector(game);
     }
 
-    public void canAttack(Card card) throws LogicException {
-        PlayerController playerController = gameController.getCurrentPlayerController();
-        if (!playerController.getPlayer().getBoard().getMonsterCardZone().containsValue((Monster) card))
-            throw new LogicException("you can’t attack with this card");
-        if (!game.getPhase().equals(Phase.BATTLE_PHASE))
-            throw new LogicException("you can’t do this action in this phase");
-        if (playerController.hasAttackedByCard((Monster) card))
-            throw new LogicException("this card already attacked");
-    }
-
     public void attack(Card card, int id) throws LogicException, GameOverEvent {
-        canAttack(card);
+        if(!(card instanceof Monster))
+            throw new LogicException("only a monster can attack");
         CardAddress cardAddress = new CardAddress(ZoneType.MONSTER, id, true);
         Monster opponentMonster = (Monster) game.getCardByCardAddress(cardAddress);
         if (opponentMonster == null)
@@ -120,12 +86,11 @@ public class DuelMenuController extends BaseMenuController {
     }
 
     public void directAttack(Card card) throws LogicException, GameOverEvent {
-        canAttack(card);
-        PlayerController playerController = gameController.getCurrentPlayerController();
-        if (gameController.getOtherPlayerController(playerController).getPlayer().getBoard().getMonsterCardZone().size() != 0)
-            throw new LogicException("you can’t attack the opponent directly");
+        if(!(card instanceof Monster))
+            throw new LogicException("only a monster can attack");
         gameController.getCurrentPlayerController().directAttack((Monster) card);
     }
+
     public void activateEffect(Card card) {
         // todo age selected Magic nabood error bedim
         // todo momkene az in monster khafana bashe?

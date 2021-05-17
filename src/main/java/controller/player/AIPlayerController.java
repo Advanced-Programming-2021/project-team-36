@@ -1,14 +1,18 @@
 package controller.player;
 
 import controller.GameController;
+import controller.LogicException;
 import controller.cardSelector.ResistToChooseCard;
 import controller.cardSelector.SelectCondition;
 import model.Game;
 import model.Player.AIPlayer;
 import model.Player.Player;
 import model.card.Card;
+import model.card.Magic;
+import model.card.Monster;
 
 import java.util.ArrayList;
+import java.util.List;
 import java.util.Random;
 
 public class AIPlayerController extends PlayerController {
@@ -23,18 +27,43 @@ public class AIPlayerController extends PlayerController {
         GameController.getInstance().goNextPhase();
     }
 
+    public void mainPhase(){
+        Random rnd = new Random();
+        try {
+            while (true) {
+                List<Card> cards = player.getBoard().getCardsOnHand();
+                Card card = cards.get(rnd.nextInt(cards.size()));
+                if(card instanceof Monster) {
+                    int r = rnd.nextInt(3);
+                    if(r == 0)
+                        summonCard((Monster) card);
+                    if(r == 1)
+                        flipSummon((Monster) card);
+                    if(r == 2)
+                        setMonster((Monster) card);
+                }
+                else if(card instanceof Magic) {
+                    setMagic(card);
+                }
+            }
+        } catch (ResistToChooseCard | LogicException ignored) {
+        }
+        GameController.getInstance().goNextPhase();
+    }
+
     @Override
     public void controlMainPhase1() {
-        GameController.getInstance().goNextPhase();
+        mainPhase();
     }
 
     @Override
     public void controlMainPhase2() {
-        GameController.getInstance().goNextPhase();
+        mainPhase();
     }
 
     @Override
     public void controlBattlePhase() {
+
         GameController.getInstance().goNextPhase();
     }
 
@@ -68,9 +97,9 @@ public class AIPlayerController extends PlayerController {
             throw new ResistToChooseCard();
         Random rnd = new Random();
         while(cards.size() > numberOfCards) {
-            int id = rnd.nextInt() % cards.size();
+            int id = rnd.nextInt(cards.size());
             cards.remove(id);
         }
-        return (Card[]) cards.toArray();
+        return cards.toArray(Card[]::new);
     }
 }

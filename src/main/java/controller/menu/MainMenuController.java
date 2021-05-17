@@ -44,17 +44,6 @@ public class MainMenuController extends BaseMenuController {
         );
     }
 
-    public void startDuelDoubleAI(int round) throws RoutingException, ModelException {
-        ProgramController.getInstance().navigateToMenu(
-                new DuelMenuController(
-                        new Game(
-                                new AIPlayer(),
-                                new AIPlayer()
-                        )
-                )
-        );
-    }
-
     public void logout() throws RoutingException {
         ProgramController.getInstance().navigateToMenu(new LoginMenuController());
         CustomPrinter.println("user logged out successfully!");

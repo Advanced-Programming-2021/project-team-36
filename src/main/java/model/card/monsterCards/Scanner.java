@@ -17,6 +17,7 @@ public class Scanner extends Monster {
 
     // todo will the card also get special abilities of its copy?
     // also do we have to delete the other card from graveyard?
+    // todo what if copied monster dies?
 
     int lastTurnActivated = -1;
     Monster copiedMonster;
@@ -41,35 +42,35 @@ public class Scanner extends Monster {
 
     @Override
     public int getAttackDamage(){
-        if(isInBattle() && lastTurnActivated == GameController.getInstance().getGame().getTurn())
+        if(copiedMonster != null && lastTurnActivated == GameController.getInstance().getGame().getTurn())
             return copiedMonster.getAttackDamage();
         return attackDamage;
     }
 
     @Override
     public int getDefenseRate(){
-        if(isInBattle() && lastTurnActivated == GameController.getInstance().getGame().getTurn())
+        if(copiedMonster != null && lastTurnActivated == GameController.getInstance().getGame().getTurn())
             return copiedMonster.getDefenseRate();
         return defenseRate;
     }
 
     @Override
     public MonsterAttribute getAttribute(){
-        if(isInBattle() && lastTurnActivated == GameController.getInstance().getGame().getTurn())
+        if(copiedMonster != null && lastTurnActivated == GameController.getInstance().getGame().getTurn())
             return copiedMonster.getAttribute();
         return attribute;
     }
 
     @Override
     public String getName(){
-        if(isInBattle() && lastTurnActivated == GameController.getInstance().getGame().getTurn())
+        if(copiedMonster != null && lastTurnActivated == GameController.getInstance().getGame().getTurn())
             return copiedMonster.getName();
         return name;
     }
 
     @Override
     public int getLevel(){
-        if(isInBattle() && lastTurnActivated == GameController.getInstance().getGame().getTurn())
+        if(copiedMonster != null && lastTurnActivated == GameController.getInstance().getGame().getTurn())
             return copiedMonster.getLevel();
         return level;
     }
