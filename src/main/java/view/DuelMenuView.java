@@ -10,14 +10,11 @@ import model.Game;
 import model.Player.AIPlayer;
 import model.Player.HumanPlayer;
 import model.User;
-import utils.CustomPrinter;
-import utils.CustomScanner;
+import utils.*;
 import controller.menu.DuelMenuController;
 import model.CardAddress;
 import model.ModelException;
 import model.card.Card;
-import utils.DatabaseHandler;
-import utils.RoutingException;
 import view.CommandLine.Command;
 import view.CommandLine.CommandLine;
 import view.CommandLine.CommandLineException;
@@ -145,9 +142,9 @@ public class DuelMenuView extends BaseMenuView {
                 }
         ));
         this.cmd.addCommand(new Command(
-                "goh khordam",
+                "surrender",
                 mp -> {
-                    ProgramController.getInstance().navigateToMenu(MainMenuController.getInstance());
+                    DuelMenuController.getInstance().surrender();
                 }
         ));
     }
@@ -261,6 +258,18 @@ public class DuelMenuView extends BaseMenuView {
             } catch (Exception e){
                 CustomPrinter.println(String.format("number should be from %d to %d", l, r));
             }
+        }
+    }
+
+    @Override
+    public void runNextCommand() {
+        try {
+            String line = CustomScanner.nextLine();
+            if (Debugger.getCaptureMode())
+                Debugger.captureCommand(line);
+            this.cmd.runNextCommand(line);
+        } catch (CommandLineException | ParserException | ModelException | LogicException | RoutingException | GameEvent e) {
+            CustomPrinter.println(e.getMessage());
         }
     }
 

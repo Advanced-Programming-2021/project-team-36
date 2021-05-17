@@ -53,7 +53,7 @@ abstract public class Player {
     }
     
     public void decreaseLifePoint(int value) {
-        this.lifePoint = Math.max(0, value);
+        this.lifePoint = Math.max(0, lifePoint - value);
     }
 
     public boolean hasInHand(Card card){

@@ -21,9 +21,8 @@ public class ChainController {
         GameController.getInstance().getGame().getChain().push(firstAction);
     }
 
-    public void control(Action startingEffect) throws GameOverEvent {
+    public void control() throws GameOverEvent {
         Stack<Action> chain = GameController.getInstance().getGame().getChain();
-        chain.push(startingEffect);
         while (this.active.listOfAvailableActionsInResponse().size() > 0 && this.active.askRespondToChain()) {
             try {
                 this.active.doRespondToChain();

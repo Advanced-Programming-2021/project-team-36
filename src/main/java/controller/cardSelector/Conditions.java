@@ -40,5 +40,5 @@ public class Conditions {
 
 
     public static final SelectCondition myMonsterFromMonsterZone = (Card card) ->
-            card instanceof Monster && getGame().getCurrentPlayer().getBoard().getMonsterCardZone().containsValue(card);
+            card instanceof Monster && getGame().getCurrentPlayer().getBoard().getMonsterCardZone().containsValue((Monster) card);
 }

@@ -1,7 +1,7 @@
 package controller.player;
 
 import controller.cardSelector.Conditions;
-import controller.menu.DuelMenuController;
+import model.card.Spell;
 import model.card.action.*;
 import model.enums.*;
 import utils.CustomPrinter;
@@ -90,7 +90,10 @@ public abstract class PlayerController {
                 break;
             }
         }
-        CustomPrinter.println("summoned successfully");
+        if (monsterState.equals(MonsterState.OFFENSIVE_OCCUPIED))
+            CustomPrinter.println("summoned successfully");
+        else
+            CustomPrinter.println("set successfully");
     }
 
     public void addMagicToBoard(Magic magic, MagicState magicState) {
@@ -135,13 +138,11 @@ public abstract class PlayerController {
             throw new LogicException("spell card zone is full");
         Magic magic = (Magic) card;
         addMagicToBoard(magic, MagicState.HIDDEN);
-        // todo
-        // todo you can call startChain here if you want
     }
 
-    public void surrender() {
-        // todo
-        // todo you can call startChain here if you want
+    public void surrender() throws GameOverEvent {
+        Game game = GameController.instance.getGame();
+        throw new GameOverEvent(GameResult.NOT_DRAW, game.getCurrentPlayer(), game.getOpponentPlayer());
     }
 
     public void changeMonsterPosition(Monster monster, MonsterState monsterState) throws LogicException {
@@ -158,6 +159,7 @@ public abstract class PlayerController {
     }
 
     public void flipSummon(Monster monster) throws LogicException {
+        // todo : should startChain
         Game game = GameController.getInstance().getGame();
         if (!GameController.getInstance().getCurrentPlayerController().getPlayer().getBoard().getMonsterCardZone().containsValue(monster))
             throw new LogicException("you can't change this card position");
@@ -169,13 +171,12 @@ public abstract class PlayerController {
         monster.setMonsterState(MonsterState.OFFENSIVE_OCCUPIED);
         GameController.getInstance().getGame().setSummonedInThisTurn(true);
         CustomPrinter.println("flip summoned successfully");
-        // todo
-        // todo you can call startChain here if you want
     }
 
     public void ritualSummon(Card card) throws LogicException {
         // todo
         // todo you can call startChain here if you want
+
     }
 
     public void canAttack(Monster monster) throws LogicException {
@@ -190,10 +191,9 @@ public abstract class PlayerController {
 
     public void attack(Monster myMonster, Monster opponentMonster) throws LogicException, GameOverEvent {
         canAttack(myMonster);
-
+        if (!myMonster.isAllowAttack())
+            throw new LogicException("this card already attacked");
         Game game = GameController.getInstance().getGame();
-        // TODO : check one card don't attack twice in a turn
-        // error should be : this card already attacked
         startChain(
                 new Action(
                         new MonsterAttackEvent(myMonster, opponentMonster),
@@ -207,7 +207,8 @@ public abstract class PlayerController {
         canAttack(monster);
         if (GameController.getInstance().getOtherPlayerController(this).getPlayer().getBoard().getMonsterCardZone().size() > 0)
             throw new LogicException("you can’t attack the opponent directly");
-
+        if (!monster.isAllowAttack())
+            throw new LogicException("this card already attacked");
         Game game = GameController.getInstance().getGame();
         startChain(
                 new Action(
@@ -218,15 +219,31 @@ public abstract class PlayerController {
         GameController.getInstance().checkBothLivesEndGame();
     }
 
-    public void activateEffect(Card card) {
-
-        // todo
-        // todo you can call startChain here if you want
+    public void activateEffect(Card card) throws LogicException, GameOverEvent {
+        Game game = GameController.getInstance().getGame();
+        if (!(card instanceof Spell))
+            throw new LogicException("activate effect is only for spell cards");
+        if (!game.getPhase().equals(Phase.MAIN_PHASE1) && !game.getPhase().equals(Phase.MAIN_PHASE2))
+            throw new LogicException("you can't activate an effect on this turn");
+        Spell spell = (Spell) card;
+        if (spell.getMagicState().equals(MagicState.OCCUPIED))
+            throw new LogicException("you have already activated this card");
+        if (getPlayer().hasInHand(card) && !spell.getIcon().equals(Icon.FIELD))
+            throw new LogicException("spell card zone is full");
+        if (!spell.canActivateEffect())
+            throw new LogicException("preparations of this spell are not done yet");
+        startChain(
+                new Action(
+                        new MagicActivation(spell),
+                        spell.activateEffect()
+                )
+        );
     }
 
     public void startChain(Action action) throws GameOverEvent {
         ChainController chainController = new ChainController(this, action);
-        chainController.control(action);
+        addActionToChain(action);
+        chainController.control();
     }
 
     protected void addActionToChain(Action action) {
