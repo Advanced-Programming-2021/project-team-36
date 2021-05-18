@@ -9,11 +9,9 @@ import model.card.action.Effect;
 import model.card.Magic;
 import model.card.Monster;
 import model.enums.*;
+import utils.CustomPrinter;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Random;
-import java.util.Stack;
+import java.util.*;
 
 public class Game {
     @Getter
@@ -32,7 +30,13 @@ public class Game {
     @Setter
     private Stack<Action> chain;
 
-    public Game(Player firstPlayer, Player secondPlayer) throws ModelException {
+    @Getter
+    private final int rounds;
+
+    private final List<Integer> firstPlayerScores = new ArrayList<>();
+    private final List<Integer> secondPlayerScores = new ArrayList<>();
+
+    public Game(Player firstPlayer, Player secondPlayer, int rounds) throws ModelException {
         if (firstPlayer.getUser().getUsername().equals(secondPlayer.getUser().getUsername()))
             throw new ModelException("you can't play with yourself");
         Random random = new Random();
@@ -50,6 +54,8 @@ public class Game {
             firstPlayer.getBoard().drawCardFromDeck();
             secondPlayer.getBoard().drawCardFromDeck();
         }
+
+        this.rounds = rounds;
 
         this.turn = 0;
         this.phase = Phase.MAIN_PHASE2;
@@ -118,5 +124,35 @@ public class Game {
         cards.addAll(firstPlayer.getBoard().getAllCardsOnBoard());
         cards.addAll(secondPlayer.getBoard().getAllCardsOnBoard());
         return cards;
+    }
+
+    public void addFirstPlayerLastRoundScore(int score) {
+        firstPlayerScores.add(score);
+    }
+
+    public void addSecondPlayerLastRoundScore(int score) {
+        secondPlayerScores.add(score);
+    }
+
+    public int countNonZero(List<Integer> arrayList) {
+        int cnt = 0;
+        for (int x : arrayList)
+            if (x > 0)
+                cnt++;
+        return cnt;
+    }
+
+    public int getMaxLP(Player player) {
+        if (player == firstPlayer)
+            return Collections.max(firstPlayerScores);
+        else
+            return Collections.max(secondPlayerScores);
+    }
+
+    public int totalScore(Player player) {
+        if (player == firstPlayer)
+            return countNonZero(firstPlayerScores);
+        else
+            return countNonZero(secondPlayerScores);
     }
 }

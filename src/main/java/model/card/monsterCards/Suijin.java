@@ -1,6 +1,8 @@
 package model.card.monsterCards;
 
+import controller.GameController;
 import controller.menu.DuelMenuController;
+import controller.player.PlayerController;
 import model.card.action.Effect;
 import model.card.Monster;
 import model.enums.MonsterAttribute;
@@ -21,8 +23,8 @@ public class Suijin extends Monster {
         return () -> {
             changeFromHiddenToOccupiedIfCanEffect().run();
             int _attackDamage = attacker.getAttackDamage();
-            if(stillHasPower) {
-                boolean confirm = ((DuelMenuView) DuelMenuController.getInstance().getView()).askUser(
+            if (stillHasPower) {
+                boolean confirm = GameController.getInstance().getPlayerControllerByPlayer(this.owner).askRespondToQuestion(
                         "Do you want to activate Suijin's effect?", "yes", "no");
                 if (confirm) {
                     stillHasPower = false;
@@ -42,7 +44,7 @@ public class Suijin extends Monster {
     }
 
     @Override
-    public int getSpeed(){
+    public int getSpeed() {
         return 2;
     }
 }

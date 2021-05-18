@@ -5,7 +5,6 @@ import controller.events.GameOverEvent;
 import controller.player.PlayerController;
 import lombok.Getter;
 import model.card.action.Action;
-import model.card.action.Effect;
 
 import java.util.Stack;
 

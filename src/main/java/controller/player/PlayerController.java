@@ -1,8 +1,6 @@
 package controller.player;
 
 import controller.cardSelector.Conditions;
-import controller.menu.DuelMenuController;
-import lombok.Setter;
 import model.card.Spell;
 import model.card.action.*;
 import model.enums.*;
@@ -174,7 +172,8 @@ public abstract class PlayerController {
 
     public void surrender() throws GameOverEvent {
         Game game = GameController.instance.getGame();
-        throw new GameOverEvent(GameResult.NOT_DRAW, game.getCurrentPlayer(), game.getOpponentPlayer());
+        game.getCurrentPlayer().setLifePoint(0);
+        throw new GameOverEvent(GameResult.NOT_DRAW, game.getCurrentPlayer(), game.getOpponentPlayer(), game.getOpponentPlayer().getLifePoint());
     }
 
     public void changeMonsterPosition(Monster monster, MonsterState monsterState) throws LogicException {

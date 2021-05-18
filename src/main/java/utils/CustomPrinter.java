@@ -1,6 +1,5 @@
 package utils;
 
-
 public class CustomPrinter {
     private static String lastBuffer;
 

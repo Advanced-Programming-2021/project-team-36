@@ -3,7 +3,6 @@ package model.card;
 import controller.GameController;
 import controller.LogicException;
 import controller.events.GameOverEvent;
-import controller.player.PlayerController;
 import lombok.Getter;
 import lombok.Setter;
 import model.Player.Player;
@@ -13,9 +12,6 @@ import model.enums.MonsterCardType;
 import model.enums.MonsterType;
 import model.enums.MonsterState;
 import utils.CustomPrinter;
-import utils.ClassFinder;
-
-import java.util.TreeMap;
 
 public class Monster extends Card {
     @Setter

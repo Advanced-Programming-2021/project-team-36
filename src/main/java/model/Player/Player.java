@@ -14,8 +14,8 @@ import model.enums.MonsterCardType;
 
 abstract public class Player {
     private final User user;
-    private final Deck deck;
-    private final Board board;
+    private Deck deck;
+    private Board board;
 
     @Getter
     @Setter
@@ -35,6 +35,14 @@ abstract public class Player {
         this.board = new Board(deck.getMainDeck());
         this.lifePoint = Constants.InitialLifePoint.val;
         summonedInLastTurn = false;
+    }
+
+    public void refresh() {
+        this.deck = user.getActiveDeck().clone().readyForBattle(this);
+        this.board = new Board(deck.getMainDeck());
+        this.lifePoint = Constants.InitialLifePoint.val;
+        summonedInLastTurn = false;
+
     }
 
     public User getUser() {

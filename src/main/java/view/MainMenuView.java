@@ -1,6 +1,7 @@
 package view;
 
 import controller.menu.MainMenuController;
+import model.Game;
 import view.CommandLine.Command;
 
 public class MainMenuView extends BaseMenuView {
@@ -27,6 +28,13 @@ public class MainMenuView extends BaseMenuView {
                 },
                 Options.newRound(true),
                 Options.ai(true),
+                Options.round(true)
+        ));
+        this.cmd.addCommand(new Command(
+                "duel",
+                mp -> {
+                    MainMenuController.getInstance().startDuelAiWithAI(Parser.RoundParser(mp.get("round")));
+                },
                 Options.round(true)
         ));
         this.cmd.addCommand(new Command(

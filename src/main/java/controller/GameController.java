@@ -44,18 +44,18 @@ public class GameController {
     public void drawCard() throws GameOverEvent {
         Card card = game.getCurrentPlayer().getMainDeck().getTopCard();
         if (card == null)
-            throw new GameOverEvent(GameResult.NOT_DRAW, game.getCurrentPlayer(), game.getOpponentPlayer());
+            throw new GameOverEvent(GameResult.NOT_DRAW, game.getCurrentPlayer(), game.getOpponentPlayer(), game.getOpponentPlayer().getLifePoint());
         game.getCurrentPlayer().getBoard().drawCardFromDeck();
         CustomPrinter.println(String.format("new card added to the hand : %s%n", card.getName()));
     }
 
     public void checkBothLivesEndGame() throws GameOverEvent {
         if (game.getCurrentPlayer().getLifePoint() <= 0 && game.getOpponentPlayer().getLifePoint() <= 0)
-            throw new GameOverEvent(GameResult.DRAW, game.getCurrentPlayer(), game.getOpponentPlayer());
+            throw new GameOverEvent(GameResult.DRAW, game.getCurrentPlayer(), game.getOpponentPlayer(), 0);
         if (game.getCurrentPlayer().getLifePoint() <= 0)
-            throw new GameOverEvent(GameResult.NOT_DRAW, game.getCurrentPlayer(), game.getOpponentPlayer());
+            throw new GameOverEvent(GameResult.NOT_DRAW, game.getCurrentPlayer(), game.getOpponentPlayer(), game.getOpponentPlayer().getLifePoint());
         if (game.getOpponentPlayer().getLifePoint() <= 0)
-            throw new GameOverEvent(GameResult.NOT_DRAW, game.getOpponentPlayer(), game.getCurrentPlayer());
+            throw new GameOverEvent(GameResult.NOT_DRAW, game.getOpponentPlayer(), game.getCurrentPlayer(), game.getCurrentPlayer().getLifePoint());
     }
 
     public void moveCardToGraveYard(Card card) {
@@ -87,18 +87,43 @@ public class GameController {
         game.setPhase(Phase.DRAW_PHASE);
         game.changeTurn();
         game.getCurrentPlayer().setSummonedInLastTurn(false);
+        DuelMenuController.getInstance().showBoard();
         new CardSelector(game);
     }
 
-    private void endGame(GameOverEvent event) {
+    private void endRound(GameOverEvent event) {
         if(event.gameResult.equals(GameResult.DRAW)) {
-            // todo
+            CustomPrinter.println(String.format("game is a draw and the score is %d-%d", game.totalScore(game.getFirstPlayer()), game.totalScore(game.getSecondPlayer())));
+            game.addFirstPlayerLastRoundScore(0);
+            game.addSecondPlayerLastRoundScore(0);
         }
         else {
-            event.winner.getUser().increaseScore(1000);
-            event.winner.getUser().increaseBalance(1000 + event.winner.getLifePoint());
-            event.looser.getUser().increaseBalance(100);
+            if (event.winner.getUser().getUsername().equals(game.getFirstPlayer().getUser().getUsername())) {
+                game.addFirstPlayerLastRoundScore(event.winnersLP);
+                game.addSecondPlayerLastRoundScore(0);
+            }
+            else {
+                game.addFirstPlayerLastRoundScore(0);
+                game.addSecondPlayerLastRoundScore(event.winnersLP);
+            }
+            CustomPrinter.println(String.format("%s won the game and the score is: %d-%d", event.winner.getUser().getUsername(), game.totalScore(game.getFirstPlayer()), game.totalScore(game.getSecondPlayer())));
         }
+        if (game.totalScore(game.getFirstPlayer()) > game.getRounds() / 2)
+            endGame(game.getFirstPlayer(), game.getSecondPlayer(), game.getRounds(), game.getMaxLP(game.getFirstPlayer()), game.totalScore(game.getFirstPlayer()), game.totalScore(game.getSecondPlayer()));
+        else if (game.totalScore(game.getSecondPlayer()) > game.getRounds() / 2)
+            endGame(game.getSecondPlayer(), game.getFirstPlayer(), game.getRounds(), game.getMaxLP(game.getSecondPlayer()), game.totalScore(game.getFirstPlayer()), game.totalScore(game.getSecondPlayer()));
+        else {
+            game.getFirstPlayer().refresh();
+            game.getSecondPlayer().refresh();
+        }
+    }
+
+    private void endGame(Player winner, Player looser, int rounds, int maxWinnerLP, int firstPlayerScore, int secondPlayerScore) {
+        winner.getUser().increaseScore(rounds * 1000);
+        winner.getUser().increaseBalance(rounds * (1000 + maxWinnerLP));
+        looser.getUser().increaseBalance(rounds * 100);
+        CustomPrinter.println(String.format("%s won the whole match with score: %d-%d", winner.getUser().getUsername(), firstPlayerScore, secondPlayerScore));
+        throw new Error();
     }
 
     public void goNextPhase() {
@@ -141,8 +166,11 @@ public class GameController {
                     changeTurn();
                 }
             } catch (GameOverEvent gameOverEvent) {
-                endGame(gameOverEvent);
-                break;
+                try {
+                    endRound(gameOverEvent);
+                } catch (Error error) {
+                    break;
+                }
             }
         }
     }

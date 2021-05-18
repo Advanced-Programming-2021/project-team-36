@@ -11,7 +11,7 @@ public class DoubleAITest extends IntegrationTestBase {
     public void battle() throws ModelException {
         Player p1 = new AIPlayer();
         Player p2 = new AIPlayer();
-        DuelMenuController duelMenuController = new DuelMenuController(new Game(p1, p2));
+        DuelMenuController duelMenuController = new DuelMenuController(new Game(p1, p2, 1));
         duelMenuController.control();
     }
 }
