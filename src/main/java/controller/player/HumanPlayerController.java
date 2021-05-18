@@ -52,17 +52,13 @@ public class HumanPlayerController extends PlayerController {
 
     @Override
     public boolean askRespondToChain() {
-        return askYesNoQuestion("Do you want to add a card to chain?");
+        return ((DuelMenuView) DuelMenuController.getInstance().getView()).askUser(
+                "Do you want to add a card to chain?", "yes", "no");
     }
 
     @Override
-    public boolean askYesNoQuestion(String question) {
-        return ((DuelMenuView) DuelMenuController.getInstance().getView()).askUser(question);
-    }
-
-    @Override
-    public int askIntegerQuestion(String question, int l, int r) {
-        return ((DuelMenuView) DuelMenuController.getInstance().getView()).askUserToChooseNumber(question, l, r);
+    public boolean askRespondToQuestion(String question, String yes, String no) {
+        return ((DuelMenuView) DuelMenuController.getInstance().getView()).askUser(question, yes, no);
     }
 
     @Override
@@ -77,7 +73,7 @@ public class HumanPlayerController extends PlayerController {
                 question.toString(), 0, actions.size()
         );
         if(choice == 0) {
-            boolean retry = view.askUser("Do you want to choose another one?");
+            boolean retry = view.askUser("Do you want to choose another one?", "yes", "no");
             if(retry){
                 doRespondToChain();
                 return;

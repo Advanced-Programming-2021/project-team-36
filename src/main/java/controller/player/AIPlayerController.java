@@ -4,23 +4,17 @@ import controller.GameController;
 import controller.LogicException;
 import controller.cardSelector.ResistToChooseCard;
 import controller.cardSelector.SelectCondition;
-import controller.menu.DuelMenuController;
-import lombok.extern.java.Log;
 import model.Game;
 import model.Player.AIPlayer;
 import model.Player.Player;
 import model.card.*;
 import model.card.action.Action;
 import model.enums.MonsterState;
-import utils.CustomPrinter;
-import view.DuelMenuView;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Random;
+import java.util.*;
 
 public class AIPlayerController extends PlayerController {
-    public AIPlayerController(AIPlayer player){
+    public AIPlayerController(AIPlayer player) {
         super(player);
     }
 
@@ -31,10 +25,10 @@ public class AIPlayerController extends PlayerController {
         GameController.getInstance().goNextPhase();
     }
 
-    public void mainPhase(){
+    public void mainPhase() {
         Random rnd = new Random();
         List<Card> allCards = new ArrayList<>(player.getBoard().getAllCards());
-        while(!allCards.isEmpty()){
+        while (!allCards.isEmpty()) {
             Card card = allCards.get(rnd.nextInt(allCards.size()));
             allCards.remove(card);
             if (card instanceof Monster) {
@@ -55,7 +49,7 @@ public class AIPlayerController extends PlayerController {
             } else if (card instanceof Magic) {
                 noErrorSetMagic((Magic) card);
             }
-            if(card instanceof Spell){
+            if (card instanceof Spell) {
                 noErrorActivateEffect((Spell) card);
             }
         }
@@ -76,7 +70,7 @@ public class AIPlayerController extends PlayerController {
     public void controlBattlePhase() {
         Random rnd = new Random();
         List<Card> allCards = new ArrayList<>(player.getBoard().getAllCards()); // or cards on board
-        while(!allCards.isEmpty()){
+        while (!allCards.isEmpty()) {
             Card card = allCards.get(rnd.nextInt(allCards.size()));
             allCards.remove(card);
             if (card instanceof Monster) {
@@ -99,61 +93,67 @@ public class AIPlayerController extends PlayerController {
                         noErrorAttack((Monster) card, (Monster) opponentCard);
                     noErrorDirectAttack((Monster) card);
                 }
-            }
-            else if (card instanceof Magic) {
+            } else if (card instanceof Magic) {
                 noErrorSetMagic((Magic) card);
             }
-            if(card instanceof Spell){
+            if (card instanceof Spell) {
                 noErrorActivateEffect((Spell) card);
             }
         }
         GameController.getInstance().goNextPhase();
     }
 
-    private void noErrorSummonCard(Monster monster){
-        try{
-            summonCard(monster);
+    private void noErrorSummonCard(Monster monster) {
+        try {
+            normalSummon(monster);
         } catch (ResistToChooseCard | LogicException ignored) {
         }
     }
-    private void noErrorFlipSummon(Monster monster){
-        try{
+
+    private void noErrorFlipSummon(Monster monster) {
+        try {
             flipSummon(monster);
         } catch (LogicException ignored) {
         }
     }
-    private void noErrorChangeMonsterPosition(Monster monster, MonsterState monsterState){
+
+    private void noErrorChangeMonsterPosition(Monster monster, MonsterState monsterState) {
         try {
             changeMonsterPosition(monster, monsterState);
         } catch (LogicException ignored) {
         }
     }
-    private void noErrorSetMonster(Monster monster){
-        try{
+
+    private void noErrorSetMonster(Monster monster) {
+        try {
             setMonster(monster);
         } catch (LogicException | ResistToChooseCard ignored) {
         }
     }
-    private void noErrorSetMagic(Magic magic){
-        try{
+
+    private void noErrorSetMagic(Magic magic) {
+        try {
             setMagic(magic);
         } catch (LogicException ignored) {
         }
     }
-    private void noErrorActivateEffect(Spell spell){
-        try{
+
+    private void noErrorActivateEffect(Spell spell) {
+        try {
             activateEffect(spell);
         } catch (LogicException ignored) {
         }
     }
-    private void noErrorAttack(Monster attacker, Monster defender){
-        try{
+
+    private void noErrorAttack(Monster attacker, Monster defender) {
+        try {
             attack(attacker, defender);
         } catch (LogicException ignored) {
         }
     }
-    private void noErrorDirectAttack(Monster monster){
-        try{
+
+    private void noErrorDirectAttack(Monster monster) {
+        try {
             directAttack(monster);
         } catch (LogicException ignored) {
         }
@@ -165,17 +165,6 @@ public class AIPlayerController extends PlayerController {
     }
 
     @Override
-    public boolean askYesNoQuestion(String question) {
-        CustomPrinter.println("Question asked: " + question);
-        return true;
-    }
-
-    @Override
-    public int askIntegerQuestion(String question, int l, int r) {
-        return new Random().nextInt(r-l+1) + l;
-    }
-
-    @Override
     public void doRespondToChain() {
         List<Action> actions = listOfAvailableActionsInResponse();
         Random rnd = new Random();
@@ -183,25 +172,31 @@ public class AIPlayerController extends PlayerController {
     }
 
     @Override
+    public boolean askRespondToQuestion(String question, String yes, String no) {
+        Random rand = new Random();
+        return rand.nextBoolean();
+    }
+
+    @Override
     public Card[] chooseKCards(String message, int numberOfCards, SelectCondition condition) throws ResistToChooseCard {
         ArrayList<Card> cards = new ArrayList<>();
-        for(Card card: player.getBoard().getAllCards()){
-            if(condition.canSelect(card)){
+        for (Card card : player.getBoard().getAllCards()) {
+            if (condition.canSelect(card)) {
                 cards.add(card);
             }
         }
         Game game = GameController.getInstance().getGame();
         Player otherPlayer = player.equals(game.getFirstPlayer()) ? game.getSecondPlayer() : game.getFirstPlayer();
-        for(Card card: otherPlayer.getBoard().getAllCards()){
-            if(condition.canSelect(card)){
+        for (Card card : otherPlayer.getBoard().getAllCards()) {
+            if (condition.canSelect(card)) {
                 cards.add(card);
             }
         }
 
-        if(cards.size() < numberOfCards)
+        if (cards.size() < numberOfCards)
             throw new ResistToChooseCard();
         Random rnd = new Random();
-        while(cards.size() > numberOfCards) {
+        while (cards.size() > numberOfCards) {
             int id = rnd.nextInt(cards.size());
             cards.remove(id);
         }
@@ -210,6 +205,23 @@ public class AIPlayerController extends PlayerController {
 
     @Override
     public Monster[] chooseKSumLevelMonsters(String message, int sumOfLevelsOfCards, SelectCondition condition) throws ResistToChooseCard {
-        return new Monster[0]; // todo
+        ArrayList<Monster> monsters = new ArrayList<>();
+        for (Card card : player.getBoard().getAllCards()) {
+            if (condition.canSelect(card)) {
+                monsters.add((Monster) card);
+            }
+        }
+        Collections.shuffle(monsters);
+        int sum = 0;
+        for (Monster monster : monsters) {
+            if (sum >= sumOfLevelsOfCards) {
+                monsters.remove(monster);
+                continue;
+            }
+            sum += monster.getLevel();
+        }
+        if (sum < sumOfLevelsOfCards)
+            throw new ResistToChooseCard();
+        return (Monster[]) monsters.toArray();
     }
 }

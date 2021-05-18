@@ -1,10 +1,14 @@
 package model;
 
+import controller.GameController;
 import controller.LogicException;
+import lombok.Getter;
+import lombok.Setter;
 import model.card.Card;
 import model.card.Magic;
 import model.card.Monster;
 import model.deck.MainDeck;
+import model.enums.Icon;
 import model.enums.MagicState;
 import model.enums.MonsterState;
 import model.enums.ZoneType;
@@ -17,6 +21,9 @@ public class Board {
     private final Map<Integer, Monster> monsterCardZone;
     private final Map<Integer, Magic> magicCardZone;
     private final List<Card> cardsOnHand;
+
+    @Getter
+    @Setter
     private Magic fieldZoneCard;
 
     public Board(MainDeck mainDeck){
@@ -118,6 +125,19 @@ public class Board {
         }
     }
 
+    public void addMagic(Magic magic) {
+        if (magic.getIcon().equals(Icon.FIELD))
+            addCardToBoard((Card) magic, new CardAddress(ZoneType.FIELD, 1, false));
+        else {
+            for (int i = 1; i <= 5; i++) {
+                if (getMagicCardZone().get(i) == null) {
+                    addCardToBoard(magic, new CardAddress(ZoneType.MAGIC, i, false));
+                    break;
+                }
+            }
+        }
+    }
+
     public void addCardToHand(Card card){
         cardsOnHand.add(card);
     }
@@ -148,6 +168,42 @@ public class Board {
     public boolean isMonsterCardZoneFull() {
         return monsterCardZone.size() == 5;
     }
+
+    public String toRotatedString() {
+        StringBuilder stringBuilder = new StringBuilder();
+        stringBuilder.append(("\tc").repeat(cardsOnHand.size()));
+        stringBuilder.append("\n");
+        stringBuilder.append(mainDeck.getNumberOfCards());
+        stringBuilder.append("\n");
+        ArrayList<Integer> arrayList = new ArrayList<>(Arrays.asList(4, 2, 1, 3, 5));
+        for (int id : arrayList) {
+            if (magicCardZone.get(id) == null)
+                stringBuilder.append("\tE");
+            else if (magicCardZone.get(id).getState() == MagicState.HIDDEN)
+                stringBuilder.append("\tH");
+            else
+                stringBuilder.append("\tO");
+        }
+        stringBuilder.append("\n");
+        for (int id : arrayList) {
+            if (monsterCardZone.get(id) == null)
+                stringBuilder.append("\tE");
+            else if (monsterCardZone.get(id).getMonsterState() == MonsterState.DEFENSIVE_HIDDEN)
+                stringBuilder.append("\tDH");
+            else if (monsterCardZone.get(id).getMonsterState() == MonsterState.DEFENSIVE_OCCUPIED)
+                stringBuilder.append("\tDO");
+            else
+                stringBuilder.append("\tOO");
+        }
+        stringBuilder.append("\n");
+        stringBuilder.append(graveYard.size()).append("\t".repeat(6));
+        if (fieldZoneCard == null)
+            stringBuilder.append("E");
+        else
+            stringBuilder.append("O");
+        return stringBuilder.toString();
+    }
+
 
     @Override
     public String toString() {

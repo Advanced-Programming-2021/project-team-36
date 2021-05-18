@@ -6,12 +6,10 @@ import controller.LogicException;
 import controller.ProgramController;
 import controller.cardSelector.ResistToChooseCard;
 import controller.events.GameOverEvent;
-import controller.player.PlayerController;
 import lombok.Getter;
 import model.CardAddress;
 import model.Game;
 import model.card.*;
-import model.enums.Phase;
 import model.enums.MonsterState;
 import model.enums.ZoneType;
 import view.*;
@@ -49,7 +47,7 @@ public class DuelMenuController extends BaseMenuController {
     }
 
     public void summonCard(Card card) throws LogicException, ResistToChooseCard {
-        gameController.getCurrentPlayerController().summonCard((Monster) card);
+        gameController.getCurrentPlayerController().normalSummon((Monster) card);
         new CardSelector(game);
     }
 
@@ -107,7 +105,7 @@ public class DuelMenuController extends BaseMenuController {
 
     public void showBoard() {
         CustomPrinter.println(game.getOpponentPlayer().getUser().getNickname() + ":" + game.getOpponentPlayer().getLifePoint());
-        CustomPrinter.println(game.getOpponentPlayer().getBoard().toString()); // TODO it should rotate 180 degree
+        CustomPrinter.println(game.getOpponentPlayer().getBoard().toRotatedString());
         CustomPrinter.println();
         CustomPrinter.println("--------------------------");
         CustomPrinter.println();
@@ -119,6 +117,16 @@ public class DuelMenuController extends BaseMenuController {
         List<Card> cards = game.getCurrentPlayer().getBoard().getCardsOnHand();
         for (int i = 0; i < cards.size(); i++)
             CustomPrinter.println(String.format("%d. %s%n", i + 1, cards.get(i).toString()));
+    }
+
+    public void showSelectedCard() throws LogicException {
+        CardAddress cardAddress = CardSelector.getInstance().getSelectedCardAddress();
+        if (cardAddress.isOpponentAddress()) {
+            Card card = CardSelector.getInstance().getSelectedCard();
+            if (!card.isFacedUp())
+                throw new LogicException("you can't see your opponent face down cards");
+        }
+        CardSelector.getInstance().showSelectedCard();
     }
 
     public void surrender() throws GameOverEvent {

@@ -28,9 +28,6 @@ public class Game {
     @Setter
     private Phase phase;
 
-    @Setter
-    private boolean summonedInThisTurn;
-
     @Getter
     @Setter
     private Stack<Action> chain;
@@ -56,11 +53,6 @@ public class Game {
 
         this.turn = 0;
         this.phase = Phase.MAIN_PHASE2;
-        this.summonedInThisTurn = false;
-    }
-
-    public boolean isSummonedInThisTurn() {
-        return summonedInThisTurn;
     }
 
     public Card getCardByCardAddress(CardAddress cardAddress) {
@@ -105,7 +97,6 @@ public class Game {
 
     public void changeTurn() {
         turn++;
-        this.summonedInThisTurn = false;
     }
 
     public void moveCardToGraveYard(Card card) {

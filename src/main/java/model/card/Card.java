@@ -28,6 +28,8 @@ public abstract class Card implements Comparable<Card>, Cloneable, Serializable 
 
     abstract public int getSpeed();
 
+    abstract public boolean isFacedUp();
+
     public String getName() {
         return name;
     }

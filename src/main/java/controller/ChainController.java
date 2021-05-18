@@ -35,7 +35,10 @@ public class ChainController {
         while (!chain.isEmpty()) {
             Action action = chain.pop();
             // action should be popped before activating it's effect! if not some traps will crash
-            action.getEffect().run();
+            try {
+                action.getEffect().run();
+            } catch (ResistToChooseCard | LogicException ignored) {
+            }
         }
     }
 }

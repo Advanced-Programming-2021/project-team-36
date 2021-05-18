@@ -67,7 +67,7 @@ public class GameController {
     public void decreaseLifePoint(Player player, int amount) {
         // also you can do some extra things here
         player.decreaseLifePoint(amount);
-        CustomPrinter.println(String.format("%s's lp decreased by %d and it is %d now", player.getUser().getNickname(), amount, player.getLifePoint()));
+        CustomPrinter.println(String.format("%s's life point decreased by %d and it is %d now", player.getUser().getNickname(), amount, player.getLifePoint()));
         checkBothLivesEndGame();
     }
 
@@ -86,8 +86,7 @@ public class GameController {
     private void changeTurn() {
         game.setPhase(Phase.DRAW_PHASE);
         game.changeTurn();
-        // todo tell shayan what is this?
-        game.setSummonedInThisTurn(false);
+        game.getCurrentPlayer().setSummonedInLastTurn(false);
         new CardSelector(game);
     }
 
@@ -123,8 +122,6 @@ public class GameController {
                 previousIterationPhase = game.getPhase();
                 DuelMenuController.getInstance().printCurrentPhase();
             }
-            // todo remove this?
-            DuelMenuController.getInstance().showBoard();
             try {
                 if (game.getPhase().equals(Phase.DRAW_PHASE)) {
                     CustomPrinter.println(String.format("its %s's turn%n", game.getCurrentPlayer().getUser().getNickname()));

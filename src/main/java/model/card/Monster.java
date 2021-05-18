@@ -70,9 +70,12 @@ public class Monster extends Card {
         return !getMonsterCardType().equals(MonsterCardType.RITUAL);
     }
 
-    public boolean isFacedUp() {
-        // todo if it is not in the middle of the game, we get runtime error because monsterState is null
-        return monsterState.equals(MonsterState.OFFENSIVE_OCCUPIED) || monsterState.equals(MonsterState.DEFENSIVE_OCCUPIED);
+    public int getNumberOfRequiredTribute() {
+        if (level < 5)
+            return 0;
+        if (level < 7)
+            return 1;
+        return 2;
     }
 
     public void tryToSendToGraveYardOfMe() {
@@ -142,7 +145,6 @@ public class Monster extends Card {
             monsterState = MonsterState.OFFENSIVE_OCCUPIED;
         else if (monsterState.equals(MonsterState.OFFENSIVE_OCCUPIED))
             monsterState = MonsterState.DEFENSIVE_OCCUPIED;
-
     }
 
     public Effect activateEffect() throws LogicException {
@@ -166,12 +168,27 @@ public class Monster extends Card {
     }
 
     @Override
+    public boolean isFacedUp() {
+        // todo if it is not in the middle of the game, we get runtime error because monsterState is null
+        return monsterState.equals(MonsterState.OFFENSIVE_OCCUPIED) || monsterState.equals(MonsterState.DEFENSIVE_OCCUPIED);
+    }
+
+    @Override
     public int getSpeed(){
         return 1;
     }
 
     @Override
     public String toString() {
-        return String.format("%s (Monster - %s) : %s", getName(), getMonsterCardType(), getDescription());
+        return "Monster{" +
+                "name='" + name + '\'' +
+                ", \ndescription='" + description + '\'' +
+                ", \nattackDamage=" + attackDamage +
+                ", \ndefenseRate=" + defenseRate +
+                ", \nattribute=" + attribute +
+                ", \nmonsterType=" + monsterType +
+                ", \nmonsterCardType=" + monsterCardType +
+                ", \nlevel=" + level +
+                "\n}";
     }
 }

@@ -2,12 +2,11 @@ import controller.GameController;
 import controller.menu.MainMenuController;
 import initialize.Sample;
 import model.enums.Phase;
-import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.jupiter.api.Assertions;
+import initialize.Sample.*;
 
 public class GameTest extends Sample {
-    @Ignore
     @Test
     public void test() {
         run(String.format("debug --automatic_save on"));

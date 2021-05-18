@@ -125,7 +125,7 @@ public class DuelMenuView extends BaseMenuView {
         this.cmd.addCommand(new Command(
                 "card show",
                 mp -> {
-                    CardSelector.getInstance().showSelectedCard();
+                    DuelMenuController.getInstance().showSelectedCard();
                 },
                 Options.selected(true)
         ));
@@ -149,16 +149,16 @@ public class DuelMenuView extends BaseMenuView {
         ));
     }
 
-    public boolean askUser(String question) {
-        CustomPrinter.println(question + "(yes/no)");
+    public boolean askUser(String question, String yes, String no) {
+        CustomPrinter.println(String.format("%s(%s/%s)", question, yes, no));
         String response = CustomScanner.nextLine();
         while (true) {
-            if (response.equalsIgnoreCase("yes"))
+            if (response.equalsIgnoreCase(yes))
                 return true;
-            else if (response.equalsIgnoreCase("no"))
+            else if (response.equalsIgnoreCase(no))
                 return false;
             else
-                CustomPrinter.println("yes or no?");
+                CustomPrinter.println(String.format("%s or %s?", yes, no));
         }
     }
 

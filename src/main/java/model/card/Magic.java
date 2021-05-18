@@ -28,6 +28,11 @@ abstract public class Magic extends Card {
     abstract public boolean canActivateEffect();
 
     @Override
+    public boolean isFacedUp() {
+        return magicState.equals(MagicState.OCCUPIED);
+    }
+
+    @Override
     public Magic clone() {
         Magic cloned = (Magic) super.clone();
         cloned.icon = icon;

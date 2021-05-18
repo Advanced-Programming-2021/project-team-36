@@ -3,6 +3,7 @@ package model.Player;
 import lombok.Getter;
 import lombok.Setter;
 import model.Board;
+import model.Game;
 import model.ModelException;
 import model.User;
 import model.card.Card;
@@ -20,6 +21,10 @@ abstract public class Player {
     @Setter
     private int lifePoint;
 
+    @Getter
+    @Setter
+    private boolean summonedInLastTurn;
+
     public Player(User user) throws ModelException {
         if (user.getActiveDeck() == null)
             throw new ModelException(String.format("%s has no active deck", user.getUsername()));
@@ -29,6 +34,7 @@ abstract public class Player {
         this.deck = user.getActiveDeck().clone().readyForBattle(this);
         this.board = new Board(deck.getMainDeck());
         this.lifePoint = Constants.InitialLifePoint.val;
+        summonedInLastTurn = false;
     }
 
     public User getUser() {
