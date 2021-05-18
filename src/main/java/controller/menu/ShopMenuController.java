@@ -9,6 +9,7 @@ import model.card.Utils;
 
 import java.util.Arrays;
 
+import model.enums.Color;
 import utils.RoutingException;
 import utils.CustomPrinter;
 import view.ShopMenuView;
@@ -32,7 +33,7 @@ public class ShopMenuController extends BaseMenuController {
     }
 
     public void showAll() {
-        Arrays.stream(Utils.getAllCards()).forEach(CustomPrinter::println);
+        Arrays.stream(Utils.getAllCards()).forEach(o -> CustomPrinter.println(o, Color.Default));
     }
 
     @Override

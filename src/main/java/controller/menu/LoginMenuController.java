@@ -1,5 +1,6 @@
 package controller.menu;
 
+import model.enums.Color;
 import utils.Cheat;
 import utils.CustomPrinter;
 import utils.RoutingException;
@@ -24,7 +25,7 @@ public class LoginMenuController extends BaseMenuController {
         if (User.getUserByNickname(nickname) != null)
             throw new ModelException(String.format("user with nickname %s already exists", nickname));
         new User(username, nickname, password);
-        CustomPrinter.println("user created successfully!");
+        CustomPrinter.println("user created successfully!", Color.Default);
     }
 
     public void login(String username, String password) throws ModelException, RoutingException {
@@ -35,7 +36,7 @@ public class LoginMenuController extends BaseMenuController {
         if (!user.authenticate(password))
             throw new ModelException("Username and password didn’t match!");
         ProgramController.getInstance().navigateToMenu(new MainMenuController(user));
-        CustomPrinter.println("user logged in successfully!");
+        CustomPrinter.println("user logged in successfully!", Color.Default);
     }
 
     public void cheatLogin(String username, String nickname, String password) throws ModelException {
@@ -43,7 +44,7 @@ public class LoginMenuController extends BaseMenuController {
         User user = User.getUserByUsername(username);
         Cheat.buildSuperUser(user);
         ProgramController.getInstance().navigateToMenu(new MainMenuController(user));
-        CustomPrinter.println("user logged in successfully!");
+        CustomPrinter.println("user logged in successfully!", Color.Default);
     }
 
     @Override

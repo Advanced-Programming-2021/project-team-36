@@ -10,6 +10,7 @@ import lombok.Getter;
 import model.CardAddress;
 import model.Game;
 import model.card.*;
+import model.enums.Color;
 import model.enums.MonsterState;
 import model.enums.ZoneType;
 import view.*;
@@ -39,7 +40,7 @@ public class DuelMenuController extends BaseMenuController {
     }
 
     public void printCurrentPhase() {
-        CustomPrinter.println("phase: " + game.getPhase().verboseName);
+        CustomPrinter.println("phase: " + game.getPhase().verboseName, Color.Blue);
     }
 
     public void goNextPhase() {
@@ -98,25 +99,25 @@ public class DuelMenuController extends BaseMenuController {
     public void showGraveYard() {
         List<Card> graveYard = game.getCurrentPlayer().getBoard().getGraveYard();
         if (graveYard.isEmpty())
-            CustomPrinter.println("graveyard empty");
+            CustomPrinter.println("graveyard empty", Color.Default);
         for (int i = 0; i < graveYard.size(); i++)
-            CustomPrinter.println((i + 1) + ". " + graveYard.get(i).toString());
+            CustomPrinter.println((i + 1) + ". " + graveYard.get(i).toString(), Color.Default);
     }
 
     public void showBoard() {
-        CustomPrinter.println(game.getOpponentPlayer().getUser().getNickname() + ":" + game.getOpponentPlayer().getLifePoint());
-        CustomPrinter.println(game.getOpponentPlayer().getBoard().toRotatedString());
+        CustomPrinter.println(game.getOpponentPlayer().getUser().getNickname() + ":" + game.getOpponentPlayer().getLifePoint(), Color.Purple);
+        CustomPrinter.println(game.getOpponentPlayer().getBoard().toRotatedString(), Color.Purple);
         CustomPrinter.println();
-        CustomPrinter.println("--------------------------");
+        CustomPrinter.println("--------------------------", Color.Purple);
         CustomPrinter.println();
-        CustomPrinter.println(game.getCurrentPlayer().getBoard().toString());
-        CustomPrinter.println(game.getCurrentPlayer().getUser().getNickname() + ":" + game.getCurrentPlayer().getLifePoint());
+        CustomPrinter.println(game.getCurrentPlayer().getBoard().toString(), Color.Purple);
+        CustomPrinter.println(game.getCurrentPlayer().getUser().getNickname() + ":" + game.getCurrentPlayer().getLifePoint(), Color.Purple);
     }
 
     public void showHand() {
         List<Card> cards = game.getCurrentPlayer().getBoard().getCardsOnHand();
         for (int i = 0; i < cards.size(); i++)
-            CustomPrinter.println(String.format("%d. %s%n", i + 1, cards.get(i).toString()));
+            CustomPrinter.println(String.format("%d. %s%n", i + 1, cards.get(i).toString()), Color.Purple);
     }
 
     public void showSelectedCard() throws LogicException {

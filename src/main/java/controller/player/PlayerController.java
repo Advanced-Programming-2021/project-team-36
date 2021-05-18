@@ -115,7 +115,7 @@ public abstract class PlayerController {
                                 summon(monster, monster.getNumberOfRequiredTribute(), monsterState);
                                 player.getBoard().getCardsOnHand().remove((Card) monster);
                                 player.setSummonedInLastTurn(true);
-                                CustomPrinter.println(String.format("%s summoned in %s position successfully", monster.getName(), monsterState));
+                                CustomPrinter.println(String.format("<%s> summoned <%s> in <%s> position successfully", player.getUser().getUsername(), monster.getName(), monsterState), Color.Green);
                         }
                 )
         );
@@ -137,7 +137,7 @@ public abstract class PlayerController {
                             summon(monster, monster.getNumberOfRequiredTribute(), MonsterState.DEFENSIVE_HIDDEN);
                             player.getBoard().getCardsOnHand().remove((Card) monster);
                             player.setSummonedInLastTurn(true);
-                            CustomPrinter.println(String.format("%s set successfully", monster.getName()));
+                            CustomPrinter.println(String.format("<%s> set monster <%s> successfully", player.getUser().getUsername(), monster.getName()), Color.Green);
                         }
                 )
         );
@@ -149,7 +149,7 @@ public abstract class PlayerController {
         Card[] tributeCards = chooseKCards(String.format("Choose %d cards to tribute", count), count, Conditions.myMonsterFromMyMonsterZone(player));
         for (Card card : tributeCards)
             GameController.getInstance().moveCardToGraveYard(card);
-        CustomPrinter.println(String.format("I tribute this monsters: %s", Arrays.toString(Arrays.stream(tributeCards).toArray())));
+//        CustomPrinter.println(String.format("<%s> tribute this monsters: %s", Arrays.toString(Arrays.stream(tributeCards).toArray())), Color.Default);
     }
 
     public void setMagic(Magic magic) throws LogicException {
@@ -164,7 +164,7 @@ public abstract class PlayerController {
                         new SetMagic(magic),
                         () -> {
                             addMagicToBoard(magic, MagicState.HIDDEN);
-                            CustomPrinter.println(String.format("I set magic %s", magic.getName()));
+                            CustomPrinter.println(String.format("<%s> set magic <%s> successfully", magic.getName()), Color.Green);
                         }
                 )
         );
@@ -189,8 +189,7 @@ public abstract class PlayerController {
         if (monster.getMonsterState().equals(MonsterState.DEFENSIVE_HIDDEN))
             throw new LogicException("you should flip summon it");
         monster.setMonsterState(monsterState);
-        CustomPrinter.println("monster card position changed successfully");
-        CustomPrinter.println(String.format("I change my %s position to %s", monster.getName(), monsterState));
+        CustomPrinter.println(String.format("<%s>'s <%s>'s position changed to %s", getPlayer().getUser().getUsername(), monster.getName(), monsterState), Color.Green);
     }
 
     public void flipSummon(Monster monster) throws LogicException {
@@ -204,8 +203,7 @@ public abstract class PlayerController {
             throw new LogicException("you can't flip summon this card");
         monster.setMonsterState(MonsterState.OFFENSIVE_OCCUPIED);
         GameController.getInstance().getGame().getCurrentPlayer().setSummonedInLastTurn(true);
-        CustomPrinter.println(String.format("I flip summon my %s", monster.getName()));
-        CustomPrinter.println("flip summoned successfully");
+        CustomPrinter.println(String.format("<%s> flip summoned successfully", monster.getName()), Color.Green);
     }
 
     public void canAttack(Monster monster) throws LogicException {
@@ -220,17 +218,17 @@ public abstract class PlayerController {
             throw new LogicException("monster is in defensive position");
     }
 
-    public void attack(Monster myMonster, Monster opponentMonster) throws LogicException, GameOverEvent {
-        canAttack(myMonster);
-        if (!myMonster.isAllowAttack())
+    public void attack(Monster monster, Monster opponentMonster) throws LogicException, GameOverEvent {
+        canAttack(monster);
+        if (!monster.isAllowAttack())
             throw new LogicException("this card already attacked");
         if (!GameController.getInstance().getGame().getOtherPlayer(player).getBoard().getMonsterCardZone().containsValue(opponentMonster))
             throw new LogicException("you can't attack that monster");
-        CustomPrinter.println(String.format("I declare an attack with my %s to your %s", myMonster.getName(), opponentMonster.getName()));
+        CustomPrinter.println(String.format("<%s> declares an attack with <%s> to <%s>'s <%s>", getPlayer().getUser().getUsername(), monster.getName(), opponentMonster.owner.getUser().getUsername(), opponentMonster.getName()), Color.Blue);
         startChain(
                 new Action(
-                        new MonsterAttackEvent(myMonster, opponentMonster),
-                        opponentMonster.onBeingAttackedByMonster(myMonster)
+                        new MonsterAttackEvent(monster, opponentMonster),
+                        opponentMonster.onBeingAttackedByMonster(monster)
                 )
         );
         GameController.getInstance().checkBothLivesEndGame();
@@ -243,7 +241,7 @@ public abstract class PlayerController {
         if (!monster.isAllowAttack())
             throw new LogicException("this card already attacked");
 
-        CustomPrinter.println(String.format("I declare a direct attack to you with my %s to you", monster.getName()));
+        CustomPrinter.println(String.format("<%s> declares an direct attack with <%s>", getPlayer().getUser().getUsername(), monster.getName()), Color.Blue);
 
         Game game = GameController.getInstance().getGame();
         startChain(
@@ -268,7 +266,7 @@ public abstract class PlayerController {
         if (!spell.canActivateEffect())
             throw new LogicException("preparations of this spell are not done yet");
 
-        CustomPrinter.println(String.format("I want to activate the effect of %s", spell.getName()));
+        CustomPrinter.println(String.format("<%s> wants to activate the effect of <%s>", player.getUser().getUsername(), spell.getName()), Color.Blue);
 
         startChain(
                 new Action(
@@ -284,7 +282,7 @@ public abstract class PlayerController {
     }
 
     protected void addActionToChain(Action action) {
-        CustomPrinter.println(String.format("%s: I add an action to the chain. It's activation question was: %s", player.getUser().getNickname(), action.getEvent().getActivationQuestion()));
+        CustomPrinter.println(String.format("<%s>: I add an action to the chain. It's activation question was: <%s>", player.getUser().getNickname(), action.getEvent().getActivationQuestion()), Color.Purple);
         GameController.getInstance().getGame().getChain().add(action);
     }
 

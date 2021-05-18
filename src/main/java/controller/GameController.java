@@ -1,7 +1,7 @@
 package controller;
 
 import controller.cardSelector.CardSelector;
-import controller.events.GameEvent;
+import model.enums.Color;
 import utils.CustomPrinter;
 import controller.events.GameOverEvent;
 import controller.menu.DuelMenuController;
@@ -46,7 +46,7 @@ public class GameController {
         if (card == null)
             throw new GameOverEvent(GameResult.NOT_DRAW, game.getCurrentPlayer(), game.getOpponentPlayer(), game.getOpponentPlayer().getLifePoint());
         game.getCurrentPlayer().getBoard().drawCardFromDeck();
-        CustomPrinter.println(String.format("new card added to the hand : %s%n", card.getName()));
+        CustomPrinter.println(String.format("new card added to the hand : <%s>", card.getName()), Color.Blue);
     }
 
     public void checkBothLivesEndGame() throws GameOverEvent {
@@ -61,13 +61,13 @@ public class GameController {
     public void moveCardToGraveYard(Card card) {
         // also you can do some extra things here
         game.moveCardToGraveYard(card);
-        CustomPrinter.println(String.format("%s moved to graveyard", card.getName()));
+        CustomPrinter.println(String.format("Card <%s> moved to graveyard", card.getName()), Color.Blue);
     }
 
     public void decreaseLifePoint(Player player, int amount) {
         // also you can do some extra things here
         player.decreaseLifePoint(amount);
-        CustomPrinter.println(String.format("%s's life point decreased by %d and it is %d now", player.getUser().getNickname(), amount, player.getLifePoint()));
+        CustomPrinter.println(String.format("User <%s>'s life point decreased by <%d> and it is <%d> now", player.getUser().getNickname(), amount, player.getLifePoint()), Color.Blue);
         checkBothLivesEndGame();
     }
 
@@ -93,7 +93,7 @@ public class GameController {
 
     private void endRound(GameOverEvent event) {
         if(event.gameResult.equals(GameResult.DRAW)) {
-            CustomPrinter.println(String.format("game is a draw and the score is %d-%d", game.totalScore(game.getFirstPlayer()), game.totalScore(game.getSecondPlayer())));
+            CustomPrinter.println(String.format("game is a draw and the score is %d-%d", game.totalScore(game.getFirstPlayer()), game.totalScore(game.getSecondPlayer())), Color.Blue);
             game.addFirstPlayerLastRoundScore(0);
             game.addSecondPlayerLastRoundScore(0);
         }
@@ -106,7 +106,7 @@ public class GameController {
                 game.addFirstPlayerLastRoundScore(0);
                 game.addSecondPlayerLastRoundScore(event.winnersLP);
             }
-            CustomPrinter.println(String.format("%s won the game and the score is: %d-%d", event.winner.getUser().getUsername(), game.totalScore(game.getFirstPlayer()), game.totalScore(game.getSecondPlayer())));
+            CustomPrinter.println(String.format("%s won the game and the score is: %d-%d", event.winner.getUser().getUsername(), game.totalScore(game.getFirstPlayer()), game.totalScore(game.getSecondPlayer())), Color.Blue);
         }
         if (game.totalScore(game.getFirstPlayer()) > game.getRounds() / 2)
             endGame(game.getFirstPlayer(), game.getSecondPlayer(), game.getRounds(), game.getMaxLP(game.getFirstPlayer()), game.totalScore(game.getFirstPlayer()), game.totalScore(game.getSecondPlayer()));
@@ -122,15 +122,13 @@ public class GameController {
         winner.getUser().increaseScore(rounds * 1000);
         winner.getUser().increaseBalance(rounds * (1000 + maxWinnerLP));
         looser.getUser().increaseBalance(rounds * 100);
-        CustomPrinter.println(String.format("%s won the whole match with score: %d-%d", winner.getUser().getUsername(), firstPlayerScore, secondPlayerScore));
+        CustomPrinter.println(String.format("%s won the whole match with score: %d-%d", winner.getUser().getUsername(), firstPlayerScore, secondPlayerScore), Color.Blue);
         throw new Error();
     }
 
     public void goNextPhase() {
-        // todo. discuss this phases. why only main1, main2, battle is shown?
-        // todo tell shayan what is this
         if (game.getPhase() == Phase.END_PHASE)
-            throw new Error("Why are you in the END_Phase ?");
+            throw new Error("Why are you in the END_Phase?");
         game.setPhase(game.getPhase().nextPhase());
         new CardSelector(game);
     }
@@ -149,7 +147,7 @@ public class GameController {
             }
             try {
                 if (game.getPhase().equals(Phase.DRAW_PHASE)) {
-                    CustomPrinter.println(String.format("its %s's turn%n", game.getCurrentPlayer().getUser().getNickname()));
+                    CustomPrinter.println(String.format("its %s's turn%n", game.getCurrentPlayer().getUser().getNickname()), Color.Blue);
                     // todo : check player can draw or not (effects)
                     DuelMenuController.getInstance().printCurrentPhase();
                     drawCard();

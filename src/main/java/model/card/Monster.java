@@ -7,10 +7,7 @@ import lombok.Getter;
 import lombok.Setter;
 import model.Player.Player;
 import model.card.action.Effect;
-import model.enums.MonsterAttribute;
-import model.enums.MonsterCardType;
-import model.enums.MonsterType;
-import model.enums.MonsterState;
+import model.enums.*;
 import utils.CustomPrinter;
 
 public class Monster extends Card {
@@ -96,28 +93,28 @@ public class Monster extends Card {
         if (monsterState.equals(MonsterState.OFFENSIVE_OCCUPIED)) {
             if (attacker.getAttackDamage() > this.getAttackDamage()) {
                 int difference = attacker.getAttackDamage() - this.getAttackDamage();
-                CustomPrinter.println(String.format("your opponent’s monster is destroyed and your opponent received %d battle damage", difference));
+                CustomPrinter.println(String.format("your opponent’s monster is destroyed and your opponent received %d battle damage", difference), Color.Yellow);
                 tryToSendToGraveYard(this);
                 tryToDecreaseLifePoint(this, difference);
             } else if (attacker.getAttackDamage() == this.getAttackDamage()) {
-                CustomPrinter.println("both you and your opponent monster cards are destroyed and no one receives damage");
+                CustomPrinter.println("both you and your opponent monster cards are destroyed and no one receives damage", Color.Yellow);
                 tryToSendToGraveYard(this);
                 tryToSendToGraveYard(attacker);
             } else {
                 int difference = this.getAttackDamage() - attacker.getAttackDamage();
-                CustomPrinter.println(String.format("your monster is destroyed and you receive %d battle damage", difference));
+                CustomPrinter.println(String.format("your monster is destroyed and you receive %d battle damage", difference), Color.Yellow);
                 tryToSendToGraveYard(attacker);
                 tryToDecreaseLifePoint(attacker, difference);
             }
         } else if (monsterState.equals(MonsterState.DEFENSIVE_OCCUPIED)) {
             if (attacker.getAttackDamage() > this.getDefenseRate()) {
-                CustomPrinter.println("the defense position monster is destroyed");
+                CustomPrinter.println("the defense position monster is destroyed", Color.Yellow);
                 tryToSendToGraveYard(this);
             } else if (attacker.getAttackDamage() == this.getDefenseRate()) {
-                CustomPrinter.println("no card is destroyed");
+                CustomPrinter.println("no card is destroyed", Color.Yellow);
             } else {
                 int difference = this.getDefenseRate() - attacker.getAttackDamage();
-                CustomPrinter.println(String.format("no card is destroyed and you receive %d battle damage", difference));
+                CustomPrinter.println(String.format("no card is destroyed and you receive %d battle damage", difference), Color.Yellow);
                 tryToDecreaseLifePoint(attacker, difference);
             }
         }

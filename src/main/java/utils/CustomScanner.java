@@ -1,5 +1,7 @@
 package utils;
 
+import model.enums.Color;
+
 import java.io.BufferedReader;
 import java.io.FileReader;
 import java.io.IOException;
@@ -34,7 +36,7 @@ public class CustomScanner {
         try {
             bufferedReader = new BufferedReader(new FileReader(file));
         } catch (IOException exception) {
-            CustomPrinter.println("file not found");
+            CustomPrinter.println("file not found", Color.Default);
             return;
         }
         linesToReadFromFile = count;

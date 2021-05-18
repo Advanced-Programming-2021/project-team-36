@@ -1,5 +1,6 @@
 package model.card.monsterCards;
 
+import model.enums.Color;
 import utils.CustomPrinter;
 import controller.GameController;
 import controller.LogicException;
@@ -37,7 +38,7 @@ public class HeraldOfCreation extends Monster {
                         Conditions.getInPlayersHandCondition(this.owner)
                 )[0];
             } catch (ResistToChooseCard e){
-                CustomPrinter.println("canceled");
+                CustomPrinter.println("canceled", Color.Default);
                 return;
             }
             try {
@@ -47,7 +48,7 @@ public class HeraldOfCreation extends Monster {
                         Conditions.getInPlayerGraveYardMonster(this.owner, 7)
                 )[0];
             } catch (ResistToChooseCard e){
-                CustomPrinter.println("canceled");
+                CustomPrinter.println("canceled", Color.Default);
                 return;
             }
             this.owner.getBoard().removeFromHand(discarded);

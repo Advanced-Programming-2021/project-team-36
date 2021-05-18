@@ -1,5 +1,6 @@
 package controller.cardSelector;
 
+import model.enums.Color;
 import utils.CustomPrinter;
 import controller.LogicException;
 import lombok.Getter;
@@ -31,7 +32,7 @@ public class MultiCardSelector {
         if(isCardSelected(cardAddress))
             throw new LogicException("you have selected this card before");
         selectedCards.add(card);
-        CustomPrinter.println("card selected");
+        CustomPrinter.println("card selected", Color.Default);
     }
 
     public boolean isCardSelected(Card card){
@@ -50,6 +51,6 @@ public class MultiCardSelector {
         if(!isCardSelected(cardAddress))
             throw new LogicException("no such card is selected");
         selectedCards.remove(card);
-        CustomPrinter.println("card deselected");
+        CustomPrinter.println("card deselected", Color.Default);
     }
 }

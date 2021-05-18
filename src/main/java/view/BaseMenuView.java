@@ -1,5 +1,6 @@
 package view;
 
+import model.enums.Color;
 import utils.*;
 import controller.LogicException;
 import controller.ProgramController;
@@ -23,7 +24,7 @@ abstract public class BaseMenuView {
                 Debugger.captureCommand(line);
             this.cmd.runNextCommand(line);
         } catch (CommandLineException | ParserException | ModelException | LogicException | RoutingException e) {
-            CustomPrinter.println(e.getMessage());
+            CustomPrinter.println(e.getMessage(), Color.Default);
         }
     }
 
@@ -43,7 +44,7 @@ abstract public class BaseMenuView {
         this.cmd.addCommand(new Command(
                 "menu show-current",
                 mp -> {
-                    CustomPrinter.println(getMenuName());
+                    CustomPrinter.println(getMenuName(), Color.Default);
                 }
         ));
         this.cmd.addCommand(new Command(

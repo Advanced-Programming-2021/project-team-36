@@ -2,10 +2,8 @@ package utils;
 
 import model.User;
 import com.google.gson.*;
-import model.card.Card;
-import model.card.Monster;
 import model.card.Utils;
-import model.deck.Deck;
+import model.enums.Color;
 
 import java.io.*;
 import java.util.ArrayList;
@@ -39,7 +37,7 @@ public class DatabaseHandler {
             bufferedWriter.flush();
             bufferedWriter.close();
         } catch (IOException exception) {
-            CustomPrinter.println("failed to save to database");
+            CustomPrinter.println("failed to save to database", Color.Default);
             return;
         }
     }
@@ -62,7 +60,7 @@ public class DatabaseHandler {
             } catch (Exception exception) {
             }
         } catch (IOException exception) {
-            CustomPrinter.println("failed to read from the database");
+            CustomPrinter.println("failed to read from the database", Color.Default);
             return;
         }
     }
@@ -98,7 +96,7 @@ public class DatabaseHandler {
                 }
             }
         } catch (IOException exception) {
-            CustomPrinter.println("fatal error : Monster database was not found");
+            CustomPrinter.println("fatal error : Monster database was not found", Color.Default);
             return;
         }
     }

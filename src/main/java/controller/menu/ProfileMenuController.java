@@ -1,6 +1,7 @@
 package controller.menu;
 
 import controller.LogicException;
+import model.enums.Color;
 import utils.CustomPrinter;
 import utils.RoutingException;
 import controller.ProgramController;
@@ -24,7 +25,7 @@ public class ProfileMenuController extends BaseMenuController {
         if (User.getUserByNickname(nickname) != null)
             throw new LogicException("user with nickname " + nickname + " already exists");
         user.setNickname(nickname);
-        CustomPrinter.println("nickname changed successfully!");
+        CustomPrinter.println("nickname changed successfully!", Color.Default);
     }
 
     public void changePassword(String oldPassword, String newPassword) throws LogicException {
@@ -33,7 +34,7 @@ public class ProfileMenuController extends BaseMenuController {
         if (user.getPassword().equals(newPassword))
             throw new LogicException("please enter a new password");
         user.setPassword(newPassword);
-        CustomPrinter.println("password changed successfully!");
+        CustomPrinter.println("password changed successfully!", Color.Default);
     }
 
     @Override

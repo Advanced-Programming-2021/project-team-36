@@ -1,9 +1,21 @@
 package model.enums;
 
+import model.card.Monster;
+
 public enum MonsterState {
-    DEFENSIVE_HIDDEN,
-    DEFENSIVE_OCCUPIED,
-    OFFENSIVE_OCCUPIED;
+    DEFENSIVE_HIDDEN("defensive hidden"),
+    DEFENSIVE_OCCUPIED("defensive occupied"),
+    OFFENSIVE_OCCUPIED("offensive occupied");
+
+    String name;
+    MonsterState(String name) {
+        this.name = name;
+    }
+
+    @Override
+    public String toString() {
+        return this.name;
+    }
 
     public static MonsterState getOccupiedStateByName(String stateString){
         if (stateString.equals("attack"))

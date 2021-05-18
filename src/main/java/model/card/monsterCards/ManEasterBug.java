@@ -6,6 +6,7 @@ import controller.cardSelector.Conditions;
 import controller.cardSelector.ResistToChooseCard;
 import model.card.action.Effect;
 import model.card.Monster;
+import model.enums.Color;
 import model.enums.MonsterAttribute;
 import model.enums.MonsterCardType;
 import model.enums.MonsterType;
@@ -32,7 +33,7 @@ public class ManEasterBug extends Monster {
                     throw new Error("Error. You must not have tried to flip this monster!");
                 }
             } catch (ResistToChooseCard e){
-                CustomPrinter.println("canceled");
+                CustomPrinter.println("canceled", Color.Default);
             }
         };
     }

@@ -1,5 +1,6 @@
 package controller.menu;
 
+import model.enums.Color;
 import utils.CustomPrinter;
 import utils.RoutingException;
 import controller.LogicException;
@@ -28,17 +29,17 @@ public class DeckMenuController extends BaseMenuController {
         if (user.getDeckByName(deckName) != null)
             throw new LogicException(String.format("deck with name %s already exists", deckName));
         user.addDeck(new Deck(deckName));
-        CustomPrinter.println("deck created successfully!");
+        CustomPrinter.println("deck created successfully!", Color.Default);
     }
 
     public void deleteDeck(Deck deck) {
         user.deleteDeck(deck);
-        CustomPrinter.println("deck deleted successfully");
+        CustomPrinter.println("deck deleted successfully", Color.Default);
     }
 
     public void setActiveDeck(Deck deck) {
         user.setActiveDeck(deck);
-        CustomPrinter.println("deck activated successfully");
+        CustomPrinter.println("deck activated successfully", Color.Default);
     }
 
     public void addCardToDeck(Card card, Deck deck, boolean side) throws LogicException{
@@ -55,7 +56,7 @@ public class DeckMenuController extends BaseMenuController {
                 throw new LogicException("side deck is full");
             deck.getSideDeck().addCard(card);
         }
-        CustomPrinter.println("card added to deck successfully");
+        CustomPrinter.println("card added to deck successfully", Color.Default);
     }
 
     public void removeCardFromDeck(Card card, Deck deck, boolean side) throws LogicException {
@@ -68,25 +69,25 @@ public class DeckMenuController extends BaseMenuController {
                 throw new LogicException(String.format("card with name %s does not exists in side deck", card.getName()));
             deck.getSideDeck().removeCard(card);
         }
-        CustomPrinter.println("card removed from deck successfully");
+        CustomPrinter.println("card removed from deck successfully", Color.Default);
     }
 
     public void showDeck(Deck deck, boolean side) {
-        CustomPrinter.println(deck.info(side));
+        CustomPrinter.println(deck.info(side), Color.Default);
     }
 
     public void showAllDecks() {
-        CustomPrinter.println("Decks:");
-        CustomPrinter.println("Active deck:");
+        CustomPrinter.println("Decks:", Color.Default);
+        CustomPrinter.println("Active deck:", Color.Default);
         Deck activeDeck = user.getActiveDeck();
         if (activeDeck != null)
-            CustomPrinter.println(activeDeck);
-        CustomPrinter.println("Other decks:");
-        Arrays.stream(user.getDecks().toArray()).sorted().filter(e -> e != activeDeck).forEach(CustomPrinter::println);
+            CustomPrinter.println(activeDeck, Color.Default);
+        CustomPrinter.println("Other decks:", Color.Default);
+        Arrays.stream(user.getDecks().toArray()).sorted().filter(e -> e != activeDeck).forEach(o -> CustomPrinter.println(o, Color.Default));
     }
 
     public void showAllCards() {
-        Arrays.stream(user.getCards().toArray()).sorted().forEach(CustomPrinter::println);
+        Arrays.stream(user.getCards().toArray()).sorted().forEach(o -> CustomPrinter.println(o, Color.Default));
     }
 
     public Deck deckParser(String deckName) throws ParserException {

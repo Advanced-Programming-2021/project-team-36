@@ -2,14 +2,9 @@ package view;
 
 import controller.GameController;
 import controller.LogicException;
-import controller.ProgramController;
 import controller.cardSelector.*;
 import controller.events.GameEvent;
-import controller.menu.MainMenuController;
-import model.Game;
-import model.Player.AIPlayer;
-import model.Player.HumanPlayer;
-import model.User;
+import model.enums.Color;
 import utils.*;
 import controller.menu.DuelMenuController;
 import model.CardAddress;
@@ -150,7 +145,7 @@ public class DuelMenuView extends BaseMenuView {
     }
 
     public boolean askUser(String question, String yes, String no) {
-        CustomPrinter.println(String.format("%s(%s/%s)", question, yes, no));
+        CustomPrinter.println(String.format("%s(%s/%s)", question, yes, no), Color.Cyan);
         String response = CustomScanner.nextLine();
         while (true) {
             if (response.equalsIgnoreCase(yes))
@@ -158,14 +153,14 @@ public class DuelMenuView extends BaseMenuView {
             else if (response.equalsIgnoreCase(no))
                 return false;
             else
-                CustomPrinter.println(String.format("%s or %s?", yes, no));
+                CustomPrinter.println(String.format("%s or %s?", yes, no), Color.Cyan);
         }
     }
 
     public Card askUserToChooseCard(String message, SelectCondition condition) throws ResistToChooseCard {
-        CustomPrinter.println(message);
+        CustomPrinter.println(message, Color.Default);
         CardSelector cardSelector = new CardSelector(GameController.instance.getGame());
-        CustomPrinter.println("you have to select a card(q to quit)");
+        CustomPrinter.println("you have to select a card(q to quit)", Color.Cyan);
         String line = CustomScanner.nextLine();
 
         if (line.equalsIgnoreCase("q"))
@@ -228,17 +223,9 @@ public class DuelMenuView extends BaseMenuView {
                     },
                     Options.handZone(true)
             ));
-            commandLine.addCommand(new Command(
-                    "select",
-                    mp -> {
-                        CustomPrinter.println("not implemented yet");
-                        // todo implement deselect in multiCard
-                    },
-                    Options.Deselect(true)
-            ));
             commandLine.runNextCommand(line);
         } catch (CommandLineException | ParserException | LogicException | ModelException | GameEvent | RoutingException e) {
-            CustomPrinter.println(e.getMessage());
+            CustomPrinter.println(e.getMessage(), Color.Default);
         }
         try {
             return cardSelector.getSelectedCard();
@@ -248,7 +235,7 @@ public class DuelMenuView extends BaseMenuView {
     }
 
     public int askUserToChooseNumber(String question, int l, int r) {
-        CustomPrinter.println(question);
+        CustomPrinter.println(question, Color.Default);
         while (true) {
             String number = CustomScanner.nextLine();
             try {
@@ -257,7 +244,7 @@ public class DuelMenuView extends BaseMenuView {
                     throw new Exception();
                 return id;
             } catch (Exception e) {
-                CustomPrinter.println(String.format("number should be from %d to %d", l, r));
+                CustomPrinter.println(String.format("number should be from %d to %d", l, r), Color.Cyan);
             }
         }
     }
@@ -270,7 +257,7 @@ public class DuelMenuView extends BaseMenuView {
                 Debugger.captureCommand(line);
             this.cmd.runNextCommand(line);
         } catch (CommandLineException | ParserException | ModelException | LogicException | RoutingException e) {
-            CustomPrinter.println(e.getMessage());
+            CustomPrinter.println(e.getMessage(), Color.Red);
         }
     }
 

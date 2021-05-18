@@ -71,10 +71,10 @@ public class AdvancedRitualArt extends Spell {
                 try {
                     playerController.summon(ritualMonster, 0, monsterState);
                 } catch (LogicException logicException) {
-                    CustomPrinter.println("this shouldn't happens");
+                    CustomPrinter.println("this shouldn't happens", Color.Default);
                 }
             } catch (ResistToChooseCard resistToChooseCard) {
-                CustomPrinter.println("ritual monster cancelled");
+                CustomPrinter.println("ritual monster cancelled", Color.Default);
             }
         };
     }

@@ -1,5 +1,6 @@
 package controller.menu;
 
+import model.enums.Color;
 import utils.CustomPrinter;
 import utils.RoutingException;
 import controller.ProgramController;
@@ -27,7 +28,7 @@ public class ScoreboardMenuController extends BaseMenuController {
             User user = users.get(i);
             if (i > 0 && users.get(i - 1).getScore() > user.getScore())
                 rank = i + 1;
-            CustomPrinter.println(rank + "- " + user.getNickname() + ": " + user.getScore());
+            CustomPrinter.println(rank + "- " + user.getNickname() + ": " + user.getScore(), Color.Default);
         }
     }
 

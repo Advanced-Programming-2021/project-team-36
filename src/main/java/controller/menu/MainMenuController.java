@@ -1,5 +1,6 @@
 package controller.menu;
 
+import model.enums.Color;
 import utils.CustomPrinter;
 import utils.RoutingException;
 import controller.*;
@@ -28,7 +29,7 @@ public class MainMenuController extends BaseMenuController {
                 new HumanPlayer(secondUser),
                 round
         );
-        CustomPrinter.println(String.format("start new duel between %s and %s", game.getFirstPlayer().getUser().getNickname(), game.getSecondPlayer().getUser().getNickname()));
+        CustomPrinter.println(String.format("start new duel between %s and %s", game.getFirstPlayer().getUser().getNickname(), game.getSecondPlayer().getUser().getNickname()), Color.Default);
         ProgramController.getInstance().navigateToMenu(
             new DuelMenuController(game)
         );
@@ -40,7 +41,7 @@ public class MainMenuController extends BaseMenuController {
                 new AIPlayer(),
                 round
         );
-        CustomPrinter.println(String.format("start new duel between %s and %s", game.getFirstPlayer().getUser().getNickname(), game.getSecondPlayer().getUser().getNickname()));
+        CustomPrinter.println(String.format("start new duel between %s and %s", game.getFirstPlayer().getUser().getNickname(), game.getSecondPlayer().getUser().getNickname()), Color.Default);
         ProgramController.getInstance().navigateToMenu(
                 new DuelMenuController(game)
         );
@@ -52,7 +53,7 @@ public class MainMenuController extends BaseMenuController {
                 new AIPlayer(),
                 round
         );
-        CustomPrinter.println(String.format("start new duel between  and %s", game.getFirstPlayer().getUser().getNickname(), game.getSecondPlayer().getUser().getNickname()));
+        CustomPrinter.println(String.format("start new duel between  and %s", game.getFirstPlayer().getUser().getNickname(), game.getSecondPlayer().getUser().getNickname()), Color.Default);
         ProgramController.getInstance().navigateToMenu(
                 new DuelMenuController(game)
         );
@@ -60,7 +61,7 @@ public class MainMenuController extends BaseMenuController {
 
     public void logout() throws RoutingException {
         ProgramController.getInstance().navigateToMenu(new LoginMenuController());
-        CustomPrinter.println("user logged out successfully!");
+        CustomPrinter.println("user logged out successfully!", Color.Default);
     }
 
     @Override
