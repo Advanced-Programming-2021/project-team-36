@@ -23,6 +23,7 @@ import model.card.Monster;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Random;
 
 public abstract class PlayerController {
     @Getter
@@ -42,6 +43,10 @@ public abstract class PlayerController {
     abstract public void controlBattlePhase();
 
     abstract public boolean askRespondToChain();
+
+    abstract public boolean askYesNoQuestion(String question);
+
+    abstract public int askIntegerQuestion(String question, int l, int r);
 
     abstract public void doRespondToChain() throws ResistToChooseCard; // todo check if this action is invalid for chain
     abstract public Card[] chooseKCards(String message, int numberOfCards, SelectCondition condition) throws ResistToChooseCard;
@@ -162,6 +167,8 @@ public abstract class PlayerController {
             throw new LogicException("you can’t do this action in this phase");
         if (monster.getMonsterState().equals(MonsterState.DEFENSIVE_HIDDEN) || monster.getMonsterState().equals(monsterState))
             throw new LogicException("this card is already in the wanted position (maybe it's defensive hidden)");
+        if (monsterState.equals(MonsterState.DEFENSIVE_HIDDEN))
+            throw new LogicException("You can't change position to defensive hidden!");
         monster.setMonsterState(monsterState);
         CustomPrinter.println("monster card position changed successfully");
         CustomPrinter.println(String.format("I change my %s position to %s", monster.getName(), monsterState));

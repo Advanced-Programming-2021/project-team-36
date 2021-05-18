@@ -8,6 +8,8 @@ import model.User;
 import model.card.Card;
 import model.card.Utils;
 import model.deck.Deck;
+import view.Parser;
+import view.ParserException;
 
 import java.util.Random;
 
@@ -17,10 +19,13 @@ public class Cheat {
         try {
             ShopMenuController shopController = new ShopMenuController(user);
             Card[] allCards = Utils.getAllCards();
-            while (user.getCards().size() < 100) {
+            while (user.getCards().size() < 50) {
                 shopController.buyCard(allCards[rnd.nextInt(allCards.length)]);
             }
-        } catch (ModelException ignored) {
+            for(int i = 0; i < 50; i++){
+                shopController.buyCard(Parser.cardParser("Suijin"));
+            }
+        } catch (ModelException | ParserException ignored) {
         }
         for (int i = 0; i < 1; i++) {
             String deckName = user.getNickname() + i;

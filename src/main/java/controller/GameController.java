@@ -123,6 +123,8 @@ public class GameController {
                 previousIterationPhase = game.getPhase();
                 DuelMenuController.getInstance().printCurrentPhase();
             }
+            // todo remove this?
+            DuelMenuController.getInstance().showBoard();
             try {
                 if (game.getPhase().equals(Phase.DRAW_PHASE)) {
                     CustomPrinter.println(String.format("its %s's turn%n", game.getCurrentPlayer().getUser().getNickname()));

@@ -1,5 +1,6 @@
 package model.card.monsterCards;
 
+import controller.GameController;
 import controller.menu.DuelMenuController;
 import model.card.action.Effect;
 import model.card.Monster;
@@ -22,7 +23,7 @@ public class Suijin extends Monster {
             changeFromHiddenToOccupiedIfCanEffect().run();
             int _attackDamage = attacker.getAttackDamage();
             if(stillHasPower) {
-                boolean confirm = ((DuelMenuView) DuelMenuController.getInstance().getView()).askUser(
+                boolean confirm = GameController.getInstance().getPlayerControllerByPlayer(this.owner).askYesNoQuestion(
                         "Do you want to activate Suijin's effect?");
                 if (confirm) {
                     stillHasPower = false;

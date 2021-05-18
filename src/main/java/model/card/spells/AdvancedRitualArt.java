@@ -53,7 +53,7 @@ public class AdvancedRitualArt extends Spell {
                 for (Monster monster : tributeMonsters)
                     monster.tryToSendToGraveYardOfMe();
                 MonsterState monsterState;
-                if (((DuelMenuView) DuelMenuController.getInstance().getView()).askUser("You want to summon your monster in attacking position? (yes/no)"))
+                if (GameController.getInstance().getPlayerControllerByPlayer(this.owner).askYesNoQuestion("You want to summon your monster in attacking position? (yes/no)"))
                     monsterState = MonsterState.OFFENSIVE_OCCUPIED;
                 else
                     monsterState = MonsterState.DEFENSIVE_OCCUPIED;

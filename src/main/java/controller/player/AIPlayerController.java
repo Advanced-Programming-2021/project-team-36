@@ -4,6 +4,7 @@ import controller.GameController;
 import controller.LogicException;
 import controller.cardSelector.ResistToChooseCard;
 import controller.cardSelector.SelectCondition;
+import controller.menu.DuelMenuController;
 import lombok.extern.java.Log;
 import model.Game;
 import model.Player.AIPlayer;
@@ -11,6 +12,8 @@ import model.Player.Player;
 import model.card.*;
 import model.card.action.Action;
 import model.enums.MonsterState;
+import utils.CustomPrinter;
+import view.DuelMenuView;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -162,6 +165,17 @@ public class AIPlayerController extends PlayerController {
     }
 
     @Override
+    public boolean askYesNoQuestion(String question) {
+        CustomPrinter.println("Question asked: " + question);
+        return true;
+    }
+
+    @Override
+    public int askIntegerQuestion(String question, int l, int r) {
+        return new Random().nextInt(r-l+1) + l;
+    }
+
+    @Override
     public void doRespondToChain() {
         List<Action> actions = listOfAvailableActionsInResponse();
         Random rnd = new Random();
@@ -196,6 +210,6 @@ public class AIPlayerController extends PlayerController {
 
     @Override
     public Monster[] chooseKSumLevelMonsters(String message, int sumOfLevelsOfCards, SelectCondition condition) throws ResistToChooseCard {
-        return new Monster[0];
+        return new Monster[0]; // todo
     }
 }

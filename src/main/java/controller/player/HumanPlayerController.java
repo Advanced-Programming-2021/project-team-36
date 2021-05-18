@@ -52,8 +52,17 @@ public class HumanPlayerController extends PlayerController {
 
     @Override
     public boolean askRespondToChain() {
-        return ((DuelMenuView) DuelMenuController.getInstance().getView()).askUser(
-                "Do you want to add a card to chain?");
+        return askYesNoQuestion("Do you want to add a card to chain?");
+    }
+
+    @Override
+    public boolean askYesNoQuestion(String question) {
+        return ((DuelMenuView) DuelMenuController.getInstance().getView()).askUser(question);
+    }
+
+    @Override
+    public int askIntegerQuestion(String question, int l, int r) {
+        return ((DuelMenuView) DuelMenuController.getInstance().getView()).askUserToChooseNumber(question, l, r);
     }
 
     @Override
