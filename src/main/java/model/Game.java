@@ -92,15 +92,6 @@ public class Game {
             return firstPlayer;
     }
 
-    public boolean canCardBeSummoned(Card card) {
-        if (!getCurrentPlayer().hasInHand(card))
-            return false;
-        if (card instanceof Magic)
-            return false;
-        Monster monster = (Monster) card;
-        return monster.canSummonNormally();
-    }
-
     public void changeTurn() {
         turn++;
     }

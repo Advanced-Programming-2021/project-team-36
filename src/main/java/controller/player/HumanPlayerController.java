@@ -9,7 +9,9 @@ import model.Player.HumanPlayer;
 import model.card.Card;
 import model.card.Monster;
 import model.card.action.Action;
+import model.enums.Color;
 import model.enums.Phase;
+import utils.CustomPrinter;
 import view.DuelMenuView;
 
 import java.util.ArrayList;
@@ -93,7 +95,7 @@ public class HumanPlayerController extends PlayerController {
             else
                 cards.add(card);
         }
-        return (Card[]) cards.toArray();
+        return cards.toArray(Card[]::new);
     }
 
     @Override
@@ -111,6 +113,6 @@ public class HumanPlayerController extends PlayerController {
                 sumLevels += ((Monster) monster).getLevel();
             }
         }
-        return (Monster[]) monsters.toArray();
+        return monsters.toArray(Monster[]::new);
     }
 }

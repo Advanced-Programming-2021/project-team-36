@@ -1,7 +1,7 @@
 package model.deck;
 
 public class MainDeck extends BaseDeck {
-    private final static Integer minimumNumberOfCards = 15;
+    private final static Integer minimumNumberOfCards = 5;
     private final static Integer maximumNumberOfCards = 45;
 
     public boolean isValid() {

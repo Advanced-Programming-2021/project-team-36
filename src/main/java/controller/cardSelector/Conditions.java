@@ -4,10 +4,13 @@ import controller.GameController;
 import model.Game;
 import model.Player.Player;
 import model.card.Card;
+import model.card.Magic;
 import model.card.Monster;
+import model.enums.Color;
 import model.enums.MonsterCardType;
 import model.enums.MonsterState;
 import model.enums.ZoneType;
+import utils.CustomPrinter;
 
 public class Conditions {
     public static final SelectCondition noCondition = (Card card) -> true;
@@ -54,13 +57,22 @@ public class Conditions {
     }
 
     public static SelectCondition getPlayerRitualMonsterFromHand(Player player, int maximumLevelLimit) {
-        return (Card card) ->
-                card instanceof Monster && ((Monster) card).getMonsterCardType().equals(MonsterCardType.RITUAL) &&
-                        player.hasInHand(card) && ((Monster) card).getLevel() <= maximumLevelLimit;
+        return (Card card) -> {
+            if (card instanceof Magic)
+                CustomPrinter.println(card.getName(), Color.Green);
+            else
+                CustomPrinter.println(card.getName(), Color.Red);
+
+            if (card instanceof Magic)
+                return false;
+            Monster monster = (Monster) card;
+
+            return monster.getMonsterCardType().equals(MonsterCardType.RITUAL) && player.hasInHand(card) && monster.getLevel() <= maximumLevelLimit;
+        };
     }
 
-    public static SelectCondition getPlayerMonsterFromMonsterZoneOrHand(Player player) {
+    public static SelectCondition getPlayerMonsterFromMonsterZoneOrHand(Player player, Monster notAllowed) {
         return (Card card) ->
-                card instanceof Monster && (player.hasInHand(card) || player.getBoard().getMonsterCardZone().containsValue(card));
+                card instanceof Monster && card != notAllowed && (player.hasInHand(card) || player.getBoard().getMonsterCardZone().containsValue(card));
     }
 }

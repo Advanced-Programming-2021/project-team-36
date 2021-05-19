@@ -57,12 +57,6 @@ public class Monster extends Card {
         return cloned;
     }
 
-    public boolean canSummonNormally() {
-        // todo is this ok now?
-        // what about special summon?
-        return !getMonsterCardType().equals(MonsterCardType.RITUAL);
-    }
-
     public int getNumberOfRequiredTribute() {
         if (level < 5)
             return 0;

@@ -175,7 +175,7 @@ public class DuelMenuView extends BaseMenuView {
                         Card card = GameController.getInstance().getGame().getCardByCardAddress(cardAddress);
                         if (card == null)
                             throw new LogicException("no card found in the given position");
-                        if (condition.canSelect(card))
+                        if (!condition.canSelect(card))
                             throw new LogicException("you can't select this card");
                         cardSelector.selectCard(cardAddress);
                     },
@@ -189,7 +189,7 @@ public class DuelMenuView extends BaseMenuView {
                         Card card = GameController.getInstance().getGame().getCardByCardAddress(cardAddress);
                         if (card == null)
                             throw new LogicException("no card found in the given position");
-                        if (condition.canSelect(card))
+                        if (!condition.canSelect(card))
                             throw new LogicException("you can't select this card");
                         cardSelector.selectCard(cardAddress);
                     },
@@ -203,7 +203,7 @@ public class DuelMenuView extends BaseMenuView {
                         Card card = GameController.getInstance().getGame().getCardByCardAddress(cardAddress);
                         if (card == null)
                             throw new LogicException("no card found in the given position");
-                        if (condition.canSelect(card))
+                        if (!condition.canSelect(card))
                             throw new LogicException("you can't select this card");
                         cardSelector.selectCard(cardAddress);
                     },
@@ -217,7 +217,7 @@ public class DuelMenuView extends BaseMenuView {
                         Card card = GameController.getInstance().getGame().getCardByCardAddress(cardAddress);
                         if (card == null)
                             throw new LogicException("no card found in the given position");
-                        if (condition.canSelect(card))
+                        if (!condition.canSelect(card))
                             throw new LogicException("you can't select this card");
                         cardSelector.selectCard(cardAddress);
                     },
@@ -226,6 +226,7 @@ public class DuelMenuView extends BaseMenuView {
             commandLine.runNextCommand(line);
         } catch (CommandLineException | ParserException | LogicException | ModelException | GameEvent | RoutingException e) {
             CustomPrinter.println(e.getMessage(), Color.Default);
+            throw new ResistToChooseCard();
         }
         try {
             return cardSelector.getSelectedCard();

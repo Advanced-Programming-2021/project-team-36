@@ -9,7 +9,6 @@ public class Sample extends IntegrationTestBase {
         run(String.format("user create -u %s -p %s -n %s", username, password, nickname));
         run(String.format("user login -u %s -p %s", username, password));
         run("menu enter shop");
-        run("shop show --all");
         for (int i = 1; i <= 3; i++) {
             run("shop buy AxeRaider");
             run("shop buy BattleOx");

@@ -121,6 +121,26 @@ public abstract class PlayerController {
         );
     }
 
+    public void flipSummon(Monster monster) throws LogicException {
+        Game game = GameController.getInstance().getGame();
+        if (!GameController.getInstance().getCurrentPlayerController().getPlayer().getBoard().getMonsterCardZone().containsValue(monster))
+            throw new LogicException("this card is not in your field");
+        if (!game.getPhase().equals(Phase.MAIN_PHASE1) && !game.getPhase().equals(Phase.MAIN_PHASE2))
+            throw new LogicException("you can’t do this action in this phase");
+        if (!monster.getMonsterState().equals(MonsterState.DEFENSIVE_HIDDEN) || game.getCurrentPlayer().isSummonedInLastTurn())
+            throw new LogicException("you can't flip summon this card");
+        startChain(
+                new Action(
+                        new SummonEvent(monster, SummonType.FLIP),
+                        () -> {
+                            monster.setMonsterState(MonsterState.OFFENSIVE_OCCUPIED);
+                            GameController.getInstance().getGame().getCurrentPlayer().setSummonedInLastTurn(true);
+                            CustomPrinter.println(String.format("<%s> flip summoned successfully", monster.getName()), Color.Green);
+                        }
+                )
+        );
+    }
+
 
     public void setMonster(Monster monster) throws LogicException, ResistToChooseCard {
         Game game = GameController.getInstance().getGame();
@@ -164,7 +184,7 @@ public abstract class PlayerController {
                         new SetMagic(magic),
                         () -> {
                             addMagicToBoard(magic, MagicState.HIDDEN);
-                            CustomPrinter.println(String.format("<%s> set magic <%s> successfully", magic.getName()), Color.Green);
+                            CustomPrinter.println(String.format("<%s> set magic <%s> successfully", player.getUser().getUsername(), magic.getName()), Color.Green);
                         }
                 )
         );
@@ -190,20 +210,6 @@ public abstract class PlayerController {
             throw new LogicException("you should flip summon it");
         monster.setMonsterState(monsterState);
         CustomPrinter.println(String.format("<%s>'s <%s>'s position changed to %s", getPlayer().getUser().getUsername(), monster.getName(), monsterState), Color.Green);
-    }
-
-    public void flipSummon(Monster monster) throws LogicException {
-        // todo : should startChain
-        Game game = GameController.getInstance().getGame();
-        if (!GameController.getInstance().getCurrentPlayerController().getPlayer().getBoard().getMonsterCardZone().containsValue(monster))
-            throw new LogicException("you can't flip monster this card");
-        if (!game.getPhase().equals(Phase.MAIN_PHASE1) && !game.getPhase().equals(Phase.MAIN_PHASE2))
-            throw new LogicException("you can’t do this action in this phase");
-        if (!monster.getMonsterState().equals(MonsterState.DEFENSIVE_HIDDEN) || game.getCurrentPlayer().isSummonedInLastTurn())
-            throw new LogicException("you can't flip summon this card");
-        monster.setMonsterState(MonsterState.OFFENSIVE_OCCUPIED);
-        GameController.getInstance().getGame().getCurrentPlayer().setSummonedInLastTurn(true);
-        CustomPrinter.println(String.format("<%s> flip summoned successfully", monster.getName()), Color.Green);
     }
 
     public void canAttack(Monster monster) throws LogicException {
@@ -255,13 +261,13 @@ public abstract class PlayerController {
 
     public void activateEffect(Spell spell) throws LogicException, GameOverEvent {
         Game game = GameController.getInstance().getGame();
-        if(!player.getBoard().getMagicCardZone().containsValue(spell))
-            throw new LogicException("you can't activate this card!");
+    //    if(!player.getBoard().getMagicCardZone().containsValue(spell))
+    //        throw new LogicException("you can't activate this card!"); todo : in error nabayad bashe ha ! check konid
         if (!game.getPhase().equals(Phase.MAIN_PHASE1) && !game.getPhase().equals(Phase.MAIN_PHASE2))
             throw new LogicException("you can't activate an effect on this turn");
-        if (spell.getMagicState().equals(MagicState.OCCUPIED))
-            throw new LogicException("you have already activated this card");
-        if (getPlayer().hasInHand(spell) && !spell.getIcon().equals(Icon.FIELD))
+        if (spell.getMagicState() != null && spell.getMagicState().equals(MagicState.OCCUPIED))
+            throw new LogicException("you have already activated this card"); // todo : check correctness of this
+        if (getPlayer().hasInHand(spell) && !spell.getIcon().equals(Icon.FIELD) && getPlayer().getBoard().getMagicCardZone().size() == 5)
             throw new LogicException("spell card zone is full");
         if (!spell.canActivateEffect())
             throw new LogicException("preparations of this spell are not done yet");

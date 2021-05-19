@@ -41,14 +41,14 @@ public class AdvancedRitualArt extends Spell {
             try {
                 PlayerController playerController = GameController.getInstance().getPlayerControllerByPlayer(this.owner);
                 Monster ritualMonster = (Monster) playerController.chooseKCards(
-                        String.format("choose the ritual monster you want to ritual summon. It's level should be at most %d.", sumOwnerMonstersInHandAndInZone()),
+                        "choose the ritual monster you want to ritual summon.",
                         1,
                         Conditions.getPlayerRitualMonsterFromHand(this.owner, sumOwnerMonstersInHandAndInZone())
                 )[0];
                 Monster[] tributeMonsters = playerController.chooseKSumLevelMonsters(
                         String.format("choose a monsters from your hand or board for ritual summon. Sum of your selected cards hasn't reach the limit yet. You can select one of your selected card to deselect it", ritualMonster.getLevel()),
                         ritualMonster.getLevel(),
-                        Conditions.getPlayerMonsterFromMonsterZoneOrHand(this.owner)
+                        Conditions.getPlayerMonsterFromMonsterZoneOrHand(this.owner, ritualMonster)
                 );
                 for (Monster monster : tributeMonsters)
                     monster.tryToSendToGraveYardOfMe();
@@ -57,24 +57,13 @@ public class AdvancedRitualArt extends Spell {
                     monsterState = MonsterState.OFFENSIVE_OCCUPIED;
                 else
                     monsterState = MonsterState.DEFENSIVE_OCCUPIED;
-                // TODO : summon should be different
-                Game game = GameController.getInstance().getGame();
-                Board board = game.getCurrentPlayer().getBoard();
-                for (int i = 1; i <= 5; i++) {
-                    if (board.getMonsterCardZone().get(i) == null) {
-                        board.addCardToBoard(ritualMonster, new CardAddress(ZoneType.MONSTER, i, false));
-                        board.getCardsOnHand().remove(ritualMonster);
-                        ritualMonster.setMonsterState(monsterState);
-                        break;
-                    }
-                }
                 try {
                     playerController.summon(ritualMonster, 0, monsterState);
                 } catch (LogicException logicException) {
-                    CustomPrinter.println("this shouldn't happens", Color.Default);
+                    CustomPrinter.println("this shouldn't happens", Color.Red);
                 }
             } catch (ResistToChooseCard resistToChooseCard) {
-                CustomPrinter.println("ritual monster cancelled", Color.Default);
+                CustomPrinter.println("ritual monster cancelled", Color.Green);
             }
         };
     }
@@ -90,7 +79,7 @@ public class AdvancedRitualArt extends Spell {
                     minimumMonsterRitualLevelOnHand = Math.min(minimumMonsterRitualLevelOnHand, monster.getLevel());
             }
         }
-        return minimumMonsterRitualLevelOnHand <= sumOwnerMonstersInHandAndInZone() &&
+        return minimumMonsterRitualLevelOnHand <= sumOwnerMonstersInHandAndInZone() - minimumMonsterRitualLevelOnHand &&
                 !player.getBoard().isMonsterCardZoneFull();
     }
 }

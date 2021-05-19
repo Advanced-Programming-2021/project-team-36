@@ -9,6 +9,7 @@ import model.Player.AIPlayer;
 import model.Player.Player;
 import model.card.*;
 import model.card.action.Action;
+import model.enums.Icon;
 import model.enums.MonsterState;
 
 import java.util.*;
@@ -139,9 +140,23 @@ public class AIPlayerController extends PlayerController {
     }
 
     private void noErrorActivateEffect(Spell spell) {
+        if (spell.getIcon().equals(Icon.RITUAL)) {
+            noErrorRitualSummon(spell);
+            return;
+        }
         try {
             activateEffect(spell);
         } catch (LogicException ignored) {
+        }
+    }
+
+    private void noErrorRitualSummon(Spell spell) {
+        while (true) {
+            try {
+                activateEffect(spell);
+            } catch (LogicException logicException) {
+                break;
+            }
         }
     }
 
@@ -222,6 +237,6 @@ public class AIPlayerController extends PlayerController {
         }
         if (sum < sumOfLevelsOfCards)
             throw new ResistToChooseCard();
-        return (Monster[]) monsters.toArray();
+        return monsters.toArray(Monster[]::new);
     }
 }
