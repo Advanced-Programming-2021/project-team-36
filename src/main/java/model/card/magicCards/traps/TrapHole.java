@@ -1,4 +1,4 @@
-package model.card.traps;
+package model.card.magicCards.traps;
 
 import controller.GameController;
 import model.card.Monster;

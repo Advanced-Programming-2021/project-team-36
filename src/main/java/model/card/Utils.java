@@ -1,18 +1,17 @@
 package model.card;
 
-import model.enums.MonsterAttribute;
-import model.enums.MonsterCardType;
-import model.enums.MonsterType;
+import model.enums.*;
 import utils.ClassFinder;
 
 import java.util.*;
 import java.util.concurrent.atomic.AtomicReference;
 
 public class Utils {
-    private static TreeMap<String, String> cardsData = new TreeMap();
-    private static Class[] magicCardsClasses = ClassFinder.getClasses("model.card.magicCards");
-    private static TreeMap<String, TreeMap<String, String>> monstersData = new TreeMap<>();
-    private static Class[] specialMonstersClasses = ClassFinder.getClasses("model.card.monsterCards");
+    private static final TreeMap<String, String> cardsData = new TreeMap<>();
+    private static final Class<?>[] magicCardsClasses = ClassFinder.getClasses("model.card.magicCards");
+    private static final TreeMap<String, TreeMap<String, String>> monstersData = new TreeMap<>();
+    private static final TreeMap<String, TreeMap<String, String>> magicData = new TreeMap<>();
+    private static final Class<?>[] specialMonstersClasses = ClassFinder.getClasses("model.card.monsterCards");
 
     protected static void addCard(String type, String name) {
         cardsData.put(name, type);
@@ -36,22 +35,37 @@ public class Utils {
             return null;
         if (cardsData.get(name).equals("Monster"))
             return getMonster(name);
-        for (Class magicCardClass : magicCardsClasses)
-            if (magicCardClass.getName().replaceAll(".*\\.", "").equals(Utils.formatClassName(name)))
+        else
+            return getMagic(name);
+    }
+
+    public static Magic getMagic(String name) {
+        for (Class<?> magicCardClass : magicCardsClasses) {
+            if (magicCardClass.getName().replaceAll(".*\\.", "").equals(Utils.formatClassName(name))) {
                 try {
-                    return (Magic) magicCardClass.getConstructor().newInstance();
+                    name = Utils.formatClassName(name);
+                    TreeMap<String, String> magicData = Utils.magicData.get(name);
+                    return (Magic) magicCardClass.getConstructors()[0].newInstance(
+                            magicData.get("Name"),
+                            magicData.get("Description"),
+                            Integer.parseInt(magicData.get("Price")),
+                            Icon.valueOf(magicData.get("Icon")),
+                            Status.valueOf(magicData.get("Status"))
+                    );
                 } catch (Exception exception) {
-                    return null;
+                    exception.printStackTrace();
+                    throw new Error("error in initiating from magic class");
                 }
+            }
+        }
         return null;
     }
 
     public static Monster getMonster(String name) {
-        // todo remove this? @Kasra. Why? @Shayan?
         name = Utils.formatClassName(name);
         TreeMap<String, String> monsterData = monstersData.get(name);
         if (specialMonstersClasses != null)
-            for (Class specialMonsterClass : specialMonstersClasses) {
+            for (Class<?> specialMonsterClass : specialMonstersClasses) {
                 if (specialMonsterClass.getName().replaceAll(".*\\.", "").equals(name))
                     try {
                         return (Monster) specialMonsterClass.getConstructors()[0].newInstance(
@@ -65,7 +79,8 @@ public class Utils {
                                 MonsterCardType.valueOf(monsterData.get("Card Type")),
                                 Integer.parseInt(monsterData.get("Level")));
                     } catch (Exception exception) {
-                        return null;
+                        exception.printStackTrace();
+                        throw new Error("error in initiating from monster class");
                     }
             }
         /*if (!monsterData.get("Card Type").equals("Normal"))
@@ -86,15 +101,24 @@ public class Utils {
         monsterData.put("Attribute", monsterData.get("Attribute").toUpperCase());
         monsterData.put("Monster Type", monsterData.get("Monster Type").toUpperCase().replaceAll("-|\\s", ""));
         monsterData.put("Card Type", monsterData.get("Card Type").toUpperCase());
-        monstersData.put(monsterData.get("Name"), monsterData);
+        Utils.monstersData.put(monsterData.get("Name"), monsterData);
         Utils.addCard("Monster", monsterData.get("Name"));
+    }
+
+    public static void addMagicData(TreeMap<String, String> magicData) {
+        magicData.put("Name", Utils.formatClassName(magicData.get("Name")));
+        magicData.put("Icon", magicData.get("Icon").toUpperCase().replaceAll("-|\\s", ""));
+        magicData.put("Status", magicData.get("Status").toUpperCase());
+        Utils.magicData.put(magicData.get("Name"), magicData);
+        Utils.addCard("Magic", magicData.get("Name"));
     }
 
 
     public static Card[] getAllCards() {
         ArrayList<Card> cards = new ArrayList<>();
         cardsData.forEach((k, v) -> {
-            cards.add(getCard(k));
+            if(getCard(k) != null)
+                cards.add(getCard(k));
         });
         cards.sort(new cardLexicographicalOrder());
         return cards.toArray(new Card[0]);

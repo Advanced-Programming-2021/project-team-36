@@ -1,4 +1,4 @@
-package model.card.spells;
+package model.card.magicCards.spells;
 
 import controller.GameController;
 import model.card.Card;
@@ -11,7 +11,7 @@ import model.enums.Status;
 
 public class Yami extends Spell {
 
-    protected Yami(String name, String description, int price, Icon icon, Status status) {
+    public Yami(String name, String description, int price, Icon icon, Status status) {
         super(name, description, price, icon, status);
     }
 

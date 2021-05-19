@@ -20,7 +20,7 @@ public abstract class Card implements Comparable<Card>, Cloneable, Serializable 
         isInBattle = false;
     }
 
-    protected Card(String name, String description, int price) {
+    public Card(String name, String description, int price) {
         this.name = name;
         this.description = description;
         this.price = price;

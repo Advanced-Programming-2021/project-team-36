@@ -6,5 +6,6 @@ public enum Icon {
     QUICKPLAY,
     RITUAL,
     CONTINUOUS,
-    COUNTER
+    COUNTER,
+    NORMAL
 }

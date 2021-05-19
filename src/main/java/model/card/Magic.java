@@ -17,7 +17,7 @@ abstract public class Magic extends Card {
     protected Status status;
     @Getter @Setter
     protected MagicState magicState;
-    protected Magic(String name, String description, int price, Icon icon, Status status) {
+    public Magic(String name, String description, int price, Icon icon, Status status) {
         super(name, description, price);
         this.icon = icon;
         this.status = status;

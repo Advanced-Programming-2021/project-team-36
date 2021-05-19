@@ -1,4 +1,4 @@
-package model.card.spells;
+package model.card.magicCards.spells;
 
 import controller.GameController;
 import controller.LogicException;
@@ -19,7 +19,7 @@ import utils.CustomPrinter;
 import view.DuelMenuView;
 
 public class AdvancedRitualArt extends Spell {
-    protected AdvancedRitualArt(String name, String description, int price, Icon icon, Status status) {
+    public AdvancedRitualArt(String name, String description, int price, Icon icon, Status status) {
         super(name, description, price, icon, status);
     }
 

@@ -7,7 +7,7 @@ import java.util.Enumeration;
 import java.util.List;
 
 public class ClassFinder {
-    public static Class[] getClasses(String packageName) {
+    public static Class<?>[] getClasses(String packageName) {
         ClassLoader classLoader = Thread.currentThread().getContextClassLoader();
         assert classLoader != null;
         String path = packageName.replace('.', '/');
@@ -18,22 +18,21 @@ public class ClassFinder {
                 URL resource = resources.nextElement();
                 try {
                     dirs.add(new File(resource.toURI()));
-                } catch (Exception exception) {
-
+                } catch (Exception ignored) {
                 }
             }
-            ArrayList<Class> classes = new ArrayList<Class>();
+            ArrayList<Class<?>> classes = new ArrayList<>();
             for (File directory : dirs) {
                 classes.addAll(findClasses(directory, packageName));
             }
             return classes.toArray(new Class[classes.size()]);
-        } catch (Exception exception) {
+        } catch (Exception ignored) {
         }
         return null;
     }
 
-    public static List<Class> findClasses(File directory, String packageName) throws ClassNotFoundException {
-        List<Class> classes = new ArrayList<Class>();
+    public static List<Class<?>> findClasses(File directory, String packageName) throws ClassNotFoundException {
+        List<Class<?>> classes = new ArrayList<>();
         if (!directory.exists()) {
             return classes;
         }

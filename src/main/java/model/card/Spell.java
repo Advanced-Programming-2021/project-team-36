@@ -9,7 +9,7 @@ import model.enums.Status;
 import java.util.Stack;
 
 abstract public class Spell extends Magic {
-    protected Spell(String name, String description, int price, Icon icon, Status status) {
+    public Spell(String name, String description, int price, Icon icon, Status status) {
         super(name, description, price, icon, status);
     }
 

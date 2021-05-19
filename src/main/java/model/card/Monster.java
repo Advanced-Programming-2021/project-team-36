@@ -33,7 +33,7 @@ public class Monster extends Card {
     protected boolean allowAttack = true;
     // todo allowAttack should be a function that gets monster and tells whether you can attack it or not
 
-    protected Monster(String name, String description, int price, int attackDamage, int defenseRate, MonsterAttribute attribute, MonsterType monsterType, MonsterCardType monsterCardType, int level) {
+    public Monster(String name, String description, int price, int attackDamage, int defenseRate, MonsterAttribute attribute, MonsterType monsterType, MonsterCardType monsterCardType, int level) {
         super(name, description, price);
         this.attackDamage = attackDamage;
         this.defenseRate = defenseRate;

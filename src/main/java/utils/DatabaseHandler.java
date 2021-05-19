@@ -10,14 +10,16 @@ import java.util.ArrayList;
 import java.util.TreeMap;
 
 public class DatabaseHandler {
-    private static String databaseFilePath = "database/database.dat";
-    private static String databaseAsJSONFilePath = "database/database.json";
-    private static String databaseFileName = "database";
-    private static String monsterDatabase = "database/Monster.csv";
+    private final static String databaseFilePath = "database/database.dat";
+    private final static String databaseAsJSONFilePath = "database/database.json";
+    private final static String databaseFileName = "database";
+    private final static String monsterDatabase = "database/Monster.csv";
+    private final static String magicDatabase = "database/SpellTrap.csv";
 
     public static void importFromDatabase() {
         //importUsersFromDatabase();
         importMonstersFromDatabase();
+        importMagicsFromDatabase();
     }
 
     public static void saveToDatabase(String fileName) {
@@ -38,7 +40,6 @@ public class DatabaseHandler {
             bufferedWriter.close();
         } catch (IOException exception) {
             CustomPrinter.println("failed to save to database", Color.Default);
-            return;
         }
     }
 
@@ -57,11 +58,10 @@ public class DatabaseHandler {
                         user.save();
                     }
                 }
-            } catch (Exception exception) {
+            } catch (Exception ignored) {
             }
         } catch (IOException exception) {
             CustomPrinter.println("failed to read from the database", Color.Default);
-            return;
         }
     }
 
@@ -76,14 +76,14 @@ public class DatabaseHandler {
     private static void importMonstersFromDatabase() {
         try {
             BufferedReader bufferedReader = new BufferedReader(new FileReader(monsterDatabase));
-            ArrayList<String> header = monsterCSVParser(bufferedReader.readLine());
+            ArrayList<String> header = CSVParser(bufferedReader.readLine());
             while (true) {
                 try {
                     TreeMap<String, String> monsterData = new TreeMap<String, String>();
                     String line = bufferedReader.readLine();
                     if (line == null)
                         break;
-                    ArrayList<String> data = monsterCSVParser(line);
+                    ArrayList<String> data = CSVParser(line);
                     if (data.size() > 0) {
                         for (int i = 0; i < data.size(); i++) {
                             monsterData.put(header.get(i).trim(), data.get(i).trim());
@@ -92,16 +92,43 @@ public class DatabaseHandler {
                     } else
                         break;
                 } catch (EOFException exception) {
-                    break;
+                    throw new Error("error in parsing monster cards");
                 }
             }
         } catch (IOException exception) {
             CustomPrinter.println("fatal error : Monster database was not found", Color.Default);
-            return;
         }
     }
 
-    private static ArrayList<String> monsterCSVParser(String row) {
+    private static void importMagicsFromDatabase() {
+        try {
+            BufferedReader bufferedReader = new BufferedReader(new FileReader(magicDatabase));
+            ArrayList<String> header = CSVParser(bufferedReader.readLine());
+            while (true) {
+                try {
+                    TreeMap<String, String> magicData = new TreeMap<String, String>();
+                    String line = bufferedReader.readLine();
+                    if (line == null)
+                        break;
+                    ArrayList<String> data = CSVParser(line);
+                    if (data.size() > 0) {
+                        for (int i = 0; i < data.size(); i++) {
+                            magicData.put(header.get(i).trim(), data.get(i).trim());
+                        }
+                        Utils.addMagicData(magicData);
+                    } else
+                        break;
+                } catch (EOFException exception) {
+                    throw new Error("error in parsing magic cards");
+                }
+            }
+        } catch (IOException exception) {
+            CustomPrinter.println("fatal error : SpellTrap database was not found", Color.Default);
+        }
+    }
+
+
+    private static ArrayList<String> CSVParser(String row) {
         String[] fields = row.replaceAll("\\s+", " ").split(",");
         ArrayList<String> results = new ArrayList<>();
         for (int i = 0; i < fields.length; i ++) {
