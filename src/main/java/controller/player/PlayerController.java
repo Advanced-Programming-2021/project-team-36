@@ -168,8 +168,13 @@ public abstract class PlayerController {
             throw new LogicException("there are not enough cards for tribute");
         Card[] tributeCards = chooseKCards(String.format("Choose %d cards to tribute", count), count, Conditions.myMonsterFromMyMonsterZone(player));
         for (Card card : tributeCards)
-            GameController.getInstance().moveCardToGraveYard(card);
+            moveCardToGraveYard(card);
 //        CustomPrinter.println(String.format("<%s> tribute this monsters: %s", Arrays.toString(Arrays.stream(tributeCards).toArray())), Color.Default);
+    }
+
+    public void moveCardToGraveYard(Card card) {
+        CustomPrinter.println(String.format("<%s>' Card <%s> moved to graveyard", player.getUser().getUsername(), card.getName()), Color.Blue);
+        player.moveCardToGraveYard(card);
     }
 
     public void setMagic(Magic magic) throws LogicException {
@@ -184,6 +189,7 @@ public abstract class PlayerController {
                         new SetMagic(magic),
                         () -> {
                             addMagicToBoard(magic, MagicState.HIDDEN);
+                            player.getBoard().getCardsOnHand().remove((Card) magic);
                             CustomPrinter.println(String.format("<%s> set magic <%s> successfully", player.getUser().getUsername(), magic.getName()), Color.Green);
                         }
                 )
@@ -261,8 +267,8 @@ public abstract class PlayerController {
 
     public void activateEffect(Spell spell) throws LogicException, GameOverEvent {
         Game game = GameController.getInstance().getGame();
-    //    if(!player.getBoard().getMagicCardZone().containsValue(spell))
-    //        throw new LogicException("you can't activate this card!"); todo : in error nabayad bashe ha ! check konid
+        if (!player.getBoard().getMagicCardZone().containsValue(spell) && !player.getBoard().getCardsOnHand().contains((Card) spell))
+            throw new LogicException("you can't activate this card!");
         if (!game.getPhase().equals(Phase.MAIN_PHASE1) && !game.getPhase().equals(Phase.MAIN_PHASE2))
             throw new LogicException("you can't activate an effect on this turn");
         if (spell.getMagicState() != null && spell.getMagicState().equals(MagicState.OCCUPIED))

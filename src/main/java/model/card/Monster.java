@@ -66,7 +66,7 @@ public class Monster extends Card {
     }
 
     public void tryToSendToGraveYardOfMe() {
-        GameController.getInstance().moveCardToGraveYard(this);
+        GameController.getInstance().getPlayerControllerByPlayer(this.owner).moveCardToGraveYard(this);
     }
 
     public void tryToSendToGraveYard(Monster monster) {

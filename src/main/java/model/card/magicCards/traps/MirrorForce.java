@@ -20,12 +20,12 @@ public class MirrorForce extends Trap {
     @Override
     public Effect activateEffect() {
         assert canActivateEffect();
-        return ()-> {
+        return () -> {
             for (Card card : GameController.getInstance().getGame().getOtherPlayer(this.owner).getBoard().getAllCardsOnBoard()) {
-                if(card instanceof Monster) {
+                if (card instanceof Monster) {
                     Monster monster = (Monster) card;
                     if (monster.getMonsterState().equals(MonsterState.OFFENSIVE_OCCUPIED))
-                        GameController.getInstance().moveCardToGraveYard(card);
+                        GameController.getInstance().getPlayerControllerByPlayer(monster.owner).moveCardToGraveYard(card);
                 }
             }
         };
@@ -33,10 +33,10 @@ public class MirrorForce extends Trap {
 
     @Override
     public boolean canActivateEffect() {
-        if(getChain().isEmpty())
+        if (getChain().isEmpty())
             return false;
         Action action = getChain().peek();
-        if(action.getEvent() instanceof AttackEvent){
+        if (action.getEvent() instanceof AttackEvent) {
             AttackEvent event = (AttackEvent) action.getEvent();
             return event.getAttacker().owner.equals(GameController.getInstance().getGame().getOtherPlayer(this.owner));
         }

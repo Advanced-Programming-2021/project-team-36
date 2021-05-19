@@ -59,14 +59,8 @@ public class Conditions {
     public static SelectCondition getPlayerRitualMonsterFromHand(Player player, int maximumLevelLimit) {
         return (Card card) -> {
             if (card instanceof Magic)
-                CustomPrinter.println(card.getName(), Color.Green);
-            else
-                CustomPrinter.println(card.getName(), Color.Red);
-
-            if (card instanceof Magic)
                 return false;
             Monster monster = (Monster) card;
-
             return monster.getMonsterCardType().equals(MonsterCardType.RITUAL) && player.hasInHand(card) && monster.getLevel() <= maximumLevelLimit;
         };
     }

@@ -53,12 +53,14 @@ public class AdvancedRitualArt extends Spell {
                 for (Monster monster : tributeMonsters)
                     monster.tryToSendToGraveYardOfMe();
                 MonsterState monsterState;
-                if (((DuelMenuView) DuelMenuController.getInstance().getView()).askUser("You want to summon your monster in attacking position or defending position? (attacking/defending)", "attacking", "defending"))
+                if (playerController.askRespondToQuestion("You want to summon your monster in attacking position or defending position?", "attacking", "defending"))
                     monsterState = MonsterState.OFFENSIVE_OCCUPIED;
                 else
                     monsterState = MonsterState.DEFENSIVE_OCCUPIED;
                 try {
                     playerController.summon(ritualMonster, 0, monsterState);
+                    GameController.getInstance().getPlayerControllerByPlayer(this.owner).moveCardToGraveYard(this);
+                    CustomPrinter.println(String.format("<%s> ritual summoned <%s> in <%s> position successfully", this.owner.getUser().getUsername(), ritualMonster.getName(), monsterState), Color.Green);
                 } catch (LogicException logicException) {
                     CustomPrinter.println("this shouldn't happens", Color.Red);
                 }

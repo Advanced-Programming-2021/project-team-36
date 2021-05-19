@@ -20,6 +20,12 @@ public class Cheat {
             while (user.getCards().size() < 100) {
                 shopController.buyCard(allCards[rnd.nextInt(allCards.length)]);
             }
+            for (Card card : allCards)
+                if (card.getName().equalsIgnoreCase("AdvancedRitualArt") || card.getName().equalsIgnoreCase("SkullGuardian")) {
+                    shopController.buyCard(card);
+                    shopController.buyCard(card);
+                    shopController.buyCard(card);
+                }
         } catch (ModelException ignored) {
         }
         for (int i = 0; i < 1; i++) {

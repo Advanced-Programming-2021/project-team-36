@@ -18,17 +18,17 @@ public class TorrentialTribute extends Trap {
     @Override
     public Effect activateEffect() {
         assert canActivateEffect();
-        return ()->{
-            for(Card card : GameController.getInstance().getGame().getAllCardsOnBoard()){
-                if(card instanceof Monster)
-                    GameController.getInstance().moveCardToGraveYard(card);
+        return () -> {
+            for (Card card : GameController.getInstance().getGame().getAllCardsOnBoard()) {
+                if (card instanceof Monster)
+                    GameController.getInstance().getPlayerControllerByPlayer(card.owner).moveCardToGraveYard(card);
             }
         };
     }
 
     @Override
     public boolean canActivateEffect() {
-        if(getChain().isEmpty())
+        if (getChain().isEmpty())
             return false;
         Action action = getChain().peek();
         return action.getEvent() instanceof SummonEvent;

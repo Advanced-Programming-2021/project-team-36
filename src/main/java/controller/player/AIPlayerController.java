@@ -221,19 +221,26 @@ public class AIPlayerController extends PlayerController {
     @Override
     public Monster[] chooseKSumLevelMonsters(String message, int sumOfLevelsOfCards, SelectCondition condition) throws ResistToChooseCard {
         ArrayList<Monster> monsters = new ArrayList<>();
+        int sum = 0;
         for (Card card : player.getBoard().getAllCards()) {
             if (condition.canSelect(card)) {
                 monsters.add((Monster) card);
+                sum += ((Monster) card).getLevel();
             }
         }
         Collections.shuffle(monsters);
-        int sum = 0;
-        for (Monster monster : monsters) {
-            if (sum >= sumOfLevelsOfCards) {
-                monsters.remove(monster);
-                continue;
+        while (sum >= sumOfLevelsOfCards) {
+            boolean removed = false;
+            for (Monster monster : monsters) {
+                if (sum - monster.getLevel() >= sumOfLevelsOfCards) {
+                    monsters.remove(monster);
+                    sum -= monster.getLevel();
+                    removed = true;
+                    break;
+                }
             }
-            sum += monster.getLevel();
+            if (!removed)
+                break;
         }
         if (sum < sumOfLevelsOfCards)
             throw new ResistToChooseCard();

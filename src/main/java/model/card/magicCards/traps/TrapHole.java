@@ -20,7 +20,7 @@ public class TrapHole extends Trap {
         assert canActivateEffect();
         Monster monster = ((SummonEvent) getChain().peek().getEvent()).getMonster();
         return ()->{
-            GameController.getInstance().moveCardToGraveYard(monster);
+            GameController.getInstance().getPlayerControllerByPlayer(monster.owner).moveCardToGraveYard(monster);
         };
     }
 
