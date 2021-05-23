@@ -59,6 +59,7 @@ public class AdvancedRitualArt extends Spell {
                     monsterState = MonsterState.DEFENSIVE_OCCUPIED;
                 try {
                     playerController.summon(ritualMonster, 0, monsterState);
+                    this.owner.getBoard().getCardsOnHand().remove(ritualMonster);
                     GameController.getInstance().getPlayerControllerByPlayer(this.owner).moveCardToGraveYard(this);
                     CustomPrinter.println(String.format("<%s> ritual summoned <%s> in <%s> position successfully", this.owner.getUser().getUsername(), ritualMonster.getName(), monsterState), Color.Green);
                 } catch (LogicException logicException) {
