@@ -1,10 +1,9 @@
-import controller.GameController;
-import controller.menu.MainMenuController;
+import edu.sharif.nameless.in.seattle.yugioh.controller.GameController;
+import edu.sharif.nameless.in.seattle.yugioh.controller.menu.MainMenuController;
 import initialize.Sample;
-import model.enums.Phase;
+import edu.sharif.nameless.in.seattle.yugioh.model.enums.Phase;
 import org.junit.Test;
 import org.junit.jupiter.api.Assertions;
-import initialize.Sample.*;
 
 public class GameTest extends Sample {
     @Test

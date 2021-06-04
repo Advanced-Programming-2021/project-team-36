@@ -1,7 +1,7 @@
 package initialize;
 
-import controller.menu.DeckMenuController;
-import controller.menu.LoginMenuController;
+import edu.sharif.nameless.in.seattle.yugioh.controller.menu.DeckMenuController;
+import edu.sharif.nameless.in.seattle.yugioh.controller.menu.LoginMenuController;
 import utils.IntegrationTestBase;
 
 public class Sample extends IntegrationTestBase {

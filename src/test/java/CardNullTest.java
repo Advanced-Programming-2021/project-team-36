@@ -1,7 +1,5 @@
-import controller.GameController;
 import initialize.Sample;
 import org.junit.Test;
-import utils.IntegrationTestBase;
 
 public class CardNullTest extends Sample {
     @Test

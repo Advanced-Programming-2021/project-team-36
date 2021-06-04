@@ -1,6 +1,6 @@
-import controller.GameController;
+import edu.sharif.nameless.in.seattle.yugioh.controller.GameController;
 import initialize.Sample;
-import model.enums.Phase;
+import edu.sharif.nameless.in.seattle.yugioh.model.enums.Phase;
 import org.junit.Test;
 
 public class RitualSummonTest extends Sample {

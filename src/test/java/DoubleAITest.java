@@ -1,12 +1,12 @@
-import controller.menu.DuelMenuController;
-import model.Game;
-import model.ModelException;
-import model.Player.AIPlayer;
-import model.Player.Player;
+import edu.sharif.nameless.in.seattle.yugioh.controller.menu.DuelMenuController;
+import edu.sharif.nameless.in.seattle.yugioh.model.Game;
+import edu.sharif.nameless.in.seattle.yugioh.model.ModelException;
+import edu.sharif.nameless.in.seattle.yugioh.model.Player.AIPlayer;
+import edu.sharif.nameless.in.seattle.yugioh.model.Player.Player;
 import org.junit.Test;
 import utils.IntegrationTestBase;
 
-public class DoubleAITest extends IntegrationTestBase {
+public class  DoubleAITest extends IntegrationTestBase {
     @Test
     public void battle() throws ModelException {
         Player p1 = new AIPlayer();

@@ -1,12 +1,12 @@
 package utils;
 
-import utils.CustomPrinter;
-import utils.CustomScanner;
-import controller.ProgramController;
-import controller.menu.BaseMenuController;
+import edu.sharif.nameless.in.seattle.yugioh.utils.CustomPrinter;
+import edu.sharif.nameless.in.seattle.yugioh.utils.CustomScanner;
+import edu.sharif.nameless.in.seattle.yugioh.controller.ProgramController;
+import edu.sharif.nameless.in.seattle.yugioh.controller.menu.BaseMenuController;
 import org.junit.Before;
 import org.junit.jupiter.api.Assertions;
-import utils.Debugger;
+import edu.sharif.nameless.in.seattle.yugioh.utils.Debugger;
 
 public class IntegrationTestBase {
     public final ProgramController controller;
