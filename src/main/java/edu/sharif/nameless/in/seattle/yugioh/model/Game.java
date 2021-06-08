@@ -59,10 +59,7 @@ public class Game {
     }
 
     public Card getCardByCardAddress(CardAddress cardAddress) {
-        if (cardAddress.isOpponentAddress())
-            return getOpponentPlayer().getBoard().getCardByCardAddress(cardAddress);
-        else
-            return getCurrentPlayer().getBoard().getCardByCardAddress(cardAddress);
+        return cardAddress.getOwner().getBoard().getCardByCardAddress(cardAddress);
     }
 
     public ZoneType getCardZoneType(Card card){
@@ -111,6 +108,13 @@ public class Game {
         List<Card> cards = new ArrayList<>();
         cards.addAll(firstPlayer.getBoard().getAllCardsOnBoard());
         cards.addAll(secondPlayer.getBoard().getAllCardsOnBoard());
+        return cards;
+    }
+
+    public List<Card> getAllCards(){
+        List<Card> cards = new ArrayList<>();
+        cards.addAll(firstPlayer.getBoard().getAllCards());
+        cards.addAll(secondPlayer.getBoard().getAllCards());
         return cards;
     }
 

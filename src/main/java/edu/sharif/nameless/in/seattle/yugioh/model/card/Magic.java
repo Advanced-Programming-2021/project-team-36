@@ -1,6 +1,11 @@
 package edu.sharif.nameless.in.seattle.yugioh.model.card;
 
 import edu.sharif.nameless.in.seattle.yugioh.controller.GameController;
+import javafx.beans.binding.Bindings;
+import javafx.beans.binding.BooleanBinding;
+import javafx.beans.property.Property;
+import javafx.beans.property.SimpleBooleanProperty;
+import javafx.beans.property.SimpleObjectProperty;
 import lombok.Getter;
 import lombok.Setter;
 import edu.sharif.nameless.in.seattle.yugioh.model.card.action.Action;
@@ -15,21 +20,20 @@ abstract public class Magic extends Card {
     @Getter
     protected Icon icon;
     protected Status status;
-    @Getter @Setter
-    protected MagicState magicState;
+    protected SimpleObjectProperty<MagicState> magicStateProperty;
     public Magic(String name, String description, int price, Icon icon, Status status) {
         super(name, description, price);
         this.icon = icon;
         this.status = status;
-        this.magicState = null;
+        this.magicStateProperty = new SimpleObjectProperty<>(null);
     }
 
     abstract public Effect activateEffect();
     abstract public boolean canActivateEffect();
 
     @Override
-    public boolean isFacedUp() {
-        return magicState.equals(MagicState.OCCUPIED);
+    public BooleanBinding facedUpProperty() {
+        return Bindings.when(magicStateProperty.isEqualTo(MagicState.OCCUPIED)).then(true).otherwise(false);
     }
 
     @Override
@@ -37,8 +41,16 @@ abstract public class Magic extends Card {
         Magic cloned = (Magic) super.clone();
         cloned.icon = icon;
         cloned.status = status;
-        cloned.magicState = magicState;
+        cloned.magicStateProperty = new SimpleObjectProperty<>(null);
         return cloned;
+    }
+
+    public MagicState getMagicState() {
+        return magicStateProperty.get();
+    }
+
+    public void setMagicState(MagicState magicState) {
+        this.magicStateProperty.set(magicState);
     }
 
     protected Stack<Action> getChain(){
@@ -46,6 +58,6 @@ abstract public class Magic extends Card {
     }
 
     public MagicState getState() {
-        return magicState;
+        return magicStateProperty.getValue();
     }
 }

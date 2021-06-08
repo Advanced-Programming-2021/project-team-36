@@ -23,4 +23,9 @@ public class SummonEvent extends Event {
     public String getActivationQuestion() {
         return String.format("Do you want to summon %s?", monster.getName());
     }
+
+    @Override
+    public String getDescription(){
+        return "summon monster";
+    }
 }

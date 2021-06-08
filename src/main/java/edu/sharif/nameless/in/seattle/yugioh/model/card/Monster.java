@@ -7,6 +7,9 @@ import edu.sharif.nameless.in.seattle.yugioh.model.Player.Player;
 import edu.sharif.nameless.in.seattle.yugioh.model.card.action.Effect;
 import edu.sharif.nameless.in.seattle.yugioh.model.enums.*;
 import edu.sharif.nameless.in.seattle.yugioh.utils.CustomPrinter;
+import javafx.beans.binding.Bindings;
+import javafx.beans.binding.BooleanBinding;
+import javafx.beans.property.SimpleObjectProperty;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -23,9 +26,7 @@ public class Monster extends Card {
     protected MonsterType monsterType;
     @Getter
     protected MonsterCardType monsterCardType;
-    @Getter
-    @Setter
-    protected MonsterState monsterState;
+    protected SimpleObjectProperty<MonsterState> monsterStateProperty;
     @Getter
     protected int level;
     @Getter
@@ -40,7 +41,7 @@ public class Monster extends Card {
         this.attribute = attribute;
         this.monsterType = monsterType;
         this.monsterCardType = monsterCardType;
-        this.monsterState = null;
+        this.monsterStateProperty = new SimpleObjectProperty<>(null);
         this.level = level;
     }
 
@@ -52,7 +53,7 @@ public class Monster extends Card {
         cloned.attribute = attribute;
         cloned.monsterType = monsterType;
         cloned.monsterCardType = monsterCardType;
-        cloned.monsterState = monsterState;
+        cloned.monsterStateProperty = new SimpleObjectProperty<>(null);
         cloned.level = level;
         return cloned;
     }
@@ -84,7 +85,7 @@ public class Monster extends Card {
     public void damageStep(Monster attacker) throws GameOverEvent {
         // todo are the responses ok? maybe we have to swap your and mine?
         // todo remove this System.outs!
-        if (monsterState.equals(MonsterState.OFFENSIVE_OCCUPIED)) {
+        if (getMonsterState().equals(MonsterState.OFFENSIVE_OCCUPIED)) {
             if (attacker.getAttackDamage() > this.getAttackDamage()) {
                 int difference = attacker.getAttackDamage() - this.getAttackDamage();
                 CustomPrinter.println(String.format("your opponent’s monster is destroyed and your opponent received %d battle damage", difference), Color.Yellow);
@@ -100,7 +101,7 @@ public class Monster extends Card {
                 tryToSendToGraveYard(attacker);
                 tryToDecreaseLifePoint(attacker, difference);
             }
-        } else if (monsterState.equals(MonsterState.DEFENSIVE_OCCUPIED)) {
+        } else if (getMonsterState().equals(MonsterState.DEFENSIVE_OCCUPIED)) {
             if (attacker.getAttackDamage() > this.getDefenseRate()) {
                 CustomPrinter.println("the defense position monster is destroyed", Color.Yellow);
                 tryToSendToGraveYard(this);
@@ -119,19 +120,19 @@ public class Monster extends Card {
     public Effect changeFromHiddenToOccupiedIfCanEffect() {
         // todo remove this
         return () -> {
-            if (this.monsterState.equals(MonsterState.DEFENSIVE_HIDDEN))
-                this.monsterState = MonsterState.DEFENSIVE_OCCUPIED;
+            if (getMonsterState().equals(MonsterState.DEFENSIVE_HIDDEN))
+                setMonsterState(MonsterState.DEFENSIVE_OCCUPIED);
         };
     }
 
     public void flip() throws LogicException {
         // todo is it correct?
-        if (monsterState.equals(MonsterState.DEFENSIVE_HIDDEN))
+        if (getMonsterState().equals(MonsterState.DEFENSIVE_HIDDEN))
             throw new LogicException("can't flip and defensive hidden monster");
-        if (monsterState.equals(MonsterState.DEFENSIVE_OCCUPIED))
-            monsterState = MonsterState.OFFENSIVE_OCCUPIED;
-        else if (monsterState.equals(MonsterState.OFFENSIVE_OCCUPIED))
-            monsterState = MonsterState.DEFENSIVE_OCCUPIED;
+        if (getMonsterState().equals(MonsterState.DEFENSIVE_OCCUPIED))
+            setMonsterState(MonsterState.OFFENSIVE_OCCUPIED);
+        else if (getMonsterState().equals(MonsterState.OFFENSIVE_OCCUPIED))
+            setMonsterState(MonsterState.DEFENSIVE_OCCUPIED);
     }
 
     public Effect activateEffect() throws LogicException {
@@ -155,9 +156,22 @@ public class Monster extends Card {
     }
 
     @Override
-    public boolean isFacedUp() {
+    public BooleanBinding facedUpProperty() {
         // todo if it is not in the middle of the game, we get runtime error because monsterState is null
-        return monsterState.equals(MonsterState.OFFENSIVE_OCCUPIED) || monsterState.equals(MonsterState.DEFENSIVE_OCCUPIED);
+        return Bindings.when(
+                monsterStateProperty.isEqualTo(MonsterState.OFFENSIVE_OCCUPIED).or(monsterStateProperty.isEqualTo(MonsterState.DEFENSIVE_OCCUPIED)))
+                .then(true).otherwise(false);
+    }
+
+    public BooleanBinding isDefensive() {
+        return monsterStateProperty.isEqualTo(MonsterState.DEFENSIVE_HIDDEN).or(monsterStateProperty.isEqualTo(MonsterState.DEFENSIVE_OCCUPIED));
+    }
+
+    public MonsterState getMonsterState(){
+        return monsterStateProperty.get();
+    }
+    public void setMonsterState(MonsterState state){
+        monsterStateProperty.set(state);
     }
 
     @Override

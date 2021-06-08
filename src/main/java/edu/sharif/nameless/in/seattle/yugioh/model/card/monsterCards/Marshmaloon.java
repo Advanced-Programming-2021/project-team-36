@@ -23,7 +23,7 @@ public class Marshmaloon extends Monster {
     @Override
     public Effect onBeingAttackedByMonster(Monster attacker){
         return ()->{
-            if(!this.isFacedUp())
+            if(!isFacedUp())
                 GameController.getInstance().decreaseLifePoint(
                         GameController.getInstance().getGame().getOtherPlayer(this.owner),
                         1000

@@ -20,4 +20,9 @@ public class MagicActivation extends Event {
     public String getActivationQuestion() {
         return String.format("Do you want to activate effect of %s?", magic.getName());
     }
+
+    @Override
+    public String getDescription(){
+        return "activate magic";
+    }
 }

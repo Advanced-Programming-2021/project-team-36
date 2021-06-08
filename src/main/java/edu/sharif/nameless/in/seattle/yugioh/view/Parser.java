@@ -1,6 +1,9 @@
 package edu.sharif.nameless.in.seattle.yugioh.view;
 
+import edu.sharif.nameless.in.seattle.yugioh.controller.GameController;
 import edu.sharif.nameless.in.seattle.yugioh.controller.menu.*;
+import edu.sharif.nameless.in.seattle.yugioh.model.Game;
+import edu.sharif.nameless.in.seattle.yugioh.model.Player.Player;
 import edu.sharif.nameless.in.seattle.yugioh.model.User;
 import edu.sharif.nameless.in.seattle.yugioh.model.CardAddress;
 import edu.sharif.nameless.in.seattle.yugioh.model.card.Card;
@@ -39,7 +42,8 @@ public class Parser {
         if (zone == null)
             throw new ParserException("invalid selection");
         int id = IntegerParser(idString);
-        return new CardAddress(zone, id, opponent);
+        Player owner = opponent ? GameController.getInstance().getGame().getOpponentPlayer() : GameController.getInstance().getGame().getCurrentPlayer();
+        return new CardAddress(zone, id, owner);
     }
 
     // TODO : Proof-reading

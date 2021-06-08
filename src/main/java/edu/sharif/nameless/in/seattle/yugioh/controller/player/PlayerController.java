@@ -3,14 +3,14 @@ package edu.sharif.nameless.in.seattle.yugioh.controller.player;
 import edu.sharif.nameless.in.seattle.yugioh.model.card.Magic;
 import edu.sharif.nameless.in.seattle.yugioh.model.card.action.*;
 import edu.sharif.nameless.in.seattle.yugioh.model.enums.*;
-import edu.sharif.nameless.in.seattle.yugioh.controller.cardSelector.Conditions;
+import edu.sharif.nameless.in.seattle.yugioh.view.cardSelector.Conditions;
 import edu.sharif.nameless.in.seattle.yugioh.model.card.Spell;
 import edu.sharif.nameless.in.seattle.yugioh.utils.CustomPrinter;
 import edu.sharif.nameless.in.seattle.yugioh.controller.ChainController;
 import edu.sharif.nameless.in.seattle.yugioh.controller.GameController;
 import edu.sharif.nameless.in.seattle.yugioh.controller.LogicException;
-import edu.sharif.nameless.in.seattle.yugioh.controller.cardSelector.ResistToChooseCard;
-import edu.sharif.nameless.in.seattle.yugioh.controller.cardSelector.SelectCondition;
+import edu.sharif.nameless.in.seattle.yugioh.view.cardSelector.ResistToChooseCard;
+import edu.sharif.nameless.in.seattle.yugioh.view.cardSelector.SelectCondition;
 import edu.sharif.nameless.in.seattle.yugioh.controller.events.GameOverEvent;
 import lombok.Getter;
 import edu.sharif.nameless.in.seattle.yugioh.model.Board;
@@ -71,7 +71,7 @@ public abstract class PlayerController {
         Board board = game.getCurrentPlayer().getBoard();
         for (int i = 1; i <= 5; i++) {
             if (board.getMonsterCardZone().get(i) == null) {
-                board.addCardToBoard(monster, new CardAddress(ZoneType.MONSTER, i, false));
+                board.addCardToBoard(monster, new CardAddress(ZoneType.MONSTER, i, player));
                 monster.setMonsterState(monsterState);
                 break;
             }
@@ -82,11 +82,11 @@ public abstract class PlayerController {
         Game game = GameController.getInstance().getGame();
         Board board = game.getCurrentPlayer().getBoard();
         if (magic.getIcon().equals(Icon.FIELD))
-            board.addCardToBoard((Card) magic, new CardAddress(ZoneType.FIELD, 1, false));
+            board.addCardToBoard((Card) magic, new CardAddress(ZoneType.FIELD, 1, player));
         else {
             for (int i = 1; i <= 5; i++) {
                 if (board.getMagicCardZone().get(i) == null) {
-                    board.addCardToBoard(magic, new CardAddress(ZoneType.MAGIC, i, false));
+                    board.addCardToBoard(magic, new CardAddress(ZoneType.MAGIC, i, player));
                     magic.setMagicState(magicState);
                     break;
                 }

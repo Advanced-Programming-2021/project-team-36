@@ -17,7 +17,7 @@ public class TheCalculator extends Monster {
     public int getAttackDamage() {
         int sum = 0;
         for (Card card : this.owner.getBoard().getAllCardsOnBoard()) {
-            if (card instanceof Monster && ((Monster) card).isFacedUp()) {
+            if (card instanceof Monster && isFacedUp()) {
                 sum += ((Monster) card).getLevel();
             }
         }

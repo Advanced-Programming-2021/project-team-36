@@ -1,4 +1,4 @@
-package edu.sharif.nameless.in.seattle.yugioh.controller.cardSelector;
+package edu.sharif.nameless.in.seattle.yugioh.view.cardSelector;
 
 public class ResistToChooseCard extends Exception {
     public ResistToChooseCard(){

@@ -3,8 +3,7 @@ package edu.sharif.nameless.in.seattle.yugioh.controller.menu;
 import edu.sharif.nameless.in.seattle.yugioh.controller.GameController;
 import edu.sharif.nameless.in.seattle.yugioh.controller.LogicException;
 import edu.sharif.nameless.in.seattle.yugioh.controller.ProgramController;
-import edu.sharif.nameless.in.seattle.yugioh.controller.cardSelector.CardSelector;
-import edu.sharif.nameless.in.seattle.yugioh.controller.cardSelector.ResistToChooseCard;
+import edu.sharif.nameless.in.seattle.yugioh.view.cardSelector.ResistToChooseCard;
 import edu.sharif.nameless.in.seattle.yugioh.controller.events.GameOverEvent;
 import edu.sharif.nameless.in.seattle.yugioh.model.CardAddress;
 import edu.sharif.nameless.in.seattle.yugioh.model.Game;
@@ -35,12 +34,15 @@ public class DuelMenuController extends BaseMenuController {
     private final Game game;
     private final GameController gameController;
 
+    // todo remove this and put in daddy
+    @Getter
+    private final DuelMenuView graphicView;
+
     public DuelMenuController(Game game){
-        this.view = new DuelMenuView();
+        this.graphicView = new DuelMenuView(game);
         this.game = game;
         instance = this;
         gameController = new GameController(game);
-        new CardSelector(game);
     }
 
     public void printCurrentPhase() {
@@ -53,7 +55,7 @@ public class DuelMenuController extends BaseMenuController {
 
     public void summonCard(Card card) throws LogicException, ResistToChooseCard {
         gameController.getCurrentPlayerController().normalSummon((Monster) card);
-        new CardSelector(game);
+        graphicView.resetSelector();
     }
 
     public void setCard(Card card) throws LogicException, ResistToChooseCard {
@@ -61,27 +63,27 @@ public class DuelMenuController extends BaseMenuController {
             gameController.getCurrentPlayerController().setMonster((Monster) card);
         else
             gameController.getCurrentPlayerController().setMagic((Magic) card);
-        new CardSelector(game);
+        graphicView.resetSelector();
     }
 
     public void changeCardPosition(Card card, MonsterState monsterState) throws LogicException {
         if (!(card instanceof Monster))
             throw new LogicException("you can only change position of a monster card");
         gameController.getCurrentPlayerController().changeMonsterPosition((Monster) card, monsterState);
-        new CardSelector(game);
+        graphicView.resetSelector();
     }
 
     public void flipSummon(Card card) throws LogicException {
         if (!(card instanceof Monster))
             throw new LogicException("you can only flip summon a monster card");
         gameController.getCurrentPlayerController().flipSummon((Monster) card);
-        new CardSelector(game);
+        graphicView.resetSelector();
     }
 
     public void attack(Card card, int id) throws LogicException, GameOverEvent {
         if(!(card instanceof Monster))
             throw new LogicException("only a monster can attack");
-        CardAddress cardAddress = new CardAddress(ZoneType.MONSTER, id, true);
+        CardAddress cardAddress = new CardAddress(ZoneType.MONSTER, id, gameController.getGame().getOpponentPlayer());
         Monster opponentMonster = (Monster) game.getCardByCardAddress(cardAddress);
         if (opponentMonster == null)
             throw new LogicException("there is no card to attack here");
@@ -118,22 +120,6 @@ public class DuelMenuController extends BaseMenuController {
         CustomPrinter.println(game.getCurrentPlayer().getUser().getNickname() + ":" + game.getCurrentPlayer().getLifePoint(), Color.Purple);
     }
 
-    public void showHand() {
-        List<Card> cards = game.getCurrentPlayer().getBoard().getCardsOnHand();
-        for (int i = 0; i < cards.size(); i++)
-            CustomPrinter.println(String.format("%d. %s%n", i + 1, cards.get(i).toString()), Color.Purple);
-    }
-
-    public void showSelectedCard() throws LogicException {
-        CardAddress cardAddress = CardSelector.getInstance().getSelectedCardAddress();
-        if (cardAddress.isOpponentAddress()) {
-            Card card = CardSelector.getInstance().getSelectedCard();
-            if (!card.isFacedUp())
-                throw new LogicException("you can't see your opponent face down cards");
-        }
-        CardSelector.getInstance().showSelectedCard();
-    }
-
     public void surrender() throws GameOverEvent {
         gameController.getCurrentPlayerController().surrender();
     }
@@ -156,6 +142,6 @@ public class DuelMenuController extends BaseMenuController {
     @Override
     public void control(){
         gameController.control();
-        ProgramController.getInstance().navigateToMenu(MainMenuController.getInstance());
+//        ProgramController.getInstance().navigateToMenu(MainMenuController.getInstance());
     }
 }

@@ -3,7 +3,7 @@ package edu.sharif.nameless.in.seattle.yugioh.controller;
 import edu.sharif.nameless.in.seattle.yugioh.controller.events.GameOverEvent;
 import edu.sharif.nameless.in.seattle.yugioh.controller.player.PlayerController;
 import edu.sharif.nameless.in.seattle.yugioh.model.card.action.Action;
-import edu.sharif.nameless.in.seattle.yugioh.controller.cardSelector.ResistToChooseCard;
+import edu.sharif.nameless.in.seattle.yugioh.view.cardSelector.ResistToChooseCard;
 import lombok.Getter;
 
 import java.util.Stack;

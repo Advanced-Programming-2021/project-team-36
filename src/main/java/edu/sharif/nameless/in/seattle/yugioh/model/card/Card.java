@@ -1,6 +1,7 @@
 package edu.sharif.nameless.in.seattle.yugioh.model.card;
 
 import edu.sharif.nameless.in.seattle.yugioh.model.Player.Player;
+import javafx.beans.binding.BooleanBinding;
 import lombok.Getter;
 
 import java.io.Serializable;
@@ -27,7 +28,11 @@ public abstract class Card implements Comparable<Card>, Cloneable, Serializable 
 
     abstract public int getSpeed();
 
-    abstract public boolean isFacedUp();
+    abstract public BooleanBinding facedUpProperty();
+
+    public boolean isFacedUp(){
+        return facedUpProperty().get();
+    }
 
     public String getName() {
         return name;

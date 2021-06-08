@@ -1,4 +1,4 @@
-package edu.sharif.nameless.in.seattle.yugioh.controller.cardSelector;
+package edu.sharif.nameless.in.seattle.yugioh.view.cardSelector;
 
 import edu.sharif.nameless.in.seattle.yugioh.controller.LogicException;
 import edu.sharif.nameless.in.seattle.yugioh.model.enums.Color;

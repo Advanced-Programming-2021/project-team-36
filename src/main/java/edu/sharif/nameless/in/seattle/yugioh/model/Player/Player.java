@@ -33,14 +33,14 @@ abstract public class Player {
             throw new ModelException(String.format("%s's active deck is not valid", user.getUsername()));
         this.user = user;
         this.deck = user.getActiveDeck().clone().readyForBattle(this);
-        this.board = new Board(deck.getMainDeck());
+        this.board = new Board(deck.getMainDeck(), this);
         this.lifePoint = Constants.InitialLifePoint.val;
         summonedInLastTurn = false;
     }
 
     public void refresh() {
         this.deck = user.getActiveDeck().clone().readyForBattle(this);
-        this.board = new Board(deck.getMainDeck());
+        this.board = new Board(deck.getMainDeck(), this);
         this.lifePoint = Constants.InitialLifePoint.val;
         summonedInLastTurn = false;
 

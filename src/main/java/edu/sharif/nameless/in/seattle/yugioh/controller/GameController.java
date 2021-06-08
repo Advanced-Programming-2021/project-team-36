@@ -1,6 +1,7 @@
 package edu.sharif.nameless.in.seattle.yugioh.controller;
 
-import edu.sharif.nameless.in.seattle.yugioh.controller.cardSelector.CardSelector;
+import edu.sharif.nameless.in.seattle.yugioh.view.DuelMenuView;
+import edu.sharif.nameless.in.seattle.yugioh.view.cardSelector.CardSelector;
 import edu.sharif.nameless.in.seattle.yugioh.controller.events.GameOverEvent;
 import edu.sharif.nameless.in.seattle.yugioh.controller.player.AIPlayerController;
 import edu.sharif.nameless.in.seattle.yugioh.controller.player.HumanPlayerController;
@@ -38,7 +39,6 @@ public class GameController {
         this.playerController2 = game.getSecondPlayer() instanceof HumanPlayer ?
                 new HumanPlayerController((HumanPlayer) game.getSecondPlayer()) :
                 new AIPlayerController((AIPlayer) game.getSecondPlayer());
-        new CardSelector(game);
     }
 
     public void drawCard() throws GameOverEvent {
@@ -82,7 +82,7 @@ public class GameController {
         game.changeTurn();
         game.getCurrentPlayer().setSummonedInLastTurn(false);
         DuelMenuController.getInstance().showBoard();
-        new CardSelector(game);
+        DuelMenuController.getInstance().getGraphicView().resetSelector();
     }
 
     private void endRound(GameOverEvent event) {
@@ -124,7 +124,7 @@ public class GameController {
         if (game.getPhase() == Phase.END_PHASE)
             throw new Error("Why are you in the END_Phase?");
         game.setPhase(game.getPhase().nextPhase());
-        new CardSelector(game);
+        DuelMenuController.getInstance().getGraphicView().resetSelector();
     }
 
     public PlayerController getPlayerControllerByPlayer(Player player){

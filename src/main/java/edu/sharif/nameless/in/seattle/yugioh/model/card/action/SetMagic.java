@@ -19,4 +19,9 @@ public class SetMagic extends Event {
     public String getActivationQuestion() {
         return String.format("Do you want to set %s?", magic.getName());
     }
+
+    @Override
+    public String getDescription(){
+        return "set magic";
+    }
 }

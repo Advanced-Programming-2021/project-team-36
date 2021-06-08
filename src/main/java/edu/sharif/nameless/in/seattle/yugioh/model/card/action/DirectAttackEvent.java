@@ -17,4 +17,9 @@ public class DirectAttackEvent extends AttackEvent {
     public String getActivationQuestion() {
         return String.format("Do you want to direct attack %s with %s", player.getUser().getNickname(), getAttacker().getName());
     }
+
+    @Override
+    public String getDescription(){
+        return "direct attack";
+    }
 }

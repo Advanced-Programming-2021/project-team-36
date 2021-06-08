@@ -2,8 +2,8 @@ package edu.sharif.nameless.in.seattle.yugioh.model.card.monsterCards;
 
 import edu.sharif.nameless.in.seattle.yugioh.controller.GameController;
 import edu.sharif.nameless.in.seattle.yugioh.controller.LogicException;
-import edu.sharif.nameless.in.seattle.yugioh.controller.cardSelector.Conditions;
-import edu.sharif.nameless.in.seattle.yugioh.controller.cardSelector.ResistToChooseCard;
+import edu.sharif.nameless.in.seattle.yugioh.view.cardSelector.Conditions;
+import edu.sharif.nameless.in.seattle.yugioh.view.cardSelector.ResistToChooseCard;
 import edu.sharif.nameless.in.seattle.yugioh.controller.player.PlayerController;
 import edu.sharif.nameless.in.seattle.yugioh.model.card.action.Effect;
 import edu.sharif.nameless.in.seattle.yugioh.model.enums.Color;

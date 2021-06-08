@@ -16,4 +16,9 @@ public class MonsterAttackEvent extends AttackEvent {
     public String getActivationQuestion() {
         return String.format("Do you want to attack %s with %s?", defender.getName(), getAttacker().getName());
     }
+
+    @Override
+    public String getDescription(){
+        return "attack";
+    }
 }

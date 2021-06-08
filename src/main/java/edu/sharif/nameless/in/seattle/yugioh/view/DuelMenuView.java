@@ -1,274 +1,99 @@
 package edu.sharif.nameless.in.seattle.yugioh.view;
 
-import edu.sharif.nameless.in.seattle.yugioh.controller.cardSelector.CardSelector;
-import edu.sharif.nameless.in.seattle.yugioh.controller.GameController;
 import edu.sharif.nameless.in.seattle.yugioh.controller.LogicException;
-import edu.sharif.nameless.in.seattle.yugioh.controller.events.GameEvent;
-import edu.sharif.nameless.in.seattle.yugioh.controller.cardSelector.ResistToChooseCard;
-import edu.sharif.nameless.in.seattle.yugioh.controller.cardSelector.SelectCondition;
-import edu.sharif.nameless.in.seattle.yugioh.utils.CustomPrinter;
-import edu.sharif.nameless.in.seattle.yugioh.utils.CustomScanner;
-import edu.sharif.nameless.in.seattle.yugioh.utils.Debugger;
-import edu.sharif.nameless.in.seattle.yugioh.utils.RoutingException;
-import edu.sharif.nameless.in.seattle.yugioh.model.enums.Color;
+import edu.sharif.nameless.in.seattle.yugioh.controller.ProgramController;
 import edu.sharif.nameless.in.seattle.yugioh.controller.menu.DuelMenuController;
-import edu.sharif.nameless.in.seattle.yugioh.model.CardAddress;
-import edu.sharif.nameless.in.seattle.yugioh.model.ModelException;
+import edu.sharif.nameless.in.seattle.yugioh.controller.menu.LoginMenuController;
+import edu.sharif.nameless.in.seattle.yugioh.controller.menu.MainMenuController;
+import edu.sharif.nameless.in.seattle.yugioh.model.Game;
+import edu.sharif.nameless.in.seattle.yugioh.model.Player.HumanPlayer;
+import edu.sharif.nameless.in.seattle.yugioh.model.User;
 import edu.sharif.nameless.in.seattle.yugioh.model.card.Card;
-import edu.sharif.nameless.in.seattle.yugioh.view.CommandLine.Command;
-import edu.sharif.nameless.in.seattle.yugioh.view.CommandLine.CommandLine;
-import edu.sharif.nameless.in.seattle.yugioh.view.CommandLine.CommandLineException;
+import edu.sharif.nameless.in.seattle.yugioh.model.card.Monster;
+import edu.sharif.nameless.in.seattle.yugioh.model.enums.MonsterState;
+import edu.sharif.nameless.in.seattle.yugioh.utils.DatabaseHandler;
+import edu.sharif.nameless.in.seattle.yugioh.view.cardSelector.CardSelector;
+import edu.sharif.nameless.in.seattle.yugioh.view.cardSelector.ResistToChooseCard;
+import edu.sharif.nameless.in.seattle.yugioh.view.cardSelector.SelectCondition;
+import edu.sharif.nameless.in.seattle.yugioh.view.gui.AlertBox;
+import edu.sharif.nameless.in.seattle.yugioh.view.gui.CustomButton;
+import edu.sharif.nameless.in.seattle.yugioh.view.gui.DuelInfoBox;
+import edu.sharif.nameless.in.seattle.yugioh.view.gui.GameField;
+import javafx.application.Application;
+import javafx.scene.Scene;
+import javafx.scene.layout.*;
+import javafx.stage.Stage;
+import lombok.Getter;
 
-public class DuelMenuView extends BaseMenuView {
-    public DuelMenuView() {
+import java.util.ArrayList;
+import java.util.List;
+import java.util.concurrent.atomic.AtomicBoolean;
+import java.util.concurrent.atomic.AtomicInteger;
+
+public class DuelMenuView extends Application {
+    private final double WIDTH = 1400, HEIGHT = 1000;
+    private Scene scene;
+    private final StackPane stackPane;
+    private final HBox root;
+    private GameField gameField;
+    private DuelInfoBox infoBox;
+    @Getter
+    private CardSelector selector;
+    private Game game;
+
+    public DuelMenuView(Game game){
         super();
+        this.game = game;
+        root = new HBox();
+        stackPane = new StackPane(root);
+        stackPane.setMinWidth(WIDTH);
+        stackPane.setMinHeight(HEIGHT);
     }
 
     @Override
-    protected void addCommands() {
-        super.addCommands();
-        this.cmd.addCommand(new Command(
-                "select",
-                mp -> {
-                    CardSelector.getInstance().selectCard(Parser.cardAddressParser("monster", mp.get("monster"), mp.containsKey("opponent")));
-                },
-                Options.monsterZone(true),
-                Options.opponent(false)
-        ));
-        this.cmd.addCommand(new Command(
-                "select",
-                mp -> {
-                    CardSelector.getInstance().selectCard(Parser.cardAddressParser("spell", mp.get("spell"), mp.containsKey("opponent")));
-                },
-                Options.spellZone(true),
-                Options.opponent(false)
-        ));
-        this.cmd.addCommand(new Command(
-                "select",
-                mp -> {
-                    CardSelector.getInstance().selectCard(Parser.cardAddressParser("field", mp.get("field"), mp.containsKey("opponent")));
-                },
-                Options.fieldZone(true),
-                Options.opponent(false)
-        ));
-        this.cmd.addCommand(new Command(
-                "select",
-                mp -> {
-                    CardSelector.getInstance().selectCard(Parser.cardAddressParser("hand", mp.get("hand"), false));
-                },
-                Options.handZone(true)
-        ));
-        this.cmd.addCommand(new Command(
-                "select",
-                mp -> {
-                    CardSelector.getInstance().deselectCard();
-                },
-                Options.Deselect(true)
-        ));
-        this.cmd.addCommand(new Command(
-                "next phase",
-                mp -> {
-                    DuelMenuController.getInstance().goNextPhase();
-                }
-        ));
-        this.cmd.addCommand(new Command(
-                "summon",
-                mp -> {
-                    DuelMenuController.getInstance().summonCard(CardSelector.getInstance().getSelectedCard());
-                }
-        ));
-        this.cmd.addCommand(new Command(
-                "set",
-                mp -> {
-                    DuelMenuController.getInstance().setCard(CardSelector.getInstance().getSelectedCard());
-                }
-        ));
-        this.cmd.addCommand(new Command(
-                "set",
-                mp -> {
-                    DuelMenuController.getInstance().changeCardPosition(CardSelector.getInstance().getSelectedCard(), Parser.cardStateParser(mp.get("position")));
-                },
-                Options.cardPosition(true)
-        ));
-
-        // todo add regex so that attack [number] and attack direct don't be messed up
-        this.cmd.addCommand(new Command(
-                "attack direct",
-                mp -> {
-                    DuelMenuController.getInstance().directAttack(CardSelector.getInstance().getSelectedCard());
-                }
-        ));
-        this.cmd.addCommand(new Command(
-                "attack [number]",
-                mp -> {
-                    DuelMenuController.getInstance().attack(CardSelector.getInstance().getSelectedCard(), Parser.monsterPositionIdParser(mp.get("number")));
-                }
-        ));
-        this.cmd.addCommand(new Command(
-                "flip-summon",
-                mp -> {
-                    DuelMenuController.getInstance().flipSummon(CardSelector.getInstance().getSelectedCard());
-                }
-        ));
-        this.cmd.addCommand(new Command(
-                "activate effect",
-                mp -> {
-                    DuelMenuController.getInstance().activateEffect(CardSelector.getInstance().getSelectedCard());
-                }
-        ));
-        this.cmd.addCommand(new Command(
-                "show graveyard",
-                mp -> {
-                    DuelMenuController.getInstance().showGraveYard();
-                }
-        ));
-        this.cmd.addCommand(new Command(
-                "card show",
-                mp -> {
-                    DuelMenuController.getInstance().showSelectedCard();
-                },
-                Options.selected(true)
-        ));
-        this.cmd.addCommand(new Command(
-                "show hand",
-                mp -> {
-                    DuelMenuController.getInstance().showHand();
-                }
-        ));
-        this.cmd.addCommand(new Command(
-                "show board",
-                mp -> {
-                    DuelMenuController.getInstance().showBoard();
-                }
-        ));
-        this.cmd.addCommand(new Command(
-                "surrender",
-                mp -> {
-                    DuelMenuController.getInstance().surrender();
-                }
-        ));
+    public void start(Stage stage) {
+        gameField = new GameField(game, root.widthProperty().multiply(0.8), root.heightProperty().multiply(1));
+        infoBox = new DuelInfoBox(root.widthProperty().multiply(0.2), root.heightProperty().multiply(1));
+        root.getChildren().addAll(infoBox, gameField);
+        selector = new CardSelector(gameField, infoBox);
+        scene = new Scene(stackPane, WIDTH, HEIGHT);
+        stage.setScene(scene);
+        stage.show();
     }
 
     public boolean askUser(String question, String yes, String no) {
-        CustomPrinter.println(String.format("%s(%s/%s)", question, yes, no), Color.Cyan);
-        String response = CustomScanner.nextLine();
-        while (true) {
-            if (response.equalsIgnoreCase(yes))
-                return true;
-            else if (response.equalsIgnoreCase(no))
-                return false;
-            else
-                CustomPrinter.println(String.format("%s or %s?", yes, no), Color.Cyan);
-        }
+        // todo handle this better
+        return new AlertBox().displayYesNoStandAlone(question, yes, no);
     }
 
     public Card askUserToChooseCard(String message, SelectCondition condition) throws ResistToChooseCard {
-        CustomPrinter.println(message, Color.Default);
-        CardSelector cardSelector = new CardSelector(GameController.instance.getGame());
-        CustomPrinter.println("you have to select a card(q to quit)", Color.Cyan);
-        String line = CustomScanner.nextLine();
-
-        if (line.equalsIgnoreCase("q"))
+        // todo handle this better
+        List<Card> cards = new ArrayList<>();
+        game.getAllCards().forEach(c->{
+            if(condition.canSelect(c))
+                cards.add(c);
+        });
+        List<CustomButton> buttons = new ArrayList<>();
+        cards.forEach(c->{
+            buttons.add(new CustomButton(c.getName(), 17, ()->{}));
+        });
+        int ret = new AlertBox().displayChoicesStandAlone(message, buttons);
+        if(ret == -1)
             throw new ResistToChooseCard();
-        try {
-            // todo clean this shit
-            CommandLine commandLine = new CommandLine();
-            commandLine.addCommand(new Command(
-                    "select",
-                    mp -> {
-                        CardAddress cardAddress = Parser.cardAddressParser("monster", mp.get("monster"), mp.containsKey("opponent"));
-                        Card card = GameController.getInstance().getGame().getCardByCardAddress(cardAddress);
-                        if (card == null)
-                            throw new LogicException("no card found in the given position");
-                        if (!condition.canSelect(card))
-                            throw new LogicException("you can't select this card");
-                        cardSelector.selectCard(cardAddress);
-                    },
-                    Options.monsterZone(true),
-                    Options.opponent(false)
-            ));
-            commandLine.addCommand(new Command(
-                    "select",
-                    mp -> {
-                        CardAddress cardAddress = Parser.cardAddressParser("spell", mp.get("spell"), mp.containsKey("opponent"));
-                        Card card = GameController.getInstance().getGame().getCardByCardAddress(cardAddress);
-                        if (card == null)
-                            throw new LogicException("no card found in the given position");
-                        if (!condition.canSelect(card))
-                            throw new LogicException("you can't select this card");
-                        cardSelector.selectCard(cardAddress);
-                    },
-                    Options.spellZone(true),
-                    Options.opponent(false)
-            ));
-            commandLine.addCommand(new Command(
-                    "select",
-                    mp -> {
-                        CardAddress cardAddress = Parser.cardAddressParser("field", mp.get("field"), mp.containsKey("opponent"));
-                        Card card = GameController.getInstance().getGame().getCardByCardAddress(cardAddress);
-                        if (card == null)
-                            throw new LogicException("no card found in the given position");
-                        if (!condition.canSelect(card))
-                            throw new LogicException("you can't select this card");
-                        cardSelector.selectCard(cardAddress);
-                    },
-                    Options.fieldZone(true),
-                    Options.opponent(false)
-            ));
-            commandLine.addCommand(new Command(
-                    "select",
-                    mp -> {
-                        CardAddress cardAddress = Parser.cardAddressParser("hand", mp.get("hand"), false);
-                        Card card = GameController.getInstance().getGame().getCardByCardAddress(cardAddress);
-                        if (card == null)
-                            throw new LogicException("no card found in the given position");
-                        if (!condition.canSelect(card))
-                            throw new LogicException("you can't select this card");
-                        cardSelector.selectCard(cardAddress);
-                    },
-                    Options.handZone(true)
-            ));
-            commandLine.runNextCommand(line);
-        } catch (CommandLineException | ParserException | LogicException | ModelException | GameEvent | RoutingException e) {
-            CustomPrinter.println(e.getMessage(), Color.Default);
-            throw new ResistToChooseCard();
-        }
-        try {
-            return cardSelector.getSelectedCard();
-        } catch (LogicException logicException) {
-            throw new ResistToChooseCard();
-        }
+        return cards.get(ret);
     }
 
-    public int askUserToChooseNumber(String question, int l, int r) {
-        CustomPrinter.println(question, Color.Default);
-        while (true) {
-            String number = CustomScanner.nextLine();
-            try {
-                int id = Integer.parseInt(number);
-                if (l > id || id > r)
-                    throw new Exception();
-                return id;
-            } catch (Exception e) {
-                CustomPrinter.println(String.format("number should be from %d to %d", l, r), Color.Cyan);
-            }
-        }
+    public int askUserToChoose(String question, List<String> choices) throws ResistToChooseCard {
+        // todo handle this better
+        ArrayList<CustomButton> buttons = new ArrayList<>();
+        choices.forEach(s->buttons.add(new CustomButton(s, 17, ()->{})));
+        int ret = new AlertBox().displayChoicesStandAlone(question, buttons);
+        if(ret == -1)
+            throw new ResistToChooseCard();
+        return ret;
     }
 
-    @Override
-    public void runNextCommand() {
-        try {
-            String line = CustomScanner.nextLine();
-            if (Debugger.getCaptureMode())
-                Debugger.captureCommand(line);
-            this.cmd.runNextCommand(line);
-        } catch (CommandLineException | ParserException | ModelException | LogicException | RoutingException e) {
-            CustomPrinter.println(e.getMessage(), Color.Red);
-        }
-    }
-
-    @Override
-    protected String getMenuName() {
-        return "Duel Menu";
+    public void resetSelector(){
+        selector.refresh();
     }
 }

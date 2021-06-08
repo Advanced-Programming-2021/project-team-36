@@ -1,9 +1,14 @@
 package edu.sharif.nameless.in.seattle.yugioh.model;
 
+import edu.sharif.nameless.in.seattle.yugioh.model.Player.Player;
 import edu.sharif.nameless.in.seattle.yugioh.model.card.Magic;
 import edu.sharif.nameless.in.seattle.yugioh.model.enums.ZoneType;
+import javafx.beans.Observable;
+import javafx.beans.value.ObservableValue;
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
+import javafx.collections.ObservableMap;
 import lombok.Getter;
-import lombok.Setter;
 import edu.sharif.nameless.in.seattle.yugioh.model.card.Card;
 import edu.sharif.nameless.in.seattle.yugioh.model.card.Monster;
 import edu.sharif.nameless.in.seattle.yugioh.model.deck.MainDeck;
@@ -15,38 +20,32 @@ import java.util.*;
 
 public class Board {
     private final MainDeck mainDeck;
-    private final List<Card> graveYard;
-    private final Map<Integer, Monster> monsterCardZone;
-    private final Map<Integer, Magic> magicCardZone;
-    private final List<Card> cardsOnHand;
+    @Getter
+    private final ObservableList<Card> graveYard;
+    @Getter
+    private final ObservableMap<Integer, Monster> monsterCardZone;
+    @Getter
+    private final ObservableMap<Integer, Magic> magicCardZone;
+    @Getter
+    private final ObservableList<Card> cardsOnHand;
+
+    // todo handle this without need of list
+    @Getter
+    private final ObservableList<Magic> fieldZoneCard;
 
     @Getter
-    @Setter
-    private Magic fieldZoneCard;
+    private final Player owner;
 
-    public Board(MainDeck mainDeck){
+
+    public Board(MainDeck mainDeck, Player owner){
         this.mainDeck = mainDeck;
-        graveYard = new ArrayList<>();
-        monsterCardZone = new HashMap<>();
-        magicCardZone = new HashMap<>();
-        cardsOnHand = new ArrayList<>();
-        fieldZoneCard = null;
-    }
-
-    public List<Card> getGraveYard() {
-        return graveYard;
-    }
-
-    public List<Card> getCardsOnHand() {
-        return cardsOnHand;
-    }
-
-    public Map<Integer, Monster> getMonsterCardZone() {
-        return monsterCardZone;
-    }
-
-    public Map<Integer, Magic> getMagicCardZone() {
-        return magicCardZone;
+        graveYard = FXCollections.observableArrayList();
+        monsterCardZone = FXCollections.observableHashMap();
+        magicCardZone = FXCollections.observableHashMap();
+        cardsOnHand = FXCollections.observableArrayList();
+        fieldZoneCard = FXCollections.observableArrayList();
+        fieldZoneCard.add(null);
+        this.owner = owner;
     }
 
     public void drawCardFromDeck() {
@@ -67,7 +66,7 @@ public class Board {
         } else if (cardAddress.isInMagicZone()) {
             return magicCardZone.getOrDefault(cardAddress.getId(), null);
         } else if (cardAddress.isInFieldZone()) {
-            return fieldZoneCard;
+            return getFieldZoneCard();
         } else if (cardAddress.isInGraveYard()) {
             if (1 <= cardAddress.getId() && cardAddress.getId() <= graveYard.size())
                 return graveYard.get(cardAddress.getId());
@@ -84,7 +83,7 @@ public class Board {
             return ZoneType.MAGIC;
         if(graveYard.contains(card))
             return ZoneType.GRAVEYARD;
-        if(card.equals(fieldZoneCard))
+        if(card.equals(getFieldZoneCard()))
             return ZoneType.FIELD;
         if(cardsOnHand.contains(card))
             return ZoneType.HAND;
@@ -95,8 +94,8 @@ public class Board {
         List<Card> allCards = new ArrayList<>();
         allCards.addAll(monsterCardZone.values());
         allCards.addAll(magicCardZone.values());
-        if(fieldZoneCard != null)
-            allCards.add(fieldZoneCard);
+        if(getFieldZoneCard() != null)
+            allCards.add(getFieldZoneCard());
         return allCards;
     }
 
@@ -109,9 +108,9 @@ public class Board {
 
     public void addCardToBoard(Card card, CardAddress cardAddress) {
         if (cardAddress.isInFieldZone()) {
-            if (fieldZoneCard != null)
-                moveCardToGraveYard(fieldZoneCard);
-            fieldZoneCard = (Magic) card;
+            if (getFieldZoneCard() != null)
+                moveCardToGraveYard(getFieldZoneCard());
+            setFieldZoneCard((Magic) card);
         }
         else if (cardAddress.isInMagicZone()) {
             assert magicCardZone.get(cardAddress.getId()) == null;
@@ -125,11 +124,11 @@ public class Board {
 
     public void addMagic(Magic magic) {
         if (magic.getIcon().equals(Icon.FIELD))
-            addCardToBoard((Card) magic, new CardAddress(ZoneType.FIELD, 1, false));
+            addCardToBoard((Card) magic, new CardAddress(ZoneType.FIELD, 1, owner));
         else {
             for (int i = 1; i <= 5; i++) {
                 if (getMagicCardZone().get(i) == null) {
-                    addCardToBoard(magic, new CardAddress(ZoneType.MAGIC, i, false));
+                    addCardToBoard(magic, new CardAddress(ZoneType.MAGIC, i, owner));
                     break;
                 }
             }
@@ -145,9 +144,9 @@ public class Board {
 
     public void moveCardToGraveYard(Card card) {
         // todo this choosing should be based on pointer value not equals method!
-        if (fieldZoneCard == card) {
+        if (getFieldZoneCard() == card) {
             graveYard.add(card);
-            fieldZoneCard = null;
+            setFieldZoneCard(null);
         }
         else if (magicCardZone.containsValue(card)) {
             graveYard.add(card);
@@ -165,6 +164,16 @@ public class Board {
 
     public boolean isMonsterCardZoneFull() {
         return monsterCardZone.size() == 5;
+    }
+
+    public void setFieldZoneCard(Magic fieldZoneCard) {
+        this.fieldZoneCard.set(0, fieldZoneCard);
+    }
+    public Magic getFieldZoneCard() {
+        return this.fieldZoneCard.get(0);
+    }
+    public ObservableList<Magic> getFieldZoneCardObservableList(){
+        return fieldZoneCard;
     }
 
     public String toRotatedString() {
@@ -206,7 +215,7 @@ public class Board {
     @Override
     public String toString() {
         StringBuilder stringBuilder = new StringBuilder();
-        if (fieldZoneCard == null)
+        if (getFieldZoneCard() == null)
             stringBuilder.append("E");
         else
             stringBuilder.append("O");
