@@ -11,7 +11,7 @@ import edu.sharif.nameless.in.seattle.yugioh.controller.GameController;
 import edu.sharif.nameless.in.seattle.yugioh.controller.LogicException;
 import edu.sharif.nameless.in.seattle.yugioh.view.cardSelector.ResistToChooseCard;
 import edu.sharif.nameless.in.seattle.yugioh.view.cardSelector.SelectCondition;
-import edu.sharif.nameless.in.seattle.yugioh.controller.events.GameOverEvent;
+import edu.sharif.nameless.in.seattle.yugioh.controller.events.RoundOverEvent;
 import lombok.Getter;
 import edu.sharif.nameless.in.seattle.yugioh.model.Board;
 import edu.sharif.nameless.in.seattle.yugioh.model.CardAddress;
@@ -195,10 +195,10 @@ public abstract class PlayerController {
         );
     }
 
-    public void surrender() throws GameOverEvent {
+    public void surrender() throws RoundOverEvent {
         Game game = GameController.instance.getGame();
         game.getCurrentPlayer().setLifePoint(0);
-        throw new GameOverEvent(GameResult.NOT_DRAW, game.getCurrentPlayer(), game.getOpponentPlayer(), game.getOpponentPlayer().getLifePoint());
+        throw new RoundOverEvent(GameResult.NOT_DRAW, game.getCurrentPlayer(), game.getOpponentPlayer(), game.getOpponentPlayer().getLifePoint());
     }
 
     public void changeMonsterPosition(Monster monster, MonsterState monsterState) throws LogicException {
@@ -229,7 +229,7 @@ public abstract class PlayerController {
             throw new LogicException("monster is in defensive position");
     }
 
-    public void attack(Monster monster, Monster opponentMonster) throws LogicException, GameOverEvent {
+    public void attack(Monster monster, Monster opponentMonster) throws LogicException, RoundOverEvent {
         canAttack(monster);
         if (!monster.isAllowAttack())
             throw new LogicException("this card already attacked");
@@ -245,7 +245,7 @@ public abstract class PlayerController {
         GameController.getInstance().checkBothLivesEndGame();
     }
 
-    public void directAttack(Monster monster) throws GameOverEvent, LogicException {
+    public void directAttack(Monster monster) throws RoundOverEvent, LogicException {
         canAttack(monster);
         if (GameController.getInstance().getOtherPlayerController(this).getPlayer().getBoard().getMonsterCardZone().size() > 0)
             throw new LogicException("you can’t attack the opponent directly");
@@ -264,7 +264,7 @@ public abstract class PlayerController {
         GameController.getInstance().checkBothLivesEndGame();
     }
 
-    public void activateEffect(Spell spell) throws LogicException, GameOverEvent {
+    public void activateEffect(Spell spell) throws LogicException, RoundOverEvent {
         Game game = GameController.getInstance().getGame();
         if (!player.getBoard().getMagicCardZone().containsValue(spell) && !player.getBoard().getCardsOnHand().contains((Card) spell))
             throw new LogicException("you can't activate this card!");
@@ -287,7 +287,7 @@ public abstract class PlayerController {
         );
     }
 
-    public void startChain(Action action) throws GameOverEvent {
+    public void startChain(Action action) throws RoundOverEvent {
         ChainController chainController = new ChainController(this, action);
         chainController.control();
     }

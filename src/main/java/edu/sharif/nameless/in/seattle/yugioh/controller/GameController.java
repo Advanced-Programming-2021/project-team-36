@@ -1,8 +1,7 @@
 package edu.sharif.nameless.in.seattle.yugioh.controller;
 
-import edu.sharif.nameless.in.seattle.yugioh.view.DuelMenuView;
-import edu.sharif.nameless.in.seattle.yugioh.view.cardSelector.CardSelector;
-import edu.sharif.nameless.in.seattle.yugioh.controller.events.GameOverEvent;
+import edu.sharif.nameless.in.seattle.yugioh.controller.events.DuelOverEvent;
+import edu.sharif.nameless.in.seattle.yugioh.controller.events.RoundOverEvent;
 import edu.sharif.nameless.in.seattle.yugioh.controller.player.AIPlayerController;
 import edu.sharif.nameless.in.seattle.yugioh.controller.player.HumanPlayerController;
 import edu.sharif.nameless.in.seattle.yugioh.controller.player.PlayerController;
@@ -41,21 +40,21 @@ public class GameController {
                 new AIPlayerController((AIPlayer) game.getSecondPlayer());
     }
 
-    public void drawCard() throws GameOverEvent {
+    public void drawCard() throws RoundOverEvent {
         Card card = game.getCurrentPlayer().getMainDeck().getTopCard();
         if (card == null)
-            throw new GameOverEvent(GameResult.NOT_DRAW, game.getCurrentPlayer(), game.getOpponentPlayer(), game.getOpponentPlayer().getLifePoint());
+            throw new RoundOverEvent(GameResult.NOT_DRAW, game.getCurrentPlayer(), game.getOpponentPlayer(), game.getOpponentPlayer().getLifePoint());
         game.getCurrentPlayer().getBoard().drawCardFromDeck();
         CustomPrinter.println(String.format("new card added to the hand : <%s>", card.getName()), Color.Blue);
     }
 
-    public void checkBothLivesEndGame() throws GameOverEvent {
+    public void checkBothLivesEndGame() throws RoundOverEvent {
         if (game.getCurrentPlayer().getLifePoint() <= 0 && game.getOpponentPlayer().getLifePoint() <= 0)
-            throw new GameOverEvent(GameResult.DRAW, game.getCurrentPlayer(), game.getOpponentPlayer(), 0);
+            throw new RoundOverEvent(GameResult.DRAW, game.getCurrentPlayer(), game.getOpponentPlayer(), 0);
         if (game.getCurrentPlayer().getLifePoint() <= 0)
-            throw new GameOverEvent(GameResult.NOT_DRAW, game.getCurrentPlayer(), game.getOpponentPlayer(), game.getOpponentPlayer().getLifePoint());
+            throw new RoundOverEvent(GameResult.NOT_DRAW, game.getCurrentPlayer(), game.getOpponentPlayer(), game.getOpponentPlayer().getLifePoint());
         if (game.getOpponentPlayer().getLifePoint() <= 0)
-            throw new GameOverEvent(GameResult.NOT_DRAW, game.getOpponentPlayer(), game.getCurrentPlayer(), game.getCurrentPlayer().getLifePoint());
+            throw new RoundOverEvent(GameResult.NOT_DRAW, game.getOpponentPlayer(), game.getCurrentPlayer(), game.getCurrentPlayer().getLifePoint());
     }
 
     public void decreaseLifePoint(Player player, int amount) {
@@ -77,15 +76,7 @@ public class GameController {
         return playerController1;
     }
 
-    private void changeTurn() {
-        game.setPhase(Phase.DRAW_PHASE);
-        game.changeTurn();
-        game.getCurrentPlayer().setSummonedInLastTurn(false);
-        DuelMenuController.getInstance().showBoard();
-        DuelMenuController.getInstance().getGraphicView().resetSelector();
-    }
-
-    private void endRound(GameOverEvent event) {
+    private void endRound(RoundOverEvent event) {
         if(event.gameResult.equals(GameResult.DRAW)) {
             CustomPrinter.println(String.format("game is a draw and the score is %d-%d", game.totalScore(game.getFirstPlayer()), game.totalScore(game.getSecondPlayer())), Color.Blue);
             game.addFirstPlayerLastRoundScore(0);
@@ -117,14 +108,24 @@ public class GameController {
         winner.getUser().increaseBalance(rounds * (1000 + maxWinnerLP));
         looser.getUser().increaseBalance(rounds * 100);
         CustomPrinter.println(String.format("%s won the whole match with score: %d-%d", winner.getUser().getUsername(), firstPlayerScore, secondPlayerScore), Color.Blue);
-        throw new Error();
+        throw new DuelOverEvent();
     }
 
-    public void goNextPhase() {
-        if (game.getPhase() == Phase.END_PHASE)
-            throw new Error("Why are you in the END_Phase?");
+    private void goNextPhase(){
+        boolean mustChangeTurn = game.getPhase() == Phase.END_PHASE;
         game.setPhase(game.getPhase().nextPhase());
+        if(mustChangeTurn){
+            game.changeTurn();
+            game.getCurrentPlayer().setSummonedInLastTurn(false);
+        }
         DuelMenuController.getInstance().getGraphicView().resetSelector();
+    }
+
+    public void goNextPhaseAndNotify() {
+        synchronized (game.phaseProperty()) {
+            game.phaseProperty().notifyAll(); // todo any problem for AI?
+            goNextPhase();
+        }
     }
 
     public PlayerController getPlayerControllerByPlayer(Player player){
@@ -143,7 +144,6 @@ public class GameController {
                 if (game.getPhase().equals(Phase.DRAW_PHASE)) {
                     CustomPrinter.println(String.format("its %s's turn%n", game.getCurrentPlayer().getUser().getNickname()), Color.Blue);
                     // todo : check player can draw or not (effects)
-                    DuelMenuController.getInstance().printCurrentPhase();
                     drawCard();
                     goNextPhase();
                 } else if (game.getPhase().equals(Phase.STANDBY_PHASE)) {
@@ -155,14 +155,11 @@ public class GameController {
                 } else if (game.getPhase().equals(Phase.MAIN_PHASE2)) {
                     getCurrentPlayerController().controlMainPhase2();
                 } else if (game.getPhase().equals(Phase.END_PHASE)) {
-                    changeTurn();
+                    goNextPhase();
                 }
-            } catch (GameOverEvent gameOverEvent) {
-                try {
-                    endRound(gameOverEvent);
-                } catch (Error error) {
-                    break;
-                }
+            } catch (RoundOverEvent roundOverEvent) {
+                endRound(roundOverEvent);
+                // letting DuelOverEvent throw up for our controller service
             }
         }
     }

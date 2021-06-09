@@ -59,7 +59,7 @@ public class AlertBox {
         ArrayList<CustomButton> buttons = new ArrayList<>();
         buttons.add(new CustomButton(yes, 20, ()->{}));
         buttons.add(new CustomButton(no, 20, ()->{}));
-        return displayChoicesStandAlone(question, buttons) == 1;
+        return displayChoicesStandAlone(question, buttons) == 0;
     }
 
     public Pane display(Pane parent, String question, Runnable yesRun, Runnable noRun){

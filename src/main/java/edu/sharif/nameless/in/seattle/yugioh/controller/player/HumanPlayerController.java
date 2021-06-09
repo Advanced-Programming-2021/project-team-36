@@ -11,6 +11,7 @@ import edu.sharif.nameless.in.seattle.yugioh.model.card.Card;
 import edu.sharif.nameless.in.seattle.yugioh.model.card.Monster;
 import edu.sharif.nameless.in.seattle.yugioh.model.card.action.Action;
 import edu.sharif.nameless.in.seattle.yugioh.model.enums.Phase;
+import javafx.beans.property.ObjectProperty;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -22,6 +23,15 @@ public class HumanPlayerController extends PlayerController {
     }
 
     private void runUntilEndOfPhase(){
+        ObjectProperty<Phase> phase = GameController.getInstance().getGame().phaseProperty();
+        synchronized (phase) {
+            try {
+                phase.wait();
+            } catch (InterruptedException e){
+                e.printStackTrace();
+            }
+        }
+
 //        DuelMenuView view = new DuelMenuView();
 //        Game game = GameController.instance.getGame();
 //        Phase phase = game.getPhase();

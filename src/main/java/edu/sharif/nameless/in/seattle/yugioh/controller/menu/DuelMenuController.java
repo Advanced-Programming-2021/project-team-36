@@ -4,7 +4,7 @@ import edu.sharif.nameless.in.seattle.yugioh.controller.GameController;
 import edu.sharif.nameless.in.seattle.yugioh.controller.LogicException;
 import edu.sharif.nameless.in.seattle.yugioh.controller.ProgramController;
 import edu.sharif.nameless.in.seattle.yugioh.view.cardSelector.ResistToChooseCard;
-import edu.sharif.nameless.in.seattle.yugioh.controller.events.GameOverEvent;
+import edu.sharif.nameless.in.seattle.yugioh.controller.events.RoundOverEvent;
 import edu.sharif.nameless.in.seattle.yugioh.model.CardAddress;
 import edu.sharif.nameless.in.seattle.yugioh.model.Game;
 import edu.sharif.nameless.in.seattle.yugioh.model.card.Card;
@@ -46,11 +46,11 @@ public class DuelMenuController extends BaseMenuController {
     }
 
     public void printCurrentPhase() {
-        CustomPrinter.println("phase: " + game.getPhase().verboseName, Color.Blue);
+        CustomPrinter.println("phase: " + game.getPhase().getVerboseName(), Color.Blue);
     }
 
     public void goNextPhase() {
-        gameController.goNextPhase();
+        gameController.goNextPhaseAndNotify();
     }
 
     public void summonCard(Card card) throws LogicException, ResistToChooseCard {
@@ -80,7 +80,7 @@ public class DuelMenuController extends BaseMenuController {
         graphicView.resetSelector();
     }
 
-    public void attack(Card card, int id) throws LogicException, GameOverEvent {
+    public void attack(Card card, int id) throws LogicException, RoundOverEvent {
         if(!(card instanceof Monster))
             throw new LogicException("only a monster can attack");
         CardAddress cardAddress = new CardAddress(ZoneType.MONSTER, id, gameController.getGame().getOpponentPlayer());
@@ -90,13 +90,13 @@ public class DuelMenuController extends BaseMenuController {
         gameController.getCurrentPlayerController().attack((Monster) card, opponentMonster);
     }
 
-    public void directAttack(Card card) throws LogicException, GameOverEvent {
+    public void directAttack(Card card) throws LogicException, RoundOverEvent {
         if(!(card instanceof Monster))
             throw new LogicException("only a monster can attack");
         gameController.getCurrentPlayerController().directAttack((Monster) card);
     }
 
-    public void activateEffect(Card card) throws LogicException, GameOverEvent {
+    public void activateEffect(Card card) throws LogicException, RoundOverEvent {
         if (!(card instanceof Spell))
             throw new LogicException("activate effect is only for spell cards");
         gameController.getCurrentPlayerController().activateEffect((Spell) card);
@@ -120,7 +120,7 @@ public class DuelMenuController extends BaseMenuController {
         CustomPrinter.println(game.getCurrentPlayer().getUser().getNickname() + ":" + game.getCurrentPlayer().getLifePoint(), Color.Purple);
     }
 
-    public void surrender() throws GameOverEvent {
+    public void surrender() throws RoundOverEvent {
         gameController.getCurrentPlayerController().surrender();
     }
 

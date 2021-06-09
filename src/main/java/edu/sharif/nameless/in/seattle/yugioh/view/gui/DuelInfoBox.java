@@ -1,20 +1,28 @@
 package edu.sharif.nameless.in.seattle.yugioh.view.gui;
 
 import edu.sharif.nameless.in.seattle.yugioh.controller.menu.DuelMenuController;
+import edu.sharif.nameless.in.seattle.yugioh.model.Game;
+import edu.sharif.nameless.in.seattle.yugioh.model.enums.Phase;
+import javafx.application.Platform;
 import javafx.beans.binding.DoubleBinding;
+import javafx.beans.property.SimpleObjectProperty;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.*;
-import javafx.scene.shape.Rectangle;
+import javafx.scene.paint.Color;
+import javafx.scene.text.Font;
+import javafx.scene.text.Text;
 
 public class DuelInfoBox extends BorderPane {
     DoubleBinding widthProperty, heightProperty;
     ImageView imageView;
     VBox buttonBox;
+    Game game;
 
-    public DuelInfoBox(DoubleBinding widthProperty, DoubleBinding heightProperty){
+    public DuelInfoBox(Game game, DoubleBinding widthProperty, DoubleBinding heightProperty){
         this.widthProperty = widthProperty;
         this.heightProperty = heightProperty;
+        this.game = game;
         setBackground(new Background(new BackgroundImage(
                 new Image(Utils.getAsset("Texture/wood.png").toURI().toString()),
                 BackgroundRepeat.REPEAT,
@@ -37,7 +45,7 @@ public class DuelInfoBox extends BorderPane {
 
         CustomButton nextPhaseButton = new CustomButton("next phase", 23, ()->{
             DuelMenuController.getInstance().goNextPhase();
-        }).setNewShape(new Rectangle());
+        });
 
         CustomButton surrenderButton = new CustomButton("surrender", 23, ()->{
             DuelMenuController.getInstance().surrender();
@@ -46,16 +54,31 @@ public class DuelInfoBox extends BorderPane {
         setBottom(new VBox(nextPhaseButton, surrenderButton));
         setTop(imageView);
         setCenter(buttonBox);
+
+        Text currentPhase = new Text(game.getPhase().getVerboseName());
+        currentPhase.setFont(Font.font(30));
+        currentPhase.setFill(Color.BLACK);
+        // todo I don't know why binding the text does not work. maybe because phase changes too fast?
+        game.phaseProperty().addListener((observable -> {
+            Platform.runLater(()-> {
+                currentPhase.setText(((SimpleObjectProperty<Phase>) observable).getValue().getVerboseName());
+            });
+        }));
+        setRight(currentPhase);
     }
 
     public void addInfo(Image image, CustomButton... buttons){
-        for(CustomButton button : buttons){
-            buttonBox.getChildren().add(button);
-        }
-        imageView.setImage(image);
+        Platform.runLater(()-> {
+            for (CustomButton button : buttons) {
+                buttonBox.getChildren().add(button);
+            }
+            imageView.setImage(image);
+        });
     }
     public void clear(){
-        buttonBox.getChildren().clear();
-        imageView.setImage(null);
+        Platform.runLater(()-> {
+            buttonBox.getChildren().clear();
+            imageView.setImage(null);
+        });
     }
 }

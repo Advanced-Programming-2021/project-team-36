@@ -4,6 +4,7 @@ import edu.sharif.nameless.in.seattle.yugioh.model.Player.Player;
 import edu.sharif.nameless.in.seattle.yugioh.model.card.action.Action;
 import edu.sharif.nameless.in.seattle.yugioh.model.enums.ZoneType;
 import edu.sharif.nameless.in.seattle.yugioh.model.enums.Phase;
+import javafx.beans.property.SimpleObjectProperty;
 import lombok.Getter;
 import lombok.Setter;
 import edu.sharif.nameless.in.seattle.yugioh.model.card.Card;
@@ -19,9 +20,7 @@ public class Game {
     @Getter
     private int turn;
 
-    @Getter
-    @Setter
-    private Phase phase;
+    private final SimpleObjectProperty<Phase> phase;
 
     @Getter
     @Setter
@@ -55,7 +54,7 @@ public class Game {
         this.rounds = rounds;
 
         this.turn = 0;
-        this.phase = Phase.MAIN_PHASE2;
+        this.phase = new SimpleObjectProperty<>(Phase.MAIN_PHASE2);
     }
 
     public Card getCardByCardAddress(CardAddress cardAddress) {
@@ -146,5 +145,17 @@ public class Game {
             return countNonZero(firstPlayerScores);
         else
             return countNonZero(secondPlayerScores);
+    }
+
+    public Phase getPhase() {
+        return phase.get();
+    }
+
+    public void setPhase(Phase phase) {
+        this.phase.set(phase);
+    }
+
+    public SimpleObjectProperty<Phase> phaseProperty() {
+        return phase;
     }
 }

@@ -2,7 +2,7 @@ package edu.sharif.nameless.in.seattle.yugioh.model.card;
 
 import edu.sharif.nameless.in.seattle.yugioh.controller.GameController;
 import edu.sharif.nameless.in.seattle.yugioh.controller.LogicException;
-import edu.sharif.nameless.in.seattle.yugioh.controller.events.GameOverEvent;
+import edu.sharif.nameless.in.seattle.yugioh.controller.events.RoundOverEvent;
 import edu.sharif.nameless.in.seattle.yugioh.model.Player.Player;
 import edu.sharif.nameless.in.seattle.yugioh.model.card.action.Effect;
 import edu.sharif.nameless.in.seattle.yugioh.model.enums.*;
@@ -82,7 +82,7 @@ public class Monster extends Card {
         monster.tryToDecreaseLifePointOfMe(amount);
     }
 
-    public void damageStep(Monster attacker) throws GameOverEvent {
+    public void damageStep(Monster attacker) throws RoundOverEvent {
         // todo are the responses ok? maybe we have to swap your and mine?
         // todo remove this System.outs!
         if (getMonsterState().equals(MonsterState.OFFENSIVE_OCCUPIED)) {

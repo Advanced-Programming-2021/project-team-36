@@ -26,7 +26,7 @@ public class AIPlayerController extends PlayerController {
 
     @Override
     public void controlStandbyPhase() {
-        GameController.getInstance().goNextPhase();
+        GameController.getInstance().goNextPhaseAndNotify();
     }
 
     public void mainPhase() {
@@ -57,7 +57,7 @@ public class AIPlayerController extends PlayerController {
                 noErrorActivateEffect((Spell) card);
             }
         }
-        GameController.getInstance().goNextPhase();
+        GameController.getInstance().goNextPhaseAndNotify();
     }
 
     @Override
@@ -104,7 +104,7 @@ public class AIPlayerController extends PlayerController {
                 noErrorActivateEffect((Spell) card);
             }
         }
-        GameController.getInstance().goNextPhase();
+        GameController.getInstance().goNextPhaseAndNotify();
     }
 
     private void noErrorSummonCard(Monster monster) {

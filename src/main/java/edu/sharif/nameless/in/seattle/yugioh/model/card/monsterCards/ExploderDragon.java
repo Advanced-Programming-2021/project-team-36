@@ -1,7 +1,7 @@
 package edu.sharif.nameless.in.seattle.yugioh.model.card.monsterCards;
 
 import edu.sharif.nameless.in.seattle.yugioh.controller.GameController;
-import edu.sharif.nameless.in.seattle.yugioh.controller.events.GameOverEvent;
+import edu.sharif.nameless.in.seattle.yugioh.controller.events.RoundOverEvent;
 import edu.sharif.nameless.in.seattle.yugioh.model.card.action.Effect;
 import edu.sharif.nameless.in.seattle.yugioh.model.enums.MonsterCardType;
 import edu.sharif.nameless.in.seattle.yugioh.model.enums.ZoneType;
@@ -21,7 +21,7 @@ public class ExploderDragon extends Monster {
             int opponentLifePoint = attacker.owner.getLifePoint();
             try{
                 super.onBeingAttackedByMonster(attacker).run();
-            } catch (GameOverEvent ignored){
+            } catch (RoundOverEvent ignored){
             }
             if(GameController.getInstance().getGame().getCardZoneType(this).equals(ZoneType.GRAVEYARD)) {
                 attacker.tryToSendToGraveYardOfMe();

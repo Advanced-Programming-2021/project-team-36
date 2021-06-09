@@ -1,7 +1,7 @@
 package edu.sharif.nameless.in.seattle.yugioh.controller.events;
 
-public class GameEvent extends RuntimeException {
-    GameEvent(){
+public class DuelOverEvent extends GameEvent{
+    public DuelOverEvent(){
         super();
     }
 }

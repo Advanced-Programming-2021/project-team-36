@@ -6,14 +6,27 @@ import edu.sharif.nameless.in.seattle.yugioh.model.CardAddress;
 import edu.sharif.nameless.in.seattle.yugioh.model.Game;
 import edu.sharif.nameless.in.seattle.yugioh.model.card.Card;
 import edu.sharif.nameless.in.seattle.yugioh.model.card.Magic;
+import edu.sharif.nameless.in.seattle.yugioh.model.enums.Phase;
 import edu.sharif.nameless.in.seattle.yugioh.model.enums.ZoneType;
+import javafx.application.Platform;
 import javafx.beans.InvalidationListener;
 import javafx.beans.Observable;
 import javafx.beans.binding.DoubleBinding;
+import javafx.beans.binding.StringBinding;
+import javafx.beans.property.ObjectProperty;
+import javafx.beans.property.SimpleObjectProperty;
+import javafx.beans.value.ChangeListener;
+import javafx.beans.value.ObservableObjectValue;
+import javafx.beans.value.ObservableValue;
+import javafx.collections.FXCollections;
 import javafx.collections.ListChangeListener;
+import javafx.collections.ObservableList;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.*;
+import javafx.scene.paint.Color;
+import javafx.scene.text.Font;
+import javafx.scene.text.Text;
 import javafx.util.Pair;
 import lombok.Getter;
 
@@ -65,27 +78,17 @@ public class GameField extends Pane {
             new CardLocation(0.94125, 0.4)
     };
 
-    // todo what happens if there are too many cards in hand?
-    CardLocation[][] handLocation = new CardLocation[][]{
-            new CardLocation[]{
-                    new CardLocation(0.1, 0.94),
-                    new CardLocation(0.24, 0.94),
-                    new CardLocation(0.38, 0.94),
-                    new CardLocation(0.52, 0.94),
-                    new CardLocation(0.68, 0.94)
-            },
-            new CardLocation[]{
-                    new CardLocation(0.1, 0.06),
-                    new CardLocation(0.24, 0.06),
-                    new CardLocation(0.38, 0.06),
-                    new CardLocation(0.52, 0.06),
-                    new CardLocation(0.68, 0.06)
-            }
-    };
     CardLocation[] graveYardLocation = new CardLocation[]{
             new CardLocation(0.9285714285714286,0.633),
             new CardLocation(0.3007142857142857, 0.363)
     };
+
+    // todo what happens if there are too many cards in hand?
+    public CardLocation getHandLocation(int cardId, int totalCards, int up){
+        double y = up == 1 ? 0.06 : 0.94;
+        double x = 0.1 + 0.8 * cardId / totalCards;
+        return new CardLocation(x, y);
+    }
 
     private void refreshHand(Board board){
         int[] counter = new int[1];
@@ -121,36 +124,11 @@ public class GameField extends Pane {
 
     public void addBoardListeners(Board board){
         // todo these are just default implementations!
-        board.getCardsOnHand().addListener(new InvalidationListener() {
-            @Override
-            public void invalidated(Observable observable) {
-                refreshHand(board);
-            }
-        });
-        board.getGraveYard().addListener(new InvalidationListener() {
-            @Override
-            public void invalidated(Observable observable) {
-                refreshGraveYard(board);
-            }
-        });
-        board.getMonsterCardZone().addListener(new InvalidationListener() {
-            @Override
-            public void invalidated(Observable observable) {
-                refreshMonsterZone(board);
-            }
-        });
-        board.getMagicCardZone().addListener(new InvalidationListener() {
-            @Override
-            public void invalidated(Observable observable) {
-                refreshMagicZone(board);
-            }
-        });
-        board.getFieldZoneCardObservableList().addListener(new ListChangeListener<Magic>() {
-            @Override
-            public void onChanged(Change<? extends Magic> c) {
-                refreshFieldZone(board);
-            }
-        });
+        board.getCardsOnHand().addListener((InvalidationListener) (observable)-> Platform.runLater(()-> refreshHand(board)));
+        board.getGraveYard().addListener((InvalidationListener) (observable)-> Platform.runLater(()-> refreshGraveYard(board)));
+        board.getMonsterCardZone().addListener((InvalidationListener) (observable)-> Platform.runLater(()-> refreshMonsterZone(board)));
+        board.getMagicCardZone().addListener((InvalidationListener) (observable)-> Platform.runLater(()-> refreshMagicZone(board)));
+        board.getFieldZoneCardObservableList().addListener((ListChangeListener<Magic>) (c)-> Platform.runLater(()-> refreshFieldZone(board)));
     }
 
     public GameField(Game game, DoubleBinding widthProperty, DoubleBinding heightProperty){
@@ -187,7 +165,7 @@ public class GameField extends Pane {
         CardLocation cardLocation;
 
         if(address.isInHand()){
-            cardLocation = handLocation[up][id];
+            cardLocation = getHandLocation(id, address.getOwner().getBoard().getCardsOnHand().size(), up);
         }
         else if(address.isInFieldZone()){
             cardLocation = fieldLocation[up];

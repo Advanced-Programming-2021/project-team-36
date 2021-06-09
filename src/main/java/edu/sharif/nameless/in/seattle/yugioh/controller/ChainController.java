@@ -1,6 +1,6 @@
 package edu.sharif.nameless.in.seattle.yugioh.controller;
 
-import edu.sharif.nameless.in.seattle.yugioh.controller.events.GameOverEvent;
+import edu.sharif.nameless.in.seattle.yugioh.controller.events.RoundOverEvent;
 import edu.sharif.nameless.in.seattle.yugioh.controller.player.PlayerController;
 import edu.sharif.nameless.in.seattle.yugioh.model.card.action.Action;
 import edu.sharif.nameless.in.seattle.yugioh.view.cardSelector.ResistToChooseCard;
@@ -20,7 +20,7 @@ public class ChainController {
         GameController.getInstance().getGame().getChain().push(firstAction);
     }
 
-    public void control() throws GameOverEvent {
+    public void control() throws RoundOverEvent {
         Stack<Action> chain = GameController.getInstance().getGame().getChain();
         while (this.active.listOfAvailableActionsInResponse().size() > 0 && this.active.askRespondToChain()) {
             try {

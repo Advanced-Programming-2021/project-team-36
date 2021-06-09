@@ -53,7 +53,7 @@ public class DuelMenuView extends Application {
     @Override
     public void start(Stage stage) {
         gameField = new GameField(game, root.widthProperty().multiply(0.8), root.heightProperty().multiply(1));
-        infoBox = new DuelInfoBox(root.widthProperty().multiply(0.2), root.heightProperty().multiply(1));
+        infoBox = new DuelInfoBox(game, root.widthProperty().multiply(0.2), root.heightProperty().multiply(1));
         root.getChildren().addAll(infoBox, gameField);
         selector = new CardSelector(gameField, infoBox);
         scene = new Scene(stackPane, WIDTH, HEIGHT);

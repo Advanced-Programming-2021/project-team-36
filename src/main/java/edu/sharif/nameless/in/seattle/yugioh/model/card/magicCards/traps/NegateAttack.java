@@ -21,7 +21,7 @@ public class NegateAttack extends Trap {
             // todo how to end battle phase when there is still action in chain?
             assert GameController.getInstance().getGame().getPhase().equals(Phase.BATTLE_PHASE);
             // todo remove this assert?
-            GameController.getInstance().goNextPhase();
+            GameController.getInstance().goNextPhaseAndNotify();
         };
     }
 
