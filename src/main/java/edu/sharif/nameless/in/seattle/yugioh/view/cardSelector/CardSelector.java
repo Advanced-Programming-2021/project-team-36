@@ -93,10 +93,11 @@ public class CardSelector {
                 new CustomButton("attack", buttonFontSize, ()->{
                     // todo handle this with drag and drop
                     ArrayList<CustomButton> buttons = new ArrayList<>();
-                    for(final AtomicInteger i = new AtomicInteger(1); i.get() <= 5; i.set(i.get()+1)){
-                        buttons.add(new CustomButton("monster: " + i, buttonFontSize, ()-> {
+                    for(int i = 1; i <= 5; i++){
+                        final int finalI = i;
+                        buttons.add(new CustomButton("monster: " + finalI, buttonFontSize, ()-> {
                             try {
-                                DuelMenuController.getInstance().attack(cardFrame.getCard(), i.get());
+                                DuelMenuController.getInstance().attack(cardFrame.getCard(), finalI);
                             } catch (LogicException e) {
                                 new AlertBox().display(gameRoot, e.getMessage());
                             } finally {
