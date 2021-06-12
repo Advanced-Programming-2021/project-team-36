@@ -54,9 +54,11 @@ public class DuelInfoBox extends BorderPane {
                 gameField.runAndAlert(()-> DuelMenuController.getInstance().surrender(), ()->{})
         );
 
-        setBottom(new VBox(nextPhaseButton, surrenderButton));
-        setTop(imageView);
-        setCenter(buttonBox);
+        BorderPane insideBorderPane = new BorderPane();
+
+        insideBorderPane.setBottom(new VBox(nextPhaseButton, surrenderButton));
+        insideBorderPane.setTop(imageView);
+        insideBorderPane.setCenter(buttonBox);
 
         Text currentPhase = new Text(game.getPhase().getVerboseName());
         currentPhase.setFont(Font.font(30));
@@ -67,7 +69,12 @@ public class DuelInfoBox extends BorderPane {
                 currentPhase.setText(((SimpleObjectProperty<Phase>) observable).getValue().getVerboseName());
             });
         }));
-        setRight(currentPhase);
+        insideBorderPane.setRight(currentPhase);
+
+
+        setTop(new LifeBar(game.getSecondPlayer(), widthProperty));
+        setCenter(insideBorderPane);
+        setBottom(new LifeBar(game.getFirstPlayer(), widthProperty));
     }
 
     public void addInfo(Image image, CustomButton... buttons){

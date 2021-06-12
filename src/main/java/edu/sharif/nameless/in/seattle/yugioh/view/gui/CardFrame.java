@@ -65,7 +65,7 @@ public class CardFrame extends ImageView {
         });
         setOnMouseReleased(e->{
             Bounds bounds = getBoundsInParent();
-            setCursor(Cursor.NONE);
+            setCursor(Cursor.HAND);
             moveByLayoutValue(0, 0);
             fireEvent(new DropCard(this, bounds));
         });

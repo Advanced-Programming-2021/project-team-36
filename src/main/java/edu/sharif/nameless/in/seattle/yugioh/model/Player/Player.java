@@ -6,6 +6,8 @@ import edu.sharif.nameless.in.seattle.yugioh.model.enums.MonsterCardType;
 import edu.sharif.nameless.in.seattle.yugioh.model.deck.Deck;
 import edu.sharif.nameless.in.seattle.yugioh.model.deck.MainDeck;
 import edu.sharif.nameless.in.seattle.yugioh.model.deck.SideDeck;
+import javafx.beans.property.IntegerProperty;
+import javafx.beans.property.SimpleIntegerProperty;
 import lombok.Getter;
 import lombok.Setter;
 import edu.sharif.nameless.in.seattle.yugioh.model.Board;
@@ -18,9 +20,7 @@ abstract public class Player {
     private Deck deck;
     private Board board;
 
-    @Getter
-    @Setter
-    private int lifePoint;
+    private IntegerProperty lifePoint;
 
     @Getter
     @Setter
@@ -34,14 +34,14 @@ abstract public class Player {
         this.user = user;
         this.deck = user.getActiveDeck().clone().readyForBattle(this);
         this.board = new Board(deck.getMainDeck(), this);
-        this.lifePoint = Constants.InitialLifePoint.val;
+        this.lifePoint = new SimpleIntegerProperty(Constants.InitialLifePoint.val);
         summonedInLastTurn = false;
     }
 
     public void refresh() {
         this.deck = user.getActiveDeck().clone().readyForBattle(this);
         this.board = new Board(deck.getMainDeck(), this);
-        this.lifePoint = Constants.InitialLifePoint.val;
+        setLifePoint(Constants.InitialLifePoint.val);
         summonedInLastTurn = false;
 
     }
@@ -63,11 +63,11 @@ abstract public class Player {
     }
 
     public void increaseLifePoint(int value) {
-        this.lifePoint += value;
+        setLifePoint(getLifePoint() + value);
     }
     
     public void decreaseLifePoint(int value) {
-        this.lifePoint = Math.max(0, lifePoint - value);
+        setLifePoint(Math.max(0, getLifePoint() - value));
     }
 
     public boolean hasInHand(Card card){
@@ -83,5 +83,17 @@ abstract public class Player {
             if (card instanceof Monster && ((Monster) card).getMonsterCardType().equals(MonsterCardType.RITUAL))
                 return true;
         return false;
+    }
+
+    public void setLifePoint(int lifePoint) {
+        this.lifePoint.set(lifePoint);
+    }
+
+    public int getLifePoint() {
+        return lifePoint.get();
+    }
+
+    public IntegerProperty lifePointProperty() {
+        return lifePoint;
     }
 }

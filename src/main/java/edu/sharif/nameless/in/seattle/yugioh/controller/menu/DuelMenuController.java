@@ -18,18 +18,13 @@ import edu.sharif.nameless.in.seattle.yugioh.utils.CustomPrinter;
 import edu.sharif.nameless.in.seattle.yugioh.utils.Debugger;
 import edu.sharif.nameless.in.seattle.yugioh.utils.RoutingException;
 import edu.sharif.nameless.in.seattle.yugioh.view.DuelMenuView;
+import edu.sharif.nameless.in.seattle.yugioh.view.gui.AlertBox;
 import edu.sharif.nameless.in.seattle.yugioh.view.gui.event.DuelOverEvent;
 import edu.sharif.nameless.in.seattle.yugioh.view.gui.event.RoundOverEvent;
 import lombok.Getter;
 import edu.sharif.nameless.in.seattle.yugioh.model.enums.MonsterState;
 
 import java.util.List;
-
-// this class is responsible for passing everything to GameController.
-// in the middle of the way it can handle simple api like those involving printing for user
-// MenuControllers are only used to answer user queries
-// We filter all bad inputs here
-// We can pass them to player right now
 
 public class DuelMenuController extends BaseMenuController {
     @Getter
@@ -49,7 +44,13 @@ public class DuelMenuController extends BaseMenuController {
     }
 
     public void addEventListeners(){
-        graphicView.addEventListenerOnGameField(RoundOverEvent.MY_TYPE, e->gameController.endRound(e.getExceptionEvent()));
+        graphicView.addEventListenerOnGameField(RoundOverEvent.MY_TYPE, e->{
+            gameController.endRound(e.getExceptionEvent());
+            graphicView.announce("round is over!");
+        });
+        graphicView.addEventListenerOnGameField(DuelOverEvent.MY_TYPE, e->{
+            graphicView.announce("duel is over!");
+        });
     }
 
     public void printCurrentPhase() {

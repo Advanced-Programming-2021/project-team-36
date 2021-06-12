@@ -96,6 +96,10 @@ public class DuelMenuView extends Application {
         return ret;
     }
 
+    public void announce(String message){
+        new AlertBox().displayMessageStandAlone(message);
+    }
+
     public void resetSelector(){
         selector.refresh();
     }

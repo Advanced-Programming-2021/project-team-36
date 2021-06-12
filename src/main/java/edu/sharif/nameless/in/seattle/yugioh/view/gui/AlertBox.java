@@ -62,6 +62,12 @@ public class AlertBox {
         return displayChoicesStandAlone(question, buttons) == 0;
     }
 
+    public void displayMessageStandAlone(String message){
+        ArrayList<CustomButton> buttons = new ArrayList<>();
+        buttons.add(new CustomButton("Ok!", 20, ()->{}));
+        displayChoicesStandAlone(message, buttons);
+    }
+
     public Pane display(Pane parent, String question, Runnable yesRun, Runnable noRun){
         Font font = Font.font("Courier New", FontWeight.BOLD, 20);
 

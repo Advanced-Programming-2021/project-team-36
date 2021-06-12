@@ -17,6 +17,7 @@ import javafx.application.Platform;
 import javafx.beans.InvalidationListener;
 import javafx.beans.binding.DoubleBinding;
 import javafx.collections.ListChangeListener;
+import javafx.scene.ImageCursor;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.*;
@@ -238,7 +239,7 @@ public class GameField extends Pane {
             new AlertBox().display(this, e.getMessage());
         } catch (RoundOverExceptionEvent e){
             onFail.run();
-            fireEvent(new RoundOverEvent(e)  );
+            fireEvent(new RoundOverEvent(e));
         }
     }
 
@@ -250,6 +251,6 @@ public class GameField extends Pane {
         }
     }
     public interface GameRunnable{
-        public void run() throws LogicException, RoundOverExceptionEvent, ResistToChooseCard;
+        void run() throws LogicException, RoundOverExceptionEvent, ResistToChooseCard;
     }
 }
