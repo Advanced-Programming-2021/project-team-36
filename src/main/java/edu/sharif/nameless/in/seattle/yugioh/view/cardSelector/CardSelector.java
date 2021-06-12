@@ -50,30 +50,14 @@ public class CardSelector {
         // todo this should come from the card not me :))
         int buttonFontSize = 14;
         infoBox.addInfo(cardFrame.getImage(),
-                new CustomButton("summon", buttonFontSize, ()->{
-                    try {
-                        DuelMenuController.getInstance().summonCard(cardFrame.getCard());
-                    } catch (LogicException e) {
-                        new AlertBox().display(gameRoot, e.getMessage());
-                    } catch (ResistToChooseCard resistToChooseCard) {
-                        // todo
-                    } finally {
-                        clearInfoBox();
-                        deselectAll();
-                    }
-                }),
-                new CustomButton("set", buttonFontSize, ()->{
-                    try {
-                        DuelMenuController.getInstance().setCard(cardFrame.getCard());
-                    } catch (LogicException e) {
-                        new AlertBox().display(gameRoot, e.getMessage());
-                    } catch (ResistToChooseCard resistToChooseCard) {
-                        // todo
-                    } finally {
-                        clearInfoBox();
-                        deselectAll();
-                    }
-                }),
+                new CustomButton("summon", buttonFontSize, ()-> gameRoot.runAndAlert(
+                                    ()-> DuelMenuController.getInstance().summonCard(cardFrame.getCard()),
+                                    ()->{ clearInfoBox(); deselectAll(); }
+                                    )),
+                new CustomButton("set", buttonFontSize, ()-> gameRoot.runAndAlert(
+                        ()-> DuelMenuController.getInstance().setCard(cardFrame.getCard()),
+                        ()->{ clearInfoBox(); deselectAll(); }
+                )),
                 new CustomButton("change position", buttonFontSize, ()->{
                     ArrayList<CustomButton> buttons = new ArrayList<>();
                     for(MonsterState state : new MonsterState[]{MonsterState.DEFENSIVE_HIDDEN, MonsterState.DEFENSIVE_OCCUPIED, MonsterState.OFFENSIVE_OCCUPIED}){
@@ -89,24 +73,6 @@ public class CardSelector {
                         }));
                     }
                     new AlertBox().display(gameRoot, "choose state", buttons);
-                }),
-                new CustomButton("attack", buttonFontSize, ()->{
-                    // todo handle this with drag and drop
-                    ArrayList<CustomButton> buttons = new ArrayList<>();
-                    for(int i = 1; i <= 5; i++){
-                        final int finalI = i;
-                        buttons.add(new CustomButton("monster: " + finalI, buttonFontSize, ()-> {
-                            try {
-                                DuelMenuController.getInstance().attack(cardFrame.getCard(), finalI);
-                            } catch (LogicException e) {
-                                new AlertBox().display(gameRoot, e.getMessage());
-                            } finally {
-                                clearInfoBox();
-                                deselectAll();
-                            }
-                        }));
-                    }
-                    new AlertBox().display(gameRoot, "select another monster to attack", buttons);
                 }),
                 new CustomButton("flip summon", buttonFontSize, ()->{
                     try {

@@ -3,8 +3,9 @@ package edu.sharif.nameless.in.seattle.yugioh.controller.menu;
 import edu.sharif.nameless.in.seattle.yugioh.controller.GameController;
 import edu.sharif.nameless.in.seattle.yugioh.controller.LogicException;
 import edu.sharif.nameless.in.seattle.yugioh.controller.ProgramController;
+import edu.sharif.nameless.in.seattle.yugioh.controller.events.RoundOverExceptionEvent;
+import edu.sharif.nameless.in.seattle.yugioh.model.Player.Player;
 import edu.sharif.nameless.in.seattle.yugioh.view.cardSelector.ResistToChooseCard;
-import edu.sharif.nameless.in.seattle.yugioh.controller.events.RoundOverEvent;
 import edu.sharif.nameless.in.seattle.yugioh.model.CardAddress;
 import edu.sharif.nameless.in.seattle.yugioh.model.Game;
 import edu.sharif.nameless.in.seattle.yugioh.model.card.Card;
@@ -17,6 +18,8 @@ import edu.sharif.nameless.in.seattle.yugioh.utils.CustomPrinter;
 import edu.sharif.nameless.in.seattle.yugioh.utils.Debugger;
 import edu.sharif.nameless.in.seattle.yugioh.utils.RoutingException;
 import edu.sharif.nameless.in.seattle.yugioh.view.DuelMenuView;
+import edu.sharif.nameless.in.seattle.yugioh.view.gui.event.DuelOverEvent;
+import edu.sharif.nameless.in.seattle.yugioh.view.gui.event.RoundOverEvent;
 import lombok.Getter;
 import edu.sharif.nameless.in.seattle.yugioh.model.enums.MonsterState;
 
@@ -43,6 +46,10 @@ public class DuelMenuController extends BaseMenuController {
         this.game = game;
         instance = this;
         gameController = new GameController(game);
+    }
+
+    public void addEventListeners(){
+        graphicView.addEventListenerOnGameField(RoundOverEvent.MY_TYPE, e->gameController.endRound(e.getExceptionEvent()));
     }
 
     public void printCurrentPhase() {
@@ -80,7 +87,7 @@ public class DuelMenuController extends BaseMenuController {
         graphicView.resetSelector();
     }
 
-    public void attack(Card card, int id) throws LogicException, RoundOverEvent {
+    public void attack(Card card, int id) throws LogicException, RoundOverExceptionEvent {
         if(!(card instanceof Monster))
             throw new LogicException("only a monster can attack");
         CardAddress cardAddress = new CardAddress(ZoneType.MONSTER, id, gameController.getGame().getOpponentPlayer());
@@ -90,13 +97,13 @@ public class DuelMenuController extends BaseMenuController {
         gameController.getCurrentPlayerController().attack((Monster) card, opponentMonster);
     }
 
-    public void directAttack(Card card) throws LogicException, RoundOverEvent {
+    public void directAttack(Card card) throws LogicException, RoundOverExceptionEvent {
         if(!(card instanceof Monster))
             throw new LogicException("only a monster can attack");
         gameController.getCurrentPlayerController().directAttack((Monster) card);
     }
 
-    public void activateEffect(Card card) throws LogicException, RoundOverEvent {
+    public void activateEffect(Card card) throws LogicException, RoundOverExceptionEvent {
         if (!(card instanceof Spell))
             throw new LogicException("activate effect is only for spell cards");
         gameController.getCurrentPlayerController().activateEffect((Spell) card);
@@ -120,7 +127,15 @@ public class DuelMenuController extends BaseMenuController {
         CustomPrinter.println(game.getCurrentPlayer().getUser().getNickname() + ":" + game.getCurrentPlayer().getLifePoint(), Color.Purple);
     }
 
-    public void surrender() throws RoundOverEvent {
+    public void endDuel(Player winner, Player looser, int rounds, int maxWinnerLP, int firstPlayerScore, int secondPlayerScore) {
+        winner.getUser().increaseScore(rounds * 1000);
+        winner.getUser().increaseBalance(rounds * (1000 + maxWinnerLP));
+        looser.getUser().increaseBalance(rounds * 100);
+        CustomPrinter.println(String.format("%s won the whole match with score: %d-%d", winner.getUser().getUsername(), firstPlayerScore, secondPlayerScore), Color.Blue);
+        graphicView.fireEventOnGameField(new DuelOverEvent());
+    }
+
+    public void surrender() throws RoundOverExceptionEvent {
         gameController.getCurrentPlayerController().surrender();
     }
 
@@ -141,6 +156,7 @@ public class DuelMenuController extends BaseMenuController {
 
     @Override
     public void control(){
+        addEventListeners();
         gameController.control();
 //        ProgramController.getInstance().navigateToMenu(MainMenuController.getInstance());
     }

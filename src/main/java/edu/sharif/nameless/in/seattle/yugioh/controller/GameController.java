@@ -1,7 +1,6 @@
 package edu.sharif.nameless.in.seattle.yugioh.controller;
 
-import edu.sharif.nameless.in.seattle.yugioh.controller.events.DuelOverEvent;
-import edu.sharif.nameless.in.seattle.yugioh.controller.events.RoundOverEvent;
+import edu.sharif.nameless.in.seattle.yugioh.controller.events.RoundOverExceptionEvent;
 import edu.sharif.nameless.in.seattle.yugioh.controller.player.AIPlayerController;
 import edu.sharif.nameless.in.seattle.yugioh.controller.player.HumanPlayerController;
 import edu.sharif.nameless.in.seattle.yugioh.controller.player.PlayerController;
@@ -10,6 +9,7 @@ import edu.sharif.nameless.in.seattle.yugioh.model.enums.Color;
 import edu.sharif.nameless.in.seattle.yugioh.model.enums.GameResult;
 import edu.sharif.nameless.in.seattle.yugioh.utils.CustomPrinter;
 import edu.sharif.nameless.in.seattle.yugioh.controller.menu.DuelMenuController;
+import edu.sharif.nameless.in.seattle.yugioh.view.gui.event.RoundOverEvent;
 import lombok.Getter;
 import edu.sharif.nameless.in.seattle.yugioh.model.Game;
 import edu.sharif.nameless.in.seattle.yugioh.model.Player.AIPlayer;
@@ -40,21 +40,21 @@ public class GameController {
                 new AIPlayerController((AIPlayer) game.getSecondPlayer());
     }
 
-    public void drawCard() throws RoundOverEvent {
+    public void drawCard() throws RoundOverExceptionEvent {
         Card card = game.getCurrentPlayer().getMainDeck().getTopCard();
         if (card == null)
-            throw new RoundOverEvent(GameResult.NOT_DRAW, game.getCurrentPlayer(), game.getOpponentPlayer(), game.getOpponentPlayer().getLifePoint());
+            throw new RoundOverExceptionEvent(GameResult.NOT_DRAW, game.getCurrentPlayer(), game.getOpponentPlayer(), game.getOpponentPlayer().getLifePoint());
         game.getCurrentPlayer().getBoard().drawCardFromDeck();
         CustomPrinter.println(String.format("new card added to the hand : <%s>", card.getName()), Color.Blue);
     }
 
-    public void checkBothLivesEndGame() throws RoundOverEvent {
+    public void checkBothLivesEndGame() throws RoundOverExceptionEvent {
         if (game.getCurrentPlayer().getLifePoint() <= 0 && game.getOpponentPlayer().getLifePoint() <= 0)
-            throw new RoundOverEvent(GameResult.DRAW, game.getCurrentPlayer(), game.getOpponentPlayer(), 0);
+            throw new RoundOverExceptionEvent(GameResult.DRAW, game.getCurrentPlayer(), game.getOpponentPlayer(), 0);
         if (game.getCurrentPlayer().getLifePoint() <= 0)
-            throw new RoundOverEvent(GameResult.NOT_DRAW, game.getCurrentPlayer(), game.getOpponentPlayer(), game.getOpponentPlayer().getLifePoint());
+            throw new RoundOverExceptionEvent(GameResult.NOT_DRAW, game.getCurrentPlayer(), game.getOpponentPlayer(), game.getOpponentPlayer().getLifePoint());
         if (game.getOpponentPlayer().getLifePoint() <= 0)
-            throw new RoundOverEvent(GameResult.NOT_DRAW, game.getOpponentPlayer(), game.getCurrentPlayer(), game.getCurrentPlayer().getLifePoint());
+            throw new RoundOverExceptionEvent(GameResult.NOT_DRAW, game.getOpponentPlayer(), game.getCurrentPlayer(), game.getCurrentPlayer().getLifePoint());
     }
 
     public void decreaseLifePoint(Player player, int amount) {
@@ -76,7 +76,7 @@ public class GameController {
         return playerController1;
     }
 
-    private void endRound(RoundOverEvent event) {
+    public void endRound(RoundOverExceptionEvent event) {
         if(event.gameResult.equals(GameResult.DRAW)) {
             CustomPrinter.println(String.format("game is a draw and the score is %d-%d", game.totalScore(game.getFirstPlayer()), game.totalScore(game.getSecondPlayer())), Color.Blue);
             game.addFirstPlayerLastRoundScore(0);
@@ -94,21 +94,13 @@ public class GameController {
             CustomPrinter.println(String.format("%s won the game and the score is: %d-%d", event.winner.getUser().getUsername(), game.totalScore(game.getFirstPlayer()), game.totalScore(game.getSecondPlayer())), Color.Blue);
         }
         if (game.totalScore(game.getFirstPlayer()) > game.getRounds() / 2)
-            endGame(game.getFirstPlayer(), game.getSecondPlayer(), game.getRounds(), game.getMaxLP(game.getFirstPlayer()), game.totalScore(game.getFirstPlayer()), game.totalScore(game.getSecondPlayer()));
+            DuelMenuController.getInstance().endDuel(game.getFirstPlayer(), game.getSecondPlayer(), game.getRounds(), game.getMaxLP(game.getFirstPlayer()), game.totalScore(game.getFirstPlayer()), game.totalScore(game.getSecondPlayer()));
         else if (game.totalScore(game.getSecondPlayer()) > game.getRounds() / 2)
-            endGame(game.getSecondPlayer(), game.getFirstPlayer(), game.getRounds(), game.getMaxLP(game.getSecondPlayer()), game.totalScore(game.getFirstPlayer()), game.totalScore(game.getSecondPlayer()));
+            DuelMenuController.getInstance().endDuel(game.getSecondPlayer(), game.getFirstPlayer(), game.getRounds(), game.getMaxLP(game.getSecondPlayer()), game.totalScore(game.getFirstPlayer()), game.totalScore(game.getSecondPlayer()));
         else {
             game.getFirstPlayer().refresh();
             game.getSecondPlayer().refresh();
         }
-    }
-
-    private void endGame(Player winner, Player looser, int rounds, int maxWinnerLP, int firstPlayerScore, int secondPlayerScore) {
-        winner.getUser().increaseScore(rounds * 1000);
-        winner.getUser().increaseBalance(rounds * (1000 + maxWinnerLP));
-        looser.getUser().increaseBalance(rounds * 100);
-        CustomPrinter.println(String.format("%s won the whole match with score: %d-%d", winner.getUser().getUsername(), firstPlayerScore, secondPlayerScore), Color.Blue);
-        throw new DuelOverEvent();
     }
 
     private void goNextPhase(){
@@ -157,9 +149,8 @@ public class GameController {
                 } else if (game.getPhase().equals(Phase.END_PHASE)) {
                     goNextPhase();
                 }
-            } catch (RoundOverEvent roundOverEvent) {
-                endRound(roundOverEvent);
-                // letting DuelOverEvent throw up for our controller service
+            } catch (RoundOverExceptionEvent roundOverEvent) {
+                DuelMenuController.getInstance().getGraphicView().fireEventOnGameField(new RoundOverEvent(roundOverEvent));
             }
         }
     }

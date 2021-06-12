@@ -1,44 +1,40 @@
 package edu.sharif.nameless.in.seattle.yugioh.view.gui;
 
-import edu.sharif.nameless.in.seattle.yugioh.controller.GameController;
+import edu.sharif.nameless.in.seattle.yugioh.controller.LogicException;
+import edu.sharif.nameless.in.seattle.yugioh.controller.events.RoundOverExceptionEvent;
+import edu.sharif.nameless.in.seattle.yugioh.controller.menu.DuelMenuController;
 import edu.sharif.nameless.in.seattle.yugioh.model.Board;
 import edu.sharif.nameless.in.seattle.yugioh.model.CardAddress;
 import edu.sharif.nameless.in.seattle.yugioh.model.Game;
 import edu.sharif.nameless.in.seattle.yugioh.model.card.Card;
 import edu.sharif.nameless.in.seattle.yugioh.model.card.Magic;
-import edu.sharif.nameless.in.seattle.yugioh.model.enums.Phase;
 import edu.sharif.nameless.in.seattle.yugioh.model.enums.ZoneType;
+import edu.sharif.nameless.in.seattle.yugioh.view.cardSelector.ResistToChooseCard;
+import edu.sharif.nameless.in.seattle.yugioh.view.gui.event.DropCard;
+import edu.sharif.nameless.in.seattle.yugioh.view.gui.event.DuelOverEvent;
+import edu.sharif.nameless.in.seattle.yugioh.view.gui.event.RoundOverEvent;
 import javafx.application.Platform;
 import javafx.beans.InvalidationListener;
-import javafx.beans.Observable;
 import javafx.beans.binding.DoubleBinding;
-import javafx.beans.binding.StringBinding;
-import javafx.beans.property.ObjectProperty;
-import javafx.beans.property.SimpleObjectProperty;
-import javafx.beans.value.ChangeListener;
-import javafx.beans.value.ObservableObjectValue;
-import javafx.beans.value.ObservableValue;
-import javafx.collections.FXCollections;
 import javafx.collections.ListChangeListener;
-import javafx.collections.ObservableList;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.*;
-import javafx.scene.paint.Color;
-import javafx.scene.text.Font;
-import javafx.scene.text.Text;
-import javafx.util.Pair;
 import lombok.Getter;
+import lombok.Setter;
 
-import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
 
 public class GameField extends Pane {
     private final HashMap<CardFrame, CardAddress> occupied = new HashMap<>();
     @Getter
     private final DoubleBinding cardHeightProperty, cardWidthProperty, widthProperty, heightProperty;
     private final Game game;
+
+    @Setter
+    private DuelInfoBox infoBox;
+
+    // todo how to force infoBox to be present?
 
     // down up pos
     CardLocation[][] monsterLocation = new CardLocation[][]{
@@ -80,7 +76,7 @@ public class GameField extends Pane {
 
     CardLocation[] graveYardLocation = new CardLocation[]{
             new CardLocation(0.9285714285714286,0.633),
-            new CardLocation(0.3007142857142857, 0.363)
+            new CardLocation(0.1207142857142857, 0.363)
     };
 
     // todo what happens if there are too many cards in hand?
@@ -155,6 +151,28 @@ public class GameField extends Pane {
             refreshGraveYard(board);
             refreshMagicZone(board);
         }
+        setEventListeners();
+    }
+
+    private void setEventListeners(){
+        addEventHandler(DropCard.MY_TYPE, e->{
+            occupied.forEach((cardFrame, cardAddress)->{
+                double difX = e.getBounds().getCenterX() - cardFrame.getBoundsInParent().getCenterX();
+                double difY = e.getBounds().getCenterY() - cardFrame.getBoundsInParent().getCenterY();
+                if(Math.abs(difX) + Math.abs(difY) <= (cardWidthProperty.get() + cardHeightProperty.get()) * 0.3){
+                    if(!cardFrame.equals(e.getCardFrame()))
+                        runAndAlert(()->DuelMenuController.getInstance().attack(e.getCardFrame().getCard(), cardAddress.getId()), ()->{});
+                }
+            });
+        });
+        addEventHandler(RoundOverEvent.MY_TYPE, e->{
+            System.out.println("round was over");
+            // todo this is just a sample
+        });
+        addEventHandler(DuelOverEvent.MY_TYPE, e->{
+            System.out.println("duel was over");
+            // todo this is just a sample
+        });
     }
 
     private void moveOrCreateCardByCardAddress(CardAddress address, Card card) {
@@ -204,10 +222,24 @@ public class GameField extends Pane {
     }
 
     public void moveCardByCoordinate(CardFrame cardFrame, DoubleBinding x, DoubleBinding y){
-        cardFrame.xProperty().bind(x.add(cardWidthProperty.divide(2).negate()));
-        cardFrame.yProperty().bind(y.add(cardHeightProperty.divide(2).negate()));
+        cardFrame.bindCoordinates(
+                x.add(cardWidthProperty.divide(2).negate()),
+                y.add(cardHeightProperty.divide(2).negate())
+        );
         if(!getChildren().contains(cardFrame))
             getChildren().add(cardFrame);
+    }
+
+    public void runAndAlert(GameRunnable runnable, Runnable onFail){
+        try {
+            runnable.run();
+        } catch (LogicException | ResistToChooseCard e){
+            onFail.run();
+            new AlertBox().display(this, e.getMessage());
+        } catch (RoundOverExceptionEvent e){
+            onFail.run();
+            fireEvent(new RoundOverEvent(e)  );
+        }
     }
 
     static class CardLocation{
@@ -216,5 +248,8 @@ public class GameField extends Pane {
             this.xRatio = xRatio;
             this.yRatio = yRatio;
         }
+    }
+    public interface GameRunnable{
+        public void run() throws LogicException, RoundOverExceptionEvent, ResistToChooseCard;
     }
 }

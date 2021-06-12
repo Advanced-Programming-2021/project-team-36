@@ -1,8 +1,6 @@
 package edu.sharif.nameless.in.seattle.yugioh.view;
 
 import edu.sharif.nameless.in.seattle.yugioh.controller.ProgramController;
-import edu.sharif.nameless.in.seattle.yugioh.controller.events.DuelOverEvent;
-import edu.sharif.nameless.in.seattle.yugioh.controller.events.RoundOverEvent;
 import edu.sharif.nameless.in.seattle.yugioh.controller.menu.DuelMenuController;
 import edu.sharif.nameless.in.seattle.yugioh.controller.menu.LoginMenuController;
 import edu.sharif.nameless.in.seattle.yugioh.model.Game;
@@ -32,13 +30,7 @@ public class DummyStarter extends Application {
             Thread gameControllerService = new Thread(new Task<Void>() {
                 @Override
                 protected Void call() {
-                    try{
-                        DuelMenuController.getInstance().control();
-                    } catch (DuelOverEvent duelOverEvent){
-                        System.out.println("game over!");
-                    } catch (Exception e){
-                        e.printStackTrace();
-                    }
+                    DuelMenuController.getInstance().control();
                     return null;
                 }
             }, "my service thread");

@@ -12,12 +12,16 @@ import javafx.scene.layout.*;
 import javafx.scene.paint.Color;
 import javafx.scene.text.Font;
 import javafx.scene.text.Text;
+import lombok.Setter;
 
 public class DuelInfoBox extends BorderPane {
-    DoubleBinding widthProperty, heightProperty;
-    ImageView imageView;
-    VBox buttonBox;
-    Game game;
+    private final DoubleBinding widthProperty, heightProperty;
+    private final ImageView imageView;
+    private final VBox buttonBox;
+    private final Game game;
+
+    @Setter
+    private GameField gameField;
 
     public DuelInfoBox(Game game, DoubleBinding widthProperty, DoubleBinding heightProperty){
         this.widthProperty = widthProperty;
@@ -43,13 +47,12 @@ public class DuelInfoBox extends BorderPane {
         imageView.fitWidthProperty().bind(widthProperty.add(-10));
         imageView.fitHeightProperty().bind(heightProperty.divide(2));
 
-        CustomButton nextPhaseButton = new CustomButton("next phase", 23, ()->{
-            DuelMenuController.getInstance().goNextPhase();
-        });
-
-        CustomButton surrenderButton = new CustomButton("surrender", 23, ()->{
-            DuelMenuController.getInstance().surrender();
-        });
+        CustomButton nextPhaseButton = new CustomButton("next phase", 23, ()->
+                gameField.runAndAlert(()-> DuelMenuController.getInstance().goNextPhase(), ()->{})
+        );
+        CustomButton surrenderButton = new CustomButton("surrender", 23, ()->
+                gameField.runAndAlert(()-> DuelMenuController.getInstance().surrender(), ()->{})
+        );
 
         setBottom(new VBox(nextPhaseButton, surrenderButton));
         setTop(imageView);

@@ -20,6 +20,9 @@ import edu.sharif.nameless.in.seattle.yugioh.view.gui.CustomButton;
 import edu.sharif.nameless.in.seattle.yugioh.view.gui.DuelInfoBox;
 import edu.sharif.nameless.in.seattle.yugioh.view.gui.GameField;
 import javafx.application.Application;
+import javafx.event.Event;
+import javafx.event.EventHandler;
+import javafx.event.EventType;
 import javafx.scene.Scene;
 import javafx.scene.layout.*;
 import javafx.stage.Stage;
@@ -27,8 +30,6 @@ import lombok.Getter;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.concurrent.atomic.AtomicBoolean;
-import java.util.concurrent.atomic.AtomicInteger;
 
 public class DuelMenuView extends Application {
     private final double WIDTH = 1400, HEIGHT = 1000;
@@ -54,6 +55,8 @@ public class DuelMenuView extends Application {
     public void start(Stage stage) {
         gameField = new GameField(game, root.widthProperty().multiply(0.8), root.heightProperty().multiply(1));
         infoBox = new DuelInfoBox(game, root.widthProperty().multiply(0.2), root.heightProperty().multiply(1));
+        infoBox.setGameField(gameField);
+        gameField.setInfoBox(infoBox);
         root.getChildren().addAll(infoBox, gameField);
         selector = new CardSelector(gameField, infoBox);
         scene = new Scene(stackPane, WIDTH, HEIGHT);
@@ -95,5 +98,12 @@ public class DuelMenuView extends Application {
 
     public void resetSelector(){
         selector.refresh();
+    }
+
+    public void fireEventOnGameField(Event event){
+        gameField.fireEvent(event);
+    }
+    public <T extends Event> void addEventListenerOnGameField(EventType<T> type, EventHandler<? super T> handler){
+        gameField.addEventHandler(type, handler);
     }
 }
