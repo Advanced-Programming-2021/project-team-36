@@ -127,11 +127,11 @@ public class GameField extends Pane {
 
     public void addBoardListeners(Board board){
         // todo these are just default implementations!
-        board.getCardsOnHand().addListener((InvalidationListener) (observable)-> Platform.runLater(()-> refreshHand(board)));
-        board.getGraveYard().addListener((InvalidationListener) (observable)-> Platform.runLater(()-> refreshGraveYard(board)));
-        board.getMonsterCardZone().addListener((InvalidationListener) (observable)-> Platform.runLater(()-> refreshMonsterZone(board)));
-        board.getMagicCardZone().addListener((InvalidationListener) (observable)-> Platform.runLater(()-> refreshMagicZone(board)));
-        board.getFieldZoneCardObservableList().addListener((ListChangeListener<Magic>) (c)-> Platform.runLater(()-> refreshFieldZone(board)));
+        board.getCardsOnHand().addListener((InvalidationListener) (observable)-> refreshHand(board));
+        board.getGraveYard().addListener((InvalidationListener) (observable)-> refreshGraveYard(board));
+        board.getMonsterCardZone().addListener((InvalidationListener) (observable)-> refreshMonsterZone(board));
+        board.getMagicCardZone().addListener((InvalidationListener) (observable)-> refreshMagicZone(board));
+        board.getFieldZoneCardObservableList().addListener((ListChangeListener<Magic>) (c)-> refreshFieldZone(board));
     }
 
     public GameField(Game game, DoubleBinding widthProperty, DoubleBinding heightProperty){
@@ -229,12 +229,16 @@ public class GameField extends Pane {
     }
 
     public void moveCardByCoordinate(CardFrame cardFrame, DoubleBinding x, DoubleBinding y){
-        cardFrame.bindCoordinates(
+        boolean newBorn = false;
+        if(!getChildren().contains(cardFrame)) {
+            Platform.runLater(()-> getChildren().add(cardFrame));
+            newBorn = true;
+        }
+        cardFrame.moveByBindingCoordinates(
                 x.add(cardWidthProperty.divide(2).negate()),
-                y.add(cardHeightProperty.divide(2).negate())
+                y.add(cardHeightProperty.divide(2).negate()),
+                !newBorn
         );
-        if(!getChildren().contains(cardFrame))
-            getChildren().add(cardFrame);
     }
 
     public void runAndAlert(GameRunnable runnable, Runnable onFail){

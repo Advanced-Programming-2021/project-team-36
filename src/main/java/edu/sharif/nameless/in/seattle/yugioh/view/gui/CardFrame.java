@@ -5,12 +5,16 @@ import edu.sharif.nameless.in.seattle.yugioh.model.card.Card;
 import edu.sharif.nameless.in.seattle.yugioh.model.card.Monster;
 import edu.sharif.nameless.in.seattle.yugioh.view.gui.event.ClickOnCard;
 import edu.sharif.nameless.in.seattle.yugioh.view.gui.event.DropCard;
+import javafx.animation.TranslateTransition;
+import javafx.application.Platform;
 import javafx.beans.InvalidationListener;
 import javafx.beans.Observable;
 import javafx.beans.binding.Bindings;
 import javafx.beans.binding.DoubleBinding;
 import javafx.beans.property.BooleanProperty;
+import javafx.beans.property.DoubleProperty;
 import javafx.beans.property.SimpleBooleanProperty;
+import javafx.beans.property.SimpleDoubleProperty;
 import javafx.geometry.Bounds;
 import javafx.scene.Cursor;
 import javafx.scene.effect.Bloom;
@@ -18,6 +22,7 @@ import javafx.scene.effect.DropShadow;
 import javafx.scene.effect.Effect;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
+import javafx.util.Duration;
 import lombok.Getter;
 
 public class CardFrame extends ImageView {
@@ -25,6 +30,7 @@ public class CardFrame extends ImageView {
     @Getter
     private final Card card;
     private double mouseDifX, mouseDifY;
+//    private final DoubleProperty xCoordinateProperty = new SimpleDoubleProperty(), yCoordinateProperty = new SimpleDoubleProperty();
 
     CardFrame(Card card, DoubleBinding widthProperty, DoubleBinding heightProperty){
         super();
@@ -59,28 +65,63 @@ public class CardFrame extends ImageView {
         });
 
         setOnMousePressed(e->{
-            mouseDifX = getLayoutX() - e.getSceneX();
-            mouseDifY = getLayoutY() - e.getSceneY();
+            mouseDifX = getX() - e.getSceneX();
+            mouseDifY = getY() - e.getSceneY();
             setCursor(Cursor.MOVE);
         });
         setOnMouseReleased(e->{
             Bounds bounds = getBoundsInParent();
             setCursor(Cursor.HAND);
-            moveByLayoutValue(0, 0);
+            moveByTranslateValue(0, 0);
             fireEvent(new DropCard(this, bounds));
         });
         setOnMouseDragged(e->{
-            moveByLayoutValue(e.getSceneX() + mouseDifX, e.getSceneY() + mouseDifY);
+            moveByTranslateValue(e.getSceneX() + mouseDifX, e.getSceneY() + mouseDifY);
         });
     }
 
-    public void bindCoordinates(DoubleBinding x, DoubleBinding y){
-        xProperty().bind(x);
-        yProperty().bind(y);
+
+    public void lockThisThread(){
+        synchronized (this){
+            try { wait(); } catch (InterruptedException e){}
+        }
     }
-    public void moveByLayoutValue(double x, double y){
-        setLayoutX(x);
-        setLayoutY(y);
+    public void unlockThisThread(){
+        synchronized (this){
+            notify();
+        }
+    }
+
+    public void moveByBindingCoordinates(DoubleBinding x, DoubleBinding y, boolean visible){
+        synchronized (this) {
+            boolean runningByServiceThread = Thread.currentThread().getName().equals("duel service thread");
+            setVisible(visible);
+            layoutXProperty().unbind();
+            layoutYProperty().unbind();
+            TranslateTransition tt = new TranslateTransition(Duration.seconds(1), this);
+            tt.setFromX(0);
+            tt.setFromY(0);
+            tt.toXProperty().bind(x.add(layoutXProperty().negate()));
+            tt.toYProperty().bind(y.add(layoutYProperty().negate()));
+            tt.setOnFinished(e->{
+                layoutXProperty().bind(x);
+                layoutYProperty().bind(y);
+                setTranslateX(0);
+                setTranslateY(0);
+                setVisible(true);
+                unlockThisThread();
+            });
+            Platform.runLater(()-> {
+                tt.play();
+            });
+            if(runningByServiceThread) {
+                lockThisThread();
+            }
+        }
+    }
+    public void moveByTranslateValue(double x, double y){
+        setTranslateX(x);
+        setTranslateY(y);
     }
 
     Image getHiddenImage(){
