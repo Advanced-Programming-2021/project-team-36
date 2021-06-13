@@ -4,6 +4,7 @@ import edu.sharif.nameless.in.seattle.yugioh.controller.ProgramController;
 import edu.sharif.nameless.in.seattle.yugioh.controller.menu.DuelMenuController;
 import edu.sharif.nameless.in.seattle.yugioh.controller.menu.LoginMenuController;
 import edu.sharif.nameless.in.seattle.yugioh.model.Game;
+import edu.sharif.nameless.in.seattle.yugioh.model.Player.AIPlayer;
 import edu.sharif.nameless.in.seattle.yugioh.model.Player.HumanPlayer;
 import edu.sharif.nameless.in.seattle.yugioh.model.User;
 import edu.sharif.nameless.in.seattle.yugioh.utils.DatabaseHandler;
@@ -19,23 +20,16 @@ public class DummyStarter extends Application {
             DatabaseHandler.importFromDatabase();
             new ProgramController();
             new LoginMenuController().cheatLogin("shayan1", "shayan.p1", "123");
-            new LoginMenuController().cheatLogin("shayan2", "shayan.p2", "123");
+//            new LoginMenuController().cheatLogin("shayan2", "shayan.p2", "123");
             Game game = new Game(
                     new HumanPlayer(User.getUserByUsername("shayan1")),
-                    new HumanPlayer(User.getUserByUsername("shayan2")),
+                    new AIPlayer(),
+//                    new HumanPlayer(User.getUserByUsername("shayan2")),
                     3
             );
             new DuelMenuController(game);
             DuelMenuController.getInstance().getGraphicView().start(primaryStage);
-            Thread gameControllerService = new Thread(new Task<Void>() {
-                @Override
-                protected Void call() {
-                    DuelMenuController.getInstance().control();
-                    return null;
-                }
-            }, "my service thread");
-            gameControllerService.setDaemon(true);
-            gameControllerService.start();
+            DuelMenuController.getInstance().control();
         } catch (Exception e){
             e.printStackTrace();
         }

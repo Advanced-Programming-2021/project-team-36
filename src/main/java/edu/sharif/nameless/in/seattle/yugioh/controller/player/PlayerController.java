@@ -120,7 +120,7 @@ public abstract class PlayerController {
         );
     }
 
-    public void flipSummon(Monster monster) throws LogicException {
+    public void flipSummon(Monster monster) throws LogicException, ResistToChooseCard {
         Game game = GameController.getInstance().getGame();
         if (!GameController.getInstance().getCurrentPlayerController().getPlayer().getBoard().getMonsterCardZone().containsValue(monster))
             throw new LogicException("this card is not in your field");
@@ -176,7 +176,7 @@ public abstract class PlayerController {
         player.moveCardToGraveYard(card);
     }
 
-    public void setMagic(Magic magic) throws LogicException {
+    public void setMagic(Magic magic) throws LogicException, ResistToChooseCard {
         if (!player.hasInHand(magic))
             throw new LogicException("you can't set this card");
         if (!GameController.getInstance().getGame().getPhase().isMainPhase())
@@ -229,7 +229,7 @@ public abstract class PlayerController {
             throw new LogicException("monster is in defensive position");
     }
 
-    public void attack(Monster monster, Monster opponentMonster) throws LogicException, RoundOverExceptionEvent {
+    public void attack(Monster monster, Monster opponentMonster) throws LogicException, RoundOverExceptionEvent, ResistToChooseCard {
         canAttack(monster);
         if (!monster.isAllowAttack())
             throw new LogicException("this card already attacked");
@@ -245,7 +245,7 @@ public abstract class PlayerController {
         GameController.getInstance().checkBothLivesEndGame();
     }
 
-    public void directAttack(Monster monster) throws RoundOverExceptionEvent, LogicException {
+    public void directAttack(Monster monster) throws RoundOverExceptionEvent, LogicException, ResistToChooseCard {
         canAttack(monster);
         if (GameController.getInstance().getOtherPlayerController(this).getPlayer().getBoard().getMonsterCardZone().size() > 0)
             throw new LogicException("you can’t attack the opponent directly");
@@ -264,7 +264,7 @@ public abstract class PlayerController {
         GameController.getInstance().checkBothLivesEndGame();
     }
 
-    public void activateEffect(Spell spell) throws LogicException, RoundOverExceptionEvent {
+    public void activateEffect(Spell spell) throws LogicException, RoundOverExceptionEvent, ResistToChooseCard {
         Game game = GameController.getInstance().getGame();
         if (!player.getBoard().getMagicCardZone().containsValue(spell) && !player.getBoard().getCardsOnHand().contains((Card) spell))
             throw new LogicException("you can't activate this card!");
@@ -287,7 +287,7 @@ public abstract class PlayerController {
         );
     }
 
-    public void startChain(Action action) throws RoundOverExceptionEvent {
+    public void startChain(Action action) throws RoundOverExceptionEvent, ResistToChooseCard, LogicException {
         ChainController chainController = new ChainController(this, action);
         chainController.control();
     }

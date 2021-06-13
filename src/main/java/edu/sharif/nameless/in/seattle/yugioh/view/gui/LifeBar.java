@@ -18,7 +18,8 @@ import javafx.scene.text.Text;
 public class LifeBar extends StackPane {
     public LifeBar(Player player, DoubleBinding widthProperty){
         Text text = new Text(player.getUser().getUsername());
-        text.setFont(Font.font(30));
+        text.setFont(Font.font(25));
+        text.wrappingWidthProperty().bind(widthProperty);
         LpVisualizer lpVisualizer = new LpVisualizer(player.lifePointProperty(), widthProperty.multiply(0.9));
         getChildren().add(new VBox(text, lpVisualizer));
     }

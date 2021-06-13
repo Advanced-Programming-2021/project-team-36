@@ -117,7 +117,7 @@ public class AIPlayerController extends PlayerController {
     private void noErrorFlipSummon(Monster monster) {
         try {
             flipSummon(monster);
-        } catch (LogicException ignored) {
+        } catch (LogicException | ResistToChooseCard ignored) {
         }
     }
 
@@ -138,7 +138,7 @@ public class AIPlayerController extends PlayerController {
     private void noErrorSetMagic(Magic magic) {
         try {
             setMagic(magic);
-        } catch (LogicException ignored) {
+        } catch (LogicException | ResistToChooseCard ignored) {
         }
     }
 
@@ -149,7 +149,7 @@ public class AIPlayerController extends PlayerController {
         }
         try {
             activateEffect(spell);
-        } catch (LogicException ignored) {
+        } catch (LogicException | ResistToChooseCard ignored) {
         }
     }
 
@@ -157,7 +157,7 @@ public class AIPlayerController extends PlayerController {
         while (true) {
             try {
                 activateEffect(spell);
-            } catch (LogicException logicException) {
+            } catch (LogicException | ResistToChooseCard logicException) {
                 break;
             }
         }
@@ -166,14 +166,14 @@ public class AIPlayerController extends PlayerController {
     private void noErrorAttack(Monster attacker, Monster defender) {
         try {
             attack(attacker, defender);
-        } catch (LogicException ignored) {
+        } catch (LogicException | ResistToChooseCard ignored) {
         }
     }
 
     private void noErrorDirectAttack(Monster monster) {
         try {
             directAttack(monster);
-        } catch (LogicException ignored) {
+        } catch (LogicException | ResistToChooseCard ignored) {
         }
     }
 

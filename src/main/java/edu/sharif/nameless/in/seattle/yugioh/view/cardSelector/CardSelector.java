@@ -62,38 +62,28 @@ public class CardSelector {
                     ArrayList<CustomButton> buttons = new ArrayList<>();
                     for(MonsterState state : new MonsterState[]{MonsterState.DEFENSIVE_HIDDEN, MonsterState.DEFENSIVE_OCCUPIED, MonsterState.OFFENSIVE_OCCUPIED}){
                         buttons.add(new CustomButton(state.getName(), buttonFontSize, ()->{
-                            try {
-                                DuelMenuController.getInstance().changeCardPosition(cardFrame.getCard(), state);
-                            } catch (LogicException e) {
-                                new AlertBox().display(gameRoot, e.getMessage());
-                            } finally {
-                                clearInfoBox();
-                                deselectAll();
-                            }
+                            gameRoot.runAndAlert(
+                                    ()->DuelMenuController.getInstance().changeCardPosition(cardFrame.getCard(), state),
+                                    ()->{ clearInfoBox(); deselectAll(); }
+                            );
                         }));
                     }
                     new AlertBox().display(gameRoot, "choose state", buttons);
                 }),
-                new CustomButton("flip summon", buttonFontSize, ()->{
-                    try {
-                        DuelMenuController.getInstance().flipSummon(cardFrame.getCard());
-                    } catch (LogicException e) {
-                        new AlertBox().display(gameRoot, e.getMessage());
-                    } finally {
-                        clearInfoBox();
-                        deselectAll();
-                    }
-                }),
+                new CustomButton("flip summon", buttonFontSize, ()->gameRoot.runAndAlert(
+                        ()-> DuelMenuController.getInstance().flipSummon(cardFrame.getCard()),
+                        ()->{ clearInfoBox(); deselectAll(); }
+                )),
                 new CustomButton("activate effect", buttonFontSize, ()->{
-                    try {
-                        DuelMenuController.getInstance().activateEffect(cardFrame.getCard());
-                    } catch (LogicException e) {
-                        new AlertBox().display(gameRoot, e.getMessage());
-                    } finally {
-                        clearInfoBox();
-                        deselectAll();
-                    }
-                })
+                    gameRoot.runAndAlert(
+                            ()-> DuelMenuController.getInstance().activateEffect(cardFrame.getCard()),
+                            ()->{ clearInfoBox(); deselectAll(); }
+                    );
+                }),
+                new CustomButton("direct attack", buttonFontSize, ()->gameRoot.runAndAlert(
+                        ()-> DuelMenuController.getInstance().directAttack(cardFrame.getCard()),
+                        ()->{ clearInfoBox(); deselectAll(); }
+                ))
         );
     }
 
