@@ -229,16 +229,25 @@ public class GameField extends Pane {
     }
 
     public void moveCardByCoordinate(CardFrame cardFrame, DoubleBinding x, DoubleBinding y){
-        boolean newBorn = false;
-        if(!getChildren().contains(cardFrame)) {
-            Platform.runLater(()-> getChildren().add(cardFrame));
-            newBorn = true;
-        }
-        cardFrame.moveByBindingCoordinates(
-                x.add(cardWidthProperty.divide(2).negate()),
-                y.add(cardHeightProperty.divide(2).negate()),
-                !newBorn
-        );
+        boolean runningByServiceThread = Thread.currentThread().getName().equals("duel service thread");
+        Platform.runLater(()-> {
+            boolean newBorn = false;
+            if (!getChildren().contains(cardFrame)) {
+                getChildren().add(cardFrame);
+                newBorn = true;
+            }
+            cardFrame.moveByBindingCoordinates(
+                    x.add(cardWidthProperty.divide(2).negate()),
+                    y.add(cardHeightProperty.divide(2).negate()),
+                    !newBorn,
+                    ()->{
+                        if(runningByServiceThread)
+                            cardFrame.unlockThisThread();
+                    }
+            );
+        });
+        if(runningByServiceThread)
+            cardFrame.lockThisThread();
     }
 
     public void runAndAlert(GameRunnable runnable, Runnable onFail){

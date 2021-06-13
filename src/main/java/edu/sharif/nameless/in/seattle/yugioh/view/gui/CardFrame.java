@@ -92,9 +92,8 @@ public class CardFrame extends ImageView {
         }
     }
 
-    public void moveByBindingCoordinates(DoubleBinding x, DoubleBinding y, boolean visible){
+    public void moveByBindingCoordinates(DoubleBinding x, DoubleBinding y, boolean visible, Runnable afterAnimation){
         synchronized (this) {
-            boolean runningByServiceThread = Thread.currentThread().getName().equals("duel service thread");
             setVisible(visible);
             layoutXProperty().unbind();
             layoutYProperty().unbind();
@@ -109,14 +108,9 @@ public class CardFrame extends ImageView {
                 setTranslateX(0);
                 setTranslateY(0);
                 setVisible(true);
-                unlockThisThread();
+                afterAnimation.run();
             });
-            Platform.runLater(()-> {
-                tt.play();
-            });
-            if(runningByServiceThread) {
-                lockThisThread();
-            }
+            tt.play();
         }
     }
     public void moveByTranslateValue(double x, double y){
