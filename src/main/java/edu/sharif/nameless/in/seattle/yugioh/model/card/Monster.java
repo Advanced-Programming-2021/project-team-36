@@ -148,6 +148,7 @@ public class Monster extends Card {
         };
     }
 
+    // todo make sure that all monsters have taken care of changing from hidden to occupied if can
     public Effect onBeingAttackedByMonster(Monster attacker) {
         return () -> {
             changeFromHiddenToOccupiedIfCanEffect().run();

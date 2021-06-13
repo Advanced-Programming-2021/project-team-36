@@ -20,13 +20,14 @@ public class ChainController {
         GameController.getInstance().getGame().getChain().push(firstAction);
     }
 
-    public void control() throws RoundOverExceptionEvent, ResistToChooseCard, LogicException {
+    public void control() throws RoundOverExceptionEvent, ResistToChooseCard {
         // todo ye moshkeli darim inja. momkene ye chizi ro bendazim tooye chaain ke exception bokhore va nashe anjamesh dad!
         Stack<Action> chain = GameController.getInstance().getGame().getChain();
         while (this.active.listOfAvailableActionsInResponse().size() > 0 && this.active.askRespondToChain()) {
             try {
                 this.active.doRespondToChain();
             } catch (ResistToChooseCard e){
+                // todo baraye karhaii mesle summmon aval bayad cart ha ro entekhab konim baad berizim to chain
                 break;
             }
             this.active = GameController.instance.getOtherPlayerController(this.active);
@@ -35,7 +36,7 @@ public class ChainController {
         while (!chain.isEmpty()) {
             Action action = chain.pop();
             // action should be popped before activating it's effect! if not some traps will crash
-            action.getEffect().run();
+            action.runEffect();
             // todo in ticke to az try catch dar ovordam. okeye?
         }
     }

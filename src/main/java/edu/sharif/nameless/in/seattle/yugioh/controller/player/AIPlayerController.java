@@ -95,8 +95,8 @@ public class AIPlayerController extends PlayerController {
                 for (Card opponentCard : GameController.getInstance().getGame().getOtherPlayer(player).getBoard().getAllCardsOnBoard()) {
                     if (opponentCard instanceof Monster)
                         noErrorAttack((Monster) card, (Monster) opponentCard);
-                    noErrorDirectAttack((Monster) card);
                 }
+                noErrorDirectAttack((Monster) card);
             } else if (card instanceof Magic) {
                 noErrorSetMagic((Magic) card);
             }

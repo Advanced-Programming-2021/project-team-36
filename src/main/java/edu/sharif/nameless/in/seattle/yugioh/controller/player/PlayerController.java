@@ -22,6 +22,7 @@ import edu.sharif.nameless.in.seattle.yugioh.model.card.Monster;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Stack;
 
 public abstract class PlayerController {
     @Getter
@@ -65,10 +66,9 @@ public abstract class PlayerController {
     }
 
     public void summon(Monster monster, int requiredTributes, MonsterState monsterState) throws LogicException, ResistToChooseCard {
-        Game game = GameController.instance.getGame();
         if (requiredTributes > 0)
             tributeMonster(requiredTributes);
-        Board board = game.getCurrentPlayer().getBoard();
+        Board board = player.getBoard();
         for (int i = 1; i <= 5; i++) {
             if (board.getMonsterCardZone().get(i) == null) {
                 board.addCardToBoard(monster, new CardAddress(ZoneType.MONSTER, i, player));
@@ -76,6 +76,17 @@ public abstract class PlayerController {
                 break;
             }
         }
+    }
+
+    public void validateSummon(Monster monster, int requiredTributes) throws LogicException {
+        if (requiredTributes > 0)
+            validateTributeMonster(requiredTributes);
+        Board board = player.getBoard();
+        for (int i = 1; i <= 5; i++) {
+            if (board.getMonsterCardZone().get(i) == null)
+                return;
+        }
+        throw new LogicException("we found no empty position to spawn the monster");
     }
 
     public void addMagicToBoard(Magic magic, MagicState magicState) {
@@ -105,6 +116,7 @@ public abstract class PlayerController {
             throw new LogicException("you already summoned/set on this turn");
         if (!player.hasInHand(card))
             throw new LogicException("you can only summon from your hand");
+        validateSummon(monster, monster.getNumberOfRequiredTribute());
         startChain(
                 new Action(
                         new SummonEvent(monster, SummonType.NORMAL),
@@ -149,6 +161,7 @@ public abstract class PlayerController {
             throw new LogicException("you already summoned/set on this turn");
         if (!player.hasInHand((Card) monster))
             throw new LogicException("you can only summon from your hand");
+        validateSummon(monster, monster.getNumberOfRequiredTribute());
         startChain(
                 new Action(
                         new SetMonster(monster),
@@ -169,6 +182,11 @@ public abstract class PlayerController {
         for (Card card : tributeCards)
             moveCardToGraveYard(card);
 //        CustomPrinter.println(String.format("<%s> tribute this monsters: %s", Arrays.toString(Arrays.stream(tributeCards).toArray())), Color.Default);
+    }
+
+    public void validateTributeMonster(int count) throws LogicException {
+        if (player.getBoard().getMonsterCardZone().size() < count)
+            throw new LogicException("there are not enough cards for tribute");
     }
 
     public void moveCardToGraveYard(Card card) {
@@ -287,7 +305,7 @@ public abstract class PlayerController {
         );
     }
 
-    public void startChain(Action action) throws RoundOverExceptionEvent, ResistToChooseCard, LogicException {
+    public void startChain(Action action) throws RoundOverExceptionEvent, ResistToChooseCard {
         ChainController chainController = new ChainController(this, action);
         chainController.control();
     }

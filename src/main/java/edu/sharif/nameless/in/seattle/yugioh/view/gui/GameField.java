@@ -86,6 +86,12 @@ public class GameField extends Pane {
         double x = 0.1 + 0.8 * cardId / totalCards;
         return new CardLocation(x, y);
     }
+    public CardLocation getGraveYardLocation(int id, int totalCards, int up){
+        double x = graveYardLocation[up].xRatio;
+        double y = graveYardLocation[up].yRatio;
+        System.out.println(id);
+        return new CardLocation(x + (1/widthProperty.get()) * 40 * id / totalCards, y);
+    }
 
     private void refreshHand(Board board){
         int[] counter = new int[1];
@@ -190,7 +196,7 @@ public class GameField extends Pane {
             cardLocation = fieldLocation[up];
         }
         else if(address.isInGraveYard()){
-            cardLocation = graveYardLocation[up];
+            cardLocation = getGraveYardLocation(id, address.getOwner().getBoard().getGraveYard().size(), up);
         }
         else if(address.isInMagicZone()){
             cardLocation = magicLocation[up][id];
