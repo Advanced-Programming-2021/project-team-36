@@ -62,7 +62,7 @@ public class DuelMenuController extends BaseMenuController {
     }
 
     public void summonCard(Card card) throws LogicException, ResistToChooseCard {
-        gameController.getCurrentPlayerController().normalSummon((Monster) card);
+        gameController.getCurrentPlayerController().normalSummon(card);
         graphicView.resetSelector();
     }
 
@@ -88,11 +88,13 @@ public class DuelMenuController extends BaseMenuController {
         graphicView.resetSelector();
     }
 
-    public void attack(Card card, int id) throws LogicException, RoundOverExceptionEvent, ResistToChooseCard {
+    public void attack(Card card, CardAddress defenderAddress) throws LogicException, RoundOverExceptionEvent, ResistToChooseCard {
         if(!(card instanceof Monster))
             throw new LogicException("only a monster can attack");
-        CardAddress cardAddress = new CardAddress(ZoneType.MONSTER, id, gameController.getGame().getOpponentPlayer());
-        Monster opponentMonster = (Monster) game.getCardByCardAddress(cardAddress);
+        // todo is this okay?
+        if(!(defenderAddress.isInMonsterZone()))
+            throw new LogicException("you can only attack monsters!");
+        Monster opponentMonster = (Monster) game.getCardByCardAddress(defenderAddress);
         if (opponentMonster == null)
             throw new LogicException("there is no card to attack here");
         gameController.getCurrentPlayerController().attack((Monster) card, opponentMonster);

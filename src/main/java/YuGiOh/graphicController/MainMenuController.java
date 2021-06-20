@@ -1,6 +1,9 @@
 package YuGiOh.graphicController;
 
 import YuGiOh.Main;
+import YuGiOh.controller.menu.DeckMenuController;
+import YuGiOh.controller.menu.ScoreboardMenuController;
+import YuGiOh.controller.menu.ShopMenuController;
 import YuGiOh.graphicView.LoginMenuView;
 import YuGiOh.model.Game;
 import YuGiOh.model.ModelException;
@@ -81,5 +84,22 @@ public class MainMenuController extends BaseMenuController {
     @Override
     public void exitMenu() throws RoutingException {
         MainMenuController.getInstance().logout();
+    }
+
+    @Override
+    public BaseMenuController getNavigatingMenuObject(Class<? extends BaseMenuController> menu) throws RoutingException {
+        if (menu.equals(LoginMenuController.class))
+            throw new RoutingException("you must logout for that!");
+        if (menu.equals(MainMenuController.class))
+            throw new RoutingException("can't navigate to your current menu!");
+        if (menu.equals(ProfileMenuController.class))
+            return new ProfileMenuController(user);
+//        if (menu.equals(ScoreboardMenuController.class))
+//            return new ScoreboardMenuController(user);
+//        if (menu.equals(ShopMenuController.class))
+//            return new ShopMenuController(user);
+//        if (menu.equals(DeckMenuController.class))
+//            return new DeckMenuController(user);
+        throw new RoutingException("menu navigation is not possible");
     }
 }

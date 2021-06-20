@@ -167,7 +167,7 @@ public class GameField extends Pane {
                 double difY = e.getBounds().getCenterY() - cardFrame.getBoundsInParent().getCenterY();
                 if(Math.abs(difX) + Math.abs(difY) <= (cardWidthProperty.get() + cardHeightProperty.get()) * 0.3){
                     if(!cardFrame.equals(e.getCardFrame()))
-                        runAndAlert(()-> DuelMenuController.getInstance().attack(e.getCardFrame().getCard(), cardAddress.getId()), ()->{});
+                        runAndAlert(()-> DuelMenuController.getInstance().attack(e.getCardFrame().getCard(), cardAddress), ()->{});
                 }
             });
         });

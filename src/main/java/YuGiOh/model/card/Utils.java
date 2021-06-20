@@ -8,10 +8,10 @@ import java.util.*;
 
 public class Utils {
     private static final TreeMap<String, String> cardsData = new TreeMap<>();
-    private static final Class<?>[] magicCardsClasses = ClassFinder.getClasses("model.card.magicCards");
+    private static final Class<?>[] magicCardsClasses = ClassFinder.getClasses("YuGiOh.model.card.magicCards");
     private static final TreeMap<String, TreeMap<String, String>> monstersData = new TreeMap<>();
     private static final TreeMap<String, TreeMap<String, String>> magicData = new TreeMap<>();
-    private static final Class<?>[] specialMonstersClasses = ClassFinder.getClasses("model.card.monsterCards");
+    private static final Class<?>[] specialMonstersClasses = ClassFinder.getClasses("YuGiOh.model.card.monsterCards");
 
     protected static void addCard(String type, String name) {
         cardsData.put(name, type);
