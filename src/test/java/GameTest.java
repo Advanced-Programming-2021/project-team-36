@@ -1,7 +1,7 @@
-import edu.sharif.nameless.in.seattle.yugioh.controller.GameController;
-import edu.sharif.nameless.in.seattle.yugioh.controller.menu.MainMenuController;
+import YuGiOh.controller.GameController;
+import YuGiOh.controller.menu.MainMenuController;
 import initialize.Sample;
-import edu.sharif.nameless.in.seattle.yugioh.model.enums.Phase;
+import YuGiOh.model.enums.Phase;
 import org.junit.Test;
 import org.junit.jupiter.api.Assertions;
 

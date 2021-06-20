@@ -1,0 +1,78 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+
+<?import java.net.URL?>
+<?import javafx.scene.image.ImageView?>
+<?import javafx.scene.text.Text?>
+<Pane prefWidth="400" prefHeight="400" xmlns:fx="http://javafx.com/fxml"
+      fx:controller="YuGiOh.graphicView.ProfileMenuView">
+    <VBox alignment="CENTER" spacing="13">
+        <ImageView fx:id="profilePicture"/>
+        <Label fx:id="usernameLabel" StackPane.alignment="TOP_CENTER" styleClass="text"/>
+        <Label fx:id="nicknameLabel" StackPane.alignment="TOP_CENTER" styleClass="text"/>
+    </VBox>
+    <StackPane prefWidth="400" prefHeight="400" fx:id="mainPane" styleClass="main">
+        <Label text="YuGiOh!" StackPane.alignment="TOP_CENTER" styleClass="title"/>
+        <VBox alignment="CENTER" spacing="7">
+            <Button alignment="CENTER" defaultButton="true" onMouseClicked="#loadRegisterMenu"
+                    mnemonicParsing="false" text="Register" styleClass="button"/>
+            <Button alignment="CENTER" defaultButton="true" onMouseClicked="#loadLoginMenu"
+                    mnemonicParsing="false" text="Login" styleClass="button"/>
+            <Button alignment="CENTER" defaultButton="true" onMouseClicked="#exit"
+                    mnemonicParsing="false" text="Exit" styleClass="button"/>
+        </VBox>
+    </StackPane>
+    <StackPane prefWidth="400" prefHeight="400" fx:id="registerPane" styleClass="main">
+        <Label text="YuGiOh!" StackPane.alignment="TOP_CENTER" styleClass="title"/>
+        <VBox alignment="CENTER" spacing="7">
+            <HBox alignment="CENTER" spacing="8">
+                <VBox alignment="CENTER" spacing="8">
+                    <Label text="Username:" styleClass="textCss"/>
+                    <Label text=" Nickname:" styleClass="textCss"/>
+                    <Label text=" Password:" styleClass="textCss"/>
+                </VBox>
+                <VBox alignment="CENTER" spacing="5">
+                    <TextField styleClass="text-field" fx:id="registerUsernameTextField" prefWidth="110"/>
+                    <TextField styleClass="text-field" fx:id="registerNicknameTextField" prefWidth="110"/>
+                    <TextField styleClass="text-field" fx:id="registerPasswordTextField" prefWidth="110"/>
+                </VBox>
+                <padding><Insets bottom="40"/></padding>
+            </HBox>
+            <Button alignment="CENTER" defaultButton="true" onMouseClicked="#register"
+                    mnemonicParsing="false" text="Register" styleClass="button"/>
+            <Button alignment="CENTER" defaultButton="true" onMouseClicked="#back"
+                    mnemonicParsing="false" text="Back" styleClass="button"/>
+        </VBox>
+    </StackPane>
+    <StackPane prefWidth="400" prefHeight="400" fx:id="loginPane" styleClass="main">
+        <Label text="YuGiOh!" StackPane.alignment="TOP_CENTER" styleClass="title"/>
+        <VBox alignment="CENTER" spacing="7">
+            <HBox alignment="CENTER" spacing="8">
+                <VBox alignment="CENTER" spacing="8">
+                    <Label text="Username:" styleClass="textCss"/>
+                    <Label text=" Password:" styleClass="textCss"/>
+                </VBox>
+                <VBox alignment="CENTER" spacing="5">
+                    <TextField styleClass="text-field" fx:id="loginUsernameTextField" prefWidth="110"/>
+                    <TextField styleClass="text-field" fx:id="loginPasswordTextField" prefWidth="110"/>
+                </VBox>
+                <padding><Insets bottom="40"/></padding>
+            </HBox>
+            <padding><Insets top="20.0"/></padding>
+            <Button alignment="CENTER" defaultButton="true" onMouseClicked="#login"
+                    mnemonicParsing="false" text="Login" styleClass="button"/>
+            <Button alignment="CENTER" defaultButton="true" onMouseClicked="#back"
+                    mnemonicParsing="false" text="Back" styleClass="button"/>
+        </VBox>
+    </StackPane>
+
+    <padding>
+        <Insets bottom="10.0" left="10.0" right="10.0" top="30.0"/>
+    </padding>
+    <stylesheets>
+        <URL value="@../css/MainStyle.css"/>
+    </stylesheets>
+</Pane>

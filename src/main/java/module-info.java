@@ -5,4 +5,6 @@ open module YuGiOh {
     requires gson;
     requires static lombok;
     requires commons.cli;
+
+    exports YuGiOh;
 }

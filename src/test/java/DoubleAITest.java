@@ -1,8 +1,8 @@
-import edu.sharif.nameless.in.seattle.yugioh.controller.menu.DuelMenuController;
-import edu.sharif.nameless.in.seattle.yugioh.model.Game;
-import edu.sharif.nameless.in.seattle.yugioh.model.ModelException;
-import edu.sharif.nameless.in.seattle.yugioh.model.Player.AIPlayer;
-import edu.sharif.nameless.in.seattle.yugioh.model.Player.Player;
+import YuGiOh.controller.menu.DuelMenuController;
+import YuGiOh.model.Game;
+import YuGiOh.model.ModelException;
+import YuGiOh.model.Player.AIPlayer;
+import YuGiOh.model.Player.Player;
 import org.junit.Test;
 import utils.IntegrationTestBase;
 

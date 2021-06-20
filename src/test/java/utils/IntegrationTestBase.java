@@ -1,12 +1,12 @@
 package utils;
 
-import edu.sharif.nameless.in.seattle.yugioh.utils.CustomPrinter;
-import edu.sharif.nameless.in.seattle.yugioh.utils.CustomScanner;
-import edu.sharif.nameless.in.seattle.yugioh.controller.ProgramController;
-import edu.sharif.nameless.in.seattle.yugioh.controller.menu.BaseMenuController;
+import YuGiOh.utils.CustomPrinter;
+import YuGiOh.utils.CustomScanner;
+import YuGiOh.controller.ProgramController;
+import YuGiOh.controller.menu.BaseMenuController;
 import org.junit.Before;
 import org.junit.jupiter.api.Assertions;
-import edu.sharif.nameless.in.seattle.yugioh.utils.Debugger;
+import YuGiOh.utils.Debugger;
 
 public class IntegrationTestBase {
     public final ProgramController controller;
