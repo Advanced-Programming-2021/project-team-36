@@ -18,12 +18,12 @@ public class DummyStarter extends Application {
         try {
             DatabaseHandler.importFromDatabase();
             new ProgramController();
-            new LoginMenuController().cheatLogin("shayan1", "shayan.p1", "123");
+            new LoginMenuController().cheatLogin("Abolfazl", "Abolfazl.s", "123");
 //            new LoginMenuController().cheatLogin("shayan2", "shayan.p2", "123");
             Game game = new Game(
-                    new HumanPlayer(User.getUserByUsername("shayan1")),
+            //        new HumanPlayer(User.getUserByUsername("Abolfazl")),
                     new AIPlayer(),
-//                    new HumanPlayer(User.getUserByUsername("shayan2")),
+                    new AIPlayer(),
                     3
             );
             new DuelMenuController(game);

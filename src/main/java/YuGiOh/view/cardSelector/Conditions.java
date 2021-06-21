@@ -67,4 +67,14 @@ public class Conditions {
         return (Card card) ->
                 card instanceof Monster && card != notAllowed && (player.hasInHand(card) || player.getBoard().getMonsterCardZone().containsValue(card));
     }
+
+    public static SelectCondition getMonsterFromGraveYard() {
+        return (Card card) -> {
+            if (!(card instanceof Monster))
+                return false;
+            Player firstPlayer = GameController.getInstance().getGame().getFirstPlayer();
+            Player secondPlayer = GameController.getInstance().getGame().getSecondPlayer();
+            return firstPlayer.hasInGraveYard(card) || secondPlayer.hasInGraveYard(card);
+        };
+    }
 }

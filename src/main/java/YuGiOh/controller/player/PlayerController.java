@@ -79,6 +79,14 @@ public abstract class PlayerController {
         }
     }
 
+    public void drawCard() throws LogicException {
+        Card card = player.getBoard().getMainDeck().getTopCard();
+        if (card == null)
+            throw new LogicException("There is no card to draw");
+        player.getBoard().drawCardFromDeck();
+        CustomPrinter.println(String.format("new card added to the hand : <%s>", card.getName()), Color.Blue);
+    }
+
     public void validateSummon(Monster monster, int requiredTributes) throws LogicException {
         if (requiredTributes > 0)
             validateTributeMonster(requiredTributes);
@@ -200,7 +208,9 @@ public abstract class PlayerController {
             throw new LogicException("you can't set this card");
         if (!GameController.getInstance().getGame().getPhase().isMainPhase())
             throw new LogicException("you can't do this action in this phase");
-        if (!magic.getIcon().equals(Icon.FIELD) && player.getBoard().getMagicCardZone().size() == 5)
+        if (magic.getIcon().equals(Icon.FIELD))
+            throw new LogicException("field cards can't be set");
+        if (player.getBoard().getMagicCardZone().size() == 5)
             throw new LogicException("spell card zone is full");
         startChain(
                 new Action(
@@ -297,13 +307,14 @@ public abstract class PlayerController {
             throw new LogicException("preparations of this spell are not done yet");
 
         CustomPrinter.println(String.format("<%s> wants to activate the effect of <%s>", player.getUser().getUsername(), spell.getName()), Color.Blue);
-
         startChain(
                 new Action(
                         new MagicActivation(spell),
                         spell.activateEffect()
                 )
         );
+        if (!spell.getIcon().equals(Icon.FIELD) && !spell.getIcon().equals(Icon.CONTINUOUS))
+            moveCardToGraveYard(spell);
     }
 
     public void startChain(Action action) throws RoundOverExceptionEvent, ResistToChooseCard {

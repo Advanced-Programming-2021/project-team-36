@@ -93,7 +93,7 @@ public class CardFrame extends ImageView {
             setVisible(visible);
             layoutXProperty().unbind();
             layoutYProperty().unbind();
-            TranslateTransition tt = new TranslateTransition(Duration.seconds(1), this);
+            TranslateTransition tt = new TranslateTransition(Duration.seconds(0.0001), this);
             tt.setFromX(0);
             tt.setFromY(0);
             tt.toXProperty().bind(x.add(layoutXProperty().negate()));
