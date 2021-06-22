@@ -1,6 +1,7 @@
 package YuGiOh.view.gui;
 
 import YuGiOh.controller.LogicException;
+import YuGiOh.controller.MainGameThread;
 import YuGiOh.controller.events.RoundOverExceptionEvent;
 import YuGiOh.controller.menu.DuelMenuController;
 import YuGiOh.model.Board;
@@ -235,7 +236,7 @@ public class GameField extends Pane {
     }
 
     public void moveCardByCoordinate(CardFrame cardFrame, DoubleBinding x, DoubleBinding y, Duration animationDuration){
-        boolean runningByServiceThread = Thread.currentThread().getName().equals("duel service thread");
+        boolean runningByServiceThread = Thread.currentThread() instanceof MainGameThread;
         Platform.runLater(()-> {
             boolean newBorn = false;
             if (!getChildren().contains(cardFrame)) {

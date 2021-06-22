@@ -1,5 +1,6 @@
 package YuGiOh.controller.menu;
 
+import YuGiOh.controller.MainGameThread;
 import YuGiOh.controller.events.RoundOverExceptionEvent;
 import YuGiOh.controller.GameController;
 import YuGiOh.controller.LogicException;
@@ -159,16 +160,11 @@ public class DuelMenuController extends BaseMenuController {
 
     @Override
     public void control(){
-        Thread gameControllerService = new Thread(new Task<Void>() {
-            @Override
-            protected Void call() {
-                addEventListeners();
-                gameController.control();
-                return null;
-            }
-        }, "duel service thread");
-        gameControllerService.setDaemon(true);
-        gameControllerService.start();
+        MainGameThread mainGameThread = new MainGameThread(()-> {
+            addEventListeners();
+            gameController.control();
+        });
+        mainGameThread.start();
         //        ProgramController.getInstance().navigateToMenu(MainMenuController.getInstance());
     }
 }
