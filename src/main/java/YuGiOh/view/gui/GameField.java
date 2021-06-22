@@ -20,6 +20,7 @@ import javafx.collections.ListChangeListener;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.*;
+import javafx.util.Duration;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -182,6 +183,7 @@ public class GameField extends Pane {
     }
 
     private void moveOrCreateCardByCardAddress(CardAddress address, Card card) {
+        Duration animationDuration = Duration.ZERO;
         int up = address.getOwner().equals(game.getFirstPlayer()) ? 0 : 1;
         int id = address.getId()-1;
 
@@ -189,18 +191,23 @@ public class GameField extends Pane {
         CardLocation cardLocation;
 
         if(address.isInHand()){
+            animationDuration = Duration.millis(100);
             cardLocation = getHandLocation(id, address.getOwner().getBoard().getCardsOnHand().size(), up);
         }
         else if(address.isInFieldZone()){
+            animationDuration = Duration.millis(300);
             cardLocation = fieldLocation[up];
         }
         else if(address.isInGraveYard()){
+            animationDuration = Duration.millis(300);
             cardLocation = getGraveYardLocation(id, address.getOwner().getBoard().getGraveYard().size(), up);
         }
         else if(address.isInMagicZone()){
+            animationDuration = Duration.millis(300);
             cardLocation = magicLocation[up][id];
         }
         else{
+            animationDuration = Duration.millis(300);
             assert address.isInMonsterZone();
             cardLocation = monsterLocation[up][id];
         }
@@ -209,8 +216,8 @@ public class GameField extends Pane {
             if(cardFrame.getCard().equals(card))
                 cardFrameTmp[0] = cardFrame;
         });
-        final CardFrame cardFrame = cardFrameTmp[0] == null ? new CardFrame(card, cardWidthProperty, cardHeightProperty) : cardFrameTmp[0];
-        moveCardByCoordinate(cardFrame, widthProperty.multiply(cardLocation.xRatio), heightProperty.multiply(cardLocation.yRatio));
+        final CardFrame cardFrame = cardFrameTmp[0] == null ? new CardFrame(this, card, cardWidthProperty, cardHeightProperty) : cardFrameTmp[0];
+        moveCardByCoordinate(cardFrame, widthProperty.multiply(cardLocation.xRatio), heightProperty.multiply(cardLocation.yRatio), animationDuration);
         occupied.put(cardFrame, address);
     }
 
@@ -227,7 +234,7 @@ public class GameField extends Pane {
         return y;
     }
 
-    public void moveCardByCoordinate(CardFrame cardFrame, DoubleBinding x, DoubleBinding y){
+    public void moveCardByCoordinate(CardFrame cardFrame, DoubleBinding x, DoubleBinding y, Duration animationDuration){
         boolean runningByServiceThread = Thread.currentThread().getName().equals("duel service thread");
         Platform.runLater(()-> {
             boolean newBorn = false;
@@ -238,6 +245,7 @@ public class GameField extends Pane {
             cardFrame.moveByBindingCoordinates(
                     x.add(cardWidthProperty.divide(2).negate()),
                     y.add(cardHeightProperty.divide(2).negate()),
+                    animationDuration,
                     !newBorn,
                     ()->{
                         if(runningByServiceThread)

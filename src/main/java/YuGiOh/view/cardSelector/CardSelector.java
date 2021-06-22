@@ -41,42 +41,7 @@ public class CardSelector {
     private void loadInfoBox(CardFrame cardFrame){
         // todo this should come from the card not me :))
         int buttonFontSize = 14;
-        infoBox.addInfo(cardFrame.getImage(),
-                new CustomButton("summon", buttonFontSize, ()-> gameRoot.runAndAlert(
-                                    ()-> DuelMenuController.getInstance().summonCard(cardFrame.getCard()),
-                                    ()->{ clearInfoBox(); deselectAll(); }
-                                    )),
-                new CustomButton("set", buttonFontSize, ()-> gameRoot.runAndAlert(
-                        ()-> DuelMenuController.getInstance().setCard(cardFrame.getCard()),
-                        ()->{ clearInfoBox(); deselectAll(); }
-                )),
-                new CustomButton("change position", buttonFontSize, ()->{
-                    ArrayList<CustomButton> buttons = new ArrayList<>();
-                    for(MonsterState state : new MonsterState[]{MonsterState.DEFENSIVE_HIDDEN, MonsterState.DEFENSIVE_OCCUPIED, MonsterState.OFFENSIVE_OCCUPIED}){
-                        buttons.add(new CustomButton(state.getName(), buttonFontSize, ()->{
-                            gameRoot.runAndAlert(
-                                    ()->DuelMenuController.getInstance().changeCardPosition(cardFrame.getCard(), state),
-                                    ()->{ clearInfoBox(); deselectAll(); }
-                            );
-                        }));
-                    }
-                    new AlertBox().display(gameRoot, "choose state", buttons);
-                }),
-                new CustomButton("flip summon", buttonFontSize, ()->gameRoot.runAndAlert(
-                        ()-> DuelMenuController.getInstance().flipSummon(cardFrame.getCard()),
-                        ()->{ clearInfoBox(); deselectAll(); }
-                )),
-                new CustomButton("activate effect", buttonFontSize, ()->{
-                    gameRoot.runAndAlert(
-                            ()-> DuelMenuController.getInstance().activateEffect(cardFrame.getCard()),
-                            ()->{ clearInfoBox(); deselectAll(); }
-                    );
-                }),
-                new CustomButton("direct attack", buttonFontSize, ()->gameRoot.runAndAlert(
-                        ()-> DuelMenuController.getInstance().directAttack(cardFrame.getCard()),
-                        ()->{ clearInfoBox(); deselectAll(); }
-                ))
-        );
+        infoBox.addInfo(cardFrame.getImage());
     }
 
     private void clearInfoBox(){

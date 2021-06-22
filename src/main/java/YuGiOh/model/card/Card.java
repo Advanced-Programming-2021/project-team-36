@@ -2,6 +2,8 @@ package YuGiOh.model.card;
 
 import YuGiOh.model.Player.Player;
 import javafx.beans.binding.BooleanBinding;
+import javafx.event.ActionEvent;
+import javafx.event.Event;
 import lombok.Getter;
 
 import java.io.Serializable;
