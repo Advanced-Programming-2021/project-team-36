@@ -74,6 +74,8 @@ abstract public class Player {
         return this.board.getCardsOnHand().contains(card);
     }
 
+    public boolean hasInGraveYard(Card card) { return this.board.getGraveYard().contains(card); }
+
     public void moveCardToGraveYard(Card card) {
         board.moveCardToGraveYard(card);
     }

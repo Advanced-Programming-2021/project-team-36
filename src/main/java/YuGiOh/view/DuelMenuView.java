@@ -22,7 +22,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class DuelMenuView extends Application {
-    private final double WIDTH = 1400, HEIGHT = 1000;
+    private final double WIDTH = 1024, HEIGHT = 768;
     private Scene scene;
     private final StackPane stackPane;
     private final HBox root;

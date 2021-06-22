@@ -41,11 +41,12 @@ public class GameController {
     }
 
     public void drawCard() throws RoundOverExceptionEvent {
-        Card card = game.getCurrentPlayer().getMainDeck().getTopCard();
-        if (card == null)
+        try {
+            getCurrentPlayerController().drawCard();
+        }
+        catch (LogicException ignored) {
             throw new RoundOverExceptionEvent(GameResult.NOT_DRAW, game.getCurrentPlayer(), game.getOpponentPlayer(), game.getOpponentPlayer().getLifePoint());
-        game.getCurrentPlayer().getBoard().drawCardFromDeck();
-        CustomPrinter.println(String.format("new card added to the hand : <%s>", card.getName()), Color.Blue);
+        }
     }
 
     public void checkBothLivesEndGame() throws RoundOverExceptionEvent {

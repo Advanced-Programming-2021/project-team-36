@@ -201,6 +201,8 @@ public class GameField extends Pane {
         }
         else if(address.isInGraveYard()){
             animationDuration = Duration.millis(300);
+            if(game.getCardZoneType(card) == ZoneType.GRAVEYARD)
+                animationDuration = Duration.millis(3);
             cardLocation = getGraveYardLocation(id, address.getOwner().getBoard().getGraveYard().size(), up);
         }
         else if(address.isInMagicZone()){

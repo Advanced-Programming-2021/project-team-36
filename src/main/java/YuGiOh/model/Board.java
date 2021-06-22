@@ -17,6 +17,7 @@ import lombok.Getter;
 import java.util.*;
 
 public class Board {
+    @Getter
     private final MainDeck mainDeck;
     @Getter
     private final ObservableList<Card> graveYard;
