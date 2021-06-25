@@ -3,6 +3,8 @@ package YuGiOh.model.card;
 import YuGiOh.controller.GameController;
 import YuGiOh.controller.LogicException;
 import YuGiOh.controller.events.RoundOverExceptionEvent;
+import YuGiOh.model.CardAddress;
+import YuGiOh.model.Game;
 import YuGiOh.model.Player.Player;
 import YuGiOh.model.card.action.Effect;
 import YuGiOh.model.enums.*;
@@ -16,10 +18,8 @@ import lombok.Setter;
 
 public class Monster extends Card {
     @Setter
-    @Getter
     protected int attackDamage;
     @Setter
-    @Getter
     protected int defenseRate;
     @Getter
     protected MonsterAttribute attribute;
@@ -81,6 +81,42 @@ public class Monster extends Card {
 
     public void tryToDecreaseLifePoint(Monster monster, int amount) {
         monster.tryToDecreaseLifePointOfMe(amount);
+    }
+
+    public int getAttackDamageOnCard() {
+        return attackDamage;
+    }
+
+    public int getDefenseRateOnCard() {
+        return defenseRate;
+    }
+
+    public int getAttackDamage() {
+        int affects = 0;
+        for (int i = 1; i <= 5; i++) {
+            CardAddress cardAddress = new CardAddress(ZoneType.MAGIC, i, this.owner);
+            Magic magic = (Magic) GameController.getInstance().getGame().getCardByCardAddress(cardAddress);
+            if (magic != null)
+                affects += magic.affectionOnAttackingMonster(this);
+        }
+        Spell spell = (Spell) GameController.getInstance().getPlayerControllerByPlayer(this.owner).getPlayer().getBoard().getFieldZoneCard();
+        if (spell != null)
+            affects += spell.affectionOnAttackingMonster(this);
+        return attackDamage + affects;
+    }
+
+    public int getDefenseRate() {
+        int affects = 0;
+        for (int i = 1; i <= 5; i++) {
+            CardAddress cardAddress = new CardAddress(ZoneType.MAGIC, i, this.owner);
+            Magic magic = (Magic) GameController.getInstance().getGame().getCardByCardAddress(cardAddress);
+            if (magic != null)
+                affects += magic.affectionOnDefensiveMonster(this);
+        }
+        Spell spell = (Spell) GameController.getInstance().getPlayerControllerByPlayer(this.owner).getPlayer().getBoard().getFieldZoneCard();
+        if (spell != null)
+            affects += spell.affectionOnDefensiveMonster(this);
+        return defenseRate + affects;
     }
 
     public void damageStep(Monster attacker) throws RoundOverExceptionEvent {

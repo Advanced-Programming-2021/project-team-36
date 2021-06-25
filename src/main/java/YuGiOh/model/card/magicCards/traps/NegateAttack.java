@@ -22,6 +22,7 @@ public class NegateAttack extends Trap {
             assert GameController.getInstance().getGame().getPhase().equals(Phase.BATTLE_PHASE);
             // todo remove this assert?
             GameController.getInstance().goNextPhaseAndNotify();
+            GameController.getInstance().getPlayerControllerByPlayer(this.owner).moveCardToGraveYard(this);
         };
     }
 

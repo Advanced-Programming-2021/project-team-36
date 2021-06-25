@@ -21,9 +21,9 @@ public class DummyStarter extends Application {
             new LoginMenuController().cheatLogin("Abolfazl", "Abolfazl.s", "123");
 //            new LoginMenuController().cheatLogin("shayan2", "shayan.p2", "123");
             Game game = new Game(
-            //        new HumanPlayer(User.getUserByUsername("Abolfazl")),
+                    new HumanPlayer(User.getUserByUsername("Abolfazl")),
                     new AIPlayer(),
-                    new AIPlayer(),
+            //        new AIPlayer(),
                     3
             );
             new DuelMenuController(game);

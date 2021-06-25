@@ -28,6 +28,7 @@ public class MirrorForce extends Trap {
                         GameController.getInstance().getPlayerControllerByPlayer(monster.owner).moveCardToGraveYard(card);
                 }
             }
+            GameController.getInstance().getPlayerControllerByPlayer(this.owner).moveCardToGraveYard(this);
         };
     }
 

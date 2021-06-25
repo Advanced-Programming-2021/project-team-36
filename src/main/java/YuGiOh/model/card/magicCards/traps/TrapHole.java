@@ -21,6 +21,7 @@ public class TrapHole extends Trap {
         Monster monster = ((SummonEvent) getChain().peek().getEvent()).getMonster();
         return ()->{
             GameController.getInstance().getPlayerControllerByPlayer(monster.owner).moveCardToGraveYard(monster);
+            GameController.getInstance().getPlayerControllerByPlayer(this.owner).moveCardToGraveYard(this);
         };
     }
 

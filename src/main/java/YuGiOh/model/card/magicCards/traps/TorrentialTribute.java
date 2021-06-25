@@ -23,6 +23,7 @@ public class TorrentialTribute extends Trap {
                 if (card instanceof Monster)
                     GameController.getInstance().getPlayerControllerByPlayer(card.owner).moveCardToGraveYard(card);
             }
+            GameController.getInstance().getPlayerControllerByPlayer(this.owner).moveCardToGraveYard(this);
         };
     }
 
