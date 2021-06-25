@@ -11,5 +11,8 @@ public class TheTricky extends Monster {
         super(name, description, price, attackDamage, defenseRate, attribute, monsterType, monsterCardType, level);
     }
 
-    // todo pending special summon
+    @Override
+    public void validateSummon(){
+        // check no condition. it is for special summon
+    }
 }

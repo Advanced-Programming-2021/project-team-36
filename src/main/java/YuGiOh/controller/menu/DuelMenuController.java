@@ -59,7 +59,9 @@ public class DuelMenuController extends BaseMenuController {
     }
 
     public void summonCard(Card card) throws LogicException, ResistToChooseCard {
-        gameController.getCurrentPlayerController().normalSummon(card);
+        if (card instanceof Magic)
+            throw new LogicException("this card is magic and you can't summon it");
+        gameController.getCurrentPlayerController().normalSummon((Monster) card);
         graphicView.resetSelector();
     }
 

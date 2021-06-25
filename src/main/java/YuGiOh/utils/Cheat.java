@@ -53,12 +53,12 @@ public class Cheat {
     }
 
     // this is for testing only
-    public static void buildSuperUserWithManyOfThisCards(User user, String... cardNames){
+    public static void buildSuperUserWithManyOfThisCards(User user, int countOfInjection, String... cardNames){
         buildSuperUser(user);
 
-        user.getActiveDeck().getMainDeck().getCards().removeAll(user.getActiveDeck().getMainDeck().getCards().subList(0, 10));
+        user.getActiveDeck().getMainDeck().getCards().removeAll(user.getActiveDeck().getMainDeck().getCards().subList(0, countOfInjection));
         for(String cardName : cardNames){
-            for(int i = 0; i < 10/cardNames.length; i++) {
+            for(int i = 0; i < countOfInjection/cardNames.length; i++) {
                 user.addCard(Utils.getCard(cardName));
                 user.getActiveDeck().getMainDeck().addCard(Utils.getCard(cardName));
             }

@@ -32,7 +32,9 @@ abstract public class Magic extends Card {
     public final Effect activateEffect(){
         return ()->{
             getEffect().run();
-            moveCardToGraveYard();
+            if(icon.equals(Icon.QUICKPLAY) || icon.equals(Icon.COUNTER) || icon.equals(Icon.NORMAL)) {
+                moveCardToGraveYard();
+            }
         };
     }
 

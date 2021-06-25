@@ -223,6 +223,13 @@ public class Monster extends Card {
         return monsterStateProperty.isEqualTo(MonsterState.DEFENSIVE_HIDDEN).or(monsterStateProperty.isEqualTo(MonsterState.DEFENSIVE_OCCUPIED));
     }
 
+    public void validateSummon() throws LogicException {
+        if (owner.isSummonedInLastTurn())
+            throw new LogicException("you already summoned/set on this turn");
+        if (!GameController.getInstance().getCurrentPlayerController().getPlayer().hasInHand(this))
+            throw new LogicException("you can only summon from your hand");
+    }
+
     public MonsterState getMonsterState(){
         return monsterStateProperty.get();
     }
