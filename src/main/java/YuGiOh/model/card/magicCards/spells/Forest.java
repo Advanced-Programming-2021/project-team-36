@@ -19,21 +19,23 @@ public class Forest extends Spell {
     }
 
     @Override
+    public int affectionOnAttackingMonster(Monster monster) {
+        MonsterType monsterType = monster.getMonsterType();
+        if (monsterType.equals(MonsterType.INSECT) || monsterType.equals(MonsterType.BEAST) ||
+                monsterType.equals(MonsterType.PLANT) || monsterType.equals(MonsterType.BEASTWARRIOR)) {
+            return 200;
+        }
+        return 0;
+    }
+
+    @Override
+    public int affectionOnDefensiveMonster(Monster monster) {
+        return affectionOnAttackingMonster(monster);
+    }
+
+    @Override
     protected Effect getEffect() {
-        return () -> {
-            for (Card card : GameController.getInstance().getGame().getAllCards()) {
-                if (card instanceof Monster) {
-                    Monster monster = (Monster) card;
-                    MonsterType monsterType = monster.getMonsterType();
-                    if (monsterType.equals(MonsterType.INSECT) || monsterType.equals(MonsterType.BEAST) ||
-                        monsterType.equals(MonsterType.PLANT) || monsterType.equals(MonsterType.BEASTWARRIOR)) {
-                        monster.setAttackDamage(monster.getAttackDamage() + 200);
-                        monster.setDefenseRate(monster.getDefenseRate() + 200);
-                    }
-                }
-            }
-            CustomPrinter.println("Forest activated successfully.", Color.Green);
-        };
+        return () -> {};
     }
 
     @Override

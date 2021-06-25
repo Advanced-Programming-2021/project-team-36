@@ -54,7 +54,7 @@ public class Terraforming extends Spell {
                 if (spell.getIcon().equals(Icon.FIELD))
                     return true;
             }
-        CustomPrinter.println("You can't activate Terraforming (you don't have any Field card in your deck", Color.Red);
+        CustomPrinter.println("You can't activate Terraforming (you don't have any Field card in your deck)", Color.Red);
         return false;
     }
 }

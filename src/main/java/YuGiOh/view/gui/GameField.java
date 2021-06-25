@@ -220,8 +220,8 @@ public class GameField extends Pane {
         });
         GuiReporter.getInstance().addGameEventHandler((GuiReporter.GameEventHandler<MagicActivation>) (event)->{
             Platform.runLater(()-> {
-                Magic magic = event.getMagic();
-                Text text = new Text(magic.getName() + " activated!");
+                Card card = event.getCard();
+                Text text = new Text(card.getName() + " activated!");
                 text.setFont(Font.font(50));
                 text.setFill(Color.RED);
                 text.layoutXProperty().bind(widthProperty().multiply(0.3));

@@ -80,7 +80,7 @@ public class DuelMenuView extends Application {
     public Card askUserToChooseCard(String message, SelectCondition condition) throws ResistToChooseCard {
         List<Card> cards = new ArrayList<>();
         game.getAllCards().forEach(c->{
-            if(condition.canSelect(c))
+            if (condition.canSelect(c))
                 cards.add(c);
         });
         List<CustomButton> buttons = new ArrayList<>();

@@ -106,9 +106,9 @@ public class DuelMenuController extends BaseMenuController {
     }
 
     public void activateEffect(Card card) throws LogicException, RoundOverExceptionEvent, ResistToChooseCard {
-        if (!(card instanceof Spell))
-            throw new LogicException("activate effect is only for spell cards");
-        gameController.getCurrentPlayerController().activateEffect((Spell) card);
+        if (!card.hasEffect())
+            throw new LogicException("activate effect is only for spell cards and monsters that have effect");
+        gameController.getCurrentPlayerController().activateEffect(card);
     }
 
     public void showGraveYard() {

@@ -13,10 +13,10 @@ public class AIPlayer extends Player {
     }
     private static User getAIUser() {
         int aiId = 1;
-        while(User.getUserByUsername("artificial_intelligence" + aiId) != null || User.getUserByNickname("Mr.AI" + aiId) != null)
+        while (User.getUserByUsername("artificial_intelligence" + aiId) != null || User.getUserByNickname("Mr.AI" + aiId) != null)
             aiId++;
         User user = new User("artificial_intelligence" + aiId, "Mr.AI" + aiId, "thisIsAStrongPassword");
-        Cheat.buildSuperUser(user);
+        Cheat.buildSuperUserWithManyOfThisCards(user, 10, "MagicCylinder");
         return user;
     }
 }

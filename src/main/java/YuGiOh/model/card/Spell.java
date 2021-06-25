@@ -8,9 +8,6 @@ abstract public class Spell extends Magic {
         super(name, description, price, icon, status);
     }
 
-    public void deactivate() {
-    };
-
     @Override
     public int getSpeed(){
         if (icon.equals(Icon.QUICKPLAY))

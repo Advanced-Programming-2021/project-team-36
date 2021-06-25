@@ -1,6 +1,8 @@
 package YuGiOh.model.card;
 
+import YuGiOh.controller.LogicException;
 import YuGiOh.model.Player.Player;
+import YuGiOh.model.card.action.Effect;
 import javafx.beans.binding.BooleanBinding;
 import javafx.event.ActionEvent;
 import javafx.event.Event;
@@ -54,6 +56,14 @@ public abstract class Card implements Comparable<Card>, Cloneable, Serializable 
         return this;
     }
 
+    public boolean isActivated() {
+        return false;
+    }
+
+    abstract public Effect activateEffect() throws LogicException;
+    abstract public boolean canActivateEffect();
+    abstract public boolean hasEffect();
+
     @Override
     public Card clone() {
         try {
@@ -71,6 +81,9 @@ public abstract class Card implements Comparable<Card>, Cloneable, Serializable 
 
     public void moveCardToGraveYard(){
         owner.moveCardToGraveYard(this);
+    }
+
+    public void reset() {
     }
 
     public void save() {
