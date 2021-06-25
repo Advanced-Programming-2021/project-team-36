@@ -34,7 +34,7 @@ public class Marshmallon extends Monster {
                     GameController.getInstance().getGame().getOtherPlayer(this.owner),
                     1000
             );
-            damageStep(attacker);
         }
+        damageStep(attacker);
     }
 }
