@@ -10,6 +10,7 @@ import javafx.beans.binding.Bindings;
 import javafx.beans.binding.BooleanBinding;
 import javafx.beans.property.SimpleObjectProperty;
 import lombok.Getter;
+import lombok.Setter;
 
 import java.util.Stack;
 
@@ -17,6 +18,9 @@ abstract public class Magic extends Card {
     @Getter
     protected Icon icon;
     protected Status status;
+    @Getter
+    @Setter
+    protected Monster equippedMonster; // it means only for equip spells
     protected SimpleObjectProperty<MagicState> magicStateProperty;
     public Magic(String name, String description, int price, Icon icon, Status status) {
         super(name, description, price);
@@ -25,7 +29,7 @@ abstract public class Magic extends Card {
         this.magicStateProperty = new SimpleObjectProperty<>(null);
     }
 
-    public Effect activateEffect(){
+    public final Effect activateEffect(){
         return ()->{
             getEffect().run();
             moveCardToGraveYard();
@@ -47,6 +51,14 @@ abstract public class Magic extends Card {
         cloned.status = status;
         cloned.magicStateProperty = new SimpleObjectProperty<>(null);
         return cloned;
+    }
+
+    public int affectionOnAttackingMonster(Monster monster) {
+        return 0;
+    }
+
+    public int affectionOnDefensiveMonster(Monster monster) {
+        return 0;
     }
 
     public MagicState getMagicState() {

@@ -197,8 +197,17 @@ public abstract class PlayerController {
     }
 
     public void moveCardToGraveYard(Card card) {
-        CustomPrinter.println(String.format("<%s>' Card <%s> moved to graveyard", player.getUser().getUsername(), card.getName()), Color.Blue);
+        if (card instanceof Monster) {
+            for (int i = 1; i <= 5; i++) {
+                Magic magic = player.getBoard().getMagicCardZone().get(i);
+                if (magic != null && magic.getIcon().equals(Icon.EQUIP) && magic.getEquippedMonster().equals(card))
+                    moveCardToGraveYard(magic);
+            }
+        }
+        if (card instanceof Spell)
+            ((Spell) card).deactivate();
         player.moveCardToGraveYard(card);
+        CustomPrinter.println(String.format("<%s>' Card <%s> moved to graveyard", player.getUser().getUsername(), card.getName()), Color.Blue);
     }
 
     public void setMagic(Magic magic) throws LogicException, ResistToChooseCard {
@@ -303,7 +312,7 @@ public abstract class PlayerController {
             throw new LogicException("spell card zone is full");
         if (!spell.canActivateEffect())
             throw new LogicException("preparations of this spell are not done yet");
-
+    
         CustomPrinter.println(String.format("<%s> wants to activate the effect of <%s>", player.getUser().getUsername(), spell.getName()), Color.Blue);
         startChain(
                 new Action(
@@ -311,8 +320,6 @@ public abstract class PlayerController {
                         spell.activateEffect()
                 )
         );
-        if (!spell.getIcon().equals(Icon.FIELD) && !spell.getIcon().equals(Icon.CONTINUOUS))
-            moveCardToGraveYard(spell);
     }
 
     public void startChain(Action action) throws RoundOverExceptionEvent, ResistToChooseCard {
@@ -327,5 +334,12 @@ public abstract class PlayerController {
 
     public boolean hasAttackedByCard(Monster monster) {
         return !monster.isAllowAttack();
+    }
+
+    public void refresh() {
+        player.setSummonedInLastTurn(false);
+        for (Card card : player.getBoard().getAllCards())
+            if (card instanceof Monster)
+                ((Monster) card).setAllowAttack(true);
     }
 }

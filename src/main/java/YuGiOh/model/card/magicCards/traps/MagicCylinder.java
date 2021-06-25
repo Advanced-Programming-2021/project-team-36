@@ -23,6 +23,7 @@ public class MagicCylinder extends Trap {
                     ((AttackEvent) getChain().peek().getEvent()).getAttacker().getAttackDamage()
             );
             getChain().pop();
+            GameController.getInstance().getPlayerControllerByPlayer(this.owner).moveCardToGraveYard(this);
         };
     }
 
