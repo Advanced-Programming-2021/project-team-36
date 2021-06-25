@@ -28,8 +28,7 @@ public class SolemnWarning extends Trap {
             PlayerController playerController = GameController.getInstance().getPlayerControllerByPlayer(this.owner);
             playerController.moveCardToGraveYard(this);
             Action action = getChain().pop();
-            playerController.getPlayer().decreaseLifePoint(2000);
-            GameController.getInstance().checkBothLivesEndGame();
+            GameController.getInstance().decreaseLifePoint(owner, 2000);
             Monster monster = ((SummonEvent) action.getEvent()).getMonster();
             GameController.getInstance().getOtherPlayerController(playerController).moveCardToGraveYard(monster);
             CustomPrinter.println("Solemn Warning activated and negated summon", Color.Green);

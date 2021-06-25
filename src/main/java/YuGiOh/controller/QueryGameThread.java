@@ -1,5 +1,8 @@
 package YuGiOh.controller;
 
+import YuGiOh.controller.events.RoundOverExceptionEvent;
+import YuGiOh.view.gui.GuiReporter;
+import YuGiOh.view.gui.event.RoundOverEvent;
 import javafx.application.Platform;
 import lombok.Getter;
 
@@ -20,13 +23,20 @@ public class QueryGameThread extends Thread {
     }
 
     public void run(){
-        while (true) {
-            try { Thread.sleep(50); } catch (InterruptedException ignored) {}
-            // it should be while game is not over
-            if(!tasks.isEmpty()){
-                Task<?> r = tasks.poll();
-                r.run();
+        try {
+            while (true) {
+                try {
+                    Thread.sleep(10);
+                } catch (InterruptedException ignored) {
+                }
+                // it should be while game is not over
+                if (!tasks.isEmpty()) {
+                    Task<?> r = tasks.poll();
+                    r.run();
+                }
             }
+        } catch (RoundOverExceptionEvent roundOverEvent) {
+            GuiReporter.getInstance().report(new RoundOverEvent(roundOverEvent));
         }
     }
 

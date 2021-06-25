@@ -15,6 +15,7 @@ import YuGiOh.view.DuelMenuView;
 import YuGiOh.view.gui.GuiReporter;
 import YuGiOh.view.gui.event.DuelOverEvent;
 import YuGiOh.view.gui.event.RoundOverEvent;
+import javafx.application.Platform;
 import lombok.Getter;
 import YuGiOh.model.enums.MonsterState;
 
@@ -40,10 +41,10 @@ public class DuelMenuController extends BaseMenuController {
     public void addEventListeners(){
         GuiReporter.getInstance().addEventHandler(RoundOverEvent.MY_TYPE, e->{
             gameController.endRound(e.getExceptionEvent());
-            graphicView.announce("round is over!");
+            Platform.runLater(()-> graphicView.announce("round is over!"));
         });
         GuiReporter.getInstance().addEventHandler(DuelOverEvent.MY_TYPE, e->{
-            graphicView.announce("duel is over!");
+            Platform.runLater(()-> graphicView.announce("duel is over!"));
         });
     }
 

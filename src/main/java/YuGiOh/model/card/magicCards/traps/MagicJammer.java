@@ -15,8 +15,8 @@ import YuGiOh.model.enums.Status;
 import YuGiOh.view.cardSelector.Conditions;
 import YuGiOh.view.cardSelector.SelectCondition;
 
-public class MagicJamamer extends Trap {
-    public MagicJamamer(String name, String description, int price, Icon icon, Status status) {
+public class MagicJammer extends Trap {
+    public MagicJammer(String name, String description, int price, Icon icon, Status status) {
         super(name, description, price, icon, status);
     }
 
