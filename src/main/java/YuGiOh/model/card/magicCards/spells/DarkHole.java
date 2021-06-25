@@ -19,7 +19,7 @@ public class DarkHole extends Spell {
     }
 
     @Override
-    public Effect activateEffect() {
+    protected Effect getEffect() {
         return () -> {
             GameController gameController = GameController.getInstance();
             PlayerController current = gameController.getPlayerControllerByPlayer(this.owner);

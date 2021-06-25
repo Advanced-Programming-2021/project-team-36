@@ -1,5 +1,7 @@
 package YuGiOh.view;
 
+import YuGiOh.controller.MainGameThread;
+import YuGiOh.controller.QueryGameThread;
 import YuGiOh.model.Game;
 import YuGiOh.model.card.Card;
 import YuGiOh.view.cardSelector.CardSelector;
@@ -10,16 +12,15 @@ import YuGiOh.view.gui.CustomButton;
 import YuGiOh.view.gui.DuelInfoBox;
 import YuGiOh.view.gui.GameField;
 import javafx.application.Application;
-import javafx.event.Event;
-import javafx.event.EventHandler;
-import javafx.event.EventType;
 import javafx.scene.Scene;
+import javafx.scene.input.KeyCode;
 import javafx.scene.layout.*;
 import javafx.stage.Stage;
 import lombok.Getter;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.atomic.AtomicBoolean;
 
 public class DuelMenuView extends Application {
     private final double WIDTH = 1024, HEIGHT = 768;
@@ -48,19 +49,35 @@ public class DuelMenuView extends Application {
         infoBox.setGameField(gameField);
         gameField.setInfoBox(infoBox);
         root.getChildren().addAll(infoBox, gameField);
-        selector = new CardSelector(gameField, infoBox);
+        selector = new CardSelector(infoBox);
         scene = new Scene(stackPane, WIDTH, HEIGHT);
         stage.setScene(scene);
         stage.show();
+        addPlayPauseController();
     }
 
+    public void addPlayPauseController(){
+        // todo remove this for production
+        AtomicBoolean stopped = new AtomicBoolean(false);
+        scene.setOnKeyPressed(e->{
+            if(e.getCode() == KeyCode.P){
+                stopped.set(!stopped.get());
+                if(stopped.get())
+                    MainGameThread.getInstance().suspend();
+                else
+                    MainGameThread.getInstance().resume();
+            }
+        });
+    }
+
+    // all of this asking user must happen in Query Thread!
+
     public boolean askUser(String question, String yes, String no) {
-        // todo handle this better
-        return new AlertBox().displayYesNoStandAlone(question, yes, no);
+        return QueryGameThread.getInstance().blockUnblockRunningThreadAndAskInGui((QueryGameThread.Task<Boolean>) ()->
+                new AlertBox().displayYesNoStandAlone(question, yes, no));
     }
 
     public Card askUserToChooseCard(String message, SelectCondition condition) throws ResistToChooseCard {
-        // todo handle this better
         List<Card> cards = new ArrayList<>();
         game.getAllCards().forEach(c->{
             if(condition.canSelect(c))
@@ -70,17 +87,20 @@ public class DuelMenuView extends Application {
         cards.forEach(c->{
             buttons.add(new CustomButton(c.getName(), 17, ()->{}));
         });
-        int ret = new AlertBox().displayChoicesStandAlone(message, buttons);
+
+        int ret = QueryGameThread.getInstance().blockUnblockRunningThreadAndAskInGui((QueryGameThread.Task<Integer>) ()->
+                new AlertBox().displayChoicesStandAlone(message, buttons));
         if(ret == -1)
             throw new ResistToChooseCard();
         return cards.get(ret);
     }
 
     public int askUserToChoose(String question, List<String> choices) throws ResistToChooseCard {
-        // todo handle this better
         ArrayList<CustomButton> buttons = new ArrayList<>();
         choices.forEach(s->buttons.add(new CustomButton(s, 17, ()->{})));
-        int ret = new AlertBox().displayChoicesStandAlone(question, buttons);
+
+        int ret = QueryGameThread.getInstance().blockUnblockRunningThreadAndAskInGui((QueryGameThread.Task<Integer>) ()->
+                new AlertBox().displayChoicesStandAlone(question, buttons));
         if(ret == -1)
             throw new ResistToChooseCard();
         return ret;
@@ -92,12 +112,5 @@ public class DuelMenuView extends Application {
 
     public void resetSelector(){
         selector.refresh();
-    }
-
-    public void fireEventOnGameField(Event event){
-        gameField.fireEvent(event);
-    }
-    public <T extends Event> void addEventListenerOnGameField(EventType<T> type, EventHandler<? super T> handler){
-        gameField.addEventHandler(type, handler);
     }
 }

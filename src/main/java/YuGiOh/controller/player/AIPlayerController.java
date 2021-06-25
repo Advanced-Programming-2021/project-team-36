@@ -107,42 +107,42 @@ public class AIPlayerController extends PlayerController {
         GameController.getInstance().goNextPhaseAndNotify();
     }
 
-    private void noErrorSummonCard(Monster monster) {
+    protected void noErrorSummonCard(Monster monster) {
         try {
             normalSummon(monster);
         } catch (ResistToChooseCard | LogicException ignored) {
         }
     }
 
-    private void noErrorFlipSummon(Monster monster) {
+    protected void noErrorFlipSummon(Monster monster) {
         try {
             flipSummon(monster);
         } catch (LogicException | ResistToChooseCard ignored) {
         }
     }
 
-    private void noErrorChangeMonsterPosition(Monster monster, MonsterState monsterState) {
+    protected void noErrorChangeMonsterPosition(Monster monster, MonsterState monsterState) {
         try {
             changeMonsterPosition(monster, monsterState);
         } catch (LogicException ignored) {
         }
     }
 
-    private void noErrorSetMonster(Monster monster) {
+    protected void noErrorSetMonster(Monster monster) {
         try {
             setMonster(monster);
         } catch (LogicException | ResistToChooseCard ignored) {
         }
     }
 
-    private void noErrorSetMagic(Magic magic) {
+    protected void noErrorSetMagic(Magic magic) {
         try {
             setMagic(magic);
         } catch (LogicException | ResistToChooseCard ignored) {
         }
     }
 
-    private void noErrorActivateEffect(Spell spell) {
+    protected void noErrorActivateEffect(Spell spell) {
         if (spell.getIcon().equals(Icon.RITUAL)) {
             noErrorRitualSummon(spell);
             return;
@@ -153,7 +153,7 @@ public class AIPlayerController extends PlayerController {
         }
     }
 
-    private void noErrorRitualSummon(Spell spell) {
+    protected void noErrorRitualSummon(Spell spell) {
         while (true) {
             try {
                 activateEffect(spell);
@@ -163,14 +163,14 @@ public class AIPlayerController extends PlayerController {
         }
     }
 
-    private void noErrorAttack(Monster attacker, Monster defender) {
+    protected void noErrorAttack(Monster attacker, Monster defender) {
         try {
             attack(attacker, defender);
         } catch (LogicException | ResistToChooseCard ignored) {
         }
     }
 
-    private void noErrorDirectAttack(Monster monster) {
+    protected void noErrorDirectAttack(Monster monster) {
         try {
             directAttack(monster);
         } catch (LogicException | ResistToChooseCard ignored) {

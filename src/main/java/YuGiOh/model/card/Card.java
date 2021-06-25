@@ -69,6 +69,10 @@ public abstract class Card implements Comparable<Card>, Cloneable, Serializable 
         }
     }
 
+    public void moveCardToGraveYard(){
+        owner.moveCardToGraveYard(this);
+    }
+
     public void save() {
         // TODO
     }

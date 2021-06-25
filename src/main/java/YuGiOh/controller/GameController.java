@@ -3,12 +3,14 @@ package YuGiOh.controller;
 import YuGiOh.controller.events.RoundOverExceptionEvent;
 import YuGiOh.controller.menu.DuelMenuController;
 import YuGiOh.controller.player.AIPlayerController;
+import YuGiOh.controller.player.AggressiveAIPlayerController;
 import YuGiOh.controller.player.HumanPlayerController;
 import YuGiOh.controller.player.PlayerController;
 import YuGiOh.model.Player.Player;
 import YuGiOh.model.enums.Color;
 import YuGiOh.model.enums.GameResult;
 import YuGiOh.utils.CustomPrinter;
+import YuGiOh.view.gui.GuiReporter;
 import YuGiOh.view.gui.event.RoundOverEvent;
 import lombok.Getter;
 import YuGiOh.model.Game;
@@ -16,6 +18,7 @@ import YuGiOh.model.Player.AIPlayer;
 import YuGiOh.model.Player.HumanPlayer;
 import YuGiOh.model.card.Card;
 import YuGiOh.model.enums.Phase;
+import lombok.Setter;
 
 // this controller provides functions for player controller to access to.
 // so for example players don't attack each other directly!
@@ -25,7 +28,13 @@ public class GameController {
     public static GameController instance;
     @Getter
     private final Game game;
-    private final PlayerController playerController1, playerController2;
+
+    // todo remove this in production
+    // private final PlayerController playerController1, playerController2;
+
+    @Setter
+    private PlayerController playerController1, playerController2;
+
     private Phase previousIterationPhase;
 
     public GameController(Game game) {
@@ -151,7 +160,7 @@ public class GameController {
                     goNextPhase();
                 }
             } catch (RoundOverExceptionEvent roundOverEvent) {
-                DuelMenuController.getInstance().getGraphicView().fireEventOnGameField(new RoundOverEvent(roundOverEvent));
+                GuiReporter.getInstance().report(new RoundOverEvent(roundOverEvent));
             }
         }
     }

@@ -31,7 +31,7 @@ public class AdvancedRitualArt extends Spell {
     }
 
     @Override
-    public Effect activateEffect() {
+    protected Effect getEffect() {
         assert canActivateEffect();
         return () -> {
             try {

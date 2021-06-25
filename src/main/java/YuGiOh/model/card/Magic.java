@@ -25,7 +25,14 @@ abstract public class Magic extends Card {
         this.magicStateProperty = new SimpleObjectProperty<>(null);
     }
 
-    abstract public Effect activateEffect();
+    public Effect activateEffect(){
+        return ()->{
+            getEffect().run();
+            moveCardToGraveYard();
+        };
+    }
+
+    abstract protected Effect getEffect();
     abstract public boolean canActivateEffect();
 
     @Override

@@ -18,7 +18,7 @@ public class Yami extends Spell {
     boolean isActivated = false;
 
     @Override
-    public Effect activateEffect() {
+    protected Effect getEffect() {
         assert canActivateEffect();
         return ()->{
             isActivated = true;

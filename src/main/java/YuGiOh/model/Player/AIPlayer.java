@@ -6,7 +6,10 @@ import YuGiOh.model.User;
 
 public class AIPlayer extends Player {
     public AIPlayer() throws ModelException {
-        super(getAIUser());
+        this(getAIUser());
+    }
+    public AIPlayer(User user) throws ModelException {
+        super(user);
     }
     private static User getAIUser() {
         int aiId = 1;

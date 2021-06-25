@@ -15,7 +15,7 @@ public class MagicCylinder extends Trap {
     }
 
     @Override
-    public Effect activateEffect() {
+    protected Effect getEffect() {
         assert canActivateEffect();
         return ()->{
             GameController.getInstance().decreaseLifePoint(

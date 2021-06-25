@@ -26,7 +26,7 @@ public class Terraforming extends Spell {
     }
 
     @Override
-    public Effect activateEffect() {
+    protected Effect getEffect() {
         return () -> {
             Player player = this.owner;
             List<Card> cards = player.getBoard().getMainDeck().getCards();

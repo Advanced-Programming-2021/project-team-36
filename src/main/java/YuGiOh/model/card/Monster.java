@@ -7,7 +7,6 @@ import YuGiOh.model.Player.Player;
 import YuGiOh.model.card.action.Effect;
 import YuGiOh.model.enums.*;
 import YuGiOh.utils.CustomPrinter;
-import YuGiOh.model.enums.*;
 import javafx.beans.binding.Bindings;
 import javafx.beans.binding.BooleanBinding;
 import javafx.beans.property.SimpleObjectProperty;
@@ -83,7 +82,7 @@ public class Monster extends Card {
         monster.tryToDecreaseLifePointOfMe(amount);
     }
 
-    public void damageStep(Monster attacker) throws RoundOverExceptionEvent {
+    public final void damageStep(Monster attacker) throws RoundOverExceptionEvent {
         // todo are the responses ok? maybe we have to swap your and mine?
         // todo remove this System.outs!
         if (getMonsterState().equals(MonsterState.OFFENSIVE_OCCUPIED)) {
@@ -141,7 +140,15 @@ public class Monster extends Card {
         };
     }
 
+    protected void specialEffectWhenBeingAttacked(Monster attacker) {
+        damageStep(attacker);
+    }
+
     public Effect directAttack(Player player) {
+        if(GameController.getInstance().getGame().getCardZoneType(this).equals(ZoneType.GRAVEYARD)){
+            CustomPrinter.println(this.getName() + " is dead so it cannot attack", Color.Yellow);
+            return ()->{};
+        }
         Player opponent = GameController.getInstance().getGame().getOtherPlayer(player);
         return () -> {
             GameController.getInstance().decreaseLifePoint(opponent, this.getAttackDamage());
@@ -149,11 +156,22 @@ public class Monster extends Card {
         };
     }
 
-    // todo make sure that all monsters have taken care of changing from hidden to occupied if can
-    public Effect onBeingAttackedByMonster(Monster attacker) {
+    // this are hooks to be overridden
+    protected void startOfBeingAttackedByMonster(){
+    }
+    protected void endOfBeingAttackedByMonster(){
+    }
+
+    public final Effect onBeingAttackedByMonster(Monster attacker){
         return () -> {
+            if(GameController.getInstance().getGame().getCardZoneType(this).equals(ZoneType.GRAVEYARD)){
+                CustomPrinter.println(this.getName() + " is dead so it cannot attack", Color.Yellow);
+                return;
+            }
+            startOfBeingAttackedByMonster();
             changeFromHiddenToOccupiedIfCanEffect().run();
-            damageStep(attacker);
+            specialEffectWhenBeingAttacked(attacker);
+            endOfBeingAttackedByMonster();
         };
     }
 

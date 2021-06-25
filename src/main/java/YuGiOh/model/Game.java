@@ -64,6 +64,16 @@ public class Game {
         return cardAddress.getOwner().getBoard().getCardByCardAddress(cardAddress);
     }
 
+    public CardAddress getCardAddress(Card card){
+        CardAddress firstCardAddress = firstPlayer.getBoard().getCardAddress(card);
+        CardAddress secondCardAddress = secondPlayer.getBoard().getCardAddress(card);
+        if(firstCardAddress != null)
+            return firstCardAddress;
+        if(secondCardAddress != null)
+            return secondCardAddress;
+        throw new Error("There is no such card in game");
+    }
+
     public ZoneType getCardZoneType(Card card){
         ZoneType firstPlayerZone = firstPlayer.getBoard().getCardZoneType(card);
         ZoneType secondPlayerZone = secondPlayer.getBoard().getCardZoneType(card);

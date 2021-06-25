@@ -16,7 +16,7 @@ public class TrapHole extends Trap {
     }
 
     @Override
-    public Effect activateEffect() {
+    protected Effect getEffect() {
         assert canActivateEffect();
         Monster monster = ((SummonEvent) getChain().peek().getEvent()).getMonster();
         return ()->{

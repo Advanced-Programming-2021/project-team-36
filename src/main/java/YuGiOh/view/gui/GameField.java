@@ -1,19 +1,26 @@
 package YuGiOh.view.gui;
 
+import YuGiOh.controller.GameController;
 import YuGiOh.controller.LogicException;
 import YuGiOh.controller.MainGameThread;
+import YuGiOh.controller.QueryGameThread;
 import YuGiOh.controller.events.RoundOverExceptionEvent;
 import YuGiOh.controller.menu.DuelMenuController;
 import YuGiOh.model.Board;
 import YuGiOh.model.CardAddress;
 import YuGiOh.model.Game;
+import YuGiOh.model.Player.Player;
 import YuGiOh.model.card.Card;
 import YuGiOh.model.card.Magic;
+import YuGiOh.model.card.action.DirectAttackEvent;
+import YuGiOh.model.card.action.MagicActivation;
+import YuGiOh.model.card.action.MonsterAttackEvent;
 import YuGiOh.model.enums.ZoneType;
 import YuGiOh.view.cardSelector.ResistToChooseCard;
-import YuGiOh.view.gui.event.DropCard;
+import YuGiOh.view.gui.event.DropCardEvent;
 import YuGiOh.view.gui.event.DuelOverEvent;
 import YuGiOh.view.gui.event.RoundOverEvent;
+import javafx.animation.TranslateTransition;
 import javafx.application.Platform;
 import javafx.beans.InvalidationListener;
 import javafx.beans.binding.DoubleBinding;
@@ -21,11 +28,16 @@ import javafx.collections.ListChangeListener;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.*;
+import javafx.scene.paint.Color;
+import javafx.scene.text.Font;
+import javafx.scene.text.Text;
 import javafx.util.Duration;
 import lombok.Getter;
 import lombok.Setter;
 
 import java.util.HashMap;
+import java.util.Iterator;
+import java.util.Map;
 
 public class GameField extends Pane {
     private final HashMap<CardFrame, CardAddress> occupied = new HashMap<>();
@@ -90,7 +102,6 @@ public class GameField extends Pane {
     public CardLocation getGraveYardLocation(int id, int totalCards, int up){
         double x = graveYardLocation[up].xRatio;
         double y = graveYardLocation[up].yRatio;
-        System.out.println(id);
         return new CardLocation(x + (1/widthProperty.get()) * 40 * id / totalCards, y);
     }
 
@@ -140,6 +151,8 @@ public class GameField extends Pane {
         this.heightProperty = heightProperty;
         this.game = game;
 
+        new GuiReporter(this);
+
         ImageView background = new ImageView(new Image(Utils.getAsset("Field/fie_normal.bmp").toURI().toString()));
 
         minWidthProperty().bind(widthProperty);
@@ -163,7 +176,7 @@ public class GameField extends Pane {
     }
 
     private void setEventListeners(){
-        addEventHandler(DropCard.MY_TYPE, e->{
+        GuiReporter.getInstance().addEventHandler(DropCardEvent.MY_TYPE, e->{
             occupied.forEach((cardFrame, cardAddress)->{
                 double difX = e.getBounds().getCenterX() - cardFrame.getBoundsInParent().getCenterX();
                 double difY = e.getBounds().getCenterY() - cardFrame.getBoundsInParent().getCenterY();
@@ -173,54 +186,122 @@ public class GameField extends Pane {
                 }
             });
         });
-        addEventHandler(RoundOverEvent.MY_TYPE, e->{
+        GuiReporter.getInstance().addEventHandler(RoundOverEvent.MY_TYPE, e->{
             System.out.println("round was over");
             // todo this is just a sample
         });
-        addEventHandler(DuelOverEvent.MY_TYPE, e->{
+        GuiReporter.getInstance().addEventHandler(DuelOverEvent.MY_TYPE, e->{
             System.out.println("duel was over");
             // todo this is just a sample
         });
+        GuiReporter.getInstance().addGameEventHandler((GuiReporter.GameEventHandler<MonsterAttackEvent>) (event)->{
+            moveOrCreateCardByCardAddress(getCardAddressByCard(event.getDefender()), event.getAttacker());
+            moveOrCreateCardByCardAddress(game.getCardAddress(event.getAttacker()), event.getAttacker());
+        });
+        GuiReporter.getInstance().addGameEventHandler((GuiReporter.GameEventHandler<DirectAttackEvent>) (event)->{
+            int up = getPlayerUpDown(event.getPlayer());
+            CardLocation opponentPlayerLocation = new CardLocation(0.5, 1-up+0.05);
+            CardFrame cardFrame = getCardFrameByCard(event.getAttacker());
+            assert cardFrame != null;
+            tellCardFrameToMoveByCardLocation(cardFrame, opponentPlayerLocation, Duration.millis(400));
+            tellCardFrameToMoveByCardLocation(cardFrame, getCardLocationByAddress(game.getCardAddress(event.getAttacker())), Duration.millis(400));
+        });
+        GuiReporter.getInstance().addGameEventHandler((GuiReporter.GameEventHandler<MagicActivation>) (event)->{
+            Platform.runLater(()-> {
+                Magic magic = event.getMagic();
+                Text text = new Text(magic.getName() + " activated!");
+                text.setFont(Font.font(50));
+                text.setFill(Color.RED);
+                text.layoutXProperty().bind(widthProperty().multiply(0.3));
+                text.layoutYProperty().bind(heightProperty().multiply(0.4));
+                getChildren().add(text);
+                new Thread(() -> {
+                    try {
+                        Thread.sleep(1000);
+                    } catch (InterruptedException ignored) {
+                    }
+                    Platform.runLater(() -> getChildren().remove(text));
+                }).start();
+            });
+        });
     }
 
-    private void moveOrCreateCardByCardAddress(CardAddress address, Card card) {
-        Duration animationDuration = Duration.ZERO;
-        int up = address.getOwner().equals(game.getFirstPlayer()) ? 0 : 1;
+    private int getPlayerUpDown(Player player){
+        return player.equals(game.getFirstPlayer()) ? 0 : 1;
+    }
+    private int getOwnerUpDown(CardAddress address){
+        return getPlayerUpDown(address.getOwner());
+    }
+    private CardLocation getCardLocationByAddress(CardAddress address){
+        int up = getOwnerUpDown(address);
         int id = address.getId()-1;
+        if(address.isInHand())
+            return getHandLocation(id, address.getOwner().getBoard().getCardsOnHand().size(), up);
+        else if(address.isInFieldZone())
+            return fieldLocation[up];
+        else if(address.isInGraveYard())
+            return getGraveYardLocation(id, address.getOwner().getBoard().getGraveYard().size(), up);
+        else if(address.isInMagicZone())
+            return magicLocation[up][id];
+        else if(address.isInMonsterZone())
+            return monsterLocation[up][id];
+        throw new Error("this will never happen");
+    }
+    private Duration getAnimationDuration(CardAddress address, Card card){
+        if(address.isInHand()) {
+            return Duration.millis(100);
+        }  else if(address.isInFieldZone()) {
+            return Duration.millis(300);
+        } else if(address.isInGraveYard()) {
+            if (game.getCardZoneType(card) == ZoneType.GRAVEYARD)
+                return Duration.millis(3);
+            return Duration.millis(300);
+        } else if(address.isInMagicZone()){
+            return Duration.millis(300);
+        } if(address.isInMonsterZone()) {
+            return Duration.millis(300);
+        }
+        throw new Error("this will never happen");
+    }
+    private CardAddress getCardAddressByCard(Card card){
+        for (Map.Entry<CardFrame,CardAddress> entry : occupied.entrySet()){
+            if(entry.getKey().getCard().equals(card))
+                return entry.getValue();
+        }
+        return null;
+    }
+    private CardFrame getCardFrameByCard(Card card){
+        for (Map.Entry<CardFrame,CardAddress> entry : occupied.entrySet()){
+            if(entry.getKey().getCard().equals(card))
+                return entry.getKey();
+        }
+        return null;
+    }
 
-        // todo this is dummy remove this
-        CardLocation cardLocation;
-
-        if(address.isInHand()){
-            animationDuration = Duration.millis(100);
-            cardLocation = getHandLocation(id, address.getOwner().getBoard().getCardsOnHand().size(), up);
+    private void tellCardFrameToMoveByCardLocation(CardFrame cardFrame, CardLocation cardLocation, Duration animationDuration){
+        cardFrame.animateCardMoving(
+            widthProperty.multiply(cardLocation.xRatio).add(cardWidthProperty.divide(2).negate()),
+            heightProperty.multiply(cardLocation.yRatio).add(cardHeightProperty.divide(2).negate()),
+            animationDuration
+        );
+    }
+    private void moveOrCreateCardByCardAddress(CardAddress address, Card card) {
+        CardFrame cardFrame = getCardFrameByCard(card);
+        CardLocation cardLocation = getCardLocationByAddress(address);
+        Duration animationDuration = getAnimationDuration(address, card);
+        // if it is new born we don't animate
+        boolean newBorn = cardFrame == null;
+        if (newBorn){
+            cardFrame = new CardFrame(this, card, cardWidthProperty, cardHeightProperty);
+            cardFrame.moveByBindingCoordinates(
+                    widthProperty.multiply(cardLocation.xRatio).add(cardWidthProperty.divide(2).negate()),
+                    heightProperty.multiply(cardLocation.yRatio).add(cardHeightProperty.divide(2).negate())
+            );
+            final CardFrame finalCardFrame = cardFrame;
+            Platform.runLater(()-> getChildren().add(finalCardFrame));
+        } else {
+            tellCardFrameToMoveByCardLocation(cardFrame, cardLocation, animationDuration);
         }
-        else if(address.isInFieldZone()){
-            animationDuration = Duration.millis(300);
-            cardLocation = fieldLocation[up];
-        }
-        else if(address.isInGraveYard()){
-            animationDuration = Duration.millis(300);
-            if(game.getCardZoneType(card) == ZoneType.GRAVEYARD)
-                animationDuration = Duration.millis(3);
-            cardLocation = getGraveYardLocation(id, address.getOwner().getBoard().getGraveYard().size(), up);
-        }
-        else if(address.isInMagicZone()){
-            animationDuration = Duration.millis(300);
-            cardLocation = magicLocation[up][id];
-        }
-        else{
-            animationDuration = Duration.millis(300);
-            assert address.isInMonsterZone();
-            cardLocation = monsterLocation[up][id];
-        }
-        final CardFrame[] cardFrameTmp = new CardFrame[1];
-        occupied.forEach((cardFrame, cardAddress)->{
-            if(cardFrame.getCard().equals(card))
-                cardFrameTmp[0] = cardFrame;
-        });
-        final CardFrame cardFrame = cardFrameTmp[0] == null ? new CardFrame(this, card, cardWidthProperty, cardHeightProperty) : cardFrameTmp[0];
-        moveCardByCoordinate(cardFrame, widthProperty.multiply(cardLocation.xRatio), heightProperty.multiply(cardLocation.yRatio), animationDuration);
         occupied.put(cardFrame, address);
     }
 
@@ -237,39 +318,18 @@ public class GameField extends Pane {
         return y;
     }
 
-    public void moveCardByCoordinate(CardFrame cardFrame, DoubleBinding x, DoubleBinding y, Duration animationDuration){
-        boolean runningByServiceThread = Thread.currentThread() instanceof MainGameThread;
-        Platform.runLater(()-> {
-            boolean newBorn = false;
-            if (!getChildren().contains(cardFrame)) {
-                getChildren().add(cardFrame);
-                newBorn = true;
-            }
-            cardFrame.moveByBindingCoordinates(
-                    x.add(cardWidthProperty.divide(2).negate()),
-                    y.add(cardHeightProperty.divide(2).negate()),
-                    animationDuration,
-                    !newBorn,
-                    ()->{
-                        if(runningByServiceThread)
-                            cardFrame.unlockThisThread();
-                    }
-            );
-        });
-        if(runningByServiceThread)
-            cardFrame.lockThisThread();
-    }
-
     public void runAndAlert(GameRunnable runnable, Runnable onFail){
-        try {
-            runnable.run();
-        } catch (LogicException | ResistToChooseCard e){
-            onFail.run();
-            new AlertBox().display(this, e.getMessage());
-        } catch (RoundOverExceptionEvent e){
-            onFail.run();
-            fireEvent(new RoundOverEvent(e));
-        }
+        QueryGameThread.getInstance().addRunnable(()->{
+            try {
+                runnable.run();
+            } catch (LogicException | ResistToChooseCard e){
+                onFail.run();
+                Platform.runLater(()->new AlertBox().display(this, e.getMessage()));
+            } catch (RoundOverExceptionEvent e){
+                onFail.run();
+                GuiReporter.getInstance().report(new RoundOverEvent(e));
+            }
+        });
     }
 
     static class CardLocation{

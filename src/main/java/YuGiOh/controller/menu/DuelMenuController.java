@@ -1,10 +1,7 @@
 package YuGiOh.controller.menu;
 
-import YuGiOh.controller.MainGameThread;
+import YuGiOh.controller.*;
 import YuGiOh.controller.events.RoundOverExceptionEvent;
-import YuGiOh.controller.GameController;
-import YuGiOh.controller.LogicException;
-import YuGiOh.controller.ProgramController;
 import YuGiOh.model.Player.Player;
 import YuGiOh.view.cardSelector.ResistToChooseCard;
 import YuGiOh.model.CardAddress;
@@ -14,14 +11,13 @@ import YuGiOh.model.card.Magic;
 import YuGiOh.model.card.Monster;
 import YuGiOh.model.card.Spell;
 import YuGiOh.model.enums.Color;
-import YuGiOh.model.enums.ZoneType;
 import YuGiOh.utils.CustomPrinter;
 import YuGiOh.utils.Debugger;
 import YuGiOh.utils.RoutingException;
 import YuGiOh.view.DuelMenuView;
+import YuGiOh.view.gui.GuiReporter;
 import YuGiOh.view.gui.event.DuelOverEvent;
 import YuGiOh.view.gui.event.RoundOverEvent;
-import javafx.concurrent.Task;
 import lombok.Getter;
 import YuGiOh.model.enums.MonsterState;
 
@@ -45,11 +41,11 @@ public class DuelMenuController extends BaseMenuController {
     }
 
     public void addEventListeners(){
-        graphicView.addEventListenerOnGameField(RoundOverEvent.MY_TYPE, e->{
+        GuiReporter.getInstance().addEventHandler(RoundOverEvent.MY_TYPE, e->{
             gameController.endRound(e.getExceptionEvent());
             graphicView.announce("round is over!");
         });
-        graphicView.addEventListenerOnGameField(DuelOverEvent.MY_TYPE, e->{
+        GuiReporter.getInstance().addEventHandler(DuelOverEvent.MY_TYPE, e->{
             graphicView.announce("duel is over!");
         });
     }
@@ -136,7 +132,7 @@ public class DuelMenuController extends BaseMenuController {
         winner.getUser().increaseBalance(rounds * (1000 + maxWinnerLP));
         looser.getUser().increaseBalance(rounds * 100);
         CustomPrinter.println(String.format("%s won the whole match with score: %d-%d", winner.getUser().getUsername(), firstPlayerScore, secondPlayerScore), Color.Blue);
-        graphicView.fireEventOnGameField(new DuelOverEvent());
+        GuiReporter.getInstance().report(new DuelOverEvent());
     }
 
     public void surrender() throws RoundOverExceptionEvent {
@@ -160,11 +156,14 @@ public class DuelMenuController extends BaseMenuController {
 
     @Override
     public void control(){
+        QueryGameThread queryGameThread = new QueryGameThread();
         MainGameThread mainGameThread = new MainGameThread(()-> {
             addEventListeners();
             gameController.control();
         });
         mainGameThread.start();
+        queryGameThread.start();
+
         //        ProgramController.getInstance().navigateToMenu(MainMenuController.getInstance());
     }
 }

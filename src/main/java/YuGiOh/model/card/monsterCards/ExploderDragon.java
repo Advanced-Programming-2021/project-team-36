@@ -15,19 +15,17 @@ public class ExploderDragon extends Monster {
     }
 
     @Override
-    public Effect onBeingAttackedByMonster(Monster attacker){
-        return ()->{
-            int myLifePoint = this.owner.getLifePoint();
-            int opponentLifePoint = attacker.owner.getLifePoint();
-            try{
-                super.onBeingAttackedByMonster(attacker).run();
-            } catch (RoundOverExceptionEvent ignored){
-            }
-            if(GameController.getInstance().getGame().getCardZoneType(this).equals(ZoneType.GRAVEYARD)) {
-                attacker.tryToSendToGraveYardOfMe();
-            }
-            this.owner.setLifePoint(myLifePoint);
-            attacker.owner.setLifePoint(opponentLifePoint);
-        };
+    public void specialEffectWhenBeingAttacked(Monster attacker){
+        int myLifePoint = this.owner.getLifePoint();
+        int opponentLifePoint = attacker.owner.getLifePoint();
+        try{
+            damageStep(attacker);
+        } catch (RoundOverExceptionEvent ignored){
+        }
+        if(GameController.getInstance().getGame().getCardZoneType(this).equals(ZoneType.GRAVEYARD)) {
+            attacker.tryToSendToGraveYardOfMe();
+        }
+        this.owner.setLifePoint(myLifePoint);
+        attacker.owner.setLifePoint(opponentLifePoint);
     }
 }

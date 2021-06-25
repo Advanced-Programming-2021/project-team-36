@@ -18,7 +18,7 @@ public class MirrorForce extends Trap {
     }
 
     @Override
-    public Effect activateEffect() {
+    protected Effect getEffect() {
         assert canActivateEffect();
         return () -> {
             for (Card card : GameController.getInstance().getGame().getOtherPlayer(this.owner).getBoard().getAllCardsOnBoard()) {

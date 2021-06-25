@@ -75,6 +75,25 @@ public class Board {
         return null;
     }
 
+    public CardAddress getCardAddress(Card card){
+        final CardAddress[] ret = {null};
+        monsterCardZone.forEach((id, monster)->{
+            if(monster.equals(card))
+                ret[0] = new CardAddress(ZoneType.MONSTER, id, owner);
+        });
+        magicCardZone.forEach((id, magic)->{
+            if(magic.equals(card))
+                ret[0] = new CardAddress(ZoneType.MAGIC, id, owner);
+        });
+        if(graveYard.contains(card))
+            ret[0] = new CardAddress(ZoneType.GRAVEYARD, graveYard.indexOf(card) + 1, owner);
+        if(card.equals(getFieldZoneCard()))
+            ret[0] = new CardAddress(ZoneType.FIELD, 1, owner);
+        if(cardsOnHand.contains(card))
+            ret[0] = new CardAddress(ZoneType.HAND, cardsOnHand.indexOf(card) + 1, owner);
+        return ret[0];
+    }
+
     public ZoneType getCardZoneType(Card card){
         if(monsterCardZone.containsValue(card))
             return ZoneType.MONSTER;

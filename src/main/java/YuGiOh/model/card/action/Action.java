@@ -2,6 +2,8 @@ package YuGiOh.model.card.action;
 
 import YuGiOh.controller.LogicException;
 import YuGiOh.view.cardSelector.ResistToChooseCard;
+import YuGiOh.view.gui.GuiReporter;
+import YuGiOh.view.gui.event.GameActionEvent;
 import lombok.Getter;
 
 public class Action {
@@ -15,6 +17,7 @@ public class Action {
     }
 
     public void runEffect() throws ResistToChooseCard {
+        GuiReporter.getInstance().report(new GameActionEvent(this));
         try {
             effect.run();
         } catch (LogicException e){

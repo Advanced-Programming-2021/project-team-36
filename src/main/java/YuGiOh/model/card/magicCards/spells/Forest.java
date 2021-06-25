@@ -19,7 +19,7 @@ public class Forest extends Spell {
     }
 
     @Override
-    public Effect activateEffect() {
+    protected Effect getEffect() {
         return () -> {
             for (Card card : GameController.getInstance().getGame().getAllCards()) {
                 if (card instanceof Monster) {

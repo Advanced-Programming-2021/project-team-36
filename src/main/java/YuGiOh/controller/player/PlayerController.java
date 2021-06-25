@@ -4,8 +4,6 @@ import YuGiOh.controller.events.RoundOverExceptionEvent;
 import YuGiOh.model.card.Magic;
 import YuGiOh.model.card.action.*;
 import YuGiOh.model.enums.*;
-import YuGiOh.model.card.action.*;
-import YuGiOh.model.enums.*;
 import YuGiOh.view.cardSelector.Conditions;
 import YuGiOh.model.card.Spell;
 import YuGiOh.utils.CustomPrinter;
@@ -130,8 +128,8 @@ public abstract class PlayerController {
                 new Action(
                         new SummonEvent(monster, SummonType.NORMAL),
                         () -> {
-                                boolean AttackingState = askRespondToQuestion("which position you want to summon?", "attacking", "defending");
-                                MonsterState monsterState = (AttackingState ? MonsterState.OFFENSIVE_OCCUPIED : MonsterState.DEFENSIVE_OCCUPIED);
+                                boolean AttackingState = askRespondToQuestion("which position you want to summon?", "defending", "attacking");
+                                MonsterState monsterState = (AttackingState ? MonsterState.DEFENSIVE_OCCUPIED : MonsterState.OFFENSIVE_OCCUPIED);
                                 summon(monster, monster.getNumberOfRequiredTribute(), monsterState);
                                 player.getBoard().getCardsOnHand().remove((Card) monster);
                                 player.setSummonedInLastTurn(true);

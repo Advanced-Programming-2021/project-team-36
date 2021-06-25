@@ -15,7 +15,7 @@ public class NegateAttack extends Trap {
     }
 
     @Override
-    public Effect activateEffect() {
+    protected Effect getEffect() {
         return ()->{
             getChain().pop();
             // todo how to end battle phase when there is still action in chain?

@@ -14,11 +14,9 @@ public class YomiShip extends Monster {
     }
 
     @Override
-    public Effect onBeingAttackedByMonster(Monster attacker) {
-        return ()-> {
-            super.onBeingAttackedByMonster(attacker).run();
-            if(GameController.getInstance().getGame().getCardZoneType(this).equals(ZoneType.GRAVEYARD))
-                attacker.tryToSendToGraveYardOfMe();
-        };
+    public void specialEffectWhenBeingAttacked(Monster attacker) {
+        damageStep(attacker);
+        if(GameController.getInstance().getGame().getCardZoneType(this).equals(ZoneType.GRAVEYARD))
+            attacker.tryToSendToGraveYardOfMe();
     }
 }

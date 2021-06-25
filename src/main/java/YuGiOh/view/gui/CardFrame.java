@@ -1,16 +1,16 @@
 package YuGiOh.view.gui;
 
+import YuGiOh.controller.MainGameThread;
 import YuGiOh.controller.menu.DuelMenuController;
 import YuGiOh.model.card.Card;
 import YuGiOh.model.card.Monster;
 import YuGiOh.model.enums.MonsterState;
-import YuGiOh.view.gui.event.ClickOnCard;
-import YuGiOh.view.gui.event.DropCard;
+import YuGiOh.view.gui.event.ClickOnCardEvent;
+import YuGiOh.view.gui.event.DropCardEvent;
 import javafx.animation.Animation;
 import javafx.animation.Transition;
 import javafx.animation.TranslateTransition;
 import javafx.beans.InvalidationListener;
-import javafx.beans.Observable;
 import javafx.beans.binding.Bindings;
 import javafx.beans.binding.DoubleBinding;
 import javafx.beans.property.BooleanProperty;
@@ -114,7 +114,7 @@ public class CardFrame extends Pane {
 
         setOnMouseClicked(e->{
             // todo we haven't handled clicking on dead cards
-            fireEvent(new ClickOnCard(this));
+            GuiReporter.getInstance().report(new ClickOnCardEvent(this));
         });
         setOnMousePressed(e->{
             mouseDifX = getTranslateX() - e.getSceneX();
@@ -125,7 +125,7 @@ public class CardFrame extends Pane {
             Bounds bounds = getBoundsInParent();
             setCursor(Cursor.HAND);
             moveByTranslateValue(0, 0);
-            fireEvent(new DropCard(this, bounds));
+            GuiReporter.getInstance().report(new DropCardEvent(this, bounds));
         });
         setOnMouseDragged(e->{
             moveByTranslateValue(e.getSceneX() + mouseDifX, e.getSceneY() + mouseDifY);
@@ -188,21 +188,8 @@ public class CardFrame extends Pane {
         });
     }
 
-
-    public void lockThisThread(){
-        synchronized (this){
-            try { wait(); } catch (InterruptedException e){}
-        }
-    }
-    public void unlockThisThread(){
-        synchronized (this){
-            notify();
-        }
-    }
-
-    public void moveByBindingCoordinates(DoubleBinding x, DoubleBinding y, Duration animationDuration, boolean visible, Runnable afterAnimation){
-        synchronized (this) {
-            setVisible(visible);
+    public void animateCardMoving(DoubleBinding x, DoubleBinding y, Duration animationDuration) {
+        MainGameThread.getInstance().onlyBlockRunningThreadThenDoInGui(()-> {
             layoutXProperty().unbind();
             layoutYProperty().unbind();
             TranslateTransition tt = new TranslateTransition(animationDuration, this);
@@ -210,16 +197,21 @@ public class CardFrame extends Pane {
             tt.setFromY(0);
             tt.toXProperty().bind(x.add(layoutXProperty().negate()));
             tt.toYProperty().bind(y.add(layoutYProperty().negate()));
-            tt.setOnFinished(e->{
-                layoutXProperty().bind(x);
-                layoutYProperty().bind(y);
+            tt.setOnFinished(e -> {
+                moveByBindingCoordinates(x, y);
                 setTranslateX(0);
                 setTranslateY(0);
-                setVisible(true);
-                afterAnimation.run();
+                MainGameThread.getInstance().unlockTheThread();
             });
             tt.play();
-        }
+        });
+    }
+
+    public void moveByBindingCoordinates(DoubleBinding x, DoubleBinding y){
+        layoutXProperty().bind(x);
+        layoutYProperty().bind(y);
+        setTranslateX(0);
+        setTranslateY(0);
     }
     public void moveByTranslateValue(double x, double y){
         setTranslateX(x);

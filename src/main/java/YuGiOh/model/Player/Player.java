@@ -43,7 +43,6 @@ abstract public class Player {
         this.board = new Board(deck.getMainDeck(), this);
         setLifePoint(Constants.InitialLifePoint.val);
         summonedInLastTurn = false;
-
     }
 
     public User getUser() {

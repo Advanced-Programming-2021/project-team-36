@@ -1,12 +1,9 @@
 package YuGiOh.view.cardSelector;
 
 import YuGiOh.controller.LogicException;
-import YuGiOh.controller.menu.DuelMenuController;
 import YuGiOh.model.card.Card;
-import YuGiOh.model.enums.MonsterState;
 import YuGiOh.view.gui.*;
-import YuGiOh.view.gui.*;
-import YuGiOh.view.gui.event.ClickOnCard;
+import YuGiOh.view.gui.event.ClickOnCardEvent;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -15,14 +12,12 @@ public class CardSelector {
     private final List<CardFrame> selectedCards;
     private SelectCondition condition;
     private SelectMode selectMode;
-    private GameField gameRoot;
     private DuelInfoBox infoBox;
 
-    public CardSelector(GameField gameRoot, DuelInfoBox infoBox){
-        this.gameRoot = gameRoot;
+    public CardSelector(DuelInfoBox infoBox){
         this.infoBox = infoBox;
         selectedCards = new ArrayList<>();
-        gameRoot.addEventHandler(ClickOnCard.MY_TYPE, e->{
+        GuiReporter.getInstance().addEventHandler(ClickOnCardEvent.MY_TYPE, e->{
             if(condition.canSelect(e.getCardFrame().getCard())) {
                 if (selectedCards.contains(e.getCardFrame())) {
                     deselectCard(e.getCardFrame());

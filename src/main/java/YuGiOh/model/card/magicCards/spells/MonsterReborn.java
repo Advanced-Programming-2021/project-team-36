@@ -23,7 +23,7 @@ public class MonsterReborn extends Spell {
     }
 
     @Override
-    public Effect activateEffect() {
+    protected Effect getEffect() {
         return () -> {
             assert canActivateEffect();
             PlayerController playerController = GameController.getInstance().getPlayerControllerByPlayer(this.owner);

@@ -17,7 +17,7 @@ public class PotOfGreed extends Spell {
     }
 
     @Override
-    public Effect activateEffect() {
+    protected Effect getEffect() {
         return () -> {
             GameController gameController = GameController.getInstance();
             if (this.owner.getBoard().getMainDeck().getTopCard() != null)
