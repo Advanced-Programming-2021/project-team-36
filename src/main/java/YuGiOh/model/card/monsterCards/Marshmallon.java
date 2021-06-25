@@ -7,10 +7,10 @@ import YuGiOh.model.enums.MonsterType;
 import YuGiOh.model.card.action.Effect;
 import YuGiOh.model.card.Monster;
 
-public class Marshmaloon extends Monster {
+public class Marshmallon extends Monster {
     boolean checkIfFaceIsDown = false;
 
-    public Marshmaloon(String name, String description, int price, int attackDamage, int defenseRate, MonsterAttribute attribute, MonsterType monsterType, MonsterCardType monsterCardType, int level) {
+    public Marshmallon(String name, String description, int price, int attackDamage, int defenseRate, MonsterAttribute attribute, MonsterType monsterType, MonsterCardType monsterCardType, int level) {
         super(name, description, price, attackDamage, defenseRate, attribute, monsterType, monsterCardType, level);
     }
 

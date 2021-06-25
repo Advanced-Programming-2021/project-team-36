@@ -200,7 +200,7 @@ public class Monster extends Card {
 
     public final Effect onBeingAttackedByMonster(Monster attacker){
         return () -> {
-            if(GameController.getInstance().getGame().getCardZoneType(this).equals(ZoneType.GRAVEYARD)){
+            if (GameController.getInstance().getGame().getCardZoneType(this).equals(ZoneType.GRAVEYARD)){
                 CustomPrinter.println(this.getName() + " is dead so it cannot attack", Color.Yellow);
                 return;
             }
