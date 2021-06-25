@@ -6,6 +6,7 @@ import YuGiOh.controller.MainGameThread;
 import YuGiOh.controller.QueryGameThread;
 import YuGiOh.controller.events.RoundOverExceptionEvent;
 import YuGiOh.controller.menu.DuelMenuController;
+import YuGiOh.controller.player.AIPlayerController;
 import YuGiOh.model.Board;
 import YuGiOh.model.CardAddress;
 import YuGiOh.model.Game;
@@ -319,6 +320,10 @@ public class GameField extends Pane {
     }
 
     public void runAndAlert(GameRunnable runnable, Runnable onFail){
+        // we must not do stuff in AI's turn
+        if(GameController.getInstance().getCurrentPlayerController() instanceof AIPlayerController)
+            return;
+
         QueryGameThread.getInstance().addRunnable(()->{
             try {
                 runnable.run();
