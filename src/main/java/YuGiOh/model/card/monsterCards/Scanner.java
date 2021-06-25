@@ -41,14 +41,14 @@ public class Scanner extends Monster {
     }
 
     @Override
-    public int getAttackDamage(){
+    public int getAttackDamageOnCard(){
         if(copiedMonster != null && lastTurnActivated == GameController.getInstance().getGame().getTurn())
             return copiedMonster.getAttackDamage();
         return attackDamage;
     }
 
     @Override
-    public int getDefenseRate(){
+    public int getDefenseRateOnCard(){
         if(copiedMonster != null && lastTurnActivated == GameController.getInstance().getGame().getTurn())
             return copiedMonster.getDefenseRate();
         return defenseRate;
