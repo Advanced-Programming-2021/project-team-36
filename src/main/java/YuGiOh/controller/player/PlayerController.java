@@ -65,6 +65,9 @@ public abstract class PlayerController {
     }
 
     public void summon(Monster monster, int requiredTributes, MonsterState monsterState) throws LogicException, ResistToChooseCard {
+        player.getBoard().removeCard(monster);
+        player.setSummonedInLastTurn(true);
+
         if (requiredTributes > 0)
             tributeMonster(requiredTributes);
         Board board = player.getBoard();
@@ -75,6 +78,16 @@ public abstract class PlayerController {
                 break;
             }
         }
+    }
+
+    public void summon(Monster monster, int requiredTributes) throws ResistToChooseCard, LogicException {
+        boolean AttackingState = askRespondToQuestion("which position you want to summon?", "defending", "attacking");
+        MonsterState monsterState = (AttackingState ? MonsterState.DEFENSIVE_OCCUPIED : MonsterState.OFFENSIVE_OCCUPIED);
+        summon(monster, requiredTributes, monsterState);
+    }
+
+    public void summon(Monster monster) throws ResistToChooseCard, LogicException {
+        summon(monster, monster.getNumberOfRequiredTribute());
     }
 
     public void drawCard() throws LogicException {
@@ -112,46 +125,34 @@ public abstract class PlayerController {
         }
     }
 
-    public void startNormalSummonChain(Monster monster) throws ResistToChooseCard {
-        startChain(
-                new Action(
+    public Action normalSummonAction(Monster monster) throws ResistToChooseCard {
+        return new Action(
                         new SummonEvent(monster, SummonType.NORMAL),
                         () -> {
-                            boolean AttackingState = askRespondToQuestion("which position you want to summon?", "defending", "attacking");
-                            MonsterState monsterState = (AttackingState ? MonsterState.DEFENSIVE_OCCUPIED : MonsterState.OFFENSIVE_OCCUPIED);
-                            summon(monster, monster.getNumberOfRequiredTribute(), monsterState);
-                            player.getBoard().getCardsOnHand().remove((Card) monster);
-                            player.setSummonedInLastTurn(true);
-                            CustomPrinter.println(String.format("<%s> summoned <%s> in <%s> position successfully", player.getUser().getUsername(), monster.getName(), monsterState), Color.Green);
+                            summon(monster);
+                            CustomPrinter.println(String.format("<%s> summoned <%s> in <%s> position successfully", player.getUser().getUsername(), monster.getName(), monster.getMonsterState()), Color.Green);
                         }
-                )
-        );
+                );
     }
 
-    public void startFlipSummonChain(Monster monster) throws ResistToChooseCard {
-        startChain(
-                new Action(
+    public Action flipSummonAction(Monster monster) throws ResistToChooseCard {
+        return new Action(
                         new SummonEvent(monster, SummonType.FLIP),
                         () -> {
                             monster.setMonsterState(MonsterState.OFFENSIVE_OCCUPIED);
                             GameController.getInstance().getGame().getCurrentPlayer().setSummonedInLastTurn(true);
                             CustomPrinter.println(String.format("<%s> flip summoned successfully", monster.getName()), Color.Green);
                         }
-                )
         );
     }
 
-    public void startSetMonsterChain(Monster monster) throws ResistToChooseCard {
-        startChain(
-                new Action(
+    public Action setMonsterAction(Monster monster) throws ResistToChooseCard {
+        return new Action(
                         new SetMonster(monster),
                         () -> {
                             summon(monster, monster.getNumberOfRequiredTribute(), MonsterState.DEFENSIVE_HIDDEN);
-                            player.getBoard().getCardsOnHand().remove((Card) monster);
-                            player.setSummonedInLastTurn(true);
                             CustomPrinter.println(String.format("<%s> set monster <%s> successfully", player.getUser().getUsername(), monster.getName()), Color.Green);
                         }
-                )
         );
     }
 
@@ -174,14 +175,14 @@ public abstract class PlayerController {
         validateCurrentPlayersCard(monster);
         validateSummon(monster, monster.getNumberOfRequiredTribute());
         monster.validateSummon();
-        startNormalSummonChain(monster);
+        startChain(normalSummonAction(monster));
     }
 
     public void setMonster(Monster monster) throws LogicException, ResistToChooseCard {
         validateMainPhase();
         monster.validateSummon();
         validateSummon(monster, monster.getNumberOfRequiredTribute());
-        startSetMonsterChain(monster);
+        startChain(setMonsterAction(monster));
     }
 
 
@@ -191,7 +192,7 @@ public abstract class PlayerController {
         validateMainPhase();
         if (!monster.getMonsterState().equals(MonsterState.DEFENSIVE_HIDDEN) || game.getCurrentPlayer().isSummonedInLastTurn())
             throw new LogicException("you can't flip summon this card");
-        startFlipSummonChain(monster);
+        startChain(flipSummonAction(monster));
     }
 
     public void tributeMonster(int count) throws LogicException, ResistToChooseCard {

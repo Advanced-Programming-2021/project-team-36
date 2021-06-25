@@ -1,6 +1,7 @@
 package YuGiOh.model.enums;
 
 public enum ZoneType {
+    DECK,
     GRAVEYARD,
     MONSTER,
     MAGIC,
@@ -18,6 +19,8 @@ public enum ZoneType {
             return FIELD;
         if(zoneName.equals("hand"))
             return HAND;
+        if(zoneName.equals("deck"))
+            return DECK;
         return null;
     }
 }

@@ -95,6 +95,9 @@ public class HumanPlayerController extends PlayerController {
     @Override
     public Card[] chooseKCards(String message, int numberOfCards, SelectCondition condition) throws ResistToChooseCard {
         ArrayList<Card> cards = new ArrayList<>();
+        if(GameController.getInstance().getGame().getAllCards().stream().filter(condition::canSelect).count() < numberOfCards)
+            throw new ResistToChooseCard();
+
         while (cards.size() < numberOfCards) {
             Card card = ((DuelMenuView) DuelMenuController.getInstance().getGraphicView()).askUserToChooseCard(message, condition);
             if (cards.contains(card))

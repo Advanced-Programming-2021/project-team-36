@@ -8,6 +8,7 @@ import YuGiOh.model.card.Magic;
 import YuGiOh.model.card.Monster;
 import YuGiOh.model.enums.MonsterCardType;
 import YuGiOh.model.enums.MonsterState;
+import YuGiOh.model.enums.MonsterType;
 import YuGiOh.model.enums.ZoneType;
 
 public class Conditions {
@@ -26,15 +27,27 @@ public class Conditions {
     }
 
     public static SelectCondition getInPlayerGraveYardMonster(Player player, int levelLimit) {
-        return (Card card) -> {
-            return player.getBoard().getGraveYard().contains(card) &&
+        return (Card card) ->
+                player.getBoard().getGraveYard().contains(card) &&
                     card instanceof Monster &&
                     ((Monster) card).getLevel() >= levelLimit;
-        };
     }
 
-    public static final SelectCondition inMonsterZone = (Card card) ->
-            getCardZoneType(card).equals(ZoneType.MONSTER);
+    public static SelectCondition getMonsterTypeCondition(Player player, MonsterType monsterType) {
+        return (Card card) ->
+                card instanceof Monster && ((Monster) card).getMonsterType().equals(monsterType);
+    }
+    public static SelectCondition getMonsterCardTypeCondition(Player player, MonsterCardType monsterCardType) {
+        return (Card card) ->
+                card instanceof Monster && ((Monster) card).getMonsterCardType().equals(monsterCardType);
+    }
+    public static SelectCondition getIsPlayersCard(Player player){
+        return (Card card) -> player.getBoard().getAllCards().contains(card);
+    }
+    public static SelectCondition getInZoneCondition(ZoneType zoneType){
+        return (Card card) ->
+                getGame().getCardZoneType(card).equals(zoneType);
+    }
 
     public static final SelectCondition flippableInMonsterZone = (Card card) ->
             getCardZoneType(card).equals(ZoneType.MONSTER) &&
@@ -82,4 +95,25 @@ public class Conditions {
             return firstPlayer.hasInGraveYard(card) || secondPlayer.hasInGraveYard(card);
         };
     }
+
+    public static SelectCondition or(SelectCondition... conditions){
+        return (card) -> {
+            for(SelectCondition condition : conditions) {
+                if (condition.canSelect(card) == true)
+                    return true;
+            }
+            return false;
+        };
+    }
+
+    public static SelectCondition and(SelectCondition... conditions){
+        return (card) -> {
+            for(SelectCondition condition : conditions) {
+                if (condition.canSelect(card) == false)
+                    return false;
+            }
+            return true;
+        };
+    }
+
 }

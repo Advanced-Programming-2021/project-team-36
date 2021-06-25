@@ -198,6 +198,8 @@ public class AIPlayerController extends PlayerController {
     @Override
     public Card[] chooseKCards(String message, int numberOfCards, SelectCondition condition) throws ResistToChooseCard {
         ArrayList<Card> cards = new ArrayList<>();
+        GameController.getInstance().getGame().getAllCards().stream()
+                .filter(condition::canSelect).forEach(cards::add);
         for (Card card : player.getBoard().getAllCards()) {
             if (condition.canSelect(card)) {
                 cards.add(card);

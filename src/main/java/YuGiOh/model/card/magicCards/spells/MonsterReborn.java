@@ -27,15 +27,10 @@ public class MonsterReborn extends Spell {
         return () -> {
             assert canActivateEffect();
             PlayerController playerController = GameController.getInstance().getPlayerControllerByPlayer(this.owner);
-            Monster monster = (Monster) playerController.chooseKCards("Choose 1 monster in either GraveYard to special summon it",
+            Monster monster = (Monster) playerController.chooseKCards("Choose 1 monster in GraveYard to special summon it",
                     1,
                     Conditions.getMonsterFromGraveYard())[0];
-            MonsterState monsterState;
-            if (playerController.askRespondToQuestion("You want to summon your monster in attacking position or defending position?", "attacking", "defending"))
-                monsterState = MonsterState.OFFENSIVE_OCCUPIED;
-            else
-                monsterState = MonsterState.DEFENSIVE_OCCUPIED;
-            playerController.summon(monster, 0, monsterState);
+            playerController.summon(monster, 0);
             CustomPrinter.println("Monster Reborn activated successfully", Color.Green);
         };
     }

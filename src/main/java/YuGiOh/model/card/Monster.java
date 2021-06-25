@@ -9,6 +9,7 @@ import YuGiOh.model.Player.Player;
 import YuGiOh.model.card.action.Effect;
 import YuGiOh.model.enums.*;
 import YuGiOh.utils.CustomPrinter;
+import YuGiOh.view.cardSelector.ResistToChooseCard;
 import javafx.beans.binding.Bindings;
 import javafx.beans.binding.BooleanBinding;
 import javafx.beans.property.SimpleObjectProperty;
@@ -176,7 +177,7 @@ public class Monster extends Card {
         };
     }
 
-    protected void specialEffectWhenBeingAttacked(Monster attacker) {
+    protected void specialEffectWhenBeingAttacked(Monster attacker) throws ResistToChooseCard, LogicException {
         damageStep(attacker);
     }
 

@@ -54,6 +54,22 @@ public class Board {
         cardsOnHand.add(card);
     }
 
+    public void removeCard(Card card) {
+        CardAddress cardAddress = getCardAddress(card);
+        if(cardAddress.isInDeck())
+            mainDeck.getCards().remove(card);
+        if(cardAddress.isInFieldZone())
+            setFieldZoneCard(null);
+        if(cardAddress.isInMonsterZone())
+            monsterCardZone.remove(cardAddress.getId());
+        if(cardAddress.isInHand())
+            cardsOnHand.remove(card);
+        if(cardAddress.isInGraveYard())
+            graveYard.remove(card);
+        if(cardAddress.isInMagicZone())
+            magicCardZone.remove(cardAddress.getId());
+    }
+
     public Card getCardByCardAddress(CardAddress cardAddress) {
         if (cardAddress.isInHand()) {
             if (1 <= cardAddress.getId() && cardAddress.getId() <= cardsOnHand.size())
@@ -68,9 +84,12 @@ public class Board {
             return getFieldZoneCard();
         } else if (cardAddress.isInGraveYard()) {
             if (1 <= cardAddress.getId() && cardAddress.getId() <= graveYard.size())
-                return graveYard.get(cardAddress.getId());
+                return graveYard.get(cardAddress.getId()-1);
             else
                 return null;
+        } else if (cardAddress.isInDeck()) {
+            if (1 <= cardAddress.getId() && cardAddress.getId() <= mainDeck.getCards().size())
+                return mainDeck.getCards().get(cardAddress.getId()-1);
         }
         return null;
     }
@@ -91,6 +110,8 @@ public class Board {
             ret[0] = new CardAddress(ZoneType.FIELD, 1, owner);
         if(cardsOnHand.contains(card))
             ret[0] = new CardAddress(ZoneType.HAND, cardsOnHand.indexOf(card) + 1, owner);
+        if(mainDeck.getCards().contains(card))
+            ret[0] = new CardAddress(ZoneType.DECK, mainDeck.getCards().indexOf(card) + 1, owner);
         return ret[0];
     }
 
@@ -105,6 +126,8 @@ public class Board {
             return ZoneType.FIELD;
         if(cardsOnHand.contains(card))
             return ZoneType.HAND;
+        if(mainDeck.getCards().contains(card))
+            return ZoneType.DECK;
         return null;
     }
 
@@ -121,6 +144,7 @@ public class Board {
         List<Card> allCards = getAllCardsOnBoard();
         allCards.addAll(graveYard);
         allCards.addAll(cardsOnHand);
+        allCards.addAll(mainDeck.getCards());
         return allCards;
     }
 
@@ -161,23 +185,8 @@ public class Board {
     }
 
     public void moveCardToGraveYard(Card card) {
-        // todo this choosing should be based on pointer value not equals method!
-        if (getFieldZoneCard() == card) {
-            graveYard.add(card);
-            setFieldZoneCard(null);
-        }
-        else if (magicCardZone.containsValue(card)) {
-            graveYard.add(card);
-            magicCardZone.values().remove(card);
-        }
-        else if (monsterCardZone.containsValue(card)) {
-            graveYard.add(card);
-            monsterCardZone.values().remove(card);
-        }
-        else if (cardsOnHand.contains(card)) {
-            graveYard.add(card);
-            cardsOnHand.remove(card);
-        }
+        removeCard(card);
+        graveYard.add(card);
     }
 
     public boolean isMonsterCardZoneFull() {
