@@ -22,7 +22,7 @@ public class MysticalSpaceTyphoon extends Spell {
     protected Effect getEffect() {
         return () -> {
             PlayerController playerController = GameController.getInstance().getPlayerControllerByPlayer(this.owner);
-            Magic magic = (Magic) playerController.chooseKCards("Destroy one spell and magic on field",
+            Magic magic = (Magic) playerController.chooseKCards("Destroy one spell or trap on field",
                     1,
                     Conditions.getMagicFromField())[0];
             PlayerController controller = GameController.getInstance().getPlayerControllerByPlayer(magic.owner);

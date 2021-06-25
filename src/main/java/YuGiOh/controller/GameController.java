@@ -118,7 +118,8 @@ public class GameController {
         game.setPhase(game.getPhase().nextPhase());
         if(mustChangeTurn){
             game.changeTurn();
-            getCurrentPlayerController().refresh();
+            playerController1.refresh();
+            playerController2.refresh();
         }
         DuelMenuController.getInstance().getGraphicView().resetSelector();
     }

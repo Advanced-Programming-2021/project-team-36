@@ -3,13 +3,10 @@ package YuGiOh.controller.menu;
 import YuGiOh.controller.*;
 import YuGiOh.controller.events.RoundOverExceptionEvent;
 import YuGiOh.model.Player.Player;
+import YuGiOh.model.card.*;
 import YuGiOh.view.cardSelector.ResistToChooseCard;
 import YuGiOh.model.CardAddress;
 import YuGiOh.model.Game;
-import YuGiOh.model.card.Card;
-import YuGiOh.model.card.Magic;
-import YuGiOh.model.card.Monster;
-import YuGiOh.model.card.Spell;
 import YuGiOh.model.enums.Color;
 import YuGiOh.utils.CustomPrinter;
 import YuGiOh.utils.Debugger;
@@ -108,7 +105,12 @@ public class DuelMenuController extends BaseMenuController {
     public void activateEffect(Card card) throws LogicException, RoundOverExceptionEvent, ResistToChooseCard {
         if (!card.hasEffect())
             throw new LogicException("activate effect is only for spell cards and monsters that have effect");
-        gameController.getCurrentPlayerController().activateEffect(card);
+        if (card instanceof Trap)
+            throw new LogicException("trap's can't be activated");
+        if (card instanceof Monster)
+            gameController.getCurrentPlayerController().activateMonsterEffect((Monster) card);
+        if (card instanceof Spell)
+            gameController.getCurrentPlayerController().activateSpellEffect((Spell) card);
     }
 
     public void showGraveYard() {

@@ -92,7 +92,7 @@ public class Monster extends Card {
         return defenseRate;
     }
 
-    public int getAttackDamage() {
+    public final int getAttackDamage() {
         int affects = 0;
         for (int i = 1; i <= 5; i++) {
             CardAddress cardAddress = new CardAddress(ZoneType.MAGIC, i, this.owner);
@@ -107,10 +107,10 @@ public class Monster extends Card {
         spell = (Spell) GameController.getInstance().getOtherPlayerController(playerController).getPlayer().getBoard().getFieldZoneCard();
         if (spell != null)
             affects += spell.affectionOnAttackingMonster(this);
-        return attackDamage + affects;
+        return getAttackDamageOnCard() + affects;
     }
 
-    public int getDefenseRate() {
+    public final int getDefenseRate() {
         int affects = 0;
         for (int i = 1; i <= 5; i++) {
             CardAddress cardAddress = new CardAddress(ZoneType.MAGIC, i, this.owner);
@@ -121,10 +121,10 @@ public class Monster extends Card {
         Spell spell = (Spell) GameController.getInstance().getPlayerControllerByPlayer(this.owner).getPlayer().getBoard().getFieldZoneCard();
         if (spell != null)
             affects += spell.affectionOnDefensiveMonster(this);
-        return defenseRate + affects;
+        return getDefenseRateOnCard() + affects;
     }
 
-    public void damageStep(Monster attacker) throws RoundOverExceptionEvent {
+    public final void damageStep(Monster attacker) throws RoundOverExceptionEvent {
         // todo are the responses ok? maybe we have to swap your and mine?
         // todo remove this System.outs!
         if (getMonsterState().equals(MonsterState.OFFENSIVE_OCCUPIED)) {
@@ -160,7 +160,6 @@ public class Monster extends Card {
     }
 
     public Effect changeFromHiddenToOccupiedIfCanEffect() {
-        // todo remove this
         return () -> {
             if (getMonsterState().equals(MonsterState.DEFENSIVE_HIDDEN))
                 setMonsterState(MonsterState.DEFENSIVE_OCCUPIED);
@@ -232,7 +231,12 @@ public class Monster extends Card {
 
     @Override
     public boolean canActivateEffect() {
-        return true; // todo
+        return false; // todo
+    }
+
+    @Override
+    public final void startOfNewTurn(){
+        setAllowAttack(true);
     }
 
     public BooleanBinding isDefensive() {

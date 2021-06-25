@@ -22,10 +22,14 @@ public class HeraldOfCreation extends Monster {
     int lastTurnActivated = -1;
 
     @Override
+    public boolean canActivateEffect(){
+        return lastTurnActivated != GameController.instance.getGame().getTurn();
+    }
+
+    @Override
     public Effect activateEffect() throws LogicException {
         if(lastTurnActivated == GameController.instance.getGame().getTurn())
             throw new LogicException("you can only activate this once in a turn");
-        lastTurnActivated = GameController.instance.getGame().getTurn();
 
         return ()->{
             PlayerController controller = GameController.getInstance().getPlayerControllerByPlayer(this.owner);
@@ -53,6 +57,7 @@ public class HeraldOfCreation extends Monster {
             }
             this.owner.getBoard().removeFromHand(discarded);
             this.owner.getBoard().addCardToHand(monster);
+            lastTurnActivated = GameController.instance.getGame().getTurn();
         };
     }
 

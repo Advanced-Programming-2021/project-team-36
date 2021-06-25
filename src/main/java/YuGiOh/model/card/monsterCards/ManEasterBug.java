@@ -2,10 +2,8 @@ package YuGiOh.model.card.monsterCards;
 
 import YuGiOh.controller.GameController;
 import YuGiOh.controller.LogicException;
-import YuGiOh.model.enums.Color;
-import YuGiOh.model.enums.MonsterAttribute;
-import YuGiOh.model.enums.MonsterCardType;
-import YuGiOh.model.enums.MonsterType;
+import YuGiOh.controller.player.PlayerController;
+import YuGiOh.model.enums.*;
 import YuGiOh.utils.CustomPrinter;
 import YuGiOh.model.card.action.Effect;
 import YuGiOh.view.cardSelector.Conditions;
@@ -18,22 +16,26 @@ public class ManEasterBug extends Monster {
     }
 
     @Override
-    public Effect activateEffect(){
-        return ()->{
-            try {
-                // todo this probably shouldn't be current player. probably player.chooseKCards is better
-                Monster monster = (Monster) GameController.getInstance().getPlayerControllerByPlayer(this.owner).chooseKCards(
-                        "choose a monster card to flip",
-                        1,
-                        Conditions.flippableInMonsterZone
-                )[0];
+    public Effect changeFromHiddenToOccupiedIfCanEffect(){
+        return () -> {
+            if (getMonsterState().equals(MonsterState.DEFENSIVE_HIDDEN)) {
                 try {
-                    monster.flip();
-                } catch (LogicException e){
-                    throw new Error("Error. You must not have tried to flip this monster!");
+                    setMonsterState(MonsterState.DEFENSIVE_OCCUPIED);
+                    PlayerController controller = GameController.getInstance().getPlayerControllerByPlayer(owner);
+                    if (controller.askRespondToQuestion("Do you want to activate effect of man easter bug?", "yes", "no")) {
+                        Monster monster = (Monster) controller.chooseKCards(
+                                "choose a monster card to kill",
+                                1,
+                                Conditions.getInZoneCondition(ZoneType.MONSTER)
+                        )[0];
+                        if(!owner.getBoard().getAllCards().contains(monster))
+                            GameController.getInstance().getOtherPlayerController(controller).moveCardToGraveYard(monster);
+                        else
+                            controller.moveCardToGraveYard(monster);
+                    }
+                } catch (ResistToChooseCard e){
+                    CustomPrinter.println("canceled", Color.Default);
                 }
-            } catch (ResistToChooseCard e){
-                CustomPrinter.println("canceled", Color.Default);
             }
         };
     }

@@ -1,5 +1,7 @@
 package YuGiOh.model.card.magicCards.spells;
 
+import YuGiOh.controller.GameController;
+import YuGiOh.model.card.Magic;
 import YuGiOh.model.card.Monster;
 import YuGiOh.model.card.Spell;
 import YuGiOh.model.card.action.Effect;
@@ -13,6 +15,8 @@ public class ClosedForest extends Spell {
         super(name, description, price, icon, status);
     }
 
+    int lastAliveTurn = -1;
+
     @Override
     public int affectionOnAttackingMonster(Monster monster) {
         MonsterType monsterType = monster.getMonsterType();
@@ -24,7 +28,24 @@ public class ClosedForest extends Spell {
     @Override
     protected Effect getEffect() {
         return () -> {
+            lastAliveTurn = GameController.getInstance().getGame().getTurn();
         };
+    }
+
+    @Override
+    public boolean letMagicActivate(Magic magic){
+        return magic.equals(this) || !magic.getIcon().equals(Icon.FIELD);
+    }
+
+    @Override
+    public final boolean isActivated(){
+        return GameController.getInstance().getGame().getTurn() == lastAliveTurn;
+    }
+
+    @Override
+    public final void startOfNewTurn() {
+        if(super.isActivated())
+            lastAliveTurn = GameController.getInstance().getGame().getTurn();
     }
 
     @Override

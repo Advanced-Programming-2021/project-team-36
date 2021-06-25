@@ -11,8 +11,6 @@ public class TheCalculator extends Monster {
         super(name, description, price, attackDamage, defenseRate, attribute, monsterType, monsterCardType, level);
     }
 
-    // todo check if this is correct. sum of levels? really?
-
     @Override
     public int getAttackDamageOnCard() {
         int sum = 0;

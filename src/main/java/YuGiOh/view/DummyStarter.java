@@ -29,7 +29,7 @@ public class DummyStarter extends Application {
 
             User abolfazl = User.getUserByUsername("Abolfazl");
             User fakeUser2 = new User("magool", "magool.m", "123");
-            Cheat.buildSuperUserWithManyOfThisCards(abolfazl, 40, "TheTricky", "AxeRaider", "TexChanger", "Forest");
+            Cheat.buildSuperUserWithManyOfThisCards(abolfazl, 40, "BattleOx", "ClosedForest");
             Cheat.buildSuperUser(fakeUser2);
 
             Game game = new Game(

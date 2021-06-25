@@ -148,7 +148,7 @@ public class AIPlayerController extends PlayerController {
             return;
         }
         try {
-            activateEffect(spell);
+            activateSpellEffect(spell);
         } catch (LogicException | ResistToChooseCard ignored) {
         }
     }
@@ -156,7 +156,7 @@ public class AIPlayerController extends PlayerController {
     protected void noErrorRitualSummon(Spell spell) {
         while (true) {
             try {
-                activateEffect(spell);
+                activateSpellEffect(spell);
             } catch (LogicException | ResistToChooseCard logicException) {
                 break;
             }
