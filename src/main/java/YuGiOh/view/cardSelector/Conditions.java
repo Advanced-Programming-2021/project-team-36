@@ -86,6 +86,16 @@ public class Conditions {
                 card instanceof Monster &&  player.getBoard().getMonsterCardZone().containsValue(card);
     }
 
+    public static SelectCondition getCardFromPlayerHand(Player player, Card notAllowed) {
+        return (Card card) -> !card.equals(notAllowed) && player.hasInHand(card);
+    }
+
+    public static SelectCondition getMagicFromField() {
+        return (Card card) -> {
+            return card instanceof Magic && GameController.getInstance().getGame().hasInField(card);
+        };
+    }
+
     public static SelectCondition getMonsterFromGraveYard() {
         return (Card card) -> {
             if (!(card instanceof Monster))

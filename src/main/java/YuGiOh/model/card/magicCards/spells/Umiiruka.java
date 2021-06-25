@@ -15,6 +15,20 @@ public class Umiiruka extends Spell {
     }
 
     @Override
+    public int affectionOnAttackingMonster(Monster monster) {
+        if (monster.getAttribute().equals(MonsterAttribute.WATER))
+            return 500;
+        return 0;
+    }
+
+    @Override
+    public int affectionOnDefensiveMonster(Monster monster) {
+        if (monster.getAttribute().equals(MonsterAttribute.WATER))
+            return -400;
+        return 0;
+    }
+
+    @Override
     protected Effect getEffect() {
         return () -> {
             for (Card card : GameController.getInstance().getGame().getAllCards()) {
@@ -27,7 +41,7 @@ public class Umiiruka extends Spell {
                 }
             }
             this.setMagicState(MagicState.OCCUPIED);
-            CustomPrinter.println("Umiiruka activated successfully.", Color.Green);
+            CustomPrinter.println(String.format("<%s> activated <Umiiruka> successfully.", this.owner.getUser().getUsername()), Color.Green);
         };
     }
 

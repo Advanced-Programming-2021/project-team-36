@@ -22,6 +22,7 @@ abstract public class Magic extends Card {
     @Setter
     protected Monster equippedMonster; // it means only for equip spells
     protected SimpleObjectProperty<MagicState> magicStateProperty;
+
     public Magic(String name, String description, int price, Icon icon, Status status) {
         super(name, description, price);
         this.icon = icon;
@@ -29,17 +30,24 @@ abstract public class Magic extends Card {
         this.magicStateProperty = new SimpleObjectProperty<>(null);
     }
 
-    public final Effect activateEffect(){
-        return ()->{
+    public final Effect activateEffect() {
+        return () -> {
             getEffect().run();
-            if(icon.equals(Icon.QUICKPLAY) || icon.equals(Icon.COUNTER) || icon.equals(Icon.NORMAL)) {
+            if (icon.equals(Icon.QUICKPLAY) || icon.equals(Icon.COUNTER) || icon.equals(Icon.NORMAL)) {
                 moveCardToGraveYard();
             }
         };
     }
 
+
     abstract protected Effect getEffect();
+
     abstract public boolean canActivateEffect();
+
+    @Override
+    public boolean hasEffect() {
+        return true;
+    }
 
     @Override
     public BooleanBinding facedUpProperty() {
@@ -71,11 +79,21 @@ abstract public class Magic extends Card {
         this.magicStateProperty.set(magicState);
     }
 
-    protected Stack<Action> getChain(){
+    protected Stack<Action> getChain() {
         return GameController.getInstance().getGame().getChain();
+    }
+
+    public boolean isActivated() {
+        return this.owner.hasInGraveYard(this);
     }
 
     public MagicState getState() {
         return magicStateProperty.getValue();
+    }
+
+    public void onMovingToGraveYard() {
+    }
+
+    public void onDestroyMyMonster() {
     }
 }

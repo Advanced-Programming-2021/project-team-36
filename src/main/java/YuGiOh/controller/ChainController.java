@@ -2,7 +2,13 @@ package YuGiOh.controller;
 
 import YuGiOh.controller.events.RoundOverExceptionEvent;
 import YuGiOh.controller.player.PlayerController;
+import YuGiOh.model.Game;
+import YuGiOh.model.card.Card;
+import YuGiOh.model.card.Spell;
 import YuGiOh.model.card.action.Action;
+import YuGiOh.model.card.action.MagicActivation;
+import YuGiOh.model.card.magicCards.spells.SpellAbsorption;
+import YuGiOh.model.card.magicCards.spells.SupplySquad;
 import YuGiOh.view.cardSelector.ResistToChooseCard;
 import lombok.Getter;
 
@@ -38,6 +44,11 @@ public class ChainController {
             // action should be popped before activating it's effect! if not some traps will crash
             action.runEffect();
             // todo in ticke to az try catch dar ovordam. okeye?
+
+            if (action.getEvent() instanceof MagicActivation && ((MagicActivation)action.getEvent()).getCard() instanceof Spell)
+                for (Card card : GameController.getInstance().getGame().getAllCardsOnBoard())
+                    if (card instanceof SpellAbsorption)
+                        ((SpellAbsorption)card).onSpellResolve();
         }
     }
 }

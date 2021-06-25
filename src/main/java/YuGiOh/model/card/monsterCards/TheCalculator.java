@@ -14,10 +14,10 @@ public class TheCalculator extends Monster {
     // todo check if this is correct. sum of levels? really?
 
     @Override
-    public int getAttackDamage() {
+    public int getAttackDamageOnCard() {
         int sum = 0;
         for (Card card : this.owner.getBoard().getAllCardsOnBoard()) {
-            if (card instanceof Monster && isFacedUp()) {
+            if (card instanceof Monster && isFacedUp() && card.owner.equals(this.owner)) {
                 sum += ((Monster) card).getLevel();
             }
         }

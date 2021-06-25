@@ -65,11 +65,6 @@ public class AdvancedRitualArt extends Spell {
     }
 
     @Override
-    public void deactivate() {
-
-    }
-
-    @Override
     public boolean canActivateEffect() {
         Player player = GameController.getInstance().getPlayerControllerByPlayer(this.owner).getPlayer();
         int minimumMonsterRitualLevelOnHand = 1000;

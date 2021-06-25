@@ -3,6 +3,7 @@ package YuGiOh.model.card;
 import YuGiOh.controller.GameController;
 import YuGiOh.controller.LogicException;
 import YuGiOh.controller.events.RoundOverExceptionEvent;
+import YuGiOh.controller.player.PlayerController;
 import YuGiOh.model.CardAddress;
 import YuGiOh.model.Game;
 import YuGiOh.model.Player.Player;
@@ -99,7 +100,11 @@ public class Monster extends Card {
             if (magic != null)
                 affects += magic.affectionOnAttackingMonster(this);
         }
-        Spell spell = (Spell) GameController.getInstance().getPlayerControllerByPlayer(this.owner).getPlayer().getBoard().getFieldZoneCard();
+        PlayerController playerController = GameController.getInstance().getCurrentPlayerController();
+        Spell spell = (Spell) playerController.getPlayer().getBoard().getFieldZoneCard();
+        if (spell != null)
+            affects += spell.affectionOnAttackingMonster(this);
+        spell = (Spell) GameController.getInstance().getOtherPlayerController(playerController).getPlayer().getBoard().getFieldZoneCard();
         if (spell != null)
             affects += spell.affectionOnAttackingMonster(this);
         return attackDamage + affects;
@@ -172,11 +177,6 @@ public class Monster extends Card {
             setMonsterState(MonsterState.DEFENSIVE_OCCUPIED);
     }
 
-    public Effect activateEffect() throws LogicException {
-        return () -> {
-        };
-    }
-
     protected void specialEffectWhenBeingAttacked(Monster attacker) throws ResistToChooseCard, LogicException {
         damageStep(attacker);
     }
@@ -218,6 +218,21 @@ public class Monster extends Card {
         return Bindings.when(
                 monsterStateProperty.isEqualTo(MonsterState.OFFENSIVE_OCCUPIED).or(monsterStateProperty.isEqualTo(MonsterState.DEFENSIVE_OCCUPIED)))
                 .then(true).otherwise(false);
+    }
+
+    @Override
+    public Effect activateEffect() throws LogicException {
+        return ()->{}; // todo
+    }
+
+    @Override
+    public boolean hasEffect() {
+        return true; // todo
+    }
+
+    @Override
+    public boolean canActivateEffect() {
+        return true; // todo
     }
 
     public BooleanBinding isDefensive() {

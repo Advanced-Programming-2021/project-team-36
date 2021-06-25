@@ -46,7 +46,7 @@ public class BlackPendant extends Spell {
     }
 
     @Override
-    public void deactivate() {
+    public void onMovingToGraveYard() {
         Player opponent = GameController.getInstance().getGame().getOtherPlayer(this.owner);
         GameController.getInstance().decreaseLifePoint(opponent, 500);
     }

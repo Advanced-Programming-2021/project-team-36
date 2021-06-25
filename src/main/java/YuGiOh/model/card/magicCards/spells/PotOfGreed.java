@@ -24,7 +24,6 @@ public class PotOfGreed extends Spell {
                 gameController.getPlayerControllerByPlayer(this.owner).drawCard();
             if (this.owner.getBoard().getMainDeck().getTopCard() != null)
                 gameController.getPlayerControllerByPlayer(this.owner).drawCard();
-            CustomPrinter.println("Pot of Greed activated successfully.", Color.Green);
         };
     }
 

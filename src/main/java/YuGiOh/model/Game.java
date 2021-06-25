@@ -2,6 +2,8 @@ package YuGiOh.model;
 
 import YuGiOh.model.Player.Player;
 import YuGiOh.model.card.Card;
+import YuGiOh.model.card.Monster;
+import YuGiOh.model.card.Spell;
 import YuGiOh.model.card.action.Action;
 import YuGiOh.model.enums.Phase;
 import YuGiOh.model.enums.ZoneType;
@@ -170,5 +172,13 @@ public class Game {
 
     public SimpleObjectProperty<Phase> phaseProperty() {
         return phase;
+    }
+
+    public boolean hasInField(Card card) {
+        Board board1 = firstPlayer.getBoard();
+        Board board2 = secondPlayer.getBoard();
+        return board1.getMonsterCardZone().containsValue(card) || board1.getMagicCardZone().containsValue(card)
+                || board2.getMonsterCardZone().containsValue(card) || board2.getMagicCardZone().containsValue(card)
+                || board1.getFieldZoneCard().equals(card) || board2.getFieldZoneCard().equals(card);
     }
 }
