@@ -2,12 +2,9 @@ package YuGiOh.view;
 
 import YuGiOh.controller.GameController;
 import YuGiOh.controller.ProgramController;
-import YuGiOh.controller.QueryGameThread;
 import YuGiOh.controller.menu.DuelMenuController;
 import YuGiOh.controller.menu.LoginMenuController;
-import YuGiOh.controller.player.AIPlayerController;
 import YuGiOh.controller.player.AggressiveAIPlayerController;
-import YuGiOh.controller.player.HumanPlayerController;
 import YuGiOh.model.Game;
 import YuGiOh.model.Player.AIPlayer;
 import YuGiOh.model.Player.HumanPlayer;
@@ -33,7 +30,7 @@ public class DummyStarter extends Application {
             Cheat.buildSuperUser(fakeUser2);
 
             Game game = new Game(
-                    new AIPlayer(abolfazl),
+                    new HumanPlayer(abolfazl),
                     new AIPlayer(),
                     3
             );

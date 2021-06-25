@@ -161,13 +161,11 @@ public class DuelMenuController extends BaseMenuController {
 
     @Override
     public void control(){
-        QueryGameThread queryGameThread = new QueryGameThread();
         MainGameThread mainGameThread = new MainGameThread(()-> {
             addEventListeners();
             gameController.control();
         });
         mainGameThread.start();
-        queryGameThread.start();
 
         //        ProgramController.getInstance().navigateToMenu(MainMenuController.getInstance());
     }

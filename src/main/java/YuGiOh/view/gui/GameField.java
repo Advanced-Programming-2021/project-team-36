@@ -3,7 +3,6 @@ package YuGiOh.view.gui;
 import YuGiOh.controller.GameController;
 import YuGiOh.controller.LogicException;
 import YuGiOh.controller.MainGameThread;
-import YuGiOh.controller.QueryGameThread;
 import YuGiOh.controller.events.RoundOverExceptionEvent;
 import YuGiOh.controller.menu.DuelMenuController;
 import YuGiOh.controller.player.AIPlayerController;
@@ -13,7 +12,6 @@ import YuGiOh.model.Game;
 import YuGiOh.model.Player.Player;
 import YuGiOh.model.card.Card;
 import YuGiOh.model.card.Magic;
-import YuGiOh.model.card.Spell;
 import YuGiOh.model.card.action.DirectAttackEvent;
 import YuGiOh.model.card.action.MagicActivation;
 import YuGiOh.model.card.action.MonsterAttackEvent;
@@ -23,7 +21,6 @@ import YuGiOh.view.cardSelector.ResistToChooseCard;
 import YuGiOh.view.gui.event.DropCardEvent;
 import YuGiOh.view.gui.event.DuelOverEvent;
 import YuGiOh.view.gui.event.RoundOverEvent;
-import javafx.animation.TranslateTransition;
 import javafx.application.Platform;
 import javafx.beans.InvalidationListener;
 import javafx.beans.binding.DoubleBinding;
@@ -39,7 +36,6 @@ import lombok.Getter;
 import lombok.Setter;
 
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.Map;
 
 public class GameField extends Pane {
@@ -344,7 +340,7 @@ public class GameField extends Pane {
         if(GameController.getInstance().getCurrentPlayerController() instanceof AIPlayerController)
             return;
 
-        QueryGameThread.getInstance().addRunnable(()->{
+        MainGameThread.getInstance().addRunnable(()->{
             try {
                 runnable.run();
             } catch (LogicException | ResistToChooseCard e){
