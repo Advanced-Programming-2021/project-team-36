@@ -13,10 +13,12 @@ import YuGiOh.model.Game;
 import YuGiOh.model.Player.Player;
 import YuGiOh.model.card.Card;
 import YuGiOh.model.card.Magic;
+import YuGiOh.model.card.Spell;
 import YuGiOh.model.card.action.DirectAttackEvent;
 import YuGiOh.model.card.action.MagicActivation;
 import YuGiOh.model.card.action.MonsterAttackEvent;
 import YuGiOh.model.enums.ZoneType;
+import YuGiOh.utils.CustomPrinter;
 import YuGiOh.view.cardSelector.ResistToChooseCard;
 import YuGiOh.view.gui.event.DropCardEvent;
 import YuGiOh.view.gui.event.DuelOverEvent;
@@ -45,6 +47,7 @@ public class GameField extends Pane {
     @Getter
     private final DoubleBinding cardHeightProperty, cardWidthProperty, widthProperty, heightProperty;
     private final Game game;
+    private final ImageView background;
 
     @Setter
     private DuelInfoBox infoBox;
@@ -134,8 +137,16 @@ public class GameField extends Pane {
     }
     private void refreshFieldZone(Board board){
         // why is id required for field zone?
-        if(board.getFieldZoneCard() != null)
+        if(board.getFieldZoneCard() != null) {
             moveOrCreateCardByCardAddress(new CardAddress(ZoneType.FIELD, 0, board.getOwner()), board.getFieldZoneCard());
+        }
+        Magic fieldSpell = null;
+        if(game.getFirstPlayer().getBoard().getFieldZoneCard() != null)
+            fieldSpell = game.getFirstPlayer().getBoard().getFieldZoneCard();
+        if(game.getSecondPlayer().getBoard().getFieldZoneCard() != null)
+            fieldSpell = game.getSecondPlayer().getBoard().getFieldZoneCard();
+        String address = "Field/" + (fieldSpell == null ? "Normal" : fieldSpell.getName()) + ".bmp";
+        background.setImage(new Image(Utils.getAsset(address).toURI().toString()));
     }
 
     public void addBoardListeners(Board board){
@@ -154,7 +165,7 @@ public class GameField extends Pane {
 
         new GuiReporter(this);
 
-        ImageView background = new ImageView(new Image(Utils.getAsset("Field/fie_normal.bmp").toURI().toString()));
+        background = new ImageView(new Image(Utils.getAsset("Field/Normal.bmp").toURI().toString()));
 
         minWidthProperty().bind(widthProperty);
         minHeightProperty().bind(heightProperty);
@@ -183,7 +194,7 @@ public class GameField extends Pane {
                 double difY = e.getBounds().getCenterY() - cardFrame.getBoundsInParent().getCenterY();
                 if(Math.abs(difX) + Math.abs(difY) <= (cardWidthProperty.get() + cardHeightProperty.get()) * 0.3){
                     if(!cardFrame.equals(e.getCardFrame()))
-                        runAndAlert(()-> DuelMenuController.getInstance().attack(e.getCardFrame().getCard(), cardAddress), ()->{});
+                        addRunnableToQueryGameForCard(e.getCardFrame().getCard(), ()-> DuelMenuController.getInstance().attack(e.getCardFrame().getCard(), cardAddress));
                 }
             });
         });
@@ -225,6 +236,9 @@ public class GameField extends Pane {
                 }).start();
             });
         });
+        //        setOnMouseClicked(e->{
+//            System.out.println(((e.getSceneX() - getLayoutX()) / getWidth()) + " " + ((e.getSceneY() - getLayoutY()) / getHeight()));
+//        });
     }
 
     private int getPlayerUpDown(Player player){
@@ -319,7 +333,13 @@ public class GameField extends Pane {
         return y;
     }
 
-    public void runAndAlert(GameRunnable runnable, Runnable onFail){
+    public void addRunnableToQueryGameForCard(Card card, GameRunnable runnable){
+        if(card.owner.equals(GameController.getInstance().getGame().getCurrentPlayer()))
+            addRunnableRoQueryGame(runnable);
+        else
+            CustomPrinter.println("You can't control your opponent's card", YuGiOh.model.enums.Color.Red);
+    }
+    public void addRunnableRoQueryGame(GameRunnable runnable){
         // we must not do stuff in AI's turn
         if(GameController.getInstance().getCurrentPlayerController() instanceof AIPlayerController)
             return;
@@ -328,10 +348,8 @@ public class GameField extends Pane {
             try {
                 runnable.run();
             } catch (LogicException | ResistToChooseCard e){
-                onFail.run();
                 Platform.runLater(()->new AlertBox().display(this, e.getMessage()));
             } catch (RoundOverExceptionEvent e){
-                onFail.run();
                 GuiReporter.getInstance().report(new RoundOverEvent(e));
             }
         });

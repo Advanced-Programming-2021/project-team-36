@@ -48,10 +48,10 @@ public class DuelInfoBox extends BorderPane {
         imageView.fitHeightProperty().bind(heightProperty.divide(2));
 
         CustomButton nextPhaseButton = new CustomButton("next phase", 23, ()->
-                gameField.runAndAlert(()-> DuelMenuController.getInstance().goNextPhase(), ()->{})
+                gameField.addRunnableRoQueryGame(()-> DuelMenuController.getInstance().goNextPhase())
         );
         CustomButton surrenderButton = new CustomButton("surrender", 23, ()->
-                gameField.runAndAlert(()-> DuelMenuController.getInstance().surrender(), ()->{})
+                gameField.addRunnableRoQueryGame(()-> DuelMenuController.getInstance().surrender())
         );
 
         BorderPane insideBorderPane = new BorderPane();

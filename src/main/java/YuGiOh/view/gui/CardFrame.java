@@ -146,39 +146,39 @@ public class CardFrame extends Pane {
             ContextMenu contextMenu = new ContextMenu();
             int buttonFontSize = 15;
             contextMenu.getItems().addAll(
-                    new MenuItem("", new CustomButton("summon", buttonFontSize, ()-> gameRoot.runAndAlert(
-                        ()-> DuelMenuController.getInstance().summonCard(card),
-                        ()->{}
+                    new MenuItem("", new CustomButton("summon", buttonFontSize, ()-> gameRoot.addRunnableToQueryGameForCard(
+                            card,
+                        ()-> DuelMenuController.getInstance().summonCard(card)
                     ))),
-                    new MenuItem("", new CustomButton("set", buttonFontSize, ()-> gameRoot.runAndAlert(
-                            ()-> DuelMenuController.getInstance().setCard(card),
-                            ()->{}
+                    new MenuItem("", new CustomButton("set", buttonFontSize, ()-> gameRoot.addRunnableToQueryGameForCard(
+                            card,
+                            ()-> DuelMenuController.getInstance().setCard(card)
                     ))),
                     new MenuItem("", new CustomButton("change position", buttonFontSize, ()->{
                         ArrayList<CustomButton> buttons = new ArrayList<>();
                         for(MonsterState state : new MonsterState[]{MonsterState.DEFENSIVE_HIDDEN, MonsterState.DEFENSIVE_OCCUPIED, MonsterState.OFFENSIVE_OCCUPIED}){
                             buttons.add(new CustomButton(state.getName(), buttonFontSize, ()->{
-                                gameRoot.runAndAlert(
-                                        ()->DuelMenuController.getInstance().changeCardPosition(card, state),
-                                        ()->{}
+                                gameRoot.addRunnableToQueryGameForCard(
+                                        card,
+                                        ()->DuelMenuController.getInstance().changeCardPosition(card, state)
                                 );
                             }));
                         }
                         new AlertBox().display(gameRoot, "choose state", buttons);
                     })),
-                    new MenuItem("", new CustomButton("flip summon", buttonFontSize, ()->gameRoot.runAndAlert(
-                            ()-> DuelMenuController.getInstance().flipSummon(card),
-                            ()->{}
+                    new MenuItem("", new CustomButton("flip summon", buttonFontSize, ()->gameRoot.addRunnableToQueryGameForCard(
+                            card,
+                            ()-> DuelMenuController.getInstance().flipSummon(card)
                     ))),
                     new MenuItem("", new CustomButton("activate effect", buttonFontSize, ()->{
-                        gameRoot.runAndAlert(
-                                ()-> DuelMenuController.getInstance().activateEffect(card),
-                                ()->{}
+                        gameRoot.addRunnableToQueryGameForCard(
+                                card,
+                                ()-> DuelMenuController.getInstance().activateEffect(card)
                         );
                     })),
-                    new MenuItem("", new CustomButton("direct attack", buttonFontSize, ()->gameRoot.runAndAlert(
-                            ()-> DuelMenuController.getInstance().directAttack(card),
-                            ()->{}
+                    new MenuItem("", new CustomButton("direct attack", buttonFontSize, ()->gameRoot.addRunnableToQueryGameForCard(
+                            card,
+                            ()-> DuelMenuController.getInstance().directAttack(card)
                     )))
             );
             contextMenu.getItems().forEach(item->{

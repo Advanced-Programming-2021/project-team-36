@@ -112,9 +112,10 @@ public abstract class PlayerController {
     public void addMagicToBoard(Magic magic, MagicState magicState) {
         Game game = GameController.getInstance().getGame();
         Board board = game.getCurrentPlayer().getBoard();
-        if (magic.getIcon().equals(Icon.FIELD))
+        if (magic.getIcon().equals(Icon.FIELD)) {
             board.addCardToBoard((Card) magic, new CardAddress(ZoneType.FIELD, 1, player));
-        else {
+            magic.setMagicState(magicState);
+        } else {
             for (int i = 1; i <= 5; i++) {
                 if (board.getMagicCardZone().get(i) == null) {
                     board.addCardToBoard(magic, new CardAddress(ZoneType.MAGIC, i, player));
@@ -330,7 +331,13 @@ public abstract class PlayerController {
         startChain(
                 new Action(
                         new MagicActivation(spell),
-                        spell.activateEffect()
+                        ()->{
+                            if(player.getBoard().getCardsOnHand().contains(spell)) {
+                                player.getBoard().removeFromHand(spell);
+                                addMagicToBoard(spell, MagicState.OCCUPIED);
+                            }
+                            spell.activateEffect().run();
+                        }
                 )
         );
     }
