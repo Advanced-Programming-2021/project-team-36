@@ -93,37 +93,37 @@ public class Options {
         return ret;
     }
 
-    static Option monsterZone(boolean required) {
+    public static Option monsterZone(boolean required) {
         Option ret = new Option("monster", true, "monster");
         ret.setRequired(required);
         return ret;
     }
 
-    static Option spellZone(boolean required) {
+    public static Option spellZone(boolean required) {
         Option ret = new Option("spell", true, "spell");
         ret.setRequired(required);
         return ret;
     }
 
-    static Option fieldZone(boolean required) {
+    public static Option fieldZone(boolean required) {
         Option ret = new Option("field", true, "field");
         ret.setRequired(required);
         return ret;
     }
 
-    static Option handZone(boolean required) {
+    public static Option handZone(boolean required) {
         Option ret = new Option("hand", true, "hand");
         ret.setRequired(required);
         return ret;
     }
 
-    static Option opponent(boolean required) {
+    public static Option opponent(boolean required) {
         Option ret = new Option("opponent", false, "opponent");
         ret.setRequired(required);
         return ret;
     }
 
-    static Option Deselect(boolean required) {
+    public static Option Deselect(boolean required) {
         Option ret = new Option("d", false, "deselect");
         ret.setRequired(required);
         return ret;
