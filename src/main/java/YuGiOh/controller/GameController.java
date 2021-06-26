@@ -25,9 +25,6 @@ public class GameController {
     @Getter
     private final Game game;
 
-    // todo remove this in production
-    // private final PlayerController playerController1, playerController2;
-
     @Setter
     private PlayerController playerController1, playerController2;
 
@@ -107,7 +104,6 @@ public class GameController {
             }
             if (game.getPhase().equals(Phase.DRAW_PHASE)) {
                 CustomPrinter.println(String.format("its %s's turn%n", game.getCurrentPlayer().getUser().getNickname()), Color.Blue);
-                // todo : check player can draw or not (effects)
                 drawCard();
                 goNextPhase();
             } else if (game.getPhase().equals(Phase.STANDBY_PHASE)) {

@@ -81,7 +81,7 @@ abstract public class BaseMenuView {
                 mp -> {
                     Debugger.setAutomaticSave(mp.get("automatic_save"));
                 },
-                Options.automatic_save(false)
+                Options.automatic_save(true)
         ));
         this.cmd.addCommand(new Command(
                 "load from database",

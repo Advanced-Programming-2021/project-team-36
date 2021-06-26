@@ -34,7 +34,7 @@ public class Debugger {
             throw new InvalidCommandException();
         boolean automaticSave = mode.equals("on");
         if (Debugger.automaticSave == automaticSave) {
-            CustomPrinter.println(String.format("debug automatic database mode is already set to %", automaticSave), Color.Default);
+            CustomPrinter.println(String.format("debug automatic database mode is already set to %s", automaticSave), Color.Default);
             return;
         }
         Debugger.automaticSave = automaticSave;
@@ -49,7 +49,7 @@ public class Debugger {
             throw new InvalidCommandException();
         boolean captureMode = captureModeAsString.equals("on");
         if (Debugger.captureMode == captureMode) {
-            CustomPrinter.println(String.format("debug capture mode is already set to %", captureModeAsString), Color.Default);
+            CustomPrinter.println(String.format("debug capture mode is already set to %s", captureModeAsString), Color.Default);
             return;
         }
         Debugger.captureMode = captureMode;

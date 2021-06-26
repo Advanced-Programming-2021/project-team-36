@@ -83,7 +83,6 @@ public class DuelMenuController extends BaseMenuController {
     public void attack(Card card, CardAddress defenderAddress) throws LogicException, RoundOverExceptionEvent, ResistToChooseCard {
         if(!(card instanceof Monster))
             throw new LogicException("only a monster can attack");
-        // todo is this okay?
         if(!(defenderAddress.isInMonsterZone()))
             throw new LogicException("you can only attack monsters!");
         Monster opponentMonster = (Monster) game.getCardByCardAddress(defenderAddress);
@@ -154,7 +153,6 @@ public class DuelMenuController extends BaseMenuController {
 
     @Override
     public BaseMenuController getNavigatingMenuObject(Class<? extends BaseMenuController> menu) throws RoutingException {
-        // you will not be able to exit until end of the game
         if(menu.equals(MainMenuController.class))
             return MainMenuController.getInstance();
         if(!Debugger.getMode())

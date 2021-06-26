@@ -10,7 +10,7 @@ abstract public class Trap extends Magic {
 
 
     @Override
-    public boolean hasEffect() { // todo
+    public boolean hasEffect() {
         return true;
     }
 

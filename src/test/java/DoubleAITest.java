@@ -36,7 +36,6 @@ public class DoubleAITest extends IntegrationTestBase {
             for (int j = 0; j < numberOfCards; j ++)
                 user.addCard(allCards[random.nextInt(allCards.length)]);
         }
-
         DuelMenuController duelMenuController = new DuelMenuController(new Duel(players[0], players[1], 1));
         duelMenuController.control();
     }

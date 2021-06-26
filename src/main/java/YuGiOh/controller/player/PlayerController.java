@@ -252,7 +252,6 @@ public abstract class PlayerController {
 
     public void moveCardToGraveYard(Card card) {
         player.moveCardToGraveYard(card);
-        // todo this is really bad :)) change this
         if (card instanceof Monster) {
             for (int i = 1; i <= 5; i++) {
                 Magic magic = player.getBoard().getMagicCardZone().get(i);

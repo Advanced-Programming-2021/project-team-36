@@ -38,7 +38,7 @@ public class LoginTest extends IntegrationTestBase {
     }
 
     @Test
-    public void cheateLogin() {
+    public void cheatLogin() {
         run("user cheat -u ajdkda -p 10083 -n18393");
         checkEqualExact("user logged in successfully!\n");
         run("exit");

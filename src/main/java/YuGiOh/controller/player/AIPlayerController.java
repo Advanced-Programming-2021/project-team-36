@@ -23,8 +23,6 @@ public class AIPlayerController extends PlayerController {
         super(player);
     }
 
-    // todo complete this
-
     public void mainPhase() {
         Random rnd = new Random();
         List<Card> allCards = new ArrayList<>(player.getBoard().getAllCards());
@@ -45,7 +43,7 @@ public class AIPlayerController extends PlayerController {
                 if (r == 1)
                     noErrorChangeMonsterPosition((Monster) card, MonsterState.DEFENSIVE_OCCUPIED);
                 if (r == 2)
-                    noErrorChangeMonsterPosition((Monster) card, MonsterState.DEFENSIVE_HIDDEN); // todo remove this
+                    noErrorChangeMonsterPosition((Monster) card, MonsterState.DEFENSIVE_HIDDEN);
                 noErrorMonsterActivateEffect((Monster) card);
             } else if (card instanceof Magic) {
                 noErrorSetMagic((Magic) card);
@@ -90,7 +88,7 @@ public class AIPlayerController extends PlayerController {
                 if (r == 1)
                     noErrorChangeMonsterPosition((Monster) card, MonsterState.DEFENSIVE_OCCUPIED);
                 if (r == 2)
-                    noErrorChangeMonsterPosition((Monster) card, MonsterState.DEFENSIVE_HIDDEN); // todo remove this
+                    noErrorChangeMonsterPosition((Monster) card, MonsterState.DEFENSIVE_HIDDEN);
                 for (Card opponentCard : GameController.getInstance().getGame().getOtherPlayer(player).getBoard().getAllCardsOnBoard()) {
                     if (opponentCard instanceof Monster)
                         noErrorAttack((Monster) card, (Monster) opponentCard);
