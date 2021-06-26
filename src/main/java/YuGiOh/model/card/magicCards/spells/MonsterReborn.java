@@ -29,7 +29,8 @@ public class MonsterReborn extends Spell {
             PlayerController playerController = GameController.getInstance().getPlayerControllerByPlayer(this.owner);
             Monster monster = (Monster) playerController.chooseKCards("Choose 1 monster in GraveYard to special summon it",
                     1,
-                    Conditions.getMonsterFromGraveYard())[0];
+                    Conditions.getMonsterFromGraveYard()
+            )[0];
             playerController.summon(monster, 0);
             CustomPrinter.println("Monster Reborn activated successfully", Color.Green);
         };

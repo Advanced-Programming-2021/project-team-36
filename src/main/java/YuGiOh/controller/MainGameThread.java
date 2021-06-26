@@ -1,6 +1,8 @@
 package YuGiOh.controller;
 
 import YuGiOh.controller.events.RoundOverExceptionEvent;
+import YuGiOh.model.enums.Color;
+import YuGiOh.utils.CustomPrinter;
 import YuGiOh.view.gui.GuiReporter;
 import YuGiOh.view.gui.event.RoundOverEvent;
 import javafx.application.Platform;

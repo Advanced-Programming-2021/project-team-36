@@ -3,7 +3,6 @@ package YuGiOh.controller.player;
 import YuGiOh.controller.events.RoundOverExceptionEvent;
 import YuGiOh.model.card.Magic;
 import YuGiOh.model.card.action.*;
-import YuGiOh.model.card.magicCards.spells.SupplySquad;
 import YuGiOh.model.enums.*;
 import YuGiOh.view.cardSelector.Conditions;
 import YuGiOh.model.card.Spell;
@@ -69,7 +68,8 @@ public abstract class PlayerController {
     }
 
     public void summon(Monster monster, int requiredTributes, MonsterState monsterState) throws LogicException, ResistToChooseCard {
-        player.getBoard().removeCard(monster);
+        player.getBoard().removeCardIfHas(monster);
+        GameController.getInstance().getGame().getOtherPlayer(player).getBoard().removeCardIfHas(monster);
         player.setSummonedInLastTurn(true);
 
         if (requiredTributes > 0)
@@ -78,10 +78,13 @@ public abstract class PlayerController {
         for (int i = 1; i <= 5; i++) {
             if (board.getMonsterCardZone().get(i) == null) {
                 board.addCardToBoard(monster, new CardAddress(ZoneType.MONSTER, i, player));
-                monster.setMonsterState(monsterState);
                 break;
             }
         }
+
+        monster.setMonsterState(monsterState);
+        // this sets owner
+        monster.readyForBattle(player);
     }
 
     public void summon(Monster monster, int requiredTributes) throws ResistToChooseCard, LogicException {
@@ -118,16 +121,18 @@ public abstract class PlayerController {
         Board board = game.getCurrentPlayer().getBoard();
         if (magic.getIcon().equals(Icon.FIELD)) {
             board.addCardToBoard((Card) magic, new CardAddress(ZoneType.FIELD, 1, player));
-            magic.setMagicState(magicState);
         } else {
             for (int i = 1; i <= 5; i++) {
                 if (board.getMagicCardZone().get(i) == null) {
                     board.addCardToBoard(magic, new CardAddress(ZoneType.MAGIC, i, player));
-                    magic.setMagicState(magicState);
                     break;
                 }
             }
         }
+
+        magic.setMagicState(magicState);
+        // this sets owner
+        magic.readyForBattle(player);
     }
 
     public Action normalSummonAction(Monster monster) throws ResistToChooseCard {
@@ -180,8 +185,8 @@ public abstract class PlayerController {
     public void normalSummon(Monster monster) throws LogicException, ResistToChooseCard {
         validateMainPhase();
         validateCurrentPlayersCard(monster);
-        validateSummon(monster, monster.getNumberOfRequiredTribute());
         monster.validateSummon();
+        validateSummon(monster, monster.getNumberOfRequiredTribute());
         startChain(normalSummonAction(monster));
     }
 
@@ -218,6 +223,7 @@ public abstract class PlayerController {
 
     public void moveCardToGraveYard(Card card) {
         player.moveCardToGraveYard(card);
+        // todo this is really bad :)) change this
         if (card instanceof Monster) {
             for (int i = 1; i <= 5; i++) {
                 Magic magic = player.getBoard().getMagicCardZone().get(i);
@@ -232,7 +238,6 @@ public abstract class PlayerController {
             for (int i = 1; i <= 5; i++)
                 if (player.getBoard().getMagicCardZone().get(i) != null)
                     player.getBoard().getMagicCardZone().get(i).onDestroyMyMonster();
-
     }
 
     public void setMagic(Magic magic) throws LogicException, ResistToChooseCard {

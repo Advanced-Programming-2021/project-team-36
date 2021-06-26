@@ -181,12 +181,12 @@ public class Monster extends Card {
     }
 
     public Effect directAttack(Player player) {
-        if(GameController.getInstance().getGame().getCardZoneType(this).equals(ZoneType.GRAVEYARD)){
-            CustomPrinter.println(this.getName() + " is dead so it cannot attack", Color.Yellow);
-            return ()->{};
-        }
         Player opponent = GameController.getInstance().getGame().getOtherPlayer(player);
         return () -> {
+            if(GameController.getInstance().getGame().getCardZoneType(this).equals(ZoneType.GRAVEYARD)){
+                CustomPrinter.println(this.getName() + " is dead so it cannot attack", Color.Yellow);
+                return;
+            }
             GameController.getInstance().decreaseLifePoint(opponent, this.getAttackDamage());
             this.setAllowAttack(false);
         };
@@ -200,7 +200,7 @@ public class Monster extends Card {
 
     public final Effect onBeingAttackedByMonster(Monster attacker){
         return () -> {
-            if (GameController.getInstance().getGame().getCardZoneType(this).equals(ZoneType.GRAVEYARD)){
+            if (GameController.getInstance().getGame().getCardZoneType(attacker).equals(ZoneType.GRAVEYARD)){
                 CustomPrinter.println(this.getName() + " is dead so it cannot attack", Color.Yellow);
                 return;
             }

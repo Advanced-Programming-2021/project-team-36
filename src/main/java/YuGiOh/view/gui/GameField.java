@@ -45,11 +45,6 @@ public class GameField extends Pane {
     private final Game game;
     private final ImageView background;
 
-    @Setter
-    private DuelInfoBox infoBox;
-
-    // todo how to force infoBox to be present?
-
     // down up pos
     CardLocation[][] monsterLocation = new CardLocation[][]{
             new CardLocation[]{
@@ -190,7 +185,7 @@ public class GameField extends Pane {
                 double difY = e.getBounds().getCenterY() - cardFrame.getBoundsInParent().getCenterY();
                 if(Math.abs(difX) + Math.abs(difY) <= (cardWidthProperty.get() + cardHeightProperty.get()) * 0.3){
                     if(!cardFrame.equals(e.getCardFrame()))
-                        addRunnableToQueryGameForCard(e.getCardFrame().getCard(), ()-> DuelMenuController.getInstance().attack(e.getCardFrame().getCard(), cardAddress));
+                        addRunnableToMainThreadForCard(e.getCardFrame().getCard(), ()-> DuelMenuController.getInstance().attack(e.getCardFrame().getCard(), cardAddress));
                 }
             });
         });
@@ -259,18 +254,19 @@ public class GameField extends Pane {
         throw new Error("this will never happen");
     }
     private Duration getAnimationDuration(CardAddress address, Card card){
+        double speedRatio = 1;
         if(address.isInHand()) {
-            return Duration.millis(100);
+            return Duration.millis(100 * speedRatio);
         }  else if(address.isInFieldZone()) {
-            return Duration.millis(300);
+            return Duration.millis(300 * speedRatio);
         } else if(address.isInGraveYard()) {
-            if (game.getCardZoneType(card) == ZoneType.GRAVEYARD)
-                return Duration.millis(3);
-            return Duration.millis(300);
+            if (getCardAddressByCard(card).isInGraveYard())
+                return Duration.millis(50 * speedRatio);
+            return Duration.millis(300 * speedRatio);
         } else if(address.isInMagicZone()){
-            return Duration.millis(300);
+            return Duration.millis(300 * speedRatio);
         } if(address.isInMonsterZone()) {
-            return Duration.millis(300);
+            return Duration.millis(300 * speedRatio);
         }
         throw new Error("this will never happen");
     }
@@ -329,13 +325,13 @@ public class GameField extends Pane {
         return y;
     }
 
-    public void addRunnableToQueryGameForCard(Card card, GameRunnable runnable){
+    public void addRunnableToMainThreadForCard(Card card, GameRunnable runnable){
         if(card.owner.equals(GameController.getInstance().getGame().getCurrentPlayer()))
-            addRunnableRoQueryGame(runnable);
+            addRunnableToMainThread(runnable);
         else
             CustomPrinter.println("You can't control your opponent's card", YuGiOh.model.enums.Color.Red);
     }
-    public void addRunnableRoQueryGame(GameRunnable runnable){
+    public void addRunnableToMainThread(GameRunnable runnable){
         // we must not do stuff in AI's turn
         if(GameController.getInstance().getCurrentPlayerController() instanceof AIPlayerController)
             return;
@@ -343,10 +339,9 @@ public class GameField extends Pane {
         MainGameThread.getInstance().addRunnable(()->{
             try {
                 runnable.run();
-            } catch (LogicException | ResistToChooseCard e){
+            } catch (LogicException e){
                 Platform.runLater(()->new AlertBox().display(this, e.getMessage()));
-            } catch (RoundOverExceptionEvent e){
-                GuiReporter.getInstance().report(new RoundOverEvent(e));
+            } catch (ResistToChooseCard e) {
             }
         });
     }

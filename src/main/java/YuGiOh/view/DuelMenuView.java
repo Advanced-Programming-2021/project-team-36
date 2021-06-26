@@ -46,7 +46,6 @@ public class DuelMenuView extends Application {
         gameField = new GameField(game, root.widthProperty().multiply(0.8), root.heightProperty().multiply(1));
         infoBox = new DuelInfoBox(game, root.widthProperty().multiply(0.2), root.heightProperty().multiply(1));
         infoBox.setGameField(gameField);
-        gameField.setInfoBox(infoBox);
         root.getChildren().addAll(infoBox, gameField);
         selector = new CardSelector(infoBox);
         scene = new Scene(stackPane, WIDTH, HEIGHT);

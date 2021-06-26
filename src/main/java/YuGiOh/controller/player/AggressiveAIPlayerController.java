@@ -46,6 +46,7 @@ public class AggressiveAIPlayerController extends AIPlayerController {
                     if (opponentCard instanceof Monster)
                         noErrorAttack((Monster) card, (Monster) opponentCard);
                 }
+                noErrorMonsterActivateEffect((Monster) card);
                 noErrorDirectAttack((Monster) card);
             } else if (card instanceof Magic) {
                 noErrorSetMagic((Magic) card);

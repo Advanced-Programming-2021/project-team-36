@@ -20,6 +20,7 @@ public class DatabaseHandler {
         //importUsersFromDatabase();
         importMonstersFromDatabase();
         importMagicsFromDatabase();
+        Utils.checkIfAllImplementedCardsAreOk();
     }
 
     public static void saveToDatabase(String fileName) {

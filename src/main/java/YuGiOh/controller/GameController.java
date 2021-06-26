@@ -125,10 +125,8 @@ public class GameController {
     }
 
     public void goNextPhaseAndNotify() {
-        synchronized (game.phaseProperty()) {
-            game.phaseProperty().notifyAll(); // todo any problem for AI?
-            goNextPhase();
-        }
+        MainGameThread.getInstance().stopRunningQueuedTasks();
+        goNextPhase();
     }
 
     public PlayerController getPlayerControllerByPlayer(Player player){
@@ -162,6 +160,7 @@ public class GameController {
                 }
             } catch (RoundOverExceptionEvent roundOverEvent) {
                 GuiReporter.getInstance().report(new RoundOverEvent(roundOverEvent));
+                break;
             }
         }
     }

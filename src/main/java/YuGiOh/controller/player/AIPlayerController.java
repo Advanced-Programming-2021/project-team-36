@@ -96,6 +96,7 @@ public class AIPlayerController extends PlayerController {
                     if (opponentCard instanceof Monster)
                         noErrorAttack((Monster) card, (Monster) opponentCard);
                 }
+                noErrorMonsterActivateEffect((Monster) card);
                 noErrorDirectAttack((Monster) card);
             } else if (card instanceof Magic) {
                 noErrorSetMagic((Magic) card);
@@ -173,6 +174,13 @@ public class AIPlayerController extends PlayerController {
     protected void noErrorDirectAttack(Monster monster) {
         try {
             directAttack(monster);
+        } catch (LogicException | ResistToChooseCard ignored) {
+        }
+    }
+
+    protected void noErrorMonsterActivateEffect(Monster monster) {
+        try {
+            activateMonsterEffect(monster);
         } catch (LogicException | ResistToChooseCard ignored) {
         }
     }

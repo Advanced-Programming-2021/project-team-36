@@ -13,6 +13,8 @@ import YuGiOh.model.enums.Status;
 import YuGiOh.utils.CustomPrinter;
 import YuGiOh.view.cardSelector.Conditions;
 
+import java.util.Arrays;
+
 public class TwinTwisters extends Spell {
 
     public TwinTwisters(String name, String description, int price, Icon icon, Status status) {
@@ -33,13 +35,12 @@ public class TwinTwisters extends Spell {
                 number = 1;
             else
                 number = 2;
-            Magic[] magics = (Magic[]) playerController.chooseKCards(String.format("Destroy %s spell and magic on field", number),
+            Arrays.stream(playerController.chooseKCards(String.format("Destroy %s spell and magic on field", number),
                     number,
-                    Conditions.getMagicFromField());
-            for (int i = 0; i < number; i++) {
-                PlayerController controller = GameController.getInstance().getPlayerControllerByPlayer(magics[i].owner);
-                controller.moveCardToGraveYard(magics[i]);
-            }
+                    Conditions.getMagicFromField())
+            ).forEach(magicCard -> {
+                GameController.getInstance().getPlayerControllerByPlayer(magicCard.owner).moveCardToGraveYard(magicCard);
+            });
             CustomPrinter.println("Twin Twisters activated successfully.", Color.Green);
         };
     }
