@@ -1,6 +1,5 @@
 import initialize.Sample;
 import org.junit.Test;
-import utils.IntegrationTestBase;
 
 public class ProfileChangeTest extends Sample {
     @Test

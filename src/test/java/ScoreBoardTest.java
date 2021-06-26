@@ -1,6 +1,5 @@
 import initialize.Sample;
 import org.junit.Test;
-import utils.IntegrationTestBase;
 
 public class ScoreBoardTest extends Sample {
     @Test

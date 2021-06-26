@@ -1,10 +1,9 @@
-import controller.GameController;
-import controller.menu.MainMenuController;
+import YuGiOh.controller.GameController;
+import YuGiOh.controller.menu.MainMenuController;
 import initialize.Sample;
-import model.enums.Phase;
+import YuGiOh.model.enums.Phase;
 import org.junit.Test;
 import org.junit.jupiter.api.Assertions;
-import initialize.Sample.*;
 
 public class GameTest extends Sample {
     @Test

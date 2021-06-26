@@ -1,12 +1,12 @@
 package utils;
 
-import utils.CustomPrinter;
-import utils.CustomScanner;
-import controller.ProgramController;
-import controller.menu.BaseMenuController;
+import YuGiOh.utils.CustomPrinter;
+import YuGiOh.utils.CustomScanner;
+import YuGiOh.controller.ProgramController;
+import YuGiOh.controller.menu.BaseMenuController;
 import org.junit.Before;
 import org.junit.jupiter.api.Assertions;
-import utils.Debugger;
+import YuGiOh.utils.Debugger;
 
 public class IntegrationTestBase {
     public final ProgramController controller;

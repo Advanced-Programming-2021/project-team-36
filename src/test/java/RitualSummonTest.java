@@ -1,6 +1,6 @@
-import controller.GameController;
+import YuGiOh.controller.GameController;
 import initialize.Sample;
-import model.enums.Phase;
+import YuGiOh.model.enums.Phase;
 import org.junit.Test;
 
 public class RitualSummonTest extends Sample {

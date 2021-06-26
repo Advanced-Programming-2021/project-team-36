@@ -1,8 +1,8 @@
-import controller.menu.DuelMenuController;
-import model.Game;
-import model.ModelException;
-import model.Player.AIPlayer;
-import model.Player.Player;
+import YuGiOh.controller.menu.DuelMenuController;
+import YuGiOh.model.Game;
+import YuGiOh.model.ModelException;
+import YuGiOh.model.Player.AIPlayer;
+import YuGiOh.model.Player.Player;
 import org.junit.Test;
 import utils.IntegrationTestBase;
 

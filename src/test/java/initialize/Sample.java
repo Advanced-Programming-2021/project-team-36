@@ -1,7 +1,7 @@
 package initialize;
 
-import controller.menu.DeckMenuController;
-import controller.menu.LoginMenuController;
+import YuGiOh.controller.menu.DeckMenuController;
+import YuGiOh.controller.menu.LoginMenuController;
 import utils.IntegrationTestBase;
 
 public class Sample extends IntegrationTestBase {
