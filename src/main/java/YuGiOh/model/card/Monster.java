@@ -25,14 +25,14 @@ public class Monster extends Card {
     protected MonsterType monsterType;
     @Getter
     protected MonsterCardType monsterCardType;
-    @Getter @Setter
+    @Getter
+    @Setter
     protected MonsterState monsterState;
     @Getter
     protected int level;
     @Getter
     @Setter
     protected boolean allowAttack = true;
-    // todo allowAttack should be a function that gets monster and tells whether you can attack it or not
 
     public Monster(String name, String description, int price, int attackDamage, int defenseRate, MonsterAttribute attribute, MonsterType monsterType, MonsterCardType monsterCardType, int level) {
         super(name, description, price);
@@ -165,7 +165,6 @@ public class Monster extends Card {
     }
 
     public void flip() throws LogicException {
-        // todo is it correct?
         if (getMonsterState().equals(MonsterState.DEFENSIVE_HIDDEN))
             throw new LogicException("can't flip and defensive hidden monster");
         if (getMonsterState().equals(MonsterState.DEFENSIVE_OCCUPIED))
@@ -181,7 +180,7 @@ public class Monster extends Card {
     public Effect directAttack(Player player) {
         Player opponent = GameController.getInstance().getGame().getOtherPlayer(player);
         return () -> {
-            if(GameController.getInstance().getGame().getCardZoneType(this).equals(ZoneType.GRAVEYARD)){
+            if (GameController.getInstance().getGame().getCardZoneType(this).equals(ZoneType.GRAVEYARD)) {
                 CustomPrinter.println(this.getName() + " is dead so it cannot attack", Color.Yellow);
                 return;
             }
@@ -190,15 +189,15 @@ public class Monster extends Card {
         };
     }
 
-    // this are hooks to be overridden
-    protected void startOfBeingAttackedByMonster(){
-    }
-    protected void endOfBeingAttackedByMonster(){
+    protected void startOfBeingAttackedByMonster() {
     }
 
-    public final Effect onBeingAttackedByMonster(Monster attacker){
+    protected void endOfBeingAttackedByMonster() {
+    }
+
+    public final Effect onBeingAttackedByMonster(Monster attacker) {
         return () -> {
-            if (GameController.getInstance().getGame().getCardZoneType(attacker).equals(ZoneType.GRAVEYARD)){
+            if (GameController.getInstance().getGame().getCardZoneType(attacker).equals(ZoneType.GRAVEYARD)) {
                 CustomPrinter.println(this.getName() + " is dead so it cannot attack", Color.Yellow);
                 return;
             }
@@ -210,27 +209,28 @@ public class Monster extends Card {
     }
 
     @Override
-    public boolean isFacedUp(){
+    public boolean isFacedUp() {
         return monsterState.equals(MonsterState.OFFENSIVE_OCCUPIED) || monsterState.equals(MonsterState.DEFENSIVE_OCCUPIED);
     }
 
     @Override
     public Effect activateEffect() throws LogicException {
-        return ()->{}; // todo
+        return () -> {
+        };
     }
 
     @Override
     public boolean hasEffect() {
-        return true; // todo
+        return true;
     }
 
     @Override
     public boolean canActivateEffect() {
-        return false; // todo
+        return false;
     }
 
     @Override
-    public final void startOfNewTurn(){
+    public final void startOfNewTurn() {
         setAllowAttack(true);
     }
 
@@ -243,7 +243,7 @@ public class Monster extends Card {
     }
 
     @Override
-    public int getSpeed(){
+    public int getSpeed() {
         return 1;
     }
 

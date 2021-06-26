@@ -79,10 +79,6 @@ public abstract class Card implements Comparable<Card>, Cloneable, Serializable 
     public void startOfNewTurn() {
     }
 
-    public void save() {
-        // TODO
-    }
-
     @Override
     public String toString() {
         return name + ":" + description;
