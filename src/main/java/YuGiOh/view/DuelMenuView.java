@@ -119,7 +119,7 @@ public class DuelMenuView extends BaseMenuView {
         this.cmd.addCommand(new Command(
                 "surrender",
                 mp -> {
-                    DuelMenuController.getInstance().surrender();
+                    DuelMenuController.getInstance().surrender(GameController.getInstance().getGame().getCurrentPlayer());
                 }
         ));
     }
