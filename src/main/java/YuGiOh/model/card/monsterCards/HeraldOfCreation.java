@@ -1,18 +1,18 @@
 package YuGiOh.model.card.monsterCards;
 
-import YuGiOh.model.enums.Color;
-import YuGiOh.utils.CustomPrinter;
 import YuGiOh.controller.GameController;
 import YuGiOh.controller.LogicException;
-import YuGiOh.controller.cardSelector.Conditions;
-import YuGiOh.controller.cardSelector.ResistToChooseCard;
 import YuGiOh.controller.player.PlayerController;
-import YuGiOh.model.card.Card;
-import YuGiOh.model.card.action.Effect;
-import YuGiOh.model.card.Monster;
+import YuGiOh.model.enums.Color;
 import YuGiOh.model.enums.MonsterAttribute;
 import YuGiOh.model.enums.MonsterCardType;
 import YuGiOh.model.enums.MonsterType;
+import YuGiOh.utils.CustomPrinter;
+import YuGiOh.view.cardSelector.Conditions;
+import YuGiOh.view.cardSelector.ResistToChooseCard;
+import YuGiOh.model.card.action.Effect;
+import YuGiOh.model.card.Card;
+import YuGiOh.model.card.Monster;
 
 public class HeraldOfCreation extends Monster {
     public HeraldOfCreation(String name, String description, int price, int attackDamage, int defenseRate, MonsterAttribute attribute, MonsterType monsterType, MonsterCardType monsterCardType, int level) {
@@ -22,10 +22,14 @@ public class HeraldOfCreation extends Monster {
     int lastTurnActivated = -1;
 
     @Override
+    public boolean canActivateEffect(){
+        return lastTurnActivated != GameController.instance.getGame().getTurn();
+    }
+
+    @Override
     public Effect activateEffect() throws LogicException {
         if(lastTurnActivated == GameController.instance.getGame().getTurn())
             throw new LogicException("you can only activate this once in a turn");
-        lastTurnActivated = GameController.instance.getGame().getTurn();
 
         return ()->{
             PlayerController controller = GameController.getInstance().getPlayerControllerByPlayer(this.owner);
@@ -53,6 +57,7 @@ public class HeraldOfCreation extends Monster {
             }
             this.owner.getBoard().removeFromHand(discarded);
             this.owner.getBoard().addCardToHand(monster);
+            lastTurnActivated = GameController.instance.getGame().getTurn();
         };
     }
 

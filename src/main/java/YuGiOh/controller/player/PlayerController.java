@@ -1,29 +1,28 @@
 package YuGiOh.controller.player;
 
-import YuGiOh.controller.cardSelector.Conditions;
+import YuGiOh.controller.events.RoundOverExceptionEvent;
+import YuGiOh.model.card.Magic;
 import YuGiOh.model.card.action.*;
 import YuGiOh.model.enums.*;
+import YuGiOh.view.cardSelector.Conditions;
 import YuGiOh.model.card.Spell;
-import model.card.action.*;
-import model.enums.*;
 import YuGiOh.utils.CustomPrinter;
 import YuGiOh.controller.ChainController;
 import YuGiOh.controller.GameController;
 import YuGiOh.controller.LogicException;
-import YuGiOh.controller.cardSelector.ResistToChooseCard;
-import YuGiOh.controller.cardSelector.SelectCondition;
-import YuGiOh.controller.events.GameOverEvent;
+import YuGiOh.view.cardSelector.ResistToChooseCard;
+import YuGiOh.view.cardSelector.SelectCondition;
 import lombok.Getter;
 import YuGiOh.model.Board;
 import YuGiOh.model.CardAddress;
 import YuGiOh.model.Game;
 import YuGiOh.model.Player.Player;
 import YuGiOh.model.card.Card;
-import YuGiOh.model.card.Magic;
 import YuGiOh.model.card.Monster;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 public abstract class PlayerController {
     @Getter
@@ -32,8 +31,6 @@ public abstract class PlayerController {
     PlayerController(Player player) {
         this.player = player;
     }
-
-    abstract public void controlStandbyPhase();
 
     abstract public void controlMainPhase1();
 
@@ -46,16 +43,18 @@ public abstract class PlayerController {
     abstract public boolean askRespondToQuestion(String question, String yes, String no);
 
     abstract public void doRespondToChain() throws ResistToChooseCard; // todo check if this action is invalid for chain
+
     abstract public Card[] chooseKCards(String message, int numberOfCards, SelectCondition condition) throws ResistToChooseCard;
+
     abstract public Monster[] chooseKSumLevelMonsters(String message, int sumOfLevelsOfCards, SelectCondition condition) throws ResistToChooseCard;
 
 
-    public List<Action> listOfAvailableActionsInResponse(){
+    public List<Action> listOfAvailableActionsInResponse() {
         int previousSpeed = Math.max(GameController.getInstance().getGame().getChain().peek().getEvent().getSpeed(), 2);
         List<Action> actions = new ArrayList<>();
         for (Card magic : player.getBoard().getAllCardsOnBoard()) {
             if (magic instanceof Magic) {
-                if(((Magic) magic).canActivateEffect() && previousSpeed <= magic.getSpeed()){
+                if (((Magic) magic).canActivateEffect() && previousSpeed <= magic.getSpeed()) {
                     actions.add(new Action(
                             new MagicActivation((Magic) magic),
                             ((Magic) magic).activateEffect()
@@ -66,125 +65,211 @@ public abstract class PlayerController {
         return actions;
     }
 
-    public void summon(Monster monster, int requiredTributes, MonsterState monsterState) throws LogicException, ResistToChooseCard {
-        Game game = GameController.instance.getGame();
+    public void summon(Monster monster, int requiredTributes, MonsterState monsterState, boolean specialSummon) throws LogicException, ResistToChooseCard {
+        player.getBoard().removeCardIfHas(monster);
+        GameController.getInstance().getGame().getOtherPlayer(player).getBoard().removeCardIfHas(monster);
+        if(!specialSummon)
+            player.setSummonedInLastTurn(true);
+
         if (requiredTributes > 0)
-            tributeMonster(requiredTributes);
-        Board board = game.getCurrentPlayer().getBoard();
+            tributeMonster(requiredTributes, Conditions.myMonsterFromMyMonsterZone(player));
+        Board board = player.getBoard();
         for (int i = 1; i <= 5; i++) {
             if (board.getMonsterCardZone().get(i) == null) {
-                board.addCardToBoard(monster, new CardAddress(ZoneType.MONSTER, i, false));
-                monster.setMonsterState(monsterState);
+                board.addCardToBoard(monster, new CardAddress(ZoneType.MONSTER, i, player));
                 break;
             }
         }
+
+        monster.setMonsterState(monsterState);
+        // this sets owner
+        monster.readyForBattle(player);
+    }
+
+    public void summon(Monster monster, int requiredTributes, boolean specialSummon) throws ResistToChooseCard, LogicException {
+        boolean AttackingState = askRespondToQuestion("which position you want to summon?", "defending", "attacking");
+        MonsterState monsterState = (AttackingState ? MonsterState.DEFENSIVE_OCCUPIED : MonsterState.OFFENSIVE_OCCUPIED);
+        summon(monster, requiredTributes, monsterState, specialSummon);
+    }
+
+    public void summon(Monster monster, boolean specialSummon) throws ResistToChooseCard, LogicException {
+        summon(monster, monster.getNumberOfRequiredTribute(), specialSummon);
+    }
+
+    public void drawCard() throws LogicException {
+        Card card = player.getBoard().getMainDeck().getTopCard();
+        if (card == null)
+            throw new LogicException("There is no card to draw");
+        player.getBoard().drawCardFromDeck();
+        CustomPrinter.println(String.format("new card added to the hand : <%s>", card.getName()), Color.Blue);
+    }
+
+    public void validateSummon(Monster monster, int requiredTributes, SelectCondition condition) throws LogicException {
+        if (requiredTributes > 0)
+            validateTributeMonster(requiredTributes, condition);
+        Board board = player.getBoard();
+        for (int i = 1; i <= 5; i++) {
+            if (board.getMonsterCardZone().get(i) == null)
+                return;
+        }
+        throw new LogicException("we found no empty position to spawn the monster");
     }
 
     public void addMagicToBoard(Magic magic, MagicState magicState) {
         Game game = GameController.getInstance().getGame();
         Board board = game.getCurrentPlayer().getBoard();
-        if (magic.getIcon().equals(Icon.FIELD))
-            board.addCardToBoard((Card) magic, new CardAddress(ZoneType.FIELD, 1, false));
-        else {
+        if (magic.getIcon().equals(Icon.FIELD)) {
+            board.addCardToBoard((Card) magic, new CardAddress(ZoneType.FIELD, 1, player));
+        } else {
             for (int i = 1; i <= 5; i++) {
                 if (board.getMagicCardZone().get(i) == null) {
-                    board.addCardToBoard(magic, new CardAddress(ZoneType.MAGIC, i, false));
-                    magic.setMagicState(magicState);
+                    board.addCardToBoard(magic, new CardAddress(ZoneType.MAGIC, i, player));
                     break;
                 }
             }
         }
+
+        magic.setMagicState(magicState);
+        // this sets owner
+        magic.readyForBattle(player);
     }
 
-    public void normalSummon(Card card) throws LogicException, ResistToChooseCard {
-        Game game = GameController.getInstance().getGame();
-        if (card instanceof Magic)
-            throw new LogicException("this card is magic and you can't summon it");
-        Monster monster = (Monster) card;
-        if (!game.getPhase().equals(Phase.MAIN_PHASE1) && !game.getPhase().equals(Phase.MAIN_PHASE2))
-            throw new LogicException("action not allowed in this phase");
-        if (game.getCurrentPlayer().isSummonedInLastTurn())
-            throw new LogicException("you already summoned/set on this turn");
-        if (!player.hasInHand(card))
-            throw new LogicException("you can only summon from your hand");
-        startChain(
-                new Action(
+    public Action normalSummonAction(Monster monster, boolean specialSummon) throws ResistToChooseCard {
+        return new Action(
                         new SummonEvent(monster, SummonType.NORMAL),
                         () -> {
-                                boolean AttackingState = askRespondToQuestion("which position you want to summon?", "attacking", "defending");
-                                MonsterState monsterState = (AttackingState ? MonsterState.OFFENSIVE_OCCUPIED : MonsterState.DEFENSIVE_OCCUPIED);
-                                summon(monster, monster.getNumberOfRequiredTribute(), monsterState);
-                                player.getBoard().getCardsOnHand().remove((Card) monster);
-                                player.setSummonedInLastTurn(true);
-                                CustomPrinter.println(String.format("<%s> summoned <%s> in <%s> position successfully", player.getUser().getUsername(), monster.getName(), monsterState), Color.Green);
+                            summon(monster, specialSummon);
+                            CustomPrinter.println(String.format("<%s> summoned <%s> in <%s> position successfully", player.getUser().getUsername(), monster.getName(), monster.getMonsterState()), Color.Green);
                         }
-                )
-        );
+                );
     }
 
-    public void flipSummon(Monster monster) throws LogicException {
-        Game game = GameController.getInstance().getGame();
-        if (!GameController.getInstance().getCurrentPlayerController().getPlayer().getBoard().getMonsterCardZone().containsValue(monster))
-            throw new LogicException("this card is not in your field");
-        if (!game.getPhase().equals(Phase.MAIN_PHASE1) && !game.getPhase().equals(Phase.MAIN_PHASE2))
-            throw new LogicException("you can’t do this action in this phase");
-        if (!monster.getMonsterState().equals(MonsterState.DEFENSIVE_HIDDEN) || game.getCurrentPlayer().isSummonedInLastTurn())
-            throw new LogicException("you can't flip summon this card");
-        startChain(
-                new Action(
+    public Action flipSummonAction(Monster monster) throws ResistToChooseCard {
+        return new Action(
                         new SummonEvent(monster, SummonType.FLIP),
                         () -> {
-                            monster.setMonsterState(MonsterState.OFFENSIVE_OCCUPIED);
-                            GameController.getInstance().getGame().getCurrentPlayer().setSummonedInLastTurn(true);
+                            monster.changeFromHiddenToOccupiedIfCanEffect().run();
+                            player.setSummonedInLastTurn(true);
                             CustomPrinter.println(String.format("<%s> flip summoned successfully", monster.getName()), Color.Green);
                         }
-                )
         );
     }
 
+    public Action setMonsterAction(Monster monster) throws ResistToChooseCard {
+        return new Action(
+                        new SetMonster(monster),
+                        () -> {
+                            summon(monster, monster.getNumberOfRequiredTribute(), MonsterState.DEFENSIVE_HIDDEN, false);
+                            CustomPrinter.println(String.format("<%s> set monster <%s> successfully", player.getUser().getUsername(), monster.getName()), Color.Green);
+                        }
+        );
+    }
 
-    public void setMonster(Monster monster) throws LogicException, ResistToChooseCard {
+    private void validateMainPhase() throws LogicException {
         Game game = GameController.getInstance().getGame();
         if (!game.getPhase().equals(Phase.MAIN_PHASE1) && !game.getPhase().equals(Phase.MAIN_PHASE2))
             throw new LogicException("action not allowed in this phase");
-        if (game.getCurrentPlayer().isSummonedInLastTurn())
-            throw new LogicException("you already summoned/set on this turn");
-        if (!player.hasInHand((Card) monster))
-            throw new LogicException("you can only summon from your hand");
-        startChain(
-                new Action(
-                        new SetMonster(monster),
-                        () -> {
-                            summon(monster, monster.getNumberOfRequiredTribute(), MonsterState.DEFENSIVE_HIDDEN);
-                            player.getBoard().getCardsOnHand().remove((Card) monster);
-                            player.setSummonedInLastTurn(true);
-                            CustomPrinter.println(String.format("<%s> set monster <%s> successfully", player.getUser().getUsername(), monster.getName()), Color.Green);
-                        }
-                )
-        );
     }
 
-    public void tributeMonster(int count) throws LogicException, ResistToChooseCard {
-        if (player.getBoard().getMonsterCardZone().size() < count)
-            throw new LogicException("there are not enough cards for tribute");
-        Card[] tributeCards = chooseKCards(String.format("Choose %d cards to tribute", count), count, Conditions.myMonsterFromMyMonsterZone(player));
+    private void validateCurrentPlayersCard(Card card) throws LogicException {
+        if (!GameController.getInstance().getGame().getCurrentPlayer().getBoard().getAllCards().contains(card))
+            throw new LogicException("this card is not yours");
+    }
+
+    private void validateCurrentPlayerMonsterZone(Monster monster) throws LogicException {
+        if (!GameController.getInstance().getCurrentPlayerController().getPlayer().getBoard().getMonsterCardZone().containsValue(monster))
+            throw new LogicException("this card is not in your field");
+    }
+
+    private void validateNotSummonedInThisTurn() throws LogicException {
+        if (player.isSummonedInLastTurn())
+            throw new LogicException("you already summoned/set on this turn");
+    }
+
+    private void validateHasInHand(Monster monster) throws LogicException {
+        if (!player.hasInHand(monster))
+            throw new LogicException("you can only summon from your hand");
+    }
+
+    public void normalSummon(Monster monster) throws LogicException, ResistToChooseCard {
+        validateMainPhase();
+        validateCurrentPlayersCard(monster);
+        validateNotSummonedInThisTurn();
+        validateHasInHand(monster);
+        validateSummon(monster, monster.getNumberOfRequiredTribute(), Conditions.myMonsterFromMyMonsterZone(player));
+        startChain(normalSummonAction(monster, false));
+    }
+
+    public void specialSummon(Monster monster) throws  LogicException, ResistToChooseCard {
+        validateMainPhase();
+        validateCurrentPlayersCard(monster);
+        monster.validateSpecialSummon();
+        startChain(monster.specialSummonAction());
+    }
+
+    public void setMonster(Monster monster) throws LogicException, ResistToChooseCard {
+        validateMainPhase();
+        validateSummon(monster, monster.getNumberOfRequiredTribute(), Conditions.myMonsterFromMyMonsterZone(player));
+        startChain(setMonsterAction(monster));
+    }
+
+
+    public void flipSummon(Monster monster) throws LogicException, ResistToChooseCard {
+        Game game = GameController.getInstance().getGame();
+        validateCurrentPlayerMonsterZone(monster);
+        validateMainPhase();
+        if (!monster.getMonsterState().equals(MonsterState.DEFENSIVE_HIDDEN) || game.getCurrentPlayer().isSummonedInLastTurn())
+            throw new LogicException("you can't flip summon this card");
+        startChain(flipSummonAction(monster));
+    }
+
+    public void tributeMonster(int count, SelectCondition condition) throws LogicException, ResistToChooseCard {
+
+        validateTributeMonster(count, condition);
+        Card[] tributeCards = chooseKCards(String.format("Choose %d cards to tribute", count), count, condition);
         for (Card card : tributeCards)
             moveCardToGraveYard(card);
 //        CustomPrinter.println(String.format("<%s> tribute this monsters: %s", Arrays.toString(Arrays.stream(tributeCards).toArray())), Color.Default);
     }
 
-    public void moveCardToGraveYard(Card card) {
-        CustomPrinter.println(String.format("<%s>' Card <%s> moved to graveyard", player.getUser().getUsername(), card.getName()), Color.Blue);
-        player.moveCardToGraveYard(card);
+    public void validateTributeMonster(int count, SelectCondition condition) throws LogicException {
+        int goodCards = 0;
+        for (Card card : player.getBoard().getAllCards())
+            if (condition.canSelect(card))
+                goodCards++;
+        if (goodCards < count)
+            throw new LogicException("there are not enough cards for tribute");
     }
 
-    public void setMagic(Magic magic) throws LogicException {
+    public void moveCardToGraveYard(Card card) {
+        player.moveCardToGraveYard(card);
+        // todo this is really bad :)) change this
+        if (card instanceof Monster) {
+            for (int i = 1; i <= 5; i++) {
+                Magic magic = player.getBoard().getMagicCardZone().get(i);
+                if (magic != null && magic.getIcon().equals(Icon.EQUIP) && magic.getEquippedMonster().equals(card))
+                    moveCardToGraveYard(magic);
+            }
+        }
+        if (card instanceof Spell)
+            ((Spell) card).onMovingToGraveYard();
+        CustomPrinter.println(String.format("<%s>'s Card <%s> moved to graveyard", player.getUser().getUsername(), card.getName()), Color.Blue);
+        if (card instanceof Monster)
+            for (int i = 1; i <= 5; i++)
+                if (player.getBoard().getMagicCardZone().get(i) != null)
+                    player.getBoard().getMagicCardZone().get(i).onDestroyMyMonster();
+    }
+
+    public void setMagic(Magic magic) throws LogicException, ResistToChooseCard {
         if (!player.hasInHand(magic))
             throw new LogicException("you can't set this card");
         if (!GameController.getInstance().getGame().getPhase().isMainPhase())
             throw new LogicException("you can't do this action in this phase");
-        if (!magic.getIcon().equals(Icon.FIELD) && player.getBoard().getMagicCardZone().size() == 5)
+        if (magic.getIcon().equals(Icon.FIELD))
+            throw new LogicException("field cards can't be set");
+        if (player.getBoard().getMagicCardZone().size() == 5)
             throw new LogicException("spell card zone is full");
+
         startChain(
                 new Action(
                         new SetMagic(magic),
@@ -197,10 +282,10 @@ public abstract class PlayerController {
         );
     }
 
-    public void surrender() throws GameOverEvent {
+    public void surrender() throws RoundOverExceptionEvent {
         Game game = GameController.instance.getGame();
         game.getCurrentPlayer().setLifePoint(0);
-        throw new GameOverEvent(GameResult.NOT_DRAW, game.getCurrentPlayer(), game.getOpponentPlayer(), game.getOpponentPlayer().getLifePoint());
+        throw new RoundOverExceptionEvent(GameResult.NOT_DRAW, game.getCurrentPlayer(), game.getOpponentPlayer(), game.getOpponentPlayer().getLifePoint());
     }
 
     public void changeMonsterPosition(Monster monster, MonsterState monsterState) throws LogicException {
@@ -231,7 +316,7 @@ public abstract class PlayerController {
             throw new LogicException("monster is in defensive position");
     }
 
-    public void attack(Monster monster, Monster opponentMonster) throws LogicException, GameOverEvent {
+    public void attack(Monster monster, Monster opponentMonster) throws LogicException, RoundOverExceptionEvent, ResistToChooseCard {
         canAttack(monster);
         if (!monster.isAllowAttack())
             throw new LogicException("this card already attacked");
@@ -247,7 +332,7 @@ public abstract class PlayerController {
         GameController.getInstance().checkBothLivesEndGame();
     }
 
-    public void directAttack(Monster monster) throws GameOverEvent, LogicException {
+    public void directAttack(Monster monster) throws RoundOverExceptionEvent, LogicException, ResistToChooseCard {
         canAttack(monster);
         if (GameController.getInstance().getOtherPlayerController(this).getPlayer().getBoard().getMonsterCardZone().size() > 0)
             throw new LogicException("you can’t attack the opponent directly");
@@ -266,30 +351,69 @@ public abstract class PlayerController {
         GameController.getInstance().checkBothLivesEndGame();
     }
 
-    public void activateEffect(Spell spell) throws LogicException, GameOverEvent {
+    public void activateMonsterEffect(Monster monster) throws LogicException, ResistToChooseCard {
         Game game = GameController.getInstance().getGame();
-        if (!player.getBoard().getMagicCardZone().containsValue(spell) && !player.getBoard().getCardsOnHand().contains((Card) spell))
+        if (!game.getPhase().equals(Phase.MAIN_PHASE1) && !game.getPhase().equals(Phase.MAIN_PHASE2))
+            throw new LogicException("you can't activate an effect on this turn");
+        if (!player.getBoard().getMonsterCardZone().containsValue(monster) || !monster.getMonsterState().equals(MonsterState.OFFENSIVE_OCCUPIED))
+            throw new LogicException("only faced up monsters can activate their effect");
+
+        //  throw new LogicException("you have already activated this card on this turn");
+        // todo is this handeled?
+        if (!monster.canActivateEffect())
+            throw new LogicException("you cannot activate this monster now");
+
+        CustomPrinter.println(String.format("<%s> wants to activate the effect of <%s>", player.getUser().getUsername(), monster.getName()), Color.Blue);
+        startChain(
+                new Action(
+                        new MagicActivation(monster),
+                        ()->{
+                            monster.activateEffect().run();
+                        }
+                )
+        );
+    }
+    public void activateSpellEffect(Spell spell) throws LogicException, ResistToChooseCard {
+        Game game = GameController.getInstance().getGame();
+        if (!player.getBoard().getMagicCardZone().containsValue(spell) && !player.getBoard().getCardsOnHand().contains(spell))
             throw new LogicException("you can't activate this card!");
         if (!game.getPhase().equals(Phase.MAIN_PHASE1) && !game.getPhase().equals(Phase.MAIN_PHASE2))
             throw new LogicException("you can't activate an effect on this turn");
-        if (spell.getMagicState() != null && spell.getMagicState().equals(MagicState.OCCUPIED))
-            throw new LogicException("you have already activated this card"); // todo : check correctness of this
+        if (spell.isActivated())
+            throw new LogicException("you have already activated this card on this turn");
         if (getPlayer().hasInHand(spell) && !spell.getIcon().equals(Icon.FIELD) && getPlayer().getBoard().getMagicCardZone().size() == 5)
             throw new LogicException("spell card zone is full");
         if (!spell.canActivateEffect())
             throw new LogicException("preparations of this spell are not done yet");
 
-        CustomPrinter.println(String.format("<%s> wants to activate the effect of <%s>", player.getUser().getUsername(), spell.getName()), Color.Blue);
+        Optional<Card> optionalBadCard = GameController.getInstance().getGame().getAllCardsOnBoard().stream().filter(
+                other -> {
+                    if(other instanceof Magic) {
+                        Magic otherMagic = (Magic) other;
+                        return other.isActivated() && !otherMagic.letMagicActivate(spell);
+                    }
+                    return false;
+                }
+        ).findAny();
+        if (optionalBadCard.isPresent())
+            throw new LogicException(optionalBadCard.get().getName() + " does not let you activate this");
 
+        CustomPrinter.println(String.format("<%s> wants to activate the effect of <%s>", player.getUser().getUsername(), spell.getName()), Color.Blue);
         startChain(
                 new Action(
                         new MagicActivation(spell),
-                        spell.activateEffect()
+                        ()->{
+                            if(player.getBoard().getCardsOnHand().contains(spell)) {
+                                player.getBoard().removeFromHand(spell);
+                                addMagicToBoard(spell, MagicState.OCCUPIED);
+                            }
+                            spell.activateEffect().run();
+                        }
                 )
         );
     }
 
-    public void startChain(Action action) throws GameOverEvent {
+    public void startChain(Action action) throws RoundOverExceptionEvent, ResistToChooseCard {
         ChainController chainController = new ChainController(this, action);
         chainController.control();
     }
@@ -301,5 +425,11 @@ public abstract class PlayerController {
 
     public boolean hasAttackedByCard(Monster monster) {
         return !monster.isAllowAttack();
+    }
+
+    public void refresh() {
+        player.setSummonedInLastTurn(false);
+        for (Card card : player.getBoard().getAllCards())
+            card.startOfNewTurn();
     }
 }

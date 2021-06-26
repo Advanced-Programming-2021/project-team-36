@@ -1,13 +1,14 @@
 package YuGiOh.model.card.magicCards.traps;
 
 import YuGiOh.controller.GameController;
-import YuGiOh.model.card.action.Action;
-import YuGiOh.model.card.Trap;
-import YuGiOh.model.card.action.AttackEvent;
-import YuGiOh.model.card.action.Effect;
-import model.card.action.*;
+import YuGiOh.controller.LogicException;
+import YuGiOh.model.card.action.Event;
 import YuGiOh.model.enums.Icon;
 import YuGiOh.model.enums.Status;
+import YuGiOh.model.card.action.Action;
+import YuGiOh.model.card.action.AttackEvent;
+import YuGiOh.model.card.action.Effect;
+import YuGiOh.model.card.Trap;
 
 public class MagicCylinder extends Trap {
 
@@ -16,14 +17,17 @@ public class MagicCylinder extends Trap {
     }
 
     @Override
-    public Effect activateEffect() {
-        assert canActivateEffect();
+    protected Effect getEffect() {
         return ()->{
+            if(!canActivateEffect())
+                throw new LogicException("You can't activate this effect");
+            AttackEvent event = (AttackEvent) getChain().pop().getEvent();
             GameController.getInstance().decreaseLifePoint(
                     GameController.getInstance().getGame().getOtherPlayer(this.owner),
-                    ((AttackEvent) getChain().peek().getEvent()).getAttacker().getAttackDamage()
+                    event.getAttacker().getAttackDamage()
             );
-            getChain().pop();
+            event.getAttacker().setAllowAttack(false);
+            GameController.getInstance().getPlayerControllerByPlayer(this.owner).moveCardToGraveYard(this);
         };
     }
 

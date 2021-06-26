@@ -1,7 +1,6 @@
 package YuGiOh.model;
 
-import lombok.Getter;
-import lombok.Setter;
+import YuGiOh.model.Player.Player;
 import YuGiOh.model.card.Card;
 import YuGiOh.model.card.Magic;
 import YuGiOh.model.card.Monster;
@@ -10,43 +9,39 @@ import YuGiOh.model.enums.Icon;
 import YuGiOh.model.enums.MagicState;
 import YuGiOh.model.enums.MonsterState;
 import YuGiOh.model.enums.ZoneType;
+import lombok.Getter;
+import lombok.Setter;
 
 import java.util.*;
 
 public class Board {
+    @Getter
     private final MainDeck mainDeck;
-    private final List<Card> graveYard;
-    private final Map<Integer, Monster> monsterCardZone;
-    private final Map<Integer, Magic> magicCardZone;
-    private final List<Card> cardsOnHand;
+    @Getter
+    private final ArrayList<Card> graveYard;
+    @Getter
+    private final HashMap<Integer, Monster> monsterCardZone;
+    @Getter
+    private final HashMap<Integer, Magic> magicCardZone;
+    @Getter
+    private final ArrayList<Card> cardsOnHand;
 
     @Getter
     @Setter
     private Magic fieldZoneCard;
 
-    public Board(MainDeck mainDeck){
+    @Getter
+    private final Player owner;
+
+
+    public Board(MainDeck mainDeck, Player owner){
         this.mainDeck = mainDeck;
         graveYard = new ArrayList<>();
         monsterCardZone = new HashMap<>();
         magicCardZone = new HashMap<>();
         cardsOnHand = new ArrayList<>();
         fieldZoneCard = null;
-    }
-
-    public List<Card> getGraveYard() {
-        return graveYard;
-    }
-
-    public List<Card> getCardsOnHand() {
-        return cardsOnHand;
-    }
-
-    public Map<Integer, Monster> getMonsterCardZone() {
-        return monsterCardZone;
-    }
-
-    public Map<Integer, Magic> getMagicCardZone() {
-        return magicCardZone;
+        this.owner = owner;
     }
 
     public void drawCardFromDeck() {
@@ -54,6 +49,24 @@ public class Board {
         Card card = mainDeck.getTopCard();
         mainDeck.removeCard(card);
         cardsOnHand.add(card);
+    }
+
+    public void removeCardIfHas(Card card) {
+        CardAddress cardAddress = getCardAddress(card);
+        if(cardAddress == null)
+            return;
+        if(cardAddress.isInDeck())
+            mainDeck.getCards().remove(card);
+        if(cardAddress.isInFieldZone())
+            setFieldZoneCard(null);
+        if(cardAddress.isInMonsterZone())
+            monsterCardZone.remove(cardAddress.getId());
+        if(cardAddress.isInHand())
+            cardsOnHand.remove(card);
+        if(cardAddress.isInGraveYard())
+            graveYard.remove(card);
+        if(cardAddress.isInMagicZone())
+            magicCardZone.remove(cardAddress.getId());
     }
 
     public Card getCardByCardAddress(CardAddress cardAddress) {
@@ -67,14 +80,38 @@ public class Board {
         } else if (cardAddress.isInMagicZone()) {
             return magicCardZone.getOrDefault(cardAddress.getId(), null);
         } else if (cardAddress.isInFieldZone()) {
-            return fieldZoneCard;
+            return getFieldZoneCard();
         } else if (cardAddress.isInGraveYard()) {
             if (1 <= cardAddress.getId() && cardAddress.getId() <= graveYard.size())
-                return graveYard.get(cardAddress.getId());
+                return graveYard.get(cardAddress.getId()-1);
             else
                 return null;
+        } else if (cardAddress.isInDeck()) {
+            if (1 <= cardAddress.getId() && cardAddress.getId() <= mainDeck.getCards().size())
+                return mainDeck.getCards().get(cardAddress.getId()-1);
         }
         return null;
+    }
+
+    public CardAddress getCardAddress(Card card){
+        final CardAddress[] ret = {null};
+        monsterCardZone.forEach((id, monster)->{
+            if(monster.equals(card))
+                ret[0] = new CardAddress(ZoneType.MONSTER, id, owner);
+        });
+        magicCardZone.forEach((id, magic)->{
+            if(magic.equals(card))
+                ret[0] = new CardAddress(ZoneType.MAGIC, id, owner);
+        });
+        if(graveYard.contains(card))
+            ret[0] = new CardAddress(ZoneType.GRAVEYARD, graveYard.indexOf(card) + 1, owner);
+        if(card.equals(getFieldZoneCard()))
+            ret[0] = new CardAddress(ZoneType.FIELD, 1, owner);
+        if(cardsOnHand.contains(card))
+            ret[0] = new CardAddress(ZoneType.HAND, cardsOnHand.indexOf(card) + 1, owner);
+        if(mainDeck.getCards().contains(card))
+            ret[0] = new CardAddress(ZoneType.DECK, mainDeck.getCards().indexOf(card) + 1, owner);
+        return ret[0];
     }
 
     public ZoneType getCardZoneType(Card card){
@@ -84,10 +121,12 @@ public class Board {
             return ZoneType.MAGIC;
         if(graveYard.contains(card))
             return ZoneType.GRAVEYARD;
-        if(card.equals(fieldZoneCard))
+        if(card.equals(getFieldZoneCard()))
             return ZoneType.FIELD;
         if(cardsOnHand.contains(card))
             return ZoneType.HAND;
+        if(mainDeck.getCards().contains(card))
+            return ZoneType.DECK;
         return null;
     }
 
@@ -95,8 +134,8 @@ public class Board {
         List<Card> allCards = new ArrayList<>();
         allCards.addAll(monsterCardZone.values());
         allCards.addAll(magicCardZone.values());
-        if(fieldZoneCard != null)
-            allCards.add(fieldZoneCard);
+        if(getFieldZoneCard() != null)
+            allCards.add(getFieldZoneCard());
         return allCards;
     }
 
@@ -104,14 +143,15 @@ public class Board {
         List<Card> allCards = getAllCardsOnBoard();
         allCards.addAll(graveYard);
         allCards.addAll(cardsOnHand);
+        allCards.addAll(mainDeck.getCards());
         return allCards;
     }
 
     public void addCardToBoard(Card card, CardAddress cardAddress) {
         if (cardAddress.isInFieldZone()) {
-            if (fieldZoneCard != null)
-                moveCardToGraveYard(fieldZoneCard);
-            fieldZoneCard = (Magic) card;
+            if (getFieldZoneCard() != null)
+                moveCardToGraveYard(getFieldZoneCard());
+            setFieldZoneCard((Magic) card);
         }
         else if (cardAddress.isInMagicZone()) {
             assert magicCardZone.get(cardAddress.getId()) == null;
@@ -125,11 +165,11 @@ public class Board {
 
     public void addMagic(Magic magic) {
         if (magic.getIcon().equals(Icon.FIELD))
-            addCardToBoard((Card) magic, new CardAddress(ZoneType.FIELD, 1, false));
+            addCardToBoard((Card) magic, new CardAddress(ZoneType.FIELD, 1, owner));
         else {
             for (int i = 1; i <= 5; i++) {
                 if (getMagicCardZone().get(i) == null) {
-                    addCardToBoard(magic, new CardAddress(ZoneType.MAGIC, i, false));
+                    addCardToBoard(magic, new CardAddress(ZoneType.MAGIC, i, owner));
                     break;
                 }
             }
@@ -144,23 +184,8 @@ public class Board {
     }
 
     public void moveCardToGraveYard(Card card) {
-        // todo this choosing should be based on pointer value not equals method!
-        if (fieldZoneCard == card) {
-            graveYard.add(card);
-            fieldZoneCard = null;
-        }
-        else if (magicCardZone.containsValue(card)) {
-            graveYard.add(card);
-            magicCardZone.values().remove(card);
-        }
-        else if (monsterCardZone.containsValue(card)) {
-            graveYard.add(card);
-            monsterCardZone.values().remove(card);
-        }
-        else if (cardsOnHand.contains(card)) {
-            graveYard.add(card);
-            cardsOnHand.remove(card);
-        }
+        removeCardIfHas(card);
+        graveYard.add(card);
     }
 
     public boolean isMonsterCardZoneFull() {
@@ -206,7 +231,7 @@ public class Board {
     @Override
     public String toString() {
         StringBuilder stringBuilder = new StringBuilder();
-        if (fieldZoneCard == null)
+        if (getFieldZoneCard() == null)
             stringBuilder.append("E");
         else
             stringBuilder.append("O");

@@ -1,10 +1,10 @@
 package YuGiOh.controller;
 
 
-import YuGiOh.utils.DatabaseHandler;
-import YuGiOh.utils.RoutingException;
 import YuGiOh.controller.menu.BaseMenuController;
 import YuGiOh.controller.menu.LoginMenuController;
+import YuGiOh.utils.DatabaseHandler;
+import YuGiOh.utils.RoutingException;
 import lombok.Getter;
 import YuGiOh.utils.Debugger;
 

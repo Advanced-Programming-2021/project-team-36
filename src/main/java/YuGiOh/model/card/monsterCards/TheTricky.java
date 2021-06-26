@@ -1,9 +1,15 @@
 package YuGiOh.model.card.monsterCards;
 
+import YuGiOh.controller.GameController;
+import YuGiOh.controller.LogicException;
+import YuGiOh.controller.player.PlayerController;
+import YuGiOh.model.card.action.Action;
+import YuGiOh.model.card.action.SummonEvent;
+import YuGiOh.model.enums.*;
 import YuGiOh.model.card.Monster;
-import YuGiOh.model.enums.MonsterAttribute;
-import YuGiOh.model.enums.MonsterCardType;
-import YuGiOh.model.enums.MonsterType;
+import YuGiOh.utils.CustomPrinter;
+import YuGiOh.view.cardSelector.Conditions;
+import YuGiOh.view.cardSelector.ResistToChooseCard;
 
 public class TheTricky extends Monster {
 
@@ -11,5 +17,31 @@ public class TheTricky extends Monster {
         super(name, description, price, attackDamage, defenseRate, attribute, monsterType, monsterCardType, level);
     }
 
-    // todo pending special summon
+    @Override
+    public void validateSpecialSummon() throws LogicException {
+        if(!owner.hasInHand(this))
+            throw new LogicException("you can only summon the tricky from your hand");
+    }
+
+    @Override
+    public Action specialSummonAction() {
+        PlayerController controller = GameController.getInstance().getPlayerControllerByPlayer(owner);
+        return new Action(
+                new SummonEvent(this, SummonType.SPECIAL),
+                () -> {
+                    controller.tributeMonster(1,
+                            Conditions.and(
+                                    Conditions.or(
+                                        Conditions.getOnPlayersBoard(owner),
+                                        Conditions.getInPlayersHandCondition(owner)
+                                    ),
+                                    Conditions.getNotThisCard(this)
+                            )
+                    );
+                    controller.summon(this, 0, MonsterState.OFFENSIVE_OCCUPIED, true);
+                    CustomPrinter.println(String.format("<%s> special summoned <%s> successfully", owner.getUser().getUsername(), getName(), getMonsterState()), Color.Green);
+                }
+        );
+    }
+
 }

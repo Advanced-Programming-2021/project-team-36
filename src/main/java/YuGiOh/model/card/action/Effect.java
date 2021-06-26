@@ -1,9 +1,9 @@
 package YuGiOh.model.card.action;
 
 import YuGiOh.controller.LogicException;
-import YuGiOh.controller.cardSelector.ResistToChooseCard;
-import YuGiOh.controller.events.GameOverEvent;
+import YuGiOh.controller.events.RoundOverExceptionEvent;
+import YuGiOh.view.cardSelector.ResistToChooseCard;
 
 public interface Effect {
-    void run() throws GameOverEvent, ResistToChooseCard, LogicException;
+    void run() throws RoundOverExceptionEvent, ResistToChooseCard, LogicException;
 }

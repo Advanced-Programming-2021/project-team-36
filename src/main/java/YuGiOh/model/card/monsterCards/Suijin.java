@@ -1,11 +1,11 @@
 package YuGiOh.model.card.monsterCards;
 
 import YuGiOh.controller.GameController;
-import YuGiOh.model.card.action.Effect;
-import YuGiOh.model.card.Monster;
 import YuGiOh.model.enums.MonsterAttribute;
 import YuGiOh.model.enums.MonsterCardType;
 import YuGiOh.model.enums.MonsterType;
+import YuGiOh.model.card.action.Effect;
+import YuGiOh.model.card.Monster;
 
 public class Suijin extends Monster {
     boolean stillHasPower = true;
@@ -15,22 +15,19 @@ public class Suijin extends Monster {
     }
 
     @Override
-    public Effect onBeingAttackedByMonster(Monster attacker) {
+    public void specialEffectWhenBeingAttacked(Monster attacker) {
         // todo It's just a sample. correct it.
-        return () -> {
-            changeFromHiddenToOccupiedIfCanEffect().run();
-            int _attackDamage = attacker.getAttackDamage();
-            if (stillHasPower) {
-                boolean confirm = GameController.getInstance().getPlayerControllerByPlayer(this.owner).askRespondToQuestion(
-                        "Do you want to activate Suijin's effect?", "yes", "no");
-                if (confirm) {
-                    stillHasPower = false;
-                    attacker.setAttackDamage(0);
-                }
+        int _attackDamage = attacker.getAttackDamage();
+        if (stillHasPower) {
+            boolean confirm = GameController.getInstance().getPlayerControllerByPlayer(this.owner).askRespondToQuestion(
+                    "Do you want to activate Suijin's effect?", "yes", "no");
+            if (confirm) {
+                stillHasPower = false;
+                attacker.setAttackDamage(0);
             }
-            damageStep(attacker);
-            attacker.setAttackDamage(_attackDamage);
-        };
+        }
+        damageStep(attacker);
+        attacker.setAttackDamage(_attackDamage);
     }
 
     @Override

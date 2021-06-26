@@ -1,17 +1,16 @@
 package YuGiOh.model.card;
 
 import YuGiOh.model.enums.*;
-import model.enums.*;
 import YuGiOh.utils.ClassFinder;
 
 import java.util.*;
 
 public class Utils {
     private static final TreeMap<String, String> cardsData = new TreeMap<>();
-    private static final Class<?>[] magicCardsClasses = ClassFinder.getClasses("model.card.magicCards");
+    private static final Class<?>[] magicCardsClasses = ClassFinder.getClasses("YuGiOh.model.card.magicCards");
     private static final TreeMap<String, TreeMap<String, String>> monstersData = new TreeMap<>();
     private static final TreeMap<String, TreeMap<String, String>> magicData = new TreeMap<>();
-    private static final Class<?>[] specialMonstersClasses = ClassFinder.getClasses("model.card.monsterCards");
+    private static final Class<?>[] specialMonstersClasses = ClassFinder.getClasses("YuGiOh.model.card.monsterCards");
 
     protected static void addCard(String type, String name) {
         cardsData.put(name, type);
@@ -125,7 +124,7 @@ public class Utils {
     }
 
     protected static String formatClassName(String name) {
-        String[] elements = name.trim().replaceAll(",|-", "").split("\\s+");
+        String[] elements = name.trim().replaceAll("[,\\-']", "").split("\\s+");
         String formattedName = "";
         for (int i = 0; i < elements.length; i++)
             formattedName += elements[i].substring(0, 1).toUpperCase() + elements[i].substring(1, elements[i].length());

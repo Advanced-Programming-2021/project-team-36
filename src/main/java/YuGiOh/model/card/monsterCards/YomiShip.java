@@ -1,12 +1,12 @@
 package YuGiOh.model.card.monsterCards;
 
 import YuGiOh.controller.GameController;
-import YuGiOh.model.card.action.Effect;
-import YuGiOh.model.card.Monster;
 import YuGiOh.model.enums.MonsterAttribute;
 import YuGiOh.model.enums.MonsterCardType;
 import YuGiOh.model.enums.MonsterType;
 import YuGiOh.model.enums.ZoneType;
+import YuGiOh.model.card.action.Effect;
+import YuGiOh.model.card.Monster;
 
 public class YomiShip extends Monster {
     public YomiShip(String name, String description, int price, int attackDamage, int defenseRate, MonsterAttribute attribute, MonsterType monsterType, MonsterCardType monsterCardType, int level) {
@@ -14,11 +14,9 @@ public class YomiShip extends Monster {
     }
 
     @Override
-    public Effect onBeingAttackedByMonster(Monster attacker) {
-        return ()-> {
-            super.onBeingAttackedByMonster(attacker).run();
-            if(GameController.getInstance().getGame().getCardZoneType(this).equals(ZoneType.GRAVEYARD))
-                attacker.tryToSendToGraveYardOfMe();
-        };
+    public void specialEffectWhenBeingAttacked(Monster attacker) {
+        damageStep(attacker);
+        if(GameController.getInstance().getGame().getCardZoneType(this).equals(ZoneType.GRAVEYARD))
+            attacker.tryToSendToGraveYardOfMe();
     }
 }

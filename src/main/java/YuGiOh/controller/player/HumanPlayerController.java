@@ -1,16 +1,16 @@
 package YuGiOh.controller.player;
 
 import YuGiOh.controller.GameController;
-import YuGiOh.controller.cardSelector.ResistToChooseCard;
-import YuGiOh.controller.cardSelector.SelectCondition;
-import YuGiOh.controller.menu.DuelMenuController;
 import YuGiOh.model.Game;
+import YuGiOh.model.enums.Phase;
+import YuGiOh.view.DuelMenuView;
+import YuGiOh.view.cardSelector.ResistToChooseCard;
+import YuGiOh.view.cardSelector.SelectCondition;
+import YuGiOh.controller.menu.DuelMenuController;
 import YuGiOh.model.Player.HumanPlayer;
 import YuGiOh.model.card.Card;
 import YuGiOh.model.card.Monster;
 import YuGiOh.model.card.action.Action;
-import YuGiOh.model.enums.Phase;
-import YuGiOh.view.DuelMenuView;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -31,11 +31,6 @@ public class HumanPlayerController extends PlayerController {
     }
 
     @Override
-    public void controlStandbyPhase() {
-        runUntilEndOfPhase();
-    }
-
-    @Override
     public void controlMainPhase1(){
         runUntilEndOfPhase();
     }
@@ -50,29 +45,33 @@ public class HumanPlayerController extends PlayerController {
         runUntilEndOfPhase();
     }
 
+    private DuelMenuView getView(){
+        return (DuelMenuView) DuelMenuController.getInstance().getView();
+    }
     @Override
     public boolean askRespondToChain() {
-        return ((DuelMenuView) DuelMenuController.getInstance().getView()).askUser(
+        return getView().askUser(
                 "Do you want to add a card to chain?", "yes", "no");
     }
 
     @Override
     public boolean askRespondToQuestion(String question, String yes, String no) {
-        return ((DuelMenuView) DuelMenuController.getInstance().getView()).askUser(question, yes, no);
+        return getView().askUser(question, yes, no);
     }
 
     @Override
     public void doRespondToChain() throws ResistToChooseCard {
         DuelMenuView view = (DuelMenuView) DuelMenuController.getInstance().getView();
         List<Action> actions = listOfAvailableActionsInResponse();
-        StringBuilder question = new StringBuilder("You have these choices. which one do you choose? (0 to quit)\n");
-        for(int i = 0; i < actions.size(); i++){
-            question.append(i + 1).append(". ").append(actions.get(i).getEvent().getActivationQuestion()).append("\n");
-        }
-        int choice = view.askUserToChooseNumber(
-                question.toString(), 0, actions.size()
-        );
-        if(choice == 0) {
+        List<String> choices = new ArrayList<>();
+        for(int i = 0; i < actions.size(); i++)
+            choices.add(actions.get(i).getEvent().getActivationQuestion());
+        try {
+            int choice = getView().askUserToChoose(
+                    "choose one of this options", choices
+            );
+            addActionToChain(actions.get(choice));
+        } catch (ResistToChooseCard e){
             boolean retry = view.askUser("Do you want to choose another one?", "yes", "no");
             if(retry){
                 doRespondToChain();
@@ -80,14 +79,16 @@ public class HumanPlayerController extends PlayerController {
             }
             throw new ResistToChooseCard();
         }
-        addActionToChain(actions.get(choice));
     }
 
     @Override
     public Card[] chooseKCards(String message, int numberOfCards, SelectCondition condition) throws ResistToChooseCard {
         ArrayList<Card> cards = new ArrayList<>();
+        if(GameController.getInstance().getGame().getAllCards().stream().filter(condition::canSelect).count() < numberOfCards)
+            throw new ResistToChooseCard();
+
         while (cards.size() < numberOfCards) {
-            Card card = ((DuelMenuView) DuelMenuController.getInstance().getView()).askUserToChooseCard(message, condition);
+            Card card = getView().askUserToChooseCard(message, condition);
             if (cards.contains(card))
                 cards.remove(card);
             else
@@ -101,7 +102,7 @@ public class HumanPlayerController extends PlayerController {
         ArrayList<Monster> monsters = new ArrayList<>();
         int sumLevels = 0;
         while (sumLevels < sumOfLevelsOfCards) {
-            Monster monster = (Monster) ((DuelMenuView) DuelMenuController.getInstance().getView()).askUserToChooseCard(message, condition);
+            Monster monster = (Monster) getView().askUserToChooseCard(message, condition);
             if (monsters.contains(monster)) {
                 monsters.remove(monster);
                 sumLevels -= ((Monster) monster).getLevel();

@@ -3,13 +3,13 @@ package YuGiOh.controller.events;
 import YuGiOh.model.Player.Player;
 import YuGiOh.model.enums.GameResult;
 
-public class GameOverEvent extends GameEvent{
+public class RoundOverExceptionEvent extends GameExceptionEvent {
     public GameResult gameResult;
     public Player looser;
     public Player winner;
     public int winnersLP;
 
-    public GameOverEvent(GameResult gameResult, Player looser, Player winner, int winnersLP){
+    public RoundOverExceptionEvent(GameResult gameResult, Player looser, Player winner, int winnersLP){
         super();
         this.gameResult = gameResult;
         this.looser = looser;

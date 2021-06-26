@@ -1,15 +1,15 @@
 package YuGiOh.model.card.magicCards.traps;
 
 import YuGiOh.controller.GameController;
+import YuGiOh.model.enums.Icon;
+import YuGiOh.model.enums.MonsterState;
+import YuGiOh.model.enums.Status;
 import YuGiOh.model.card.Card;
 import YuGiOh.model.card.Monster;
 import YuGiOh.model.card.Trap;
 import YuGiOh.model.card.action.Action;
 import YuGiOh.model.card.action.AttackEvent;
 import YuGiOh.model.card.action.Effect;
-import YuGiOh.model.enums.Icon;
-import YuGiOh.model.enums.MonsterState;
-import YuGiOh.model.enums.Status;
 
 public class MirrorForce extends Trap {
 
@@ -18,7 +18,7 @@ public class MirrorForce extends Trap {
     }
 
     @Override
-    public Effect activateEffect() {
+    protected Effect getEffect() {
         assert canActivateEffect();
         return () -> {
             for (Card card : GameController.getInstance().getGame().getOtherPlayer(this.owner).getBoard().getAllCardsOnBoard()) {
@@ -28,6 +28,7 @@ public class MirrorForce extends Trap {
                         GameController.getInstance().getPlayerControllerByPlayer(monster.owner).moveCardToGraveYard(card);
                 }
             }
+            GameController.getInstance().getPlayerControllerByPlayer(this.owner).moveCardToGraveYard(this);
         };
     }
 

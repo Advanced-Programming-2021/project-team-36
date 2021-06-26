@@ -1,16 +1,21 @@
 package YuGiOh.model;
 
+import YuGiOh.model.Player.Player;
 import YuGiOh.model.enums.ZoneType;
+import lombok.Getter;
+
+import java.util.Objects;
 
 public class CardAddress {
-    private ZoneType zone;
-    private int id;
-    private boolean opponent;
+    private final ZoneType zone;
+    private final int id;
+    @Getter
+    private final Player owner;
 
-    public CardAddress(ZoneType zone, int id, boolean opponent) {
+    public CardAddress(ZoneType zone, int id, Player owner) {
         this.zone = zone;
         this.id = id;
-        this.opponent = opponent;
+        this.owner = owner;
     }
 
     public boolean isInHand() {
@@ -22,12 +27,23 @@ public class CardAddress {
     public boolean isInMagicZone() {
         return zone.equals(ZoneType.MAGIC);
     }
-    public boolean isOpponentAddress() {
-        return opponent;
-    }
     public boolean isInFieldZone() { return zone.equals(ZoneType.FIELD); }
     public boolean isInGraveYard() { return zone.equals(ZoneType.GRAVEYARD); }
+    public boolean isInDeck() { return zone.equals(ZoneType.DECK); }
     public int getId() {
         return id;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        CardAddress that = (CardAddress) o;
+        return id == that.id && owner.equals(that.owner) && zone == that.zone;
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(zone, id, owner);
     }
 }

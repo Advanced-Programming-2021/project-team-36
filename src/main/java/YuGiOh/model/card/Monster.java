@@ -2,21 +2,22 @@ package YuGiOh.model.card;
 
 import YuGiOh.controller.GameController;
 import YuGiOh.controller.LogicException;
-import YuGiOh.controller.events.GameOverEvent;
+import YuGiOh.controller.events.RoundOverExceptionEvent;
+import YuGiOh.controller.player.PlayerController;
+import YuGiOh.model.CardAddress;
+import YuGiOh.model.Player.Player;
+import YuGiOh.model.card.action.Action;
+import YuGiOh.model.card.action.Effect;
 import YuGiOh.model.enums.*;
+import YuGiOh.utils.CustomPrinter;
+import YuGiOh.view.cardSelector.ResistToChooseCard;
 import lombok.Getter;
 import lombok.Setter;
-import YuGiOh.model.Player.Player;
-import YuGiOh.model.card.action.Effect;
-import model.enums.*;
-import YuGiOh.utils.CustomPrinter;
 
 public class Monster extends Card {
     @Setter
-    @Getter
     protected int attackDamage;
     @Setter
-    @Getter
     protected int defenseRate;
     @Getter
     protected MonsterAttribute attribute;
@@ -24,8 +25,7 @@ public class Monster extends Card {
     protected MonsterType monsterType;
     @Getter
     protected MonsterCardType monsterCardType;
-    @Getter
-    @Setter
+    @Getter @Setter
     protected MonsterState monsterState;
     @Getter
     protected int level;
@@ -53,7 +53,7 @@ public class Monster extends Card {
         cloned.attribute = attribute;
         cloned.monsterType = monsterType;
         cloned.monsterCardType = monsterCardType;
-        cloned.monsterState = monsterState;
+        cloned.monsterState = null;
         cloned.level = level;
         return cloned;
     }
@@ -82,10 +82,50 @@ public class Monster extends Card {
         monster.tryToDecreaseLifePointOfMe(amount);
     }
 
-    public void damageStep(Monster attacker) throws GameOverEvent {
+    public int getAttackDamageOnCard() {
+        return attackDamage;
+    }
+
+    public int getDefenseRateOnCard() {
+        return defenseRate;
+    }
+
+    public final int getAttackDamage() {
+        int affects = 0;
+        for (int i = 1; i <= 5; i++) {
+            CardAddress cardAddress = new CardAddress(ZoneType.MAGIC, i, this.owner);
+            Magic magic = (Magic) GameController.getInstance().getGame().getCardByCardAddress(cardAddress);
+            if (magic != null)
+                affects += magic.affectionOnAttackingMonster(this);
+        }
+        PlayerController playerController = GameController.getInstance().getCurrentPlayerController();
+        Spell spell = (Spell) playerController.getPlayer().getBoard().getFieldZoneCard();
+        if (spell != null)
+            affects += spell.affectionOnAttackingMonster(this);
+        spell = (Spell) GameController.getInstance().getOtherPlayerController(playerController).getPlayer().getBoard().getFieldZoneCard();
+        if (spell != null)
+            affects += spell.affectionOnAttackingMonster(this);
+        return getAttackDamageOnCard() + affects;
+    }
+
+    public final int getDefenseRate() {
+        int affects = 0;
+        for (int i = 1; i <= 5; i++) {
+            CardAddress cardAddress = new CardAddress(ZoneType.MAGIC, i, this.owner);
+            Magic magic = (Magic) GameController.getInstance().getGame().getCardByCardAddress(cardAddress);
+            if (magic != null)
+                affects += magic.affectionOnDefensiveMonster(this);
+        }
+        Spell spell = (Spell) GameController.getInstance().getPlayerControllerByPlayer(this.owner).getPlayer().getBoard().getFieldZoneCard();
+        if (spell != null)
+            affects += spell.affectionOnDefensiveMonster(this);
+        return getDefenseRateOnCard() + affects;
+    }
+
+    public final void damageStep(Monster attacker) throws RoundOverExceptionEvent {
         // todo are the responses ok? maybe we have to swap your and mine?
         // todo remove this System.outs!
-        if (monsterState.equals(MonsterState.OFFENSIVE_OCCUPIED)) {
+        if (getMonsterState().equals(MonsterState.OFFENSIVE_OCCUPIED)) {
             if (attacker.getAttackDamage() > this.getAttackDamage()) {
                 int difference = attacker.getAttackDamage() - this.getAttackDamage();
                 CustomPrinter.println(String.format("your opponent’s monster is destroyed and your opponent received %d battle damage", difference), Color.Yellow);
@@ -101,7 +141,7 @@ public class Monster extends Card {
                 tryToSendToGraveYard(attacker);
                 tryToDecreaseLifePoint(attacker, difference);
             }
-        } else if (monsterState.equals(MonsterState.DEFENSIVE_OCCUPIED)) {
+        } else if (getMonsterState().equals(MonsterState.DEFENSIVE_OCCUPIED)) {
             if (attacker.getAttackDamage() > this.getDefenseRate()) {
                 CustomPrinter.println("the defense position monster is destroyed", Color.Yellow);
                 tryToSendToGraveYard(this);
@@ -118,47 +158,88 @@ public class Monster extends Card {
     }
 
     public Effect changeFromHiddenToOccupiedIfCanEffect() {
-        // todo remove this
         return () -> {
-            if (this.monsterState.equals(MonsterState.DEFENSIVE_HIDDEN))
-                this.monsterState = MonsterState.DEFENSIVE_OCCUPIED;
+            if (getMonsterState().equals(MonsterState.DEFENSIVE_HIDDEN))
+                setMonsterState(MonsterState.DEFENSIVE_OCCUPIED);
         };
     }
 
     public void flip() throws LogicException {
         // todo is it correct?
-        if (monsterState.equals(MonsterState.DEFENSIVE_HIDDEN))
+        if (getMonsterState().equals(MonsterState.DEFENSIVE_HIDDEN))
             throw new LogicException("can't flip and defensive hidden monster");
-        if (monsterState.equals(MonsterState.DEFENSIVE_OCCUPIED))
-            monsterState = MonsterState.OFFENSIVE_OCCUPIED;
-        else if (monsterState.equals(MonsterState.OFFENSIVE_OCCUPIED))
-            monsterState = MonsterState.DEFENSIVE_OCCUPIED;
+        if (getMonsterState().equals(MonsterState.DEFENSIVE_OCCUPIED))
+            setMonsterState(MonsterState.OFFENSIVE_OCCUPIED);
+        else if (getMonsterState().equals(MonsterState.OFFENSIVE_OCCUPIED))
+            setMonsterState(MonsterState.DEFENSIVE_OCCUPIED);
     }
 
-    public Effect activateEffect() throws LogicException {
-        return () -> {
-        };
+    protected void specialEffectWhenBeingAttacked(Monster attacker) throws ResistToChooseCard, LogicException {
+        damageStep(attacker);
     }
 
     public Effect directAttack(Player player) {
         Player opponent = GameController.getInstance().getGame().getOtherPlayer(player);
         return () -> {
+            if(GameController.getInstance().getGame().getCardZoneType(this).equals(ZoneType.GRAVEYARD)){
+                CustomPrinter.println(this.getName() + " is dead so it cannot attack", Color.Yellow);
+                return;
+            }
             GameController.getInstance().decreaseLifePoint(opponent, this.getAttackDamage());
             this.setAllowAttack(false);
         };
     }
 
-    public Effect onBeingAttackedByMonster(Monster attacker) {
+    // this are hooks to be overridden
+    protected void startOfBeingAttackedByMonster(){
+    }
+    protected void endOfBeingAttackedByMonster(){
+    }
+
+    public final Effect onBeingAttackedByMonster(Monster attacker){
         return () -> {
+            if (GameController.getInstance().getGame().getCardZoneType(attacker).equals(ZoneType.GRAVEYARD)){
+                CustomPrinter.println(this.getName() + " is dead so it cannot attack", Color.Yellow);
+                return;
+            }
+            startOfBeingAttackedByMonster();
             changeFromHiddenToOccupiedIfCanEffect().run();
-            damageStep(attacker);
+            specialEffectWhenBeingAttacked(attacker);
+            endOfBeingAttackedByMonster();
         };
     }
 
     @Override
-    public boolean isFacedUp() {
-        // todo if it is not in the middle of the game, we get runtime error because monsterState is null
+    public boolean isFacedUp(){
         return monsterState.equals(MonsterState.OFFENSIVE_OCCUPIED) || monsterState.equals(MonsterState.DEFENSIVE_OCCUPIED);
+    }
+
+    @Override
+    public Effect activateEffect() throws LogicException {
+        return ()->{}; // todo
+    }
+
+    @Override
+    public boolean hasEffect() {
+        return true; // todo
+    }
+
+    @Override
+    public boolean canActivateEffect() {
+        return false; // todo
+    }
+
+    @Override
+    public final void startOfNewTurn(){
+        setAllowAttack(true);
+    }
+
+    public void validateSpecialSummon() throws LogicException, ResistToChooseCard {
+        throw new LogicException("You can't special summon " + this.getName());
+    }
+
+    public Action specialSummonAction() {
+        return null;
     }
 
     @Override

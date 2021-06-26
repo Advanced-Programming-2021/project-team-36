@@ -1,51 +1,42 @@
 package YuGiOh.controller.menu;
 
-import YuGiOh.controller.cardSelector.CardSelector;
-import YuGiOh.controller.GameController;
-import YuGiOh.controller.LogicException;
-import YuGiOh.controller.ProgramController;
-import YuGiOh.controller.cardSelector.ResistToChooseCard;
-import YuGiOh.controller.events.GameOverEvent;
-import YuGiOh.model.card.Card;
-import YuGiOh.model.card.Magic;
-import YuGiOh.model.card.Monster;
-import YuGiOh.model.card.Spell;
-import YuGiOh.view.DuelMenuView;
-import lombok.Getter;
+import YuGiOh.controller.*;
+import YuGiOh.controller.events.RoundOverExceptionEvent;
+import YuGiOh.model.Duel;
+import YuGiOh.model.ModelException;
+import YuGiOh.model.card.*;
+import YuGiOh.view.cardSelector.ResistToChooseCard;
 import YuGiOh.model.CardAddress;
 import YuGiOh.model.Game;
-import model.card.*;
 import YuGiOh.model.enums.Color;
-import YuGiOh.model.enums.MonsterState;
-import YuGiOh.model.enums.ZoneType;
-import view.*;
-import YuGiOh.utils.RoutingException;
 import YuGiOh.utils.CustomPrinter;
-import java.util.List;
 import YuGiOh.utils.Debugger;
+import YuGiOh.utils.RoutingException;
+import YuGiOh.view.DuelMenuView;
+import lombok.Getter;
+import YuGiOh.model.enums.MonsterState;
 
-// this class is responsible for passing everything to GameController.
-// in the middle of the way it can handle simple api like those involving printing for user
-// MenuControllers are only used to answer user queries
-// We filter all bad inputs here
-// We can pass them to player right now
+import java.util.List;
 
 public class DuelMenuController extends BaseMenuController {
     @Getter
     public static DuelMenuController instance;
-    private final Game game;
-    private final GameController gameController;
+    private final Duel duel;
+    private Game game;
+    private GameController gameController;
 
-    public DuelMenuController(Game game){
+    public DuelMenuController(Duel duel){
+        this.duel = duel;
         this.view = new DuelMenuView();
-        this.game = game;
         instance = this;
-        gameController = new GameController(game);
-        new CardSelector(game);
+    }
+
+    public DuelMenuView getView(){
+        return (DuelMenuView) view;
     }
 
     public void printCurrentPhase() {
-        CustomPrinter.println("phase: " + game.getPhase().verboseName, Color.Blue);
+        CustomPrinter.println("phase: " + game.getPhase().getVerboseName(), Color.Blue);
     }
 
     public void goNextPhase() {
@@ -53,8 +44,17 @@ public class DuelMenuController extends BaseMenuController {
     }
 
     public void summonCard(Card card) throws LogicException, ResistToChooseCard {
+        if (card instanceof Magic)
+            throw new LogicException("this card is magic and you can't summon it");
         gameController.getCurrentPlayerController().normalSummon((Monster) card);
-        new CardSelector(game);
+        getView().resetSelector();
+    }
+
+    public void specialSummon(Card card) throws LogicException, ResistToChooseCard {
+        if (card instanceof Magic)
+            throw new LogicException("this card is magic and you can't special summon it");
+        gameController.getCurrentPlayerController().specialSummon((Monster) card);
+        getView().resetSelector();
     }
 
     public void setCard(Card card) throws LogicException, ResistToChooseCard {
@@ -62,43 +62,50 @@ public class DuelMenuController extends BaseMenuController {
             gameController.getCurrentPlayerController().setMonster((Monster) card);
         else
             gameController.getCurrentPlayerController().setMagic((Magic) card);
-        new CardSelector(game);
+        getView().resetSelector();
     }
 
     public void changeCardPosition(Card card, MonsterState monsterState) throws LogicException {
         if (!(card instanceof Monster))
             throw new LogicException("you can only change position of a monster card");
         gameController.getCurrentPlayerController().changeMonsterPosition((Monster) card, monsterState);
-        new CardSelector(game);
+        getView().resetSelector();
     }
 
-    public void flipSummon(Card card) throws LogicException {
+    public void flipSummon(Card card) throws LogicException, ResistToChooseCard {
         if (!(card instanceof Monster))
             throw new LogicException("you can only flip summon a monster card");
         gameController.getCurrentPlayerController().flipSummon((Monster) card);
-        new CardSelector(game);
+        getView().resetSelector();
     }
 
-    public void attack(Card card, int id) throws LogicException, GameOverEvent {
+    public void attack(Card card, CardAddress defenderAddress) throws LogicException, RoundOverExceptionEvent, ResistToChooseCard {
         if(!(card instanceof Monster))
             throw new LogicException("only a monster can attack");
-        CardAddress cardAddress = new CardAddress(ZoneType.MONSTER, id, true);
-        Monster opponentMonster = (Monster) game.getCardByCardAddress(cardAddress);
+        // todo is this okay?
+        if(!(defenderAddress.isInMonsterZone()))
+            throw new LogicException("you can only attack monsters!");
+        Monster opponentMonster = (Monster) game.getCardByCardAddress(defenderAddress);
         if (opponentMonster == null)
             throw new LogicException("there is no card to attack here");
         gameController.getCurrentPlayerController().attack((Monster) card, opponentMonster);
     }
 
-    public void directAttack(Card card) throws LogicException, GameOverEvent {
+    public void directAttack(Card card) throws LogicException, RoundOverExceptionEvent, ResistToChooseCard {
         if(!(card instanceof Monster))
             throw new LogicException("only a monster can attack");
         gameController.getCurrentPlayerController().directAttack((Monster) card);
     }
 
-    public void activateEffect(Card card) throws LogicException, GameOverEvent {
-        if (!(card instanceof Spell))
-            throw new LogicException("activate effect is only for spell cards");
-        gameController.getCurrentPlayerController().activateEffect((Spell) card);
+    public void activateEffect(Card card) throws LogicException, RoundOverExceptionEvent, ResistToChooseCard {
+        if (!card.hasEffect())
+            throw new LogicException("activate effect is only for spell cards and monsters that have effect");
+        if (card instanceof Trap)
+            throw new LogicException("trap's can't be activated");
+        if (card instanceof Monster)
+            gameController.getCurrentPlayerController().activateMonsterEffect((Monster) card);
+        if (card instanceof Spell)
+            gameController.getCurrentPlayerController().activateSpellEffect((Spell) card);
     }
 
     public void showGraveYard() {
@@ -108,6 +115,23 @@ public class DuelMenuController extends BaseMenuController {
         for (int i = 0; i < graveYard.size(); i++)
             CustomPrinter.println((i + 1) + ". " + graveYard.get(i).toString(), Color.Default);
     }
+
+    public void showHand() {
+        List<Card> cards = game.getCurrentPlayer().getBoard().getCardsOnHand();
+        for (int i = 0; i < cards.size(); i++)
+            CustomPrinter.println(String.format("%d. %s%n", i + 1, cards.get(i).toString()), Color.Purple);
+    }
+
+    public void showSelectedCard() throws LogicException {
+        CardAddress cardAddress = getView().getCardSelector().getSelectedCardAddress();
+        if (!cardAddress.getOwner().equals(game.getCurrentPlayer())) {
+            Card card = getView().getCardSelector().getSelectedCard();
+            if (!card.isFacedUp())
+                throw new LogicException("you can't see your opponent face down cards");
+        }
+        getView().getCardSelector().showSelectedCard();
+    }
+
 
     public void showBoard() {
         CustomPrinter.println(game.getOpponentPlayer().getUser().getNickname() + ":" + game.getOpponentPlayer().getLifePoint(), Color.Purple);
@@ -119,23 +143,7 @@ public class DuelMenuController extends BaseMenuController {
         CustomPrinter.println(game.getCurrentPlayer().getUser().getNickname() + ":" + game.getCurrentPlayer().getLifePoint(), Color.Purple);
     }
 
-    public void showHand() {
-        List<Card> cards = game.getCurrentPlayer().getBoard().getCardsOnHand();
-        for (int i = 0; i < cards.size(); i++)
-            CustomPrinter.println(String.format("%d. %s%n", i + 1, cards.get(i).toString()), Color.Purple);
-    }
-
-    public void showSelectedCard() throws LogicException {
-        CardAddress cardAddress = CardSelector.getInstance().getSelectedCardAddress();
-        if (cardAddress.isOpponentAddress()) {
-            Card card = CardSelector.getInstance().getSelectedCard();
-            if (!card.isFacedUp())
-                throw new LogicException("you can't see your opponent face down cards");
-        }
-        CardSelector.getInstance().showSelectedCard();
-    }
-
-    public void surrender() throws GameOverEvent {
+    public void surrender() throws RoundOverExceptionEvent {
         gameController.getCurrentPlayerController().surrender();
     }
 
@@ -156,7 +164,21 @@ public class DuelMenuController extends BaseMenuController {
 
     @Override
     public void control(){
-        gameController.control();
+        while (!duel.isFinished()){
+            this.game = duel.getCurrentGame();
+            ((DuelMenuView) view).startNewGame(game);
+            this.gameController = new GameController(game);
+            try {
+                gameController.control();
+            } catch (RoundOverExceptionEvent roundOverEvent) {
+                try {
+                    duel.goNextRound(roundOverEvent);
+                } catch (ModelException e) {
+                    // this must never happen
+                    e.printStackTrace();
+                }
+            }
+        }
         ProgramController.getInstance().navigateToMenu(MainMenuController.getInstance());
     }
 }

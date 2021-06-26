@@ -1,4 +1,4 @@
-import controller.*;
+import YuGiOh.controller.ProgramController;
 
 public class Main {
     public static void main(String[] args) {

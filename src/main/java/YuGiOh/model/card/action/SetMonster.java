@@ -19,4 +19,9 @@ public class SetMonster extends Event {
     public String getActivationQuestion() {
         return String.format("Do you want to set %s?", monster.getName());
     }
+
+    @Override
+    public String getDescription(){
+        return "set monster";
+    }
 }

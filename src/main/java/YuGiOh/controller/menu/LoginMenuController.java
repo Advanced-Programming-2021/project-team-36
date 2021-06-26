@@ -9,7 +9,6 @@ import YuGiOh.controller.ProgramController;
 import lombok.Getter;
 import YuGiOh.model.ModelException;
 import YuGiOh.model.User;
-import view.*;
 
 public class LoginMenuController extends BaseMenuController {
     @Getter

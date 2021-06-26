@@ -1,7 +1,7 @@
 package YuGiOh.model.card.action;
 
-import lombok.Getter;
 import YuGiOh.model.card.Monster;
+import lombok.Getter;
 
 public abstract class AttackEvent extends Event{
     @Getter

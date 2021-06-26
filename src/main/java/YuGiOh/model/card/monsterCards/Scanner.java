@@ -2,13 +2,13 @@ package YuGiOh.model.card.monsterCards;
 
 import YuGiOh.controller.GameController;
 import YuGiOh.controller.LogicException;
-import YuGiOh.controller.cardSelector.Conditions;
-import YuGiOh.controller.cardSelector.ResistToChooseCard;
-import YuGiOh.model.card.action.Effect;
-import YuGiOh.model.card.Monster;
 import YuGiOh.model.enums.MonsterAttribute;
 import YuGiOh.model.enums.MonsterCardType;
 import YuGiOh.model.enums.MonsterType;
+import YuGiOh.view.cardSelector.Conditions;
+import YuGiOh.view.cardSelector.ResistToChooseCard;
+import YuGiOh.model.card.action.Effect;
+import YuGiOh.model.card.Monster;
 
 public class Scanner extends Monster {
     public Scanner(String name, String description, int price, int attackDamage, int defenseRate, MonsterAttribute attribute, MonsterType monsterType, MonsterCardType monsterCardType, int level) {
@@ -23,10 +23,14 @@ public class Scanner extends Monster {
     Monster copiedMonster;
 
     @Override
+    public boolean canActivateEffect(){
+        return lastTurnActivated != GameController.instance.getGame().getTurn();
+    }
+
+    @Override
     public Effect activateEffect() throws LogicException {
         if(lastTurnActivated == GameController.instance.getGame().getTurn())
             throw new LogicException("you can only activate this once in a turn");
-        lastTurnActivated = GameController.instance.getGame().getTurn();
         return ()-> {
             try {
                 copiedMonster = (Monster) GameController.getInstance().getCurrentPlayerController().chooseKCards(
@@ -35,22 +39,23 @@ public class Scanner extends Monster {
                         Conditions.OpponentMonsterFromGraveYard
                 )[0];
                 copiedMonster = (Monster) copiedMonster.clone().readyForBattle(this.owner);
+                lastTurnActivated = GameController.instance.getGame().getTurn();
             } catch (ResistToChooseCard ignored) {
             }
         };
     }
 
     @Override
-    public int getAttackDamage(){
+    public int getAttackDamageOnCard(){
         if(copiedMonster != null && lastTurnActivated == GameController.getInstance().getGame().getTurn())
-            return copiedMonster.getAttackDamage();
+            return copiedMonster.getAttackDamageOnCard();
         return attackDamage;
     }
 
     @Override
-    public int getDefenseRate(){
+    public int getDefenseRateOnCard(){
         if(copiedMonster != null && lastTurnActivated == GameController.getInstance().getGame().getTurn())
-            return copiedMonster.getDefenseRate();
+            return copiedMonster.getDefenseRateOnCard();
         return defenseRate;
     }
 

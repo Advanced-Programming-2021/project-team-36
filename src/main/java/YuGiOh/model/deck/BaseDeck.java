@@ -1,8 +1,8 @@
 package YuGiOh.model.deck;
 
 import YuGiOh.model.Player.Player;
-import YuGiOh.model.card.Card;
 import YuGiOh.model.card.Magic;
+import YuGiOh.model.card.Card;
 import YuGiOh.model.card.Monster;
 
 import java.io.Serializable;

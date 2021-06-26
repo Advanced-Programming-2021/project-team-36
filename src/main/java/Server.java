@@ -1,7 +1,6 @@
-import controller.ProgramController;
-import utils.CustomPrinter;
-import utils.CustomScanner;
-import utils.Debugger;
+import YuGiOh.controller.ProgramController;
+import YuGiOh.utils.CustomScanner;
+import YuGiOh.utils.Debugger;
 
 import java.io.*;
 import java.net.ServerSocket;

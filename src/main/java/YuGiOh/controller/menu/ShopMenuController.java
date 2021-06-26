@@ -1,18 +1,17 @@
 package YuGiOh.controller.menu;
 
 import YuGiOh.controller.ProgramController;
-import lombok.Getter;
 import YuGiOh.model.ModelException;
 import YuGiOh.model.User;
 import YuGiOh.model.card.Card;
+import YuGiOh.model.enums.Color;
+import YuGiOh.utils.CustomPrinter;
+import YuGiOh.utils.RoutingException;
+import YuGiOh.view.ShopMenuView;
+import lombok.Getter;
 import YuGiOh.model.card.Utils;
 
 import java.util.Arrays;
-
-import YuGiOh.model.enums.Color;
-import YuGiOh.utils.RoutingException;
-import YuGiOh.utils.CustomPrinter;
-import YuGiOh.view.ShopMenuView;
 
 public class ShopMenuController extends BaseMenuController {
     @Getter

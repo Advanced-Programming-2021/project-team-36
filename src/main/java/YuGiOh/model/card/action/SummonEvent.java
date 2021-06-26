@@ -1,8 +1,8 @@
 package YuGiOh.model.card.action;
 
+import YuGiOh.model.enums.SummonType;
 import lombok.Getter;
 import YuGiOh.model.card.Monster;
-import YuGiOh.model.enums.SummonType;
 
 public class SummonEvent extends Event {
     @Getter
@@ -22,5 +22,10 @@ public class SummonEvent extends Event {
     @Override
     public String getActivationQuestion() {
         return String.format("Do you want to summon %s?", monster.getName());
+    }
+
+    @Override
+    public String getDescription(){
+        return "summon monster";
     }
 }

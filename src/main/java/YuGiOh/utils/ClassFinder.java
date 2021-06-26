@@ -1,5 +1,7 @@
 package YuGiOh.utils;
 
+import YuGiOh.model.card.Card;
+
 import java.io.File;
 import java.net.URL;
 import java.util.ArrayList;
@@ -7,7 +9,7 @@ import java.util.Enumeration;
 import java.util.List;
 
 public class ClassFinder {
-    public static Class<?>[] getClasses(String packageName) {
+    public static Class<? extends Card>[] getClasses(String packageName) {
         ClassLoader classLoader = Thread.currentThread().getContextClassLoader();
         assert classLoader != null;
         String path = packageName.replace('.', '/');
@@ -26,7 +28,8 @@ public class ClassFinder {
                 classes.addAll(findClasses(directory, packageName));
             }
             return classes.toArray(new Class[classes.size()]);
-        } catch (Exception ignored) {
+        } catch (Exception e) {
+            e.printStackTrace();
         }
         return null;
     }

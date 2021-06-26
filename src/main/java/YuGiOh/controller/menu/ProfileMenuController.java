@@ -1,14 +1,13 @@
 package YuGiOh.controller.menu;
 
 import YuGiOh.controller.LogicException;
-import YuGiOh.view.ProfileMenuView;
+import YuGiOh.controller.ProgramController;
+import YuGiOh.model.User;
 import YuGiOh.model.enums.Color;
 import YuGiOh.utils.CustomPrinter;
 import YuGiOh.utils.RoutingException;
-import YuGiOh.controller.ProgramController;
+import YuGiOh.view.ProfileMenuView;
 import lombok.Getter;
-import YuGiOh.model.User;
-import view.*;
 
 
 public class ProfileMenuController extends BaseMenuController {

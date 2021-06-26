@@ -1,17 +1,16 @@
 package YuGiOh.controller.menu;
 
-import YuGiOh.view.DeckMenuView;
-import YuGiOh.view.ParserException;
-import YuGiOh.model.enums.Color;
-import YuGiOh.utils.CustomPrinter;
-import YuGiOh.utils.RoutingException;
 import YuGiOh.controller.LogicException;
 import YuGiOh.controller.ProgramController;
-import lombok.Getter;
 import YuGiOh.model.User;
 import YuGiOh.model.card.Card;
 import YuGiOh.model.deck.Deck;
-import view.*;
+import YuGiOh.model.enums.Color;
+import YuGiOh.utils.CustomPrinter;
+import YuGiOh.utils.RoutingException;
+import YuGiOh.view.DeckMenuView;
+import YuGiOh.view.ParserException;
+import lombok.Getter;
 
 import java.util.Arrays;
 

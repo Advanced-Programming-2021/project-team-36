@@ -1,12 +1,12 @@
 package YuGiOh.controller.menu;
 
+import YuGiOh.controller.ProgramController;
+import YuGiOh.model.User;
 import YuGiOh.model.enums.Color;
 import YuGiOh.utils.CustomPrinter;
 import YuGiOh.utils.RoutingException;
-import YuGiOh.controller.ProgramController;
-import lombok.Getter;
-import YuGiOh.model.User;
 import YuGiOh.view.ScoreboardMenuView;
+import lombok.Getter;
 
 import java.util.ArrayList;
 

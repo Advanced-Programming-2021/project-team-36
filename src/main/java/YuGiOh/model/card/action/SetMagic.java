@@ -1,7 +1,7 @@
 package YuGiOh.model.card.action;
 
-import lombok.Getter;
 import YuGiOh.model.card.Magic;
+import lombok.Getter;
 
 public class SetMagic extends Event {
     @Getter
@@ -18,5 +18,10 @@ public class SetMagic extends Event {
     @Override
     public String getActivationQuestion() {
         return String.format("Do you want to set %s?", magic.getName());
+    }
+
+    @Override
+    public String getDescription(){
+        return "set magic";
     }
 }

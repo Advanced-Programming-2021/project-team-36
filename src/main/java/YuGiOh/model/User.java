@@ -1,8 +1,8 @@
 package YuGiOh.model;
 
-import YuGiOh.model.card.Card;
 import YuGiOh.model.deck.Deck;
 import YuGiOh.model.enums.Constants;
+import YuGiOh.model.card.Card;
 
 import java.io.Serializable;
 import java.util.ArrayList;

@@ -16,4 +16,5 @@ public enum MonsterType {
     ROCK,
     INSECT,
     MACHINE,
+    PLANT,
 }

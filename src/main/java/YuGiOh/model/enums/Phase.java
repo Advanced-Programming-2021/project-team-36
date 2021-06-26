@@ -1,5 +1,7 @@
 package YuGiOh.model.enums;
 
+import lombok.Getter;
+
 public enum Phase {
     DRAW_PHASE("draw phase"),
     STANDBY_PHASE("standby phase"),
@@ -8,7 +10,8 @@ public enum Phase {
     MAIN_PHASE2("main phase 2"),
     END_PHASE("end phase");
 
-    public String verboseName;
+    @Getter
+    private String verboseName;
     Phase(String verboseName){
         this.verboseName = verboseName;
     }

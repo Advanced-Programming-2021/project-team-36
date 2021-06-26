@@ -1,10 +1,13 @@
 package YuGiOh.model.enums;
 
+import lombok.Getter;
+
 public enum MonsterState {
     DEFENSIVE_HIDDEN("defensive hidden"),
     DEFENSIVE_OCCUPIED("defensive occupied"),
     OFFENSIVE_OCCUPIED("offensive occupied");
 
+    @Getter
     String name;
     MonsterState(String name) {
         this.name = name;

@@ -1,7 +1,9 @@
 package YuGiOh.model.card;
 
-import lombok.Getter;
+import YuGiOh.controller.LogicException;
 import YuGiOh.model.Player.Player;
+import YuGiOh.model.card.action.Effect;
+import lombok.Getter;
 
 import java.io.Serializable;
 
@@ -47,6 +49,14 @@ public abstract class Card implements Comparable<Card>, Cloneable, Serializable 
         return this;
     }
 
+    public boolean isActivated() {
+        return false;
+    }
+
+    abstract public Effect activateEffect() throws LogicException;
+    abstract public boolean canActivateEffect();
+    abstract public boolean hasEffect();
+
     @Override
     public Card clone() {
         try {
@@ -60,6 +70,13 @@ public abstract class Card implements Comparable<Card>, Cloneable, Serializable 
             e.printStackTrace();
             return null;
         }
+    }
+
+    public void moveCardToGraveYard(){
+        owner.moveCardToGraveYard(this);
+    }
+
+    public void startOfNewTurn() {
     }
 
     public void save() {

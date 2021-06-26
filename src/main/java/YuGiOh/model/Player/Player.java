@@ -1,30 +1,27 @@
 package YuGiOh.model.Player;
 
+import YuGiOh.model.ModelException;
+import YuGiOh.model.User;
+import YuGiOh.model.enums.MonsterCardType;
 import YuGiOh.model.deck.Deck;
 import YuGiOh.model.deck.MainDeck;
 import YuGiOh.model.deck.SideDeck;
 import lombok.Getter;
 import lombok.Setter;
 import YuGiOh.model.Board;
-import YuGiOh.model.ModelException;
-import YuGiOh.model.User;
 import YuGiOh.model.card.Card;
 import YuGiOh.model.card.Monster;
-import model.deck.*;
 import YuGiOh.model.enums.Constants;
-import YuGiOh.model.enums.MonsterCardType;
 
 abstract public class Player {
     private final User user;
     private Deck deck;
     private Board board;
 
-    @Getter
-    @Setter
+    @Getter @Setter
     private int lifePoint;
 
-    @Getter
-    @Setter
+    @Getter @Setter
     private boolean summonedInLastTurn;
 
     public Player(User user) throws ModelException {
@@ -34,17 +31,16 @@ abstract public class Player {
             throw new ModelException(String.format("%s's active deck is not valid", user.getUsername()));
         this.user = user;
         this.deck = user.getActiveDeck().clone().readyForBattle(this);
-        this.board = new Board(deck.getMainDeck());
+        this.board = new Board(deck.getMainDeck(), this);
         this.lifePoint = Constants.InitialLifePoint.val;
         summonedInLastTurn = false;
     }
 
     public void refresh() {
         this.deck = user.getActiveDeck().clone().readyForBattle(this);
-        this.board = new Board(deck.getMainDeck());
-        this.lifePoint = Constants.InitialLifePoint.val;
+        this.board = new Board(deck.getMainDeck(), this);
+        setLifePoint(Constants.InitialLifePoint.val);
         summonedInLastTurn = false;
-
     }
 
     public User getUser() {
@@ -64,16 +60,18 @@ abstract public class Player {
     }
 
     public void increaseLifePoint(int value) {
-        this.lifePoint += value;
+        setLifePoint(getLifePoint() + value);
     }
     
     public void decreaseLifePoint(int value) {
-        this.lifePoint = Math.max(0, lifePoint - value);
+        setLifePoint(Math.max(0, getLifePoint() - value));
     }
 
     public boolean hasInHand(Card card){
         return this.board.getCardsOnHand().contains(card);
     }
+
+    public boolean hasInGraveYard(Card card) { return this.board.getGraveYard().contains(card); }
 
     public void moveCardToGraveYard(Card card) {
         board.moveCardToGraveYard(card);

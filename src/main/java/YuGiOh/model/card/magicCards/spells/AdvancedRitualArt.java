@@ -2,17 +2,17 @@ package YuGiOh.model.card.magicCards.spells;
 
 import YuGiOh.controller.GameController;
 import YuGiOh.controller.LogicException;
-import YuGiOh.controller.cardSelector.Conditions;
-import YuGiOh.controller.cardSelector.ResistToChooseCard;
 import YuGiOh.controller.player.PlayerController;
 import YuGiOh.model.Player.Player;
 import YuGiOh.model.enums.*;
+import YuGiOh.utils.CustomPrinter;
+import YuGiOh.model.enums.*;
+import YuGiOh.view.cardSelector.Conditions;
+import YuGiOh.view.cardSelector.ResistToChooseCard;
 import YuGiOh.model.card.Card;
 import YuGiOh.model.card.Monster;
 import YuGiOh.model.card.Spell;
 import YuGiOh.model.card.action.Effect;
-import model.enums.*;
-import YuGiOh.utils.CustomPrinter;
 
 public class AdvancedRitualArt extends Spell {
     public AdvancedRitualArt(String name, String description, int price, Icon icon, Status status) {
@@ -31,7 +31,7 @@ public class AdvancedRitualArt extends Spell {
     }
 
     @Override
-    public Effect activateEffect() {
+    protected Effect getEffect() {
         assert canActivateEffect();
         return () -> {
             try {
@@ -46,18 +46,15 @@ public class AdvancedRitualArt extends Spell {
                         ritualMonster.getLevel(),
                         Conditions.getPlayerMonsterFromMonsterZoneOrHand(this.owner, ritualMonster)
                 );
+
+                // todo in baaes mishe yek seri monster haye khas be graveyard naran!
                 for (Monster monster : tributeMonsters)
                     monster.tryToSendToGraveYardOfMe();
-                MonsterState monsterState;
-                if (playerController.askRespondToQuestion("You want to summon your monster in attacking position or defending position?", "attacking", "defending"))
-                    monsterState = MonsterState.OFFENSIVE_OCCUPIED;
-                else
-                    monsterState = MonsterState.DEFENSIVE_OCCUPIED;
+
                 try {
-                    playerController.summon(ritualMonster, 0, monsterState);
-                    this.owner.getBoard().getCardsOnHand().remove(ritualMonster);
+                    playerController.summon(ritualMonster, 0, true);
                     GameController.getInstance().getPlayerControllerByPlayer(this.owner).moveCardToGraveYard(this);
-                    CustomPrinter.println(String.format("<%s> ritual summoned <%s> in <%s> position successfully", this.owner.getUser().getUsername(), ritualMonster.getName(), monsterState), Color.Green);
+                    CustomPrinter.println(String.format("<%s> ritual summoned <%s> in <%s> position successfully", this.owner.getUser().getUsername(), ritualMonster.getName(), ritualMonster.getMonsterState()), Color.Green);
                 } catch (LogicException logicException) {
                     CustomPrinter.println("this shouldn't happens", Color.Red);
                 }
