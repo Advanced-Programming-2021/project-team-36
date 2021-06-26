@@ -6,9 +6,11 @@ import YuGiOh.model.CardAddress;
 import YuGiOh.model.card.Monster;
 import YuGiOh.model.card.Spell;
 import YuGiOh.model.card.action.Effect;
+import YuGiOh.model.enums.Color;
 import YuGiOh.model.enums.Icon;
 import YuGiOh.model.enums.Status;
 import YuGiOh.model.enums.ZoneType;
+import YuGiOh.utils.CustomPrinter;
 import YuGiOh.view.cardSelector.Conditions;
 
 public class UnitedWeStand extends Spell {
