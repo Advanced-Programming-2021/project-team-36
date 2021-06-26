@@ -171,8 +171,8 @@ public class DuelMenuController extends BaseMenuController {
         }
     }
 
-    public void ultimateCheat() {
-        
+    public void ultimateCheat() throws RoundOverExceptionEvent {
+        surrender(game.getOpponentPlayer());
     }
 
     @Override

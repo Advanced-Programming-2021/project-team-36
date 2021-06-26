@@ -1,19 +1,15 @@
 import YuGiOh.controller.menu.DuelMenuController;
 import YuGiOh.model.Duel;
-import YuGiOh.model.Game;
 import YuGiOh.model.ModelException;
 import YuGiOh.model.Player.AIPlayer;
 import YuGiOh.model.Player.Player;
 import YuGiOh.model.User;
 import YuGiOh.model.card.Card;
 import YuGiOh.model.deck.Deck;
-import org.junit.Before;
 import org.junit.Test;
 import utils.IntegrationTestBase;
 
 import java.util.Random;
-
-import static java.lang.System.exit;
 
 public class DoubleAITest extends IntegrationTestBase {
     Random random = new Random(183981);
@@ -37,10 +33,8 @@ public class DoubleAITest extends IntegrationTestBase {
             User user = players[i].getUser();
             user.deleteDeck(user.getDecks().get(0));
             user.addDeck(new Deck("someDeck"));
-            //for (int j = 0; j < numberOfCards; j ++)
+            for (int j = 0; j < numberOfCards; j ++)
                 user.addCard(allCards[random.nextInt(allCards.length)]);
-            user.addCard(YuGiOh.model.card.Utils.getCard("TexChanger"));
-            user.addCard(YuGiOh.model.card.Utils.getCard("AxeRaider"));
         }
 
         DuelMenuController duelMenuController = new DuelMenuController(new Duel(players[0], players[1], 1));

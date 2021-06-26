@@ -1,5 +1,7 @@
 import YuGiOh.controller.GameController;
+import YuGiOh.controller.ProgramController;
 import YuGiOh.controller.menu.MainMenuController;
+import YuGiOh.controller.menu.ScoreboardMenuController;
 import initialize.Sample;
 import YuGiOh.model.enums.Phase;
 import org.junit.Test;
@@ -33,6 +35,27 @@ public class GameTest extends Sample {
         run("next phase");
         //Assertions.assertEquals(GameController.getInstance().getGame().getPhase(), Phase.BATTLE_PHASE);
         checkNoInvalidCommandsInBuffer();
+        run("surrender");
+        run("exit");
+    }
+
+    @Test
+    public void testCheatModes() {
+        initializeUser("abolfazl", "1234", "atreus");
+        initializeUser("shayan", "1234", "shayan.p");
+        run(String.format("user login -u %s -p %s", "abolfazl", "1234"));
+        runUntilNoInput();
+        checkCurrentMenu(MainMenuController.class);
+        run("cheat increase --balance 1391931");
+        run(String.format("duel --new --second_player %s --round 1", "shayan"));
+        run("select --hand 1");
+        run("summon");
+        run("show board");
+        run("cheat ultimate cheat");
+        checkCurrentMenu(MainMenuController.class);
+        run("menu enter scoreboard");
+        checkCurrentMenu(ScoreboardMenuController.class);
+        run("scoreboard show");
     }
 
 }

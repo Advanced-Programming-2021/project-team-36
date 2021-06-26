@@ -294,7 +294,7 @@ public abstract class PlayerController {
     public void surrender() throws RoundOverExceptionEvent {
         Game game = GameController.instance.getGame();
         player.setLifePoint(0);
-        throw new RoundOverExceptionEvent(GameResult.NOT_DRAW, game.getCurrentPlayer(), game.getOpponentPlayer(), game.getOpponentPlayer().getLifePoint());
+        throw new RoundOverExceptionEvent(GameResult.NOT_DRAW, player, game.getOtherPlayer(player), game.getOtherPlayer(player).getLifePoint());
     }
 
     public void changeMonsterPosition(Monster monster, MonsterState monsterState) throws LogicException {
