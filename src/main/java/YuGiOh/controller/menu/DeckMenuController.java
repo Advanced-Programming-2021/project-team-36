@@ -43,17 +43,17 @@ public class DeckMenuController extends BaseMenuController {
         CustomPrinter.println("deck activated successfully", Color.Default);
     }
 
-    public void addCardToDeck(Card card, Deck deck, boolean side) throws LogicException{
-        if (deck.getCardFrequency(card) >= user.getCardFrequency(card))
+    public void addCardToDeck(Card card, Deck deck, boolean force, boolean side) throws LogicException{
+        if (deck.getCardFrequency(card) >= user.getCardFrequency(card) && !force)
             throw new LogicException(String.format("you have only %d of %s and your deck already contains %d of them. you can't add any more to %s", user.getCardFrequency(card), card.getName(), deck.getCardFrequency(card), deck.getName()));
-        if (deck.getCardFrequency(card) == 3)
+        if (deck.getCardFrequency(card) >= 3 && !force)
             throw new LogicException(String.format("there are already three cards with name %s in deck %s", card.getName(), deck.getName()));
         if (!side) {
-            if (deck.getMainDeck().isFull())
+            if (deck.getMainDeck().isFull() && !force)
                 throw new LogicException("main deck is full");
             deck.getMainDeck().addCard(card);
         } else {
-            if (deck.getSideDeck().isFull())
+            if (deck.getSideDeck().isFull() && !force)
                 throw new LogicException("side deck is full");
             deck.getSideDeck().addCard(card);
         }
