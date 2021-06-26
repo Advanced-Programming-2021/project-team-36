@@ -8,9 +8,11 @@ public class AIPlayer extends Player {
     public AIPlayer() throws ModelException {
         this(getAIUser());
     }
+
     public AIPlayer(User user) throws ModelException {
         super(user);
     }
+
     private static User getAIUser() {
         int aiId = 1;
         while (User.getUserByUsername("artificial_intelligence" + aiId) != null || User.getUserByNickname("Mr.AI" + aiId) != null)

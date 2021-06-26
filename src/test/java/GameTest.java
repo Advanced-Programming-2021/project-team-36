@@ -24,12 +24,7 @@ public class GameTest extends Sample {
         run("summon");
         run("show board");
         run("next phase");
-<<<<<<< HEAD
-        run("next phase");
-        //Assertions.assertEquals(GameController.getInstance().getGame().getPhase(), Phase.MAIN_PHASE1);
-=======
         Assertions.assertEquals(GameController.getInstance().getGame().getPhase(), Phase.MAIN_PHASE1);
->>>>>>> a5b6bad7597fa10a77a5e54fba214e4181068da5
         run("show hand");
         run("select --hand 1");
         run("summon");

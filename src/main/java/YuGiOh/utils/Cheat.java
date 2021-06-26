@@ -52,7 +52,6 @@ public class Cheat {
         user.setActiveDeck(user.getDecks().get(index));
     }
 
-    // this is for testing only
     public static void buildSuperUserWithManyOfThisCards(User user, int countOfInjection, String... cardNames){
         buildSuperUser(user);
 
@@ -69,6 +68,5 @@ public class Cheat {
         buyRandomCardsForUser(user, 100);
         buildRandomDecksForUser(user);
         CustomPrinter.getLastBuffer();
-        // this will clear the buffer
     }
 }
