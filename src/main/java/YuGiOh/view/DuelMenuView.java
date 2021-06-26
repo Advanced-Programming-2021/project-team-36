@@ -29,49 +29,19 @@ public class DuelMenuView extends BaseMenuView {
 
     public DuelMenuView() {
         super();
+        cardSelector = new CardSelector();
     }
 
     @Override
     protected void addCommands() {
         super.addCommands();
-        this.cmd.addCommand(new Command(
-                "select",
-                mp -> {
-                    CardSelector.getInstance().selectCard(Parser.cardAddressParser("monster", mp.get("monster"), mp.containsKey("opponent")));
-                },
-                Options.monsterZone(true),
-                Options.opponent(false)
-        ));
-        this.cmd.addCommand(new Command(
-                "select",
-                mp -> {
-                    CardSelector.getInstance().selectCard(Parser.cardAddressParser("spell", mp.get("spell"), mp.containsKey("opponent")));
-                },
-                Options.spellZone(true),
-                Options.opponent(false)
-        ));
-        this.cmd.addCommand(new Command(
-                "select",
-                mp -> {
-                    CardSelector.getInstance().selectCard(Parser.cardAddressParser("field", mp.get("field"), mp.containsKey("opponent")));
-                },
-                Options.fieldZone(true),
-                Options.opponent(false)
-        ));
-        this.cmd.addCommand(new Command(
-                "select",
-                mp -> {
-                    CardSelector.getInstance().selectCard(Parser.cardAddressParser("hand", mp.get("hand"), false));
-                },
-                Options.handZone(true)
-        ));
-        this.cmd.addCommand(new Command(
-                "select",
-                mp -> {
-                    CardSelector.getInstance().deselectCard();
-                },
-                Options.Deselect(true)
-        ));
+
+        CardSelector.addSelectingCommandsToCmd(
+                this.cmd,
+                cardAddress -> cardSelector.selectCard(cardAddress),
+                cardSelector
+        );
+
         this.cmd.addCommand(new Command(
                 "next phase",
                 mp -> {
@@ -81,46 +51,44 @@ public class DuelMenuView extends BaseMenuView {
         this.cmd.addCommand(new Command(
                 "summon",
                 mp -> {
-                    DuelMenuController.getInstance().summonCard(CardSelector.getInstance().getSelectedCard());
+                    DuelMenuController.getInstance().summonCard(cardSelector.getSelectedCard());
                 }
         ));
         this.cmd.addCommand(new Command(
                 "set",
                 mp -> {
-                    DuelMenuController.getInstance().setCard(CardSelector.getInstance().getSelectedCard());
+                    DuelMenuController.getInstance().setCard(cardSelector.getSelectedCard());
                 }
         ));
         this.cmd.addCommand(new Command(
                 "set",
                 mp -> {
-                    DuelMenuController.getInstance().changeCardPosition(CardSelector.getInstance().getSelectedCard(), Parser.cardStateParser(mp.get("position")));
+                    DuelMenuController.getInstance().changeCardPosition(cardSelector.getSelectedCard(), Parser.cardStateParser(mp.get("position")));
                 },
                 Options.cardPosition(true)
         ));
-
-        // todo add regex so that attack [number] and attack direct don't be messed up
         this.cmd.addCommand(new Command(
                 "attack direct",
                 mp -> {
-                    DuelMenuController.getInstance().directAttack(CardSelector.getInstance().getSelectedCard());
+                    DuelMenuController.getInstance().directAttack(cardSelector.getSelectedCard());
                 }
         ));
         this.cmd.addCommand(new Command(
                 "attack [number]",
                 mp -> {
-                    DuelMenuController.getInstance().attack(CardSelector.getInstance().getSelectedCard(), Parser.monsterZoneParser(mp.get("number")));
+                    DuelMenuController.getInstance().attack(cardSelector.getSelectedCard(), Parser.monsterZoneParser(mp.get("number")));
                 }
         ));
         this.cmd.addCommand(new Command(
                 "flip-summon",
                 mp -> {
-                    DuelMenuController.getInstance().flipSummon(CardSelector.getInstance().getSelectedCard());
+                    DuelMenuController.getInstance().flipSummon(cardSelector.getSelectedCard());
                 }
         ));
         this.cmd.addCommand(new Command(
                 "activate effect",
                 mp -> {
-                    DuelMenuController.getInstance().activateEffect(CardSelector.getInstance().getSelectedCard());
+                    DuelMenuController.getInstance().activateEffect(cardSelector.getSelectedCard());
                 }
         ));
         this.cmd.addCommand(new Command(
@@ -171,19 +139,17 @@ public class DuelMenuView extends BaseMenuView {
 
     public Card askUserToChooseCard(String message, SelectCondition condition) throws ResistToChooseCard {
         CustomPrinter.println(message, Color.Default);
-        CardSelector cardSelector = new CardSelector(GameController.instance.getGame());
+        resetSelector();
         CustomPrinter.println("you have to select a card(q to quit)", Color.Cyan);
         String line = CustomScanner.nextLine();
 
         if (line.equalsIgnoreCase("q"))
             throw new ResistToChooseCard();
         try {
-            // todo clean this shit
             CommandLine commandLine = new CommandLine();
-            commandLine.addCommand(new Command(
-                    "select",
-                    mp -> {
-                        CardAddress cardAddress = Parser.cardAddressParser("monster", mp.get("monster"), mp.containsKey("opponent"));
+            CardSelector.addSelectingCommandsToCmd(
+                    commandLine,
+                    cardAddress -> {
                         Card card = GameController.getInstance().getGame().getCardByCardAddress(cardAddress);
                         if (card == null)
                             throw new LogicException("no card found in the given position");
@@ -191,50 +157,8 @@ public class DuelMenuView extends BaseMenuView {
                             throw new LogicException("you can't select this card");
                         cardSelector.selectCard(cardAddress);
                     },
-                    Options.monsterZone(true),
-                    Options.opponent(false)
-            ));
-            commandLine.addCommand(new Command(
-                    "select",
-                    mp -> {
-                        CardAddress cardAddress = Parser.cardAddressParser("spell", mp.get("spell"), mp.containsKey("opponent"));
-                        Card card = GameController.getInstance().getGame().getCardByCardAddress(cardAddress);
-                        if (card == null)
-                            throw new LogicException("no card found in the given position");
-                        if (!condition.canSelect(card))
-                            throw new LogicException("you can't select this card");
-                        cardSelector.selectCard(cardAddress);
-                    },
-                    Options.spellZone(true),
-                    Options.opponent(false)
-            ));
-            commandLine.addCommand(new Command(
-                    "select",
-                    mp -> {
-                        CardAddress cardAddress = Parser.cardAddressParser("field", mp.get("field"), mp.containsKey("opponent"));
-                        Card card = GameController.getInstance().getGame().getCardByCardAddress(cardAddress);
-                        if (card == null)
-                            throw new LogicException("no card found in the given position");
-                        if (!condition.canSelect(card))
-                            throw new LogicException("you can't select this card");
-                        cardSelector.selectCard(cardAddress);
-                    },
-                    Options.fieldZone(true),
-                    Options.opponent(false)
-            ));
-            commandLine.addCommand(new Command(
-                    "select",
-                    mp -> {
-                        CardAddress cardAddress = Parser.cardAddressParser("hand", mp.get("hand"), false);
-                        Card card = GameController.getInstance().getGame().getCardByCardAddress(cardAddress);
-                        if (card == null)
-                            throw new LogicException("no card found in the given position");
-                        if (!condition.canSelect(card))
-                            throw new LogicException("you can't select this card");
-                        cardSelector.selectCard(cardAddress);
-                    },
-                    Options.handZone(true)
-            ));
+                    null
+            );
             commandLine.runNextCommand(line);
         } catch (CommandLineException | ParserException | LogicException | ModelException | RoutingException e) {
             CustomPrinter.println(e.getMessage(), Color.Default);
@@ -293,7 +217,7 @@ public class DuelMenuView extends BaseMenuView {
     public void startNewGame(Game game) {
         CustomPrinter.println("new round begins!", Color.Red);
         CustomPrinter.println("3 .. 2 .. 1 .. fight!", Color.Red);
-        cardSelector = new CardSelector(game);
+        resetSelector();
     }
 
     public void resetSelector(){
