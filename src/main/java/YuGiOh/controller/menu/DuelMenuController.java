@@ -2,9 +2,12 @@ package YuGiOh.controller.menu;
 
 import YuGiOh.controller.*;
 import YuGiOh.controller.events.RoundOverExceptionEvent;
+import YuGiOh.model.Duel;
+import YuGiOh.model.ModelException;
 import YuGiOh.model.Player.Player;
 import YuGiOh.model.card.*;
 import YuGiOh.model.enums.GameResult;
+import YuGiOh.view.cardSelector.Conditions;
 import YuGiOh.view.cardSelector.ResistToChooseCard;
 import YuGiOh.model.CardAddress;
 import YuGiOh.model.Game;
@@ -13,9 +16,6 @@ import YuGiOh.utils.CustomPrinter;
 import YuGiOh.utils.Debugger;
 import YuGiOh.utils.RoutingException;
 import YuGiOh.view.DuelMenuView;
-import YuGiOh.view.gui.GuiReporter;
-import YuGiOh.view.gui.event.DuelOverEvent;
-import YuGiOh.view.gui.event.RoundOverEvent;
 import javafx.application.Platform;
 import lombok.Getter;
 import YuGiOh.model.enums.MonsterState;
@@ -35,6 +35,7 @@ public class DuelMenuController extends BaseMenuController {
 
     public DuelMenuController(Duel duel){
         this.duel = duel;
+        this.graphicView = new DuelMenuView();
         instance = this;
     }
 
@@ -129,32 +130,6 @@ public class DuelMenuController extends BaseMenuController {
         CustomPrinter.println(game.getCurrentPlayer().getUser().getNickname() + ":" + game.getCurrentPlayer().getLifePoint(), Color.Purple);
     }
 
-    public void endRound(RoundOverExceptionEvent event) {
-        if(event.gameResult.equals(GameResult.DRAW)) {
-            CustomPrinter.println(String.format("game is a draw and the score is %d-%d", game.totalScore(game.getFirstPlayer()), game.totalScore(game.getSecondPlayer())), Color.Blue);
-            game.addFirstPlayerLastRoundScore(0);
-            game.addSecondPlayerLastRoundScore(0);
-        }
-        else {
-            if (event.winner.getUser().getUsername().equals(game.getFirstPlayer().getUser().getUsername())) {
-                game.addFirstPlayerLastRoundScore(event.winnersLP);
-                game.addSecondPlayerLastRoundScore(0);
-            }
-            else {
-                game.addFirstPlayerLastRoundScore(0);
-                game.addSecondPlayerLastRoundScore(event.winnersLP);
-            }
-            CustomPrinter.println(String.format("%s won the game and the score is: %d-%d", event.winner.getUser().getUsername(), game.totalScore(game.getFirstPlayer()), game.totalScore(game.getSecondPlayer())), Color.Blue);
-        }
-    }
-
-    public void endDuel(Player winner, Player looser, int rounds, int maxWinnerLP, int firstPlayerScore, int secondPlayerScore) {
-        winner.getUser().increaseScore(rounds * 1000);
-        winner.getUser().increaseBalance(rounds * (1000 + maxWinnerLP));
-        looser.getUser().increaseBalance(rounds * 100);
-        CustomPrinter.println(String.format("%s won the whole match with score: %d-%d", winner.getUser().getUsername(), firstPlayerScore, secondPlayerScore), Color.Blue);
-    }
-
     public void surrender() throws RoundOverExceptionEvent {
         gameController.getCurrentPlayerController().surrender();
     }
@@ -176,27 +151,21 @@ public class DuelMenuController extends BaseMenuController {
 
     @Override
     public void control(){
-        MainGameThread mainGameThread = new MainGameThread(()-> {
-            for(int i = 0; i < duel.getRounds()) {
-                this.game = duel.getCurrentGame();
-                this.graphicView = new DuelMenuView(game);
-                this.gameController = new GameController(game);
+        while (!duel.isFinished()){
+            this.game = duel.getCurrentGame();
+            Platform.runLater(()-> this.graphicView.startNewGame(game));
+            this.gameController = new GameController(game);
+            try {
+                gameController.control();
+            } catch (RoundOverExceptionEvent roundOverEvent) {
                 try {
-                    gameController.control();
-                } catch (RoundOverExceptionEvent roundOverEvent) {
-                    endRound(roundOverEvent);
-                }
-                if (duel.totalScore(duel.getFirstPlayer()) > duel.getRounds() / 2) {
-                    endDuel(game.getFirstPlayer(), game.getSecondPlayer(), game.getRounds(), game.getMaxLP(game.getFirstPlayer()), game.totalScore(game.getFirstPlayer()), game.totalScore(game.getSecondPlayer()));
-                    break;
-                } else if (game.totalScore(game.getSecondPlayer()) > game.getRounds() / 2) {
-                    endDuel(game.getSecondPlayer(), game.getFirstPlayer(), game.getRounds(), game.getMaxLP(game.getSecondPlayer()), game.totalScore(game.getFirstPlayer()), game.totalScore(game.getSecondPlayer()));
-                    break;
+                    duel.goNextRound(roundOverEvent);
+                } catch (ModelException e) {
+                    // this must never happen
+                    e.printStackTrace();
                 }
             }
-        });
-        mainGameThread.start();
-
+        }
         //        ProgramController.getInstance().navigateToMenu(MainMenuController.getInstance());
     }
 }

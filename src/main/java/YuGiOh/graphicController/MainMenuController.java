@@ -5,6 +5,7 @@ import YuGiOh.controller.menu.DeckMenuController;
 import YuGiOh.controller.menu.ScoreboardMenuController;
 import YuGiOh.controller.menu.ShopMenuController;
 import YuGiOh.graphicView.LoginMenuView;
+import YuGiOh.model.Duel;
 import YuGiOh.model.Game;
 import YuGiOh.model.ModelException;
 import YuGiOh.model.Player.AIPlayer;
@@ -41,36 +42,36 @@ public class MainMenuController extends BaseMenuController {
     }
 
     public void startNewDuel(User secondUser, int round) throws RoutingException, ModelException {
-        Game game = new Game(
+        Duel duel = new Duel(
                 new HumanPlayer(user),
                 new HumanPlayer(secondUser),
                 round
         );
-        CustomPrinter.println(String.format("start new duel between %s and %s", game.getFirstPlayer().getUser().getNickname(), game.getSecondPlayer().getUser().getNickname()), Color.Default);
+        CustomPrinter.println(String.format("start new duel between %s and %s", duel.getFirstPlayer().getUser().getNickname(), duel.getSecondPlayer().getUser().getNickname()), Color.Default);
         /*ProgramController.getInstance().navigateToMenu(
             new DuelMenuController(game)
         );*/
     }
 
     public void startDuelWithAI(int round) throws RoutingException, ModelException {
-        Game game = new Game(
+        Duel duel = new Duel(
                 new HumanPlayer(user),
                 new AIPlayer(),
                 round
         );
-        CustomPrinter.println(String.format("start new duel between %s and %s", game.getFirstPlayer().getUser().getNickname(), game.getSecondPlayer().getUser().getNickname()), Color.Default);
+        CustomPrinter.println(String.format("start new duel between %s and %s", duel.getFirstPlayer().getUser().getNickname(), duel.getSecondPlayer().getUser().getNickname()), Color.Default);
         /*ProgramController.getInstance().navigateToMenu(
                 new DuelMenuController(game)
         );*/
     }
 
     public void startDuelAiWithAI(int round) throws ModelException {
-        Game game = new Game(
+        Duel duel = new Duel(
                 new AIPlayer(),
                 new AIPlayer(),
                 round
         );
-        CustomPrinter.println(String.format("start new duel between  and %s", game.getFirstPlayer().getUser().getNickname(), game.getSecondPlayer().getUser().getNickname()), Color.Default);
+        CustomPrinter.println(String.format("start new duel between  and %s", duel.getFirstPlayer().getUser().getNickname(), duel.getSecondPlayer().getUser().getNickname()), Color.Default);
         /*ProgramController.getInstance().navigateToMenu(
                 new DuelMenuController(game)
         );*/

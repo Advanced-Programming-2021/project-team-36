@@ -28,13 +28,7 @@ public class Game {
     @Setter
     private Stack<Action> chain;
 
-    @Getter
-    private final int rounds;
-
-    private final List<Integer> firstPlayerScores = new ArrayList<>();
-    private final List<Integer> secondPlayerScores = new ArrayList<>();
-
-    public Game(Player firstPlayer, Player secondPlayer, int rounds) throws ModelException {
+    public Game(Player firstPlayer, Player secondPlayer) throws ModelException {
         if (firstPlayer.getUser().getUsername().equals(secondPlayer.getUser().getUsername()))
             throw new ModelException("you can't play with yourself");
     /*    Random random = new Random(); movagghat: comment kardam ke too graphic ma paeeni bashim
@@ -55,8 +49,6 @@ public class Game {
             firstPlayer.getBoard().drawCardFromDeck();
             secondPlayer.getBoard().drawCardFromDeck();
         }
-
-        this.rounds = rounds;
 
         this.turn = 0;
         this.phase = new SimpleObjectProperty<>(Phase.MAIN_PHASE2);
@@ -130,36 +122,6 @@ public class Game {
         cards.addAll(firstPlayer.getBoard().getAllCards());
         cards.addAll(secondPlayer.getBoard().getAllCards());
         return cards;
-    }
-
-    public void addFirstPlayerLastRoundScore(int score) {
-        firstPlayerScores.add(score);
-    }
-
-    public void addSecondPlayerLastRoundScore(int score) {
-        secondPlayerScores.add(score);
-    }
-
-    public int countNonZero(List<Integer> arrayList) {
-        int cnt = 0;
-        for (int x : arrayList)
-            if (x > 0)
-                cnt++;
-        return cnt;
-    }
-
-    public int getMaxLP(Player player) {
-        if (player == firstPlayer)
-            return Collections.max(firstPlayerScores);
-        else
-            return Collections.max(secondPlayerScores);
-    }
-
-    public int totalScore(Player player) {
-        if (player == firstPlayer)
-            return countNonZero(firstPlayerScores);
-        else
-            return countNonZero(secondPlayerScores);
     }
 
     public Phase getPhase() {

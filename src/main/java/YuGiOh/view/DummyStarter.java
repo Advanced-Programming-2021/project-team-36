@@ -1,10 +1,12 @@
 package YuGiOh.view;
 
 import YuGiOh.controller.GameController;
+import YuGiOh.controller.MainGameThread;
 import YuGiOh.controller.ProgramController;
 import YuGiOh.controller.menu.DuelMenuController;
 import YuGiOh.controller.menu.LoginMenuController;
 import YuGiOh.controller.player.AggressiveAIPlayerController;
+import YuGiOh.model.Duel;
 import YuGiOh.model.Game;
 import YuGiOh.model.Player.AIPlayer;
 import YuGiOh.model.Player.HumanPlayer;
@@ -30,21 +32,23 @@ public class DummyStarter extends Application {
             Cheat.buildSuperUserWithManyOfThisCards(abolfazl, 40, "AxeRaider", "TheTricky", "MonsterReborn", "ManEaterBug");
 //            Cheat.buildSuperUser(fakeUser2);
 
-            Game game = new Game(
+            Duel duel = new Duel(
                     new HumanPlayer(abolfazl),
                     new AIPlayer(fakeUser2),
                     3
             );
-            new DuelMenuController(game);
+            new DuelMenuController(duel);
 
             // todo remove this
-            if(game.getFirstPlayer() instanceof AIPlayer)
-                GameController.getInstance().setPlayerController1(new AggressiveAIPlayerController((AIPlayer) game.getFirstPlayer()));
-            if(game.getSecondPlayer() instanceof AIPlayer)
-                GameController.getInstance().setPlayerController2(new AggressiveAIPlayerController((AIPlayer) game.getSecondPlayer()));
+//            if(duel.getFirstPlayer() instanceof AIPlayer)
+//                GameController.getInstance().setPlayerController1(new AggressiveAIPlayerController((AIPlayer) duel.getFirstPlayer()));
+//            if(duel.getSecondPlayer() instanceof AIPlayer)
+//                GameController.getInstance().setPlayerController2(new AggressiveAIPlayerController((AIPlayer) duel.getSecondPlayer()));
 
             DuelMenuController.getInstance().getGraphicView().start(primaryStage);
-            DuelMenuController.getInstance().control();
+            new MainGameThread(()->{
+                DuelMenuController.getInstance().control();
+            }).start();
         } catch (Exception e){
             e.printStackTrace();
         }

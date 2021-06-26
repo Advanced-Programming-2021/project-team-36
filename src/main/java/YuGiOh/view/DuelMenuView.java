@@ -22,6 +22,7 @@ import java.util.List;
 import java.util.concurrent.atomic.AtomicBoolean;
 
 public class DuelMenuView extends Application {
+    private Stage stage;
     private final double WIDTH = 1024, HEIGHT = 768;
     private Scene scene;
     private final StackPane stackPane;
@@ -32,25 +33,30 @@ public class DuelMenuView extends Application {
     private CardSelector selector;
     private Game game;
 
-    public DuelMenuView(Game game){
+    public DuelMenuView(){
         super();
-        this.game = game;
         root = new HBox();
         stackPane = new StackPane(root);
         stackPane.setMinWidth(WIDTH);
         stackPane.setMinHeight(HEIGHT);
     }
 
-    @Override
-    public void start(Stage stage) {
+    public void startNewGame(Game game) {
+        this.game = game;
         gameField = new GameField(game, root.widthProperty().multiply(0.8), root.heightProperty().multiply(1));
         infoBox = new DuelInfoBox(game, root.widthProperty().multiply(0.2), root.heightProperty().multiply(1));
         infoBox.setGameField(gameField);
+        root.getChildren().clear();
         root.getChildren().addAll(infoBox, gameField);
         selector = new CardSelector(infoBox);
+        stage.show();
+    }
+
+    @Override
+    public void start(Stage stage) {
+        this.stage = stage;
         scene = new Scene(stackPane, WIDTH, HEIGHT);
         stage.setScene(scene);
-        stage.show();
         addPlayPauseController();
     }
 

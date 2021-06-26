@@ -1,4 +1,5 @@
 import YuGiOh.controller.menu.DuelMenuController;
+import YuGiOh.model.Duel;
 import YuGiOh.model.Game;
 import YuGiOh.model.ModelException;
 import YuGiOh.model.Player.AIPlayer;
@@ -11,7 +12,7 @@ public class  DoubleAITest extends IntegrationTestBase {
     public void battle() throws ModelException {
         Player p1 = new AIPlayer();
         Player p2 = new AIPlayer();
-        DuelMenuController duelMenuController = new DuelMenuController(new Game(p1, p2, 1));
+        DuelMenuController duelMenuController = new DuelMenuController(new Duel(p1, p2, 1));
         duelMenuController.control();
     }
 }
