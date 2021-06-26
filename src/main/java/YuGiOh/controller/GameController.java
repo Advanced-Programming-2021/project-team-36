@@ -120,7 +120,7 @@ public class GameController {
                 drawCard();
                 goNextPhase();
             } else if (game.getPhase().equals(Phase.STANDBY_PHASE)) {
-                getCurrentPlayerController().controlStandbyPhase();
+                goNextPhase();
             } else if (game.getPhase().equals(Phase.MAIN_PHASE1)) {
                 getCurrentPlayerController().controlMainPhase1();
             } else if (game.getPhase().equals(Phase.BATTLE_PHASE)) {

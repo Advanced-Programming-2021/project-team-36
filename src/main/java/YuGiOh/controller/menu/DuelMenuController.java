@@ -153,7 +153,10 @@ public class DuelMenuController extends BaseMenuController {
     public void control(){
         while (!duel.isFinished()){
             this.game = duel.getCurrentGame();
+
+            // todo change this when we wanted to connect the whole part
             Platform.runLater(()-> this.graphicView.startNewGame(game));
+
             this.gameController = new GameController(game);
             try {
                 gameController.control();

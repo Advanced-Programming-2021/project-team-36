@@ -27,11 +27,6 @@ public class HumanPlayerController extends PlayerController {
     }
 
     @Override
-    public void controlStandbyPhase() {
-        runUntilEndOfPhase();
-    }
-
-    @Override
     public void controlMainPhase1(){
         runUntilEndOfPhase();
     }

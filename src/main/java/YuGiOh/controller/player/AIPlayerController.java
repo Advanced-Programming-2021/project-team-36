@@ -25,11 +25,6 @@ public class AIPlayerController extends PlayerController {
 
     // todo complete this
 
-    @Override
-    public void controlStandbyPhase() {
-        GameController.getInstance().goNextPhaseAndNotify();
-    }
-
     public void mainPhase() {
         Random rnd = new Random();
         List<Card> allCards = new ArrayList<>(player.getBoard().getAllCards());

@@ -32,8 +32,6 @@ public abstract class PlayerController {
         this.player = player;
     }
 
-    abstract public void controlStandbyPhase();
-
     abstract public void controlMainPhase1();
 
     abstract public void controlMainPhase2();
