@@ -7,9 +7,11 @@ import YuGiOh.model.Player.Player;
 import YuGiOh.model.User;
 import YuGiOh.model.card.Card;
 import YuGiOh.model.card.Utils;
+import YuGiOh.model.enums.Color;
 import YuGiOh.model.enums.MonsterState;
 import YuGiOh.model.enums.ZoneType;
 import YuGiOh.controller.menu.*;
+import YuGiOh.utils.CustomPrinter;
 
 public class Parser {
     public static User UserParser(String username) throws ParserException {

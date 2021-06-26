@@ -13,7 +13,6 @@ public class CardSelector {
     private static CardSelector instance;
     Game game;
 
-    @Getter
     private CardAddress selectedCardAddress;
 
     public CardSelector(Game game){

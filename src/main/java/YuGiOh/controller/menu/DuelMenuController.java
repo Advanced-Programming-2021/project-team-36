@@ -123,8 +123,7 @@ public class DuelMenuController extends BaseMenuController {
     }
 
     public void showSelectedCard() throws LogicException {
-        CardAddress cardAddress = getView().getCardSelector().getSelectedCardAddress();
-        if (!cardAddress.getOwner().equals(game.getCurrentPlayer())) {
+        if (!getView().getCardSelector().getSelectedCard().owner.equals(game.getCurrentPlayer())) {
             Card card = getView().getCardSelector().getSelectedCard();
             if (!card.isFacedUp())
                 throw new LogicException("you can't see your opponent face down cards");
