@@ -31,7 +31,7 @@ public class DummyStarter extends Application {
 //            Cheat.buildSuperUser(fakeUser2);
 
             Game game = new Game(
-                    new AIPlayer(abolfazl),
+                    new HumanPlayer(abolfazl),
                     new AIPlayer(fakeUser2),
                     3
             );

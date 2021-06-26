@@ -67,10 +67,11 @@ public abstract class PlayerController {
         return actions;
     }
 
-    public void summon(Monster monster, int requiredTributes, MonsterState monsterState) throws LogicException, ResistToChooseCard {
+    public void summon(Monster monster, int requiredTributes, MonsterState monsterState, boolean specialSummon) throws LogicException, ResistToChooseCard {
         player.getBoard().removeCardIfHas(monster);
         GameController.getInstance().getGame().getOtherPlayer(player).getBoard().removeCardIfHas(monster);
-        player.setSummonedInLastTurn(true);
+        if(!specialSummon)
+            player.setSummonedInLastTurn(true);
 
         if (requiredTributes > 0)
             tributeMonster(requiredTributes);
@@ -87,14 +88,14 @@ public abstract class PlayerController {
         monster.readyForBattle(player);
     }
 
-    public void summon(Monster monster, int requiredTributes) throws ResistToChooseCard, LogicException {
+    public void summon(Monster monster, int requiredTributes, boolean specialSummon) throws ResistToChooseCard, LogicException {
         boolean AttackingState = askRespondToQuestion("which position you want to summon?", "defending", "attacking");
         MonsterState monsterState = (AttackingState ? MonsterState.DEFENSIVE_OCCUPIED : MonsterState.OFFENSIVE_OCCUPIED);
-        summon(monster, requiredTributes, monsterState);
+        summon(monster, requiredTributes, monsterState, specialSummon);
     }
 
-    public void summon(Monster monster) throws ResistToChooseCard, LogicException {
-        summon(monster, monster.getNumberOfRequiredTribute());
+    public void summon(Monster monster, boolean specialSummon) throws ResistToChooseCard, LogicException {
+        summon(monster, monster.getNumberOfRequiredTribute(), specialSummon);
     }
 
     public void drawCard() throws LogicException {
@@ -135,11 +136,11 @@ public abstract class PlayerController {
         magic.readyForBattle(player);
     }
 
-    public Action normalSummonAction(Monster monster) throws ResistToChooseCard {
+    public Action normalSummonAction(Monster monster, boolean specialSummon) throws ResistToChooseCard {
         return new Action(
                         new SummonEvent(monster, SummonType.NORMAL),
                         () -> {
-                            summon(monster);
+                            summon(monster, specialSummon);
                             CustomPrinter.println(String.format("<%s> summoned <%s> in <%s> position successfully", player.getUser().getUsername(), monster.getName(), monster.getMonsterState()), Color.Green);
                         }
                 );
@@ -150,7 +151,7 @@ public abstract class PlayerController {
                         new SummonEvent(monster, SummonType.FLIP),
                         () -> {
                             monster.changeFromHiddenToOccupiedIfCanEffect().run();
-                            GameController.getInstance().getGame().getCurrentPlayer().setSummonedInLastTurn(true);
+                            player.setSummonedInLastTurn(true);
                             CustomPrinter.println(String.format("<%s> flip summoned successfully", monster.getName()), Color.Green);
                         }
         );
@@ -160,7 +161,7 @@ public abstract class PlayerController {
         return new Action(
                         new SetMonster(monster),
                         () -> {
-                            summon(monster, monster.getNumberOfRequiredTribute(), MonsterState.DEFENSIVE_HIDDEN);
+                            summon(monster, monster.getNumberOfRequiredTribute(), MonsterState.DEFENSIVE_HIDDEN, false);
                             CustomPrinter.println(String.format("<%s> set monster <%s> successfully", player.getUser().getUsername(), monster.getName()), Color.Green);
                         }
         );
@@ -182,17 +183,36 @@ public abstract class PlayerController {
             throw new LogicException("this card is not in your field");
     }
 
+    private void validateNotSummonedInThisTurn() throws LogicException {
+        if (player.isSummonedInLastTurn())
+            throw new LogicException("you already summoned/set on this turn");
+    }
+
+    private void validateHasInHand(Monster monster) throws LogicException {
+        if (!player.hasInHand(monster))
+            throw new LogicException("you can only summon from your hand");
+    }
+
     public void normalSummon(Monster monster) throws LogicException, ResistToChooseCard {
         validateMainPhase();
         validateCurrentPlayersCard(monster);
-        monster.validateSummon();
+        validateNotSummonedInThisTurn();
+        validateHasInHand(monster);
         validateSummon(monster, monster.getNumberOfRequiredTribute());
-        startChain(normalSummonAction(monster));
+        startChain(normalSummonAction(monster, false));
+    }
+
+    public void specialSummon(Monster monster) throws  LogicException, ResistToChooseCard {
+        validateMainPhase();
+        validateCurrentPlayersCard(monster);
+        monster.validateSpecialSummon();
+        startChain(monster.specialSummonAction());
     }
 
     public void setMonster(Monster monster) throws LogicException, ResistToChooseCard {
         validateMainPhase();
-        monster.validateSummon();
+        validateNotSummonedInThisTurn();
+        validateHasInHand(monster);
         validateSummon(monster, monster.getNumberOfRequiredTribute());
         startChain(setMonsterAction(monster));
     }

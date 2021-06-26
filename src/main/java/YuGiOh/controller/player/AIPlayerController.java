@@ -78,13 +78,15 @@ public class AIPlayerController extends PlayerController {
             Card card = allCards.get(rnd.nextInt(allCards.size()));
             allCards.remove(card);
             if (card instanceof Monster) {
-                int r = rnd.nextInt(3);
+                int r = rnd.nextInt(4);
                 if (r == 0)
                     noErrorSummonCard((Monster) card);
                 if (r == 1)
                     noErrorFlipSummon((Monster) card);
                 if (r == 2)
                     noErrorSetMonster((Monster) card);
+                if (r == 3)
+                    noErrorSpecialSummonCard((Monster) card);
                 r = rnd.nextInt(3);
                 if (r == 0)
                     noErrorChangeMonsterPosition((Monster) card, MonsterState.OFFENSIVE_OCCUPIED);
@@ -111,6 +113,13 @@ public class AIPlayerController extends PlayerController {
     protected void noErrorSummonCard(Monster monster) {
         try {
             normalSummon(monster);
+        } catch (ResistToChooseCard | LogicException ignored) {
+        }
+    }
+
+    protected void noErrorSpecialSummonCard(Monster monster) {
+        try {
+            specialSummon(monster);
         } catch (ResistToChooseCard | LogicException ignored) {
         }
     }

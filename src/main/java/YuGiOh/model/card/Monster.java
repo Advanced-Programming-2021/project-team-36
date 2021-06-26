@@ -7,6 +7,7 @@ import YuGiOh.controller.player.PlayerController;
 import YuGiOh.model.CardAddress;
 import YuGiOh.model.Game;
 import YuGiOh.model.Player.Player;
+import YuGiOh.model.card.action.Action;
 import YuGiOh.model.card.action.Effect;
 import YuGiOh.model.enums.*;
 import YuGiOh.utils.CustomPrinter;
@@ -243,11 +244,12 @@ public class Monster extends Card {
         return monsterStateProperty.isEqualTo(MonsterState.DEFENSIVE_HIDDEN).or(monsterStateProperty.isEqualTo(MonsterState.DEFENSIVE_OCCUPIED));
     }
 
-    public void validateSummon() throws LogicException {
-        if (owner.isSummonedInLastTurn())
-            throw new LogicException("you already summoned/set on this turn");
-        if (!GameController.getInstance().getCurrentPlayerController().getPlayer().hasInHand(this))
-            throw new LogicException("you can only summon from your hand");
+    public void validateSpecialSummon() throws LogicException, ResistToChooseCard {
+        throw new LogicException("You can't special summon " + this.getName());
+    }
+
+    public Action specialSummonAction() {
+        return null;
     }
 
     public MonsterState getMonsterState(){

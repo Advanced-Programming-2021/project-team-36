@@ -22,6 +22,8 @@ public class AggressiveAIPlayerController extends AIPlayerController {
             Card card = allCards.get(rnd.nextInt(allCards.size()));
             allCards.remove(card);
             if (card instanceof Monster) {
+                if (rnd.nextInt(2) == 0)
+                    noErrorSpecialSummonCard((Monster) card);
                 noErrorSummonCard((Monster) card);
             }
             if (card instanceof Trap) {

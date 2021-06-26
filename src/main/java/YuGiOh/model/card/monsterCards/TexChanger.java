@@ -42,7 +42,7 @@ public class TexChanger extends Monster {
                                 )
                         )
                 )[0];
-                controller.summon(chosen);
+                controller.summon(chosen, true);
             } catch (LogicException | ResistToChooseCard e){
                 CustomPrinter.println("We didn't summoned monster", Color.Red);
             }

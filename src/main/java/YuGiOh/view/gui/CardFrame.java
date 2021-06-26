@@ -148,7 +148,11 @@ public class CardFrame extends Pane {
             contextMenu.getItems().addAll(
                     new MenuItem("", new CustomButton("summon", buttonFontSize, ()-> gameRoot.addRunnableToMainThreadForCard(
                             card,
-                        ()-> DuelMenuController.getInstance().summonCard(card)
+                            ()-> DuelMenuController.getInstance().summonCard(card)
+                    ))),
+                    new MenuItem("", new CustomButton("special summon", buttonFontSize, ()-> gameRoot.addRunnableToMainThreadForCard(
+                            card,
+                            ()-> DuelMenuController.getInstance().specialSummon(card)
                     ))),
                     new MenuItem("", new CustomButton("set", buttonFontSize, ()-> gameRoot.addRunnableToMainThreadForCard(
                             card,

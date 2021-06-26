@@ -63,6 +63,13 @@ public class DuelMenuController extends BaseMenuController {
         graphicView.resetSelector();
     }
 
+    public void specialSummon(Card card) throws LogicException, ResistToChooseCard {
+        if (card instanceof Magic)
+            throw new LogicException("this card is magic and you can't special summon it");
+        gameController.getCurrentPlayerController().specialSummon((Monster) card);
+        graphicView.resetSelector();
+    }
+
     public void setCard(Card card) throws LogicException, ResistToChooseCard {
         if (card instanceof Monster)
             gameController.getCurrentPlayerController().setMonster((Monster) card);

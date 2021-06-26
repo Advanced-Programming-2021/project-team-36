@@ -31,7 +31,7 @@ public class MonsterReborn extends Spell {
                     1,
                     Conditions.getMonsterFromGraveYard()
             )[0];
-            playerController.summon(monster, 0);
+            playerController.summon(monster, 0, true);
             CustomPrinter.println("Monster Reborn activated successfully", Color.Green);
         };
     }

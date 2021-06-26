@@ -52,7 +52,7 @@ public class AdvancedRitualArt extends Spell {
                     monster.tryToSendToGraveYardOfMe();
 
                 try {
-                    playerController.summon(ritualMonster, 0);
+                    playerController.summon(ritualMonster, 0, true);
                     GameController.getInstance().getPlayerControllerByPlayer(this.owner).moveCardToGraveYard(this);
                     CustomPrinter.println(String.format("<%s> ritual summoned <%s> in <%s> position successfully", this.owner.getUser().getUsername(), ritualMonster.getName(), ritualMonster.getMonsterState()), Color.Green);
                 } catch (LogicException logicException) {
