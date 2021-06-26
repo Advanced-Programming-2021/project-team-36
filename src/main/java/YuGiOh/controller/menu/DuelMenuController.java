@@ -1,9 +1,13 @@
 package YuGiOh.controller.menu;
 
 import YuGiOh.controller.*;
+import YuGiOh.controller.events.PlayerReadyExceptionEvent;
 import YuGiOh.controller.events.RoundOverExceptionEvent;
+import YuGiOh.controller.player.HumanPlayerController;
+import YuGiOh.controller.player.PlayerController;
 import YuGiOh.model.Duel;
 import YuGiOh.model.ModelException;
+import YuGiOh.model.Player.HumanPlayer;
 import YuGiOh.model.Player.Player;
 import YuGiOh.model.card.*;
 import YuGiOh.view.cardSelector.ResistToChooseCard;
@@ -153,9 +157,9 @@ public class DuelMenuController extends BaseMenuController {
 
     @Override
     public BaseMenuController getNavigatingMenuObject(Class<? extends BaseMenuController> menu) throws RoutingException {
-        if(menu.equals(MainMenuController.class))
+        if (menu.equals(MainMenuController.class))
             return MainMenuController.getInstance();
-        if(!Debugger.getMode())
+        if (!Debugger.getMode())
             throw new RoutingException("you cannot navigate out of an ongoing game");
         throw new RoutingException("menu navigation is not possible");
     }
@@ -185,6 +189,24 @@ public class DuelMenuController extends BaseMenuController {
                 try {
                     duel.goNextRound(roundOverEvent);
                 } catch (ModelException e) {
+                }
+                if (!duel.isFinished()) {
+                    PlayerController firstPlayerController = GameController.getInstance().getPlayerControllerByPlayer(duel.getFirstPlayer());
+                    if (firstPlayerController instanceof HumanPlayerController) {
+                        HalfTimeMenuController halfTimeMenuController = new HalfTimeMenuController(firstPlayerController);
+                        try {
+                            halfTimeMenuController.control();
+                        } catch (PlayerReadyExceptionEvent ignored) {
+                        }
+                    }
+                    PlayerController secondPlayerController = GameController.getInstance().getPlayerControllerByPlayer(duel.getSecondPlayer());
+                    if (secondPlayerController instanceof HumanPlayerController) {
+                        HalfTimeMenuController halfTimeMenuController = new HalfTimeMenuController(firstPlayerController);
+                        try {
+                            halfTimeMenuController.control();
+                        } catch (PlayerReadyExceptionEvent ignored) {
+                        }
+                    }
                 }
             }
         }

@@ -15,6 +15,7 @@ import YuGiOh.model.enums.Constants;
 
 abstract public class Player {
     private final User user;
+    @Getter
     private Deck deck;
     private Board board;
 

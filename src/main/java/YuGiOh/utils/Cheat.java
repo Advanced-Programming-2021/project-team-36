@@ -72,7 +72,7 @@ public class Cheat {
     }
 
     public static void buildSuperUser(User user){
-        buyRandomCardsForUser(user, 100);
+        buyRandomCardsForUser(user, 1000);
         buildRandomDecksForUser(user);
         CustomPrinter.getLastBuffer();
     }

@@ -35,11 +35,18 @@ public class BaseDeck implements Cloneable, Serializable {
 
     public void removeCard(Card toBeRemoved) {
         Card tmp = null;
-        for(Card card : cards){
-            if(card.getName().equals(toBeRemoved.getName()))
+        for (Card card : cards) {
+            if (card.getName().equals(toBeRemoved.getName()))
                 tmp = card;
         }
         cards.remove(tmp);
+    }
+
+    public boolean hasCard(Card card) {
+        for (Card card1 : cards)
+            if (card1.getName().equals(card.getName()))
+                return true;
+        return false;
     }
 
     public int getNumberOfCards() {
@@ -69,19 +76,19 @@ public class BaseDeck implements Cloneable, Serializable {
         BaseDeck baseDeck;
         try {
             baseDeck = (BaseDeck) super.clone();
-        } catch (CloneNotSupportedException e){
+        } catch (CloneNotSupportedException e) {
             e.printStackTrace();
             return null;
         }
         baseDeck.cards = new ArrayList<>();
-        for(Card card : cards){
+        for (Card card : cards) {
             baseDeck.cards.add(card.clone());
         }
         return baseDeck;
     }
 
-    public BaseDeck readyForBattle(Player player){
-        for(Card card: cards){
+    public BaseDeck readyForBattle(Player player) {
+        for (Card card : cards) {
             card.readyForBattle(player);
         }
         return this;
