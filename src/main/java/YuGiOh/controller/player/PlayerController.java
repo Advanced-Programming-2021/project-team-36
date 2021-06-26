@@ -74,7 +74,7 @@ public abstract class PlayerController {
             player.setSummonedInLastTurn(true);
 
         if (requiredTributes > 0)
-            tributeMonster(requiredTributes);
+            tributeMonster(requiredTributes, Conditions.myMonsterFromMyMonsterZone(player));
         Board board = player.getBoard();
         for (int i = 1; i <= 5; i++) {
             if (board.getMonsterCardZone().get(i) == null) {
@@ -227,10 +227,14 @@ public abstract class PlayerController {
         startChain(flipSummonAction(monster));
     }
 
-    public void tributeMonster(int count) throws LogicException, ResistToChooseCard {
-        if (player.getBoard().getMonsterCardZone().size() < count)
+    public void tributeMonster(int count, SelectCondition condition) throws LogicException, ResistToChooseCard {
+        int goodCards = 0;
+        for (Card card : player.getBoard().getAllCards())
+            if (condition.canSelect(card))
+                goodCards++;
+        if (goodCards < count)
             throw new LogicException("there are not enough cards for tribute");
-        Card[] tributeCards = chooseKCards(String.format("Choose %d cards to tribute", count), count, Conditions.myMonsterFromMyMonsterZone(player));
+        Card[] tributeCards = chooseKCards(String.format("Choose %d cards to tribute", count), count, condition);
         for (Card card : tributeCards)
             moveCardToGraveYard(card);
 //        CustomPrinter.println(String.format("<%s> tribute this monsters: %s", Arrays.toString(Arrays.stream(tributeCards).toArray())), Color.Default);
