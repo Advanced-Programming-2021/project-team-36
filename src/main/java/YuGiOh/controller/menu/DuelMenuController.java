@@ -4,6 +4,7 @@ import YuGiOh.controller.*;
 import YuGiOh.controller.events.RoundOverExceptionEvent;
 import YuGiOh.model.Duel;
 import YuGiOh.model.ModelException;
+import YuGiOh.model.Player.Player;
 import YuGiOh.model.card.*;
 import YuGiOh.view.cardSelector.ResistToChooseCard;
 import YuGiOh.model.CardAddress;
@@ -142,8 +143,8 @@ public class DuelMenuController extends BaseMenuController {
         CustomPrinter.println(game.getCurrentPlayer().getUser().getNickname() + ":" + game.getCurrentPlayer().getLifePoint(), Color.Purple);
     }
 
-    public void surrender() throws RoundOverExceptionEvent {
-        gameController.getCurrentPlayerController().surrender();
+    public void surrender(Player player) throws RoundOverExceptionEvent {
+        gameController.getPlayerControllerByPlayer(player).surrender();
     }
 
     @Override

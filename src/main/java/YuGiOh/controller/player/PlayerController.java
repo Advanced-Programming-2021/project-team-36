@@ -293,7 +293,7 @@ public abstract class PlayerController {
 
     public void surrender() throws RoundOverExceptionEvent {
         Game game = GameController.instance.getGame();
-        game.getCurrentPlayer().setLifePoint(0);
+        player.setLifePoint(0);
         throw new RoundOverExceptionEvent(GameResult.NOT_DRAW, game.getCurrentPlayer(), game.getOpponentPlayer(), game.getOpponentPlayer().getLifePoint());
     }
 
