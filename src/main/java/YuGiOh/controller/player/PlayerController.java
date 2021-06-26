@@ -42,7 +42,7 @@ public abstract class PlayerController {
 
     abstract public boolean askRespondToQuestion(String question, String yes, String no);
 
-    abstract public void doRespondToChain() throws ResistToChooseCard; // todo check if this action is invalid for chain
+    abstract public void doRespondToChain() throws ResistToChooseCard;
 
     abstract public Card[] chooseKCards(String message, int numberOfCards, SelectCondition condition) throws ResistToChooseCard;
 
@@ -366,8 +366,6 @@ public abstract class PlayerController {
         if (!player.getBoard().getMonsterCardZone().containsValue(monster) || !monster.getMonsterState().equals(MonsterState.OFFENSIVE_OCCUPIED))
             throw new LogicException("only faced up monsters can activate their effect");
 
-        //  throw new LogicException("you have already activated this card on this turn");
-        // todo is this handeled?
         if (!monster.canActivateEffect())
             throw new LogicException("you cannot activate this monster now");
 

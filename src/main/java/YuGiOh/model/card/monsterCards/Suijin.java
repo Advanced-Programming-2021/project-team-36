@@ -16,7 +16,6 @@ public class Suijin extends Monster {
 
     @Override
     public void specialEffectWhenBeingAttacked(Monster attacker) {
-        // todo It's just a sample. correct it.
         int _attackDamage = attacker.getAttackDamage();
         if (stillHasPower) {
             boolean confirm = GameController.getInstance().getPlayerControllerByPlayer(this.owner).askRespondToQuestion(

@@ -123,8 +123,6 @@ public class Monster extends Card {
     }
 
     public final void damageStep(Monster attacker) throws RoundOverExceptionEvent {
-        // todo are the responses ok? maybe we have to swap your and mine?
-        // todo remove this System.outs!
         if (getMonsterState().equals(MonsterState.OFFENSIVE_OCCUPIED)) {
             if (attacker.getAttackDamage() > this.getAttackDamage()) {
                 int difference = attacker.getAttackDamage() - this.getAttackDamage();

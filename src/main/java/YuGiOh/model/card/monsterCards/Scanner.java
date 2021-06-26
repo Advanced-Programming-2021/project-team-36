@@ -15,10 +15,6 @@ public class Scanner extends Monster {
         super(name, description, price, attackDamage, defenseRate, attribute, monsterType, monsterCardType, level);
     }
 
-    // todo will the card also get special abilities of its copy?
-    // also do we have to delete the other card from graveyard?
-    // todo what if copied monster dies?
-
     int lastTurnActivated = -1;
     Monster copiedMonster;
 

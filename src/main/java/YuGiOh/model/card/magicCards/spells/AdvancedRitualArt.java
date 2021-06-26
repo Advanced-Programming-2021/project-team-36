@@ -47,7 +47,6 @@ public class AdvancedRitualArt extends Spell {
                         Conditions.getPlayerMonsterFromMonsterZoneOrHand(this.owner, ritualMonster)
                 );
 
-                // todo in baaes mishe yek seri monster haye khas be graveyard naran!
                 for (Monster monster : tributeMonsters)
                     monster.tryToSendToGraveYardOfMe();
 
