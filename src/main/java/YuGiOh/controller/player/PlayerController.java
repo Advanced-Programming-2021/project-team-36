@@ -247,7 +247,7 @@ public abstract class PlayerController {
         if (card instanceof Monster) {
             for (int i = 1; i <= 5; i++) {
                 Magic magic = player.getBoard().getMagicCardZone().get(i);
-                if (magic != null && magic.getIcon().equals(Icon.EQUIP) && magic.getEquippedMonster().equals(card))
+                if (magic != null && magic.isFacedUp() && magic.getIcon().equals(Icon.EQUIP) && magic.getEquippedMonster().equals(card))
                     moveCardToGraveYard(magic);
             }
         }

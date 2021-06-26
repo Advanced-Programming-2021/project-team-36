@@ -95,7 +95,7 @@ public class Monster extends Card {
         for (int i = 1; i <= 5; i++) {
             CardAddress cardAddress = new CardAddress(ZoneType.MAGIC, i, this.owner);
             Magic magic = (Magic) GameController.getInstance().getGame().getCardByCardAddress(cardAddress);
-            if (magic != null)
+            if (magic != null && magic.isFacedUp())
                 affects += magic.affectionOnAttackingMonster(this);
         }
         PlayerController playerController = GameController.getInstance().getCurrentPlayerController();
