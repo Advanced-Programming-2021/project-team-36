@@ -46,6 +46,7 @@ public class AIPlayerController extends PlayerController {
                     noErrorChangeMonsterPosition((Monster) card, MonsterState.DEFENSIVE_OCCUPIED);
                 if (r == 2)
                     noErrorChangeMonsterPosition((Monster) card, MonsterState.DEFENSIVE_HIDDEN); // todo remove this
+                noErrorMonsterActivateEffect((Monster) card);
             } else if (card instanceof Magic) {
                 noErrorSetMagic((Magic) card);
             }
