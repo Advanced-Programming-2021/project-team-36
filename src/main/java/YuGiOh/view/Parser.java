@@ -38,17 +38,19 @@ public class Parser {
         throw new ParserException("number of rounds is not supported");
     }
 
-    // TODO : Proof-reading
     public static CardAddress cardAddressParser(String zoneName, String idString, boolean opponent) throws ParserException {
         ZoneType zone = ZoneType.getZoneByName(zoneName);
         if (zone == null)
             throw new ParserException("invalid selection");
-        int id = IntegerParser(idString);
-        Player owner = opponent ? GameController.getInstance().getGame().getOpponentPlayer() : GameController.getInstance().getGame().getCurrentPlayer();
-        return new CardAddress(zone, id, owner);
+        try {
+            int id = IntegerParser(idString);
+            Player owner = opponent ? GameController.getInstance().getGame().getOpponentPlayer() : GameController.getInstance().getGame().getCurrentPlayer();
+            return new CardAddress(zone, id, owner);
+        } catch (Exception ignored) {
+            throw new ParserException("invalid selection");
+        }
     }
 
-    // TODO : Proof-reading
     public static MonsterState cardStateParser(String state) throws ParserException {
         MonsterState ret = MonsterState.getOccupiedStateByName(state);
         if (ret == null)
@@ -56,7 +58,6 @@ public class Parser {
         return ret;
     }
 
-    // TODO : Proof-reading
     public static CardAddress monsterZoneParser(String number) throws ParserException {
         int id = -1;
         if (number.equals("1"))
@@ -74,7 +75,6 @@ public class Parser {
         return new CardAddress(ZoneType.MONSTER, id, GameController.getInstance().getGame().getCurrentPlayer());
     }
 
-    // TODO : Proof-reading
     public static Card cardParser(String cardName) throws ParserException {
         Card card = Utils.getCard(cardName);
         if (card != null)
