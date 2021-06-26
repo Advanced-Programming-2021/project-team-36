@@ -91,7 +91,6 @@ public abstract class PlayerController {
         }
 
         monster.setMonsterState(monsterState);
-        // this sets owner
         monster.readyForBattle(player);
     }
 
@@ -139,7 +138,6 @@ public abstract class PlayerController {
         }
 
         magic.setMagicState(magicState);
-        // this sets owner
         magic.readyForBattle(player);
     }
 
@@ -238,7 +236,6 @@ public abstract class PlayerController {
         Card[] tributeCards = chooseKCards(String.format("Choose %d cards to tribute", count), count, condition);
         for (Card card : tributeCards)
             moveCardToGraveYard(card);
-//        CustomPrinter.println(String.format("<%s> tribute this monsters: %s", Arrays.toString(Arrays.stream(tributeCards).toArray())), Color.Default);
     }
 
     public void validateTributeMonster(int count, SelectCondition condition) throws LogicException {

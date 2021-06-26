@@ -95,7 +95,6 @@ public class Game {
     }
 
     public void moveCardToGraveYard(Card card) {
-        // exactly one of them contain this card
         firstPlayer.getBoard().moveCardToGraveYard(card);
         secondPlayer.getBoard().moveCardToGraveYard(card);
     }

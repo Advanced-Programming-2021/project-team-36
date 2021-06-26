@@ -16,7 +16,7 @@ abstract public class Magic extends Card {
     protected Icon icon;
     protected Status status;
     @Getter @Setter
-    protected Monster equippedMonster; // it means only for equip spells
+    protected Monster equippedMonster;
     @Setter
     protected MagicState magicState;
 

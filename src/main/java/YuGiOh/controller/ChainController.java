@@ -36,11 +36,9 @@ public class ChainController {
             }
             this.active = GameController.instance.getOtherPlayerController(this.active);
         }
-        // now we run the actions!
         while (!chain.isEmpty()) {
             Action action = chain.pop();
             try {
-                // action should be popped before activating it's effect! if not some traps will crash
                 action.runEffect();
 
                 if (action.getEvent() instanceof MagicActivation && ((MagicActivation) action.getEvent()).getCard() instanceof Spell)

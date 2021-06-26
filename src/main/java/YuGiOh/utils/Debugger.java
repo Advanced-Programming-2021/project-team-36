@@ -96,7 +96,7 @@ public class Debugger {
 
     public static void importTest(String fileAsString, String countAsString) throws InvalidCommandException {
         if (countAsString == null)
-            countAsString = "9999999"; // Just a large number.
+            countAsString = "9999999";
         try {
             CustomScanner.readTestFile(fileAsString, Integer.parseInt(countAsString));
         } catch (Exception exception) {

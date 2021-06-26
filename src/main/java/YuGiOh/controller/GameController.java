@@ -16,9 +16,6 @@ import YuGiOh.model.Player.HumanPlayer;
 import YuGiOh.model.enums.Phase;
 import lombok.Setter;
 
-// this controller provides functions for player controller to access to.
-// so for example players don't attack each other directly!
-
 public class GameController {
     @Getter
     public static GameController instance;
@@ -61,7 +58,6 @@ public class GameController {
     }
 
     public void decreaseLifePoint(Player player, int amount) {
-        // also you can do some extra things here
         player.decreaseLifePoint(amount);
         CustomPrinter.println(String.format("User <%s>'s life point decreased by <%d> and it is <%d> now", player.getUser().getNickname(), amount, player.getLifePoint()), Color.Blue);
         checkBothLivesEndGame();

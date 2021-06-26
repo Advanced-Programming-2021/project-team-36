@@ -29,7 +29,6 @@ public class CommandLine {
 
             }
         }
-        // if still alive, then no command has been matched
         for (Command command : commandList) {
             if (command.initStringMatch(line)) {
                 command.printHelper();

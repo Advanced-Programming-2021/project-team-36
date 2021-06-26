@@ -18,8 +18,6 @@ public class Marshmallon extends Monster {
 
     @Override
     public void tryToSendToGraveYardOfMe(){
-        // it is really nothing!
-        // this monster cannot be killed!
         CustomPrinter.println("Marshmallon is still alive! ha ha ha", Color.Cyan);
     }
 

@@ -68,7 +68,7 @@ public class AIPlayerController extends PlayerController {
     @Override
     public void controlBattlePhase() {
         Random rnd = new Random();
-        List<Card> allCards = new ArrayList<>(player.getBoard().getAllCards()); // or cards on board
+        List<Card> allCards = new ArrayList<>(player.getBoard().getAllCards());
         while (!allCards.isEmpty()) {
             Card card = allCards.get(rnd.nextInt(allCards.size()));
             allCards.remove(card);
