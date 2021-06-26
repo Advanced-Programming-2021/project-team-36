@@ -8,6 +8,7 @@ import YuGiOh.model.card.action.SummonEvent;
 import YuGiOh.model.enums.*;
 import YuGiOh.model.card.Monster;
 import YuGiOh.utils.CustomPrinter;
+import YuGiOh.view.cardSelector.Conditions;
 import YuGiOh.view.cardSelector.ResistToChooseCard;
 
 public class TheTricky extends Monster {
@@ -28,7 +29,15 @@ public class TheTricky extends Monster {
         return new Action(
                 new SummonEvent(this, SummonType.SPECIAL),
                 () -> {
-                    // put discarding here
+                    controller.tributeMonster(1,
+                            Conditions.and(
+                                    Conditions.or(
+                                        Conditions.getOnPlayersBoard(owner),
+                                        Conditions.getInPlayersHandCondition(owner)
+                                    ),
+                                    Conditions.getNotThisCard(this)
+                            )
+                    );
                     controller.summon(this, 0, MonsterState.OFFENSIVE_OCCUPIED, true);
                     CustomPrinter.println(String.format("<%s> special summoned <%s> successfully", owner.getUser().getUsername(), getName(), getMonsterState()), Color.Green);
                 }

@@ -26,11 +26,19 @@ public class Conditions {
         return player::hasInHand;
     }
 
+    public static SelectCondition getOnPlayersBoard(Player player) {
+        return (Card card) -> player.getBoard().getAllCardsOnBoard().contains(card);
+    }
+
     public static SelectCondition getInPlayerGraveYardMonster(Player player, int levelLimit) {
         return (Card card) ->
                 player.getBoard().getGraveYard().contains(card) &&
                     card instanceof Monster &&
                     ((Monster) card).getLevel() >= levelLimit;
+    }
+
+    public static SelectCondition getNotThisCard(Card thisCard) {
+        return (Card card) -> !card.equals(thisCard);
     }
 
     public static SelectCondition getMonsterTypeCondition(Player player, MonsterType monsterType) {
