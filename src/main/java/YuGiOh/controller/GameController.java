@@ -86,33 +86,6 @@ public class GameController {
         return playerController1;
     }
 
-    public void endRound(RoundOverExceptionEvent event) {
-        if(event.gameResult.equals(GameResult.DRAW)) {
-            CustomPrinter.println(String.format("game is a draw and the score is %d-%d", game.totalScore(game.getFirstPlayer()), game.totalScore(game.getSecondPlayer())), Color.Blue);
-            game.addFirstPlayerLastRoundScore(0);
-            game.addSecondPlayerLastRoundScore(0);
-        }
-        else {
-            if (event.winner.getUser().getUsername().equals(game.getFirstPlayer().getUser().getUsername())) {
-                game.addFirstPlayerLastRoundScore(event.winnersLP);
-                game.addSecondPlayerLastRoundScore(0);
-            }
-            else {
-                game.addFirstPlayerLastRoundScore(0);
-                game.addSecondPlayerLastRoundScore(event.winnersLP);
-            }
-            CustomPrinter.println(String.format("%s won the game and the score is: %d-%d", event.winner.getUser().getUsername(), game.totalScore(game.getFirstPlayer()), game.totalScore(game.getSecondPlayer())), Color.Blue);
-        }
-        if (game.totalScore(game.getFirstPlayer()) > game.getRounds() / 2)
-            DuelMenuController.getInstance().endDuel(game.getFirstPlayer(), game.getSecondPlayer(), game.getRounds(), game.getMaxLP(game.getFirstPlayer()), game.totalScore(game.getFirstPlayer()), game.totalScore(game.getSecondPlayer()));
-        else if (game.totalScore(game.getSecondPlayer()) > game.getRounds() / 2)
-            DuelMenuController.getInstance().endDuel(game.getSecondPlayer(), game.getFirstPlayer(), game.getRounds(), game.getMaxLP(game.getSecondPlayer()), game.totalScore(game.getFirstPlayer()), game.totalScore(game.getSecondPlayer()));
-        else {
-            game.getFirstPlayer().refresh();
-            game.getSecondPlayer().refresh();
-        }
-    }
-
     private void goNextPhase(){
         boolean mustChangeTurn = game.getPhase() == Phase.END_PHASE;
         game.setPhase(game.getPhase().nextPhase());
@@ -141,26 +114,21 @@ public class GameController {
                 previousIterationPhase = game.getPhase();
                 DuelMenuController.getInstance().printCurrentPhase();
             }
-            try {
-                if (game.getPhase().equals(Phase.DRAW_PHASE)) {
-                    CustomPrinter.println(String.format("its %s's turn%n", game.getCurrentPlayer().getUser().getNickname()), Color.Blue);
-                    // todo : check player can draw or not (effects)
-                    drawCard();
-                    goNextPhase();
-                } else if (game.getPhase().equals(Phase.STANDBY_PHASE)) {
-                    getCurrentPlayerController().controlStandbyPhase();
-                } else if (game.getPhase().equals(Phase.MAIN_PHASE1)) {
-                    getCurrentPlayerController().controlMainPhase1();
-                } else if (game.getPhase().equals(Phase.BATTLE_PHASE)) {
-                    getCurrentPlayerController().controlBattlePhase();
-                } else if (game.getPhase().equals(Phase.MAIN_PHASE2)) {
-                    getCurrentPlayerController().controlMainPhase2();
-                } else if (game.getPhase().equals(Phase.END_PHASE)) {
-                    goNextPhase();
-                }
-            } catch (RoundOverExceptionEvent roundOverEvent) {
-                GuiReporter.getInstance().report(new RoundOverEvent(roundOverEvent));
-                break;
+            if (game.getPhase().equals(Phase.DRAW_PHASE)) {
+                CustomPrinter.println(String.format("its %s's turn%n", game.getCurrentPlayer().getUser().getNickname()), Color.Blue);
+                // todo : check player can draw or not (effects)
+                drawCard();
+                goNextPhase();
+            } else if (game.getPhase().equals(Phase.STANDBY_PHASE)) {
+                getCurrentPlayerController().controlStandbyPhase();
+            } else if (game.getPhase().equals(Phase.MAIN_PHASE1)) {
+                getCurrentPlayerController().controlMainPhase1();
+            } else if (game.getPhase().equals(Phase.BATTLE_PHASE)) {
+                getCurrentPlayerController().controlBattlePhase();
+            } else if (game.getPhase().equals(Phase.MAIN_PHASE2)) {
+                getCurrentPlayerController().controlMainPhase2();
+            } else if (game.getPhase().equals(Phase.END_PHASE)) {
+                goNextPhase();
             }
         }
     }
