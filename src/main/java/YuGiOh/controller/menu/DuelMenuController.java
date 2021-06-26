@@ -4,6 +4,7 @@ import YuGiOh.controller.*;
 import YuGiOh.controller.events.RoundOverExceptionEvent;
 import YuGiOh.model.Player.Player;
 import YuGiOh.model.card.*;
+import YuGiOh.view.cardSelector.Conditions;
 import YuGiOh.view.cardSelector.ResistToChooseCard;
 import YuGiOh.model.CardAddress;
 import YuGiOh.model.Game;
@@ -59,7 +60,7 @@ public class DuelMenuController extends BaseMenuController {
     public void summonCard(Card card) throws LogicException, ResistToChooseCard {
         if (card instanceof Magic)
             throw new LogicException("this card is magic and you can't summon it");
-        gameController.getCurrentPlayerController().normalSummon((Monster) card);
+        gameController.getCurrentPlayerController().normalSummon((Monster) card, Conditions.myMonsterFromMyMonsterZone(game.getCurrentPlayer()));
         graphicView.resetSelector();
     }
 
@@ -72,7 +73,7 @@ public class DuelMenuController extends BaseMenuController {
 
     public void setCard(Card card) throws LogicException, ResistToChooseCard {
         if (card instanceof Monster)
-            gameController.getCurrentPlayerController().setMonster((Monster) card);
+            gameController.getCurrentPlayerController().setMonster((Monster) card, Conditions.myMonsterFromMyMonsterZone(card.owner));
         else
             gameController.getCurrentPlayerController().setMagic((Magic) card);
         graphicView.resetSelector();

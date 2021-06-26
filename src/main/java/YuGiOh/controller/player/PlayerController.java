@@ -106,9 +106,9 @@ public abstract class PlayerController {
         CustomPrinter.println(String.format("new card added to the hand : <%s>", card.getName()), Color.Blue);
     }
 
-    public void validateSummon(Monster monster, int requiredTributes) throws LogicException {
+    public void validateSummon(Monster monster, int requiredTributes, SelectCondition condition) throws LogicException {
         if (requiredTributes > 0)
-            validateTributeMonster(requiredTributes);
+            validateTributeMonster(requiredTributes, condition);
         Board board = player.getBoard();
         for (int i = 1; i <= 5; i++) {
             if (board.getMonsterCardZone().get(i) == null)
@@ -193,12 +193,12 @@ public abstract class PlayerController {
             throw new LogicException("you can only summon from your hand");
     }
 
-    public void normalSummon(Monster monster) throws LogicException, ResistToChooseCard {
+    public void normalSummon(Monster monster, SelectCondition condition) throws LogicException, ResistToChooseCard {
         validateMainPhase();
         validateCurrentPlayersCard(monster);
         validateNotSummonedInThisTurn();
         validateHasInHand(monster);
-        validateSummon(monster, monster.getNumberOfRequiredTribute());
+        validateSummon(monster, monster.getNumberOfRequiredTribute(), condition);
         startChain(normalSummonAction(monster, false));
     }
 
@@ -209,11 +209,9 @@ public abstract class PlayerController {
         startChain(monster.specialSummonAction());
     }
 
-    public void setMonster(Monster monster) throws LogicException, ResistToChooseCard {
+    public void setMonster(Monster monster, SelectCondition condition) throws LogicException, ResistToChooseCard {
         validateMainPhase();
-        validateNotSummonedInThisTurn();
-        validateHasInHand(monster);
-        validateSummon(monster, monster.getNumberOfRequiredTribute());
+        validateSummon(monster, monster.getNumberOfRequiredTribute(), condition);
         startChain(setMonsterAction(monster));
     }
 
@@ -228,20 +226,20 @@ public abstract class PlayerController {
     }
 
     public void tributeMonster(int count, SelectCondition condition) throws LogicException, ResistToChooseCard {
-        int goodCards = 0;
-        for (Card card : player.getBoard().getAllCards())
-            if (condition.canSelect(card))
-                goodCards++;
-        if (goodCards < count)
-            throw new LogicException("there are not enough cards for tribute");
+
+        validateTributeMonster(count, condition);
         Card[] tributeCards = chooseKCards(String.format("Choose %d cards to tribute", count), count, condition);
         for (Card card : tributeCards)
             moveCardToGraveYard(card);
 //        CustomPrinter.println(String.format("<%s> tribute this monsters: %s", Arrays.toString(Arrays.stream(tributeCards).toArray())), Color.Default);
     }
 
-    public void validateTributeMonster(int count) throws LogicException {
-        if (player.getBoard().getMonsterCardZone().size() < count)
+    public void validateTributeMonster(int count, SelectCondition condition) throws LogicException {
+        int goodCards = 0;
+        for (Card card : player.getBoard().getAllCards())
+            if (condition.canSelect(card))
+                goodCards++;
+        if (goodCards < count)
             throw new LogicException("there are not enough cards for tribute");
     }
 

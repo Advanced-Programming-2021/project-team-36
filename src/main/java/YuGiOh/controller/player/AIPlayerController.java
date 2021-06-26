@@ -3,6 +3,7 @@ package YuGiOh.controller.player;
 import YuGiOh.model.card.Magic;
 import YuGiOh.controller.GameController;
 import YuGiOh.controller.LogicException;
+import YuGiOh.view.cardSelector.Conditions;
 import YuGiOh.view.cardSelector.ResistToChooseCard;
 import YuGiOh.view.cardSelector.SelectCondition;
 import YuGiOh.model.Game;
@@ -112,7 +113,7 @@ public class AIPlayerController extends PlayerController {
 
     protected void noErrorSummonCard(Monster monster) {
         try {
-            normalSummon(monster);
+            normalSummon(monster, Conditions.myMonsterFromMyMonsterZone(player));
         } catch (ResistToChooseCard | LogicException ignored) {
         }
     }
@@ -140,7 +141,7 @@ public class AIPlayerController extends PlayerController {
 
     protected void noErrorSetMonster(Monster monster) {
         try {
-            setMonster(monster);
+            setMonster(monster, Conditions.myMonsterFromMyMonsterZone(player));
         } catch (LogicException | ResistToChooseCard ignored) {
         }
     }
