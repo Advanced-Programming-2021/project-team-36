@@ -16,10 +16,11 @@ import java.util.Random;
 import static java.lang.System.exit;
 
 public class DoubleAITest extends IntegrationTestBase {
+    Random random = new Random(183981);
 
     @Test
     public void multipleTest() throws ModelException {
-        int numberOfTests = 10;
+        int numberOfTests = 100;
         for (int i = 0; i < numberOfTests; i ++) {
             battle();
         }
@@ -32,7 +33,6 @@ public class DoubleAITest extends IntegrationTestBase {
 
         System.out.println("=======================================\n");
         Card allCards[] = YuGiOh.model.card.Utils.getAllCards();
-        Random random = new Random(13191);
         int numberOfCards = 10;
         for (int i = 0; i < 2; i ++) {
             User user = players[i].getUser();
