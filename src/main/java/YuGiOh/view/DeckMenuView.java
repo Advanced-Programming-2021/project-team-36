@@ -32,7 +32,7 @@ public class DeckMenuView extends BaseMenuView {
         this.cmd.addCommand(new Command(
                 "deck add-card",
                 mp -> {
-                    DeckMenuController.getInstance().addCardToDeck(Parser.cardParser(mp.get("card")), DeckMenuController.getInstance().deckParser(mp.get("deck")), mp.containsKey("side"));
+                    DeckMenuController.getInstance().addCardToDeck(Parser.cardParser(mp.get("card")), DeckMenuController.getInstance().deckParser(mp.get("deck")), false, mp.containsKey("side"));
                 },
                 Options.card(true),
                 Options.deck(true),
