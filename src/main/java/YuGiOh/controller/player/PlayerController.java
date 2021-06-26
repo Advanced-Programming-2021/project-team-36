@@ -50,10 +50,19 @@ public abstract class PlayerController {
 
 
     public List<Action> listOfAvailableActionsInResponse() {
-        int previousSpeed = Math.max(GameController.getInstance().getGame().getChain().peek().getEvent().getSpeed(), 2);
+        Game game = GameController.getInstance().getGame();
+        int previousSpeed = Math.max(game.getChain().peek().getEvent().getSpeed(), 2);
         List<Action> actions = new ArrayList<>();
         for (Card magic : player.getBoard().getAllCardsOnBoard()) {
             if (magic instanceof Magic) {
+                boolean isItUsed = false;
+                for (Action action : game.getChain())
+                    if (action.getEvent() instanceof MagicActivation && ((MagicActivation)action.getEvent()).getCard().equals(magic)) {
+                        isItUsed = true;
+                        break;
+                    }
+                if (isItUsed)
+                    break;
                 if (((Magic) magic).canActivateEffect() && previousSpeed <= magic.getSpeed()) {
                     actions.add(new Action(
                             new MagicActivation((Magic) magic),
