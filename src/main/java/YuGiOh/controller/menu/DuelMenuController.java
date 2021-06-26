@@ -188,7 +188,7 @@ public class DuelMenuController extends BaseMenuController {
                     duel.goNextRound(roundOverEvent);
                 } catch (ModelException e) {
                     // this must never happen
-                    e.printStackTrace();
+//                    e.printStackTrace();
                 }
             }
         }

@@ -209,8 +209,13 @@ public class Monster extends Card {
     }
 
     @Override
+<<<<<<< HEAD
     public boolean isFacedUp() {
         return monsterState.equals(MonsterState.OFFENSIVE_OCCUPIED) || monsterState.equals(MonsterState.DEFENSIVE_OCCUPIED);
+=======
+    public boolean isFacedUp(){
+        return monsterState != null && (monsterState.equals(MonsterState.OFFENSIVE_OCCUPIED) || monsterState.equals(MonsterState.DEFENSIVE_OCCUPIED));
+>>>>>>> f1a0d27b658b9f53751aa6191019fffc12ca6803
     }
 
     @Override
