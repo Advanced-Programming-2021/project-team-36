@@ -55,6 +55,12 @@ public class DuelMenuView extends BaseMenuView {
                 }
         ));
         this.cmd.addCommand(new Command(
+                "special summon",
+                mp -> {
+                    DuelMenuController.getInstance().specialSummon(cardSelector.getSelectedCard());
+                }
+        ));
+        this.cmd.addCommand(new Command(
                 "set",
                 mp -> {
                     DuelMenuController.getInstance().setCard(cardSelector.getSelectedCard());
