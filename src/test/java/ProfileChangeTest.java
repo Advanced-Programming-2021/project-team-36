@@ -9,6 +9,7 @@ public class ProfileChangeTest extends Sample {
         run("menu enter Profile");
         run("profile change --nickname --password 1234");
         run("menu exit   ");
+        run("profile change --")
         run("menu enter scoreboard");
         run("scoreboard show");
     }

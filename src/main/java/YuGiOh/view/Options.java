@@ -71,7 +71,6 @@ public class Options {
 
     static Option secondPlayer(boolean required) {
         Option ret = new Option("second_player", true, "second_player");
-        // this was second-player before. I had to change it because it was not compatible with java.cli how to fix it? todo
         ret.setRequired(required);
         return ret;
     }

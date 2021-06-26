@@ -27,18 +27,6 @@ public class Debugger {
             return;
         }
         Debugger.mode = mode;
-        if (mode)
-            initializeDebuggingMode();
-        else
-            finalizeDebuggingMode();
-    }
-
-    private static void initializeDebuggingMode() {
-        // TODO : Add some cool stuff.
-    }
-
-    private static void finalizeDebuggingMode() {
-        // TODO : Add some cool stuff.
     }
 
     public static void setAutomaticSave(String mode) throws InvalidCommandException {
