@@ -161,6 +161,19 @@ public class DuelMenuController extends BaseMenuController {
         throw new RoutingException("menu navigation is not possible");
     }
 
+    public void increaseLP(String valueAsString) {
+        try {
+            int value = Integer.parseInt(valueAsString);
+            game.getCurrentPlayer().increaseLifePoint(value);
+        } catch (Exception exception) {
+            System.out.println("lp should be an integer");
+        }
+    }
+
+    public void ultimateCheat() {
+        
+    }
+
     @Override
     public void control(){
         while (!duel.isFinished()){

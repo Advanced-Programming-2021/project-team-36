@@ -164,6 +164,18 @@ public class Options {
         return ret;
     }
 
+    static Option balance(boolean required) {
+        Option ret = new Option("balance", true, "balance");
+        ret.setRequired(required);
+        return ret;
+    }
+
+    static Option lp(boolean required) {
+        Option ret = new Option("lp", true, "life_points");
+        ret.setRequired(required);
+        return ret;
+    }
+
     static Option doubleAI(boolean required){
         Option ret = new Option("double_ai", true, "double ai");
         ret.setRequired(required);

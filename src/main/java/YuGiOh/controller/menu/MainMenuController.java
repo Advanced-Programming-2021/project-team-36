@@ -60,6 +60,15 @@ public class MainMenuController extends BaseMenuController {
         );
     }
 
+    public void increaseBalance(String balanceAsString) {
+        try {
+            int balance = Integer.parseInt(balanceAsString);
+            user.increaseBalance(balance);
+        } catch (Exception exception) {
+            System.out.println("balance should be an integer");
+        }
+    }
+
     public void logout() throws RoutingException {
         ProgramController.getInstance().navigateToMenu(new LoginMenuController());
         CustomPrinter.println("user logged out successfully!", Color.Default);

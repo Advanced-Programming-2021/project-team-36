@@ -3,6 +3,7 @@ package YuGiOh.view;
 import YuGiOh.controller.menu.MainMenuController;
 import YuGiOh.utils.DatabaseHandler;
 import YuGiOh.view.CommandLine.Command;
+import org.apache.commons.cli.Option;
 
 public class MainMenuView extends BaseMenuView {
     public MainMenuView() {
@@ -49,6 +50,13 @@ public class MainMenuView extends BaseMenuView {
                     DatabaseHandler.saveToDatabase(mp.get("file"));
                 },
                 Options.file(false)
+        ));
+        this.cmd.addCommand(new Command(
+                "cheat increase",
+                mp -> {
+                    MainMenuController.getInstance().increaseBalance(mp.get("balance"));
+                },
+                Options.balance(true)
         ));
     }
 

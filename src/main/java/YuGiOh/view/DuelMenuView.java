@@ -154,6 +154,19 @@ public class DuelMenuView extends BaseMenuView {
                     DuelMenuController.getInstance().surrender();
                 }
         ));
+        this.cmd.addCommand(new Command(
+                "cheat increase",
+                mp -> {
+                    DuelMenuController.getInstance().increaseLP(mp.get("lp"));
+                },
+                Options.lp(true)
+        ));
+        this.cmd.addCommand(new Command(
+                "cheat ultimate cheat",
+                mp -> {
+                    DuelMenuController.getInstance().ultimateCheat();
+                }
+        ));
     }
 
     public boolean askUser(String question, String yes, String no) {
