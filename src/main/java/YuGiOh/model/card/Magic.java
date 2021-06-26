@@ -84,7 +84,7 @@ abstract public class Magic extends Card {
     }
 
     public boolean isActivated() {
-        return this.owner.hasInGraveYard(this);
+        return GameController.getInstance().getGame().getAllCardsOnBoard().contains(this) && isFacedUp();
     }
 
     public MagicState getState() {
@@ -95,5 +95,9 @@ abstract public class Magic extends Card {
     }
 
     public void onDestroyMyMonster() {
+    }
+
+    public boolean letMagicActivate(Magic magic){
+        return true;
     }
 }

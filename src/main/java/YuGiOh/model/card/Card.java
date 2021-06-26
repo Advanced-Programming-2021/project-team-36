@@ -83,7 +83,7 @@ public abstract class Card implements Comparable<Card>, Cloneable, Serializable 
         owner.moveCardToGraveYard(this);
     }
 
-    public void reset() {
+    public void startOfNewTurn() {
     }
 
     public void save() {

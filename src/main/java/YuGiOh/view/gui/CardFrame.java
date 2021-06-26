@@ -67,10 +67,10 @@ public class CardFrame extends Pane {
         imageView.fitHeightProperty().unbind();
         imageView.fitHeightProperty().bind(binding);
     }
-    private void bindImage(boolean reverse){
+    private void bindImage(boolean forceFaceUp){
         imageView.imageProperty().unbind();
-        if(reverse)
-            imageView.imageProperty().bind(Bindings.when(card.facedUpProperty().or(inHandObservable)).then(faceDownImage).otherwise(faceUpImage));
+        if(forceFaceUp)
+            imageView.setImage(faceUpImage);
         else
             imageView.imageProperty().bind(Bindings.when(card.facedUpProperty().or(inHandObservable)).then(faceUpImage).otherwise(faceDownImage));
     }
@@ -146,11 +146,11 @@ public class CardFrame extends Pane {
             ContextMenu contextMenu = new ContextMenu();
             int buttonFontSize = 15;
             contextMenu.getItems().addAll(
-                    new MenuItem("", new CustomButton("summon", buttonFontSize, ()-> gameRoot.addRunnableToQueryGameForCard(
+                    new MenuItem("", new CustomButton("summon", buttonFontSize, ()-> gameRoot.addRunnableToMainThreadForCard(
                             card,
                         ()-> DuelMenuController.getInstance().summonCard(card)
                     ))),
-                    new MenuItem("", new CustomButton("set", buttonFontSize, ()-> gameRoot.addRunnableToQueryGameForCard(
+                    new MenuItem("", new CustomButton("set", buttonFontSize, ()-> gameRoot.addRunnableToMainThreadForCard(
                             card,
                             ()-> DuelMenuController.getInstance().setCard(card)
                     ))),
@@ -158,7 +158,7 @@ public class CardFrame extends Pane {
                         ArrayList<CustomButton> buttons = new ArrayList<>();
                         for(MonsterState state : new MonsterState[]{MonsterState.DEFENSIVE_HIDDEN, MonsterState.DEFENSIVE_OCCUPIED, MonsterState.OFFENSIVE_OCCUPIED}){
                             buttons.add(new CustomButton(state.getName(), buttonFontSize, ()->{
-                                gameRoot.addRunnableToQueryGameForCard(
+                                gameRoot.addRunnableToMainThreadForCard(
                                         card,
                                         ()->DuelMenuController.getInstance().changeCardPosition(card, state)
                                 );
@@ -166,17 +166,17 @@ public class CardFrame extends Pane {
                         }
                         new AlertBox().display(gameRoot, "choose state", buttons);
                     })),
-                    new MenuItem("", new CustomButton("flip summon", buttonFontSize, ()->gameRoot.addRunnableToQueryGameForCard(
+                    new MenuItem("", new CustomButton("flip summon", buttonFontSize, ()->gameRoot.addRunnableToMainThreadForCard(
                             card,
                             ()-> DuelMenuController.getInstance().flipSummon(card)
                     ))),
                     new MenuItem("", new CustomButton("activate effect", buttonFontSize, ()->{
-                        gameRoot.addRunnableToQueryGameForCard(
+                        gameRoot.addRunnableToMainThreadForCard(
                                 card,
                                 ()-> DuelMenuController.getInstance().activateEffect(card)
                         );
                     })),
-                    new MenuItem("", new CustomButton("direct attack", buttonFontSize, ()->gameRoot.addRunnableToQueryGameForCard(
+                    new MenuItem("", new CustomButton("direct attack", buttonFontSize, ()->gameRoot.addRunnableToMainThreadForCard(
                             card,
                             ()-> DuelMenuController.getInstance().directAttack(card)
                     )))

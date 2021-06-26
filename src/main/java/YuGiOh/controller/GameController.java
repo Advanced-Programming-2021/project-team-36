@@ -118,16 +118,15 @@ public class GameController {
         game.setPhase(game.getPhase().nextPhase());
         if(mustChangeTurn){
             game.changeTurn();
-            getCurrentPlayerController().refresh();
+            playerController1.refresh();
+            playerController2.refresh();
         }
         DuelMenuController.getInstance().getGraphicView().resetSelector();
     }
 
     public void goNextPhaseAndNotify() {
-        synchronized (game.phaseProperty()) {
-            game.phaseProperty().notifyAll(); // todo any problem for AI?
-            goNextPhase();
-        }
+        MainGameThread.getInstance().stopRunningQueuedTasks();
+        goNextPhase();
     }
 
     public PlayerController getPlayerControllerByPlayer(Player player){
@@ -161,6 +160,7 @@ public class GameController {
                 }
             } catch (RoundOverExceptionEvent roundOverEvent) {
                 GuiReporter.getInstance().report(new RoundOverEvent(roundOverEvent));
+                break;
             }
         }
     }

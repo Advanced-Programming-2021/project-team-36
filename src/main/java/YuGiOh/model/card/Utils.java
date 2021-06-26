@@ -124,6 +124,25 @@ public class Utils {
         return cards.toArray(new Card[0]);
     }
 
+    public static void checkIfAllImplementedCardsAreOk(){
+        for(Class<?> magicClass : magicCardsClasses){
+            String[] strings = magicClass.getName().split("\\.");
+            String name = strings[strings.length-1];
+            if(getCard(name) == null)
+                throw new Error("Could not find " + name);
+            if(getMagic(name) == null)
+                throw new Error("Could not find " + name);
+        }
+        for(Class<?> monsterClass : specialMonstersClasses){
+            String[] strings = monsterClass.getName().split("\\.");
+            String name = strings[strings.length-1];
+            if(getCard(name) == null)
+                throw new Error("Could not find " + name);
+            if(getMonster(name) == null)
+                throw new Error("Could not find " + name);
+        }
+    }
+
     protected static String formatClassName(String name) {
         String[] elements = name.trim().replaceAll("[,\\-']", "").split("\\s+");
         String formattedName = "";

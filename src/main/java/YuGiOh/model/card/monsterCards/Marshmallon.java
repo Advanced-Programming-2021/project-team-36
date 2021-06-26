@@ -1,11 +1,13 @@
 package YuGiOh.model.card.monsterCards;
 
 import YuGiOh.controller.GameController;
+import YuGiOh.model.enums.Color;
 import YuGiOh.model.enums.MonsterAttribute;
 import YuGiOh.model.enums.MonsterCardType;
 import YuGiOh.model.enums.MonsterType;
 import YuGiOh.model.card.action.Effect;
 import YuGiOh.model.card.Monster;
+import YuGiOh.utils.CustomPrinter;
 
 public class Marshmallon extends Monster {
     boolean checkIfFaceIsDown = false;
@@ -14,12 +16,11 @@ public class Marshmallon extends Monster {
         super(name, description, price, attackDamage, defenseRate, attribute, monsterType, monsterCardType, level);
     }
 
-    // todo. is it correct? your player may get damage even if this card does not get destroyed!
-
     @Override
     public void tryToSendToGraveYardOfMe(){
         // it is really nothing!
         // this monster cannot be killed!
+        CustomPrinter.println("Marshmallon is still alive! ha ha ha", Color.Cyan);
     }
 
     @Override
@@ -34,7 +35,7 @@ public class Marshmallon extends Monster {
                     GameController.getInstance().getGame().getOtherPlayer(this.owner),
                     1000
             );
-            damageStep(attacker);
         }
+        damageStep(attacker);
     }
 }

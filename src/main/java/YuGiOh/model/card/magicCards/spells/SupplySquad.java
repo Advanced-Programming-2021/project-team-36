@@ -34,7 +34,7 @@ public class SupplySquad extends Spell {
     }
 
     @Override
-    public void reset() {
+    public void startOfNewTurn() {
         isActivated = false;
     }
 

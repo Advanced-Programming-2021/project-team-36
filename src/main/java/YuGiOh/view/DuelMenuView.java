@@ -1,7 +1,6 @@
 package YuGiOh.view;
 
 import YuGiOh.controller.MainGameThread;
-import YuGiOh.controller.QueryGameThread;
 import YuGiOh.model.Game;
 import YuGiOh.model.card.Card;
 import YuGiOh.view.cardSelector.CardSelector;
@@ -47,7 +46,6 @@ public class DuelMenuView extends Application {
         gameField = new GameField(game, root.widthProperty().multiply(0.8), root.heightProperty().multiply(1));
         infoBox = new DuelInfoBox(game, root.widthProperty().multiply(0.2), root.heightProperty().multiply(1));
         infoBox.setGameField(gameField);
-        gameField.setInfoBox(infoBox);
         root.getChildren().addAll(infoBox, gameField);
         selector = new CardSelector(infoBox);
         scene = new Scene(stackPane, WIDTH, HEIGHT);
@@ -73,7 +71,7 @@ public class DuelMenuView extends Application {
     // all of this asking user must happen in Query Thread!
 
     public boolean askUser(String question, String yes, String no) {
-        return QueryGameThread.getInstance().blockUnblockRunningThreadAndAskInGui((QueryGameThread.Task<Boolean>) ()->
+        return MainGameThread.getInstance().blockUnblockRunningThreadAndDoInGui((MainGameThread.Task<Boolean>) ()->
                 new AlertBox().displayYesNoStandAlone(question, yes, no));
     }
 
@@ -88,7 +86,7 @@ public class DuelMenuView extends Application {
             buttons.add(new CustomButton(c.getName(), 17, ()->{}));
         });
 
-        int ret = QueryGameThread.getInstance().blockUnblockRunningThreadAndAskInGui((QueryGameThread.Task<Integer>) ()->
+        int ret = MainGameThread.getInstance().blockUnblockRunningThreadAndDoInGui((MainGameThread.Task<Integer>) ()->
                 new AlertBox().displayChoicesStandAlone(message, buttons));
         if(ret == -1)
             throw new ResistToChooseCard();
@@ -99,7 +97,7 @@ public class DuelMenuView extends Application {
         ArrayList<CustomButton> buttons = new ArrayList<>();
         choices.forEach(s->buttons.add(new CustomButton(s, 17, ()->{})));
 
-        int ret = QueryGameThread.getInstance().blockUnblockRunningThreadAndAskInGui((QueryGameThread.Task<Integer>) ()->
+        int ret = MainGameThread.getInstance().blockUnblockRunningThreadAndDoInGui((MainGameThread.Task<Integer>) ()->
                 new AlertBox().displayChoicesStandAlone(question, buttons));
         if(ret == -1)
             throw new ResistToChooseCard();

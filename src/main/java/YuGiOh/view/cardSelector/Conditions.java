@@ -91,9 +91,7 @@ public class Conditions {
     }
 
     public static SelectCondition getMagicFromField() {
-        return (Card card) -> {
-            return card instanceof Magic && GameController.getInstance().getGame().hasInField(card);
-        };
+        return (card) -> card instanceof Magic && getGame().getAllCardsOnBoard().contains(card);
     }
 
     public static SelectCondition getMonsterFromGraveYard() {

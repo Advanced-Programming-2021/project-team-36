@@ -1,6 +1,7 @@
 package YuGiOh.controller.player;
 
 import YuGiOh.controller.GameController;
+import YuGiOh.controller.MainGameThread;
 import YuGiOh.view.DuelMenuView;
 import YuGiOh.view.cardSelector.ResistToChooseCard;
 import YuGiOh.view.cardSelector.SelectCondition;
@@ -22,21 +23,7 @@ public class HumanPlayerController extends PlayerController {
     }
 
     private void runUntilEndOfPhase(){
-        ObjectProperty<Phase> phase = GameController.getInstance().getGame().phaseProperty();
-        synchronized (phase) {
-            try {
-                phase.wait();
-            } catch (InterruptedException e){
-                e.printStackTrace();
-            }
-        }
-
-//        DuelMenuView view = new DuelMenuView();
-//        Game game = GameController.instance.getGame();
-//        Phase phase = game.getPhase();
-//        while(game.getPhase().equals(phase)) {
-//            view.runNextCommand();
-//        }
+        MainGameThread.getInstance().runQueuedTasks();
     }
 
     @Override

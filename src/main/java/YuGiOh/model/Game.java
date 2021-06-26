@@ -173,12 +173,4 @@ public class Game {
     public SimpleObjectProperty<Phase> phaseProperty() {
         return phase;
     }
-
-    public boolean hasInField(Card card) {
-        Board board1 = firstPlayer.getBoard();
-        Board board2 = secondPlayer.getBoard();
-        return board1.getMonsterCardZone().containsValue(card) || board1.getMagicCardZone().containsValue(card)
-                || board2.getMonsterCardZone().containsValue(card) || board2.getMagicCardZone().containsValue(card)
-                || board1.getFieldZoneCard().equals(card) || board2.getFieldZoneCard().equals(card);
-    }
 }

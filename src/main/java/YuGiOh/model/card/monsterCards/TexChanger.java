@@ -21,32 +21,30 @@ public class TexChanger extends Monster {
 
     @Override
     protected void specialEffectWhenBeingAttacked(Monster attacker) throws ResistToChooseCard, LogicException {
-        System.out.println("WE ARE HERE");
         PlayerController controller = GameController.getInstance().getPlayerControllerByPlayer(owner);
 
-        if(lastTurnActivated != GameController.instance.getGame().getTurn()) {
-            lastTurnActivated = GameController.instance.getGame().getTurn();
+        if(lastTurnActivated != GameController.instance.getGame().getTurn() &&
+                controller.askRespondToQuestion("Do you want to activate the effect of tex changer?", "yes", "no")) {
 
-            if (controller.askRespondToQuestion("Do you want to activate the effect of tex changer?", "yes", "no")) {
-                try {
-                    Monster chosen = (Monster) controller.chooseKCards(
-                            "choose 1 cyberse monster from your hand or graveyard or deck",
-                            1,
-                            Conditions.and(
-                                    Conditions.getMonsterCardTypeCondition(owner, MonsterCardType.NORMAL),
-                                    Conditions.getMonsterTypeCondition(owner, MonsterType.CYBERSE),
-                                    Conditions.getIsPlayersCard(owner),
-                                    Conditions.or(
-                                            Conditions.getInZoneCondition(ZoneType.HAND),
-                                            Conditions.getInZoneCondition(ZoneType.GRAVEYARD),
-                                            Conditions.getInZoneCondition(ZoneType.DECK)
-                                    )
-                            )
-                    )[0];
-                    controller.summon(chosen);
-                } catch (LogicException | ResistToChooseCard e){
-                    CustomPrinter.println("We didn't summoned monster", Color.Red);
-                }
+            lastTurnActivated = GameController.instance.getGame().getTurn();
+            try {
+                Monster chosen = (Monster) controller.chooseKCards(
+                        "choose 1 cyberse monster from your hand or graveyard or deck",
+                        1,
+                        Conditions.and(
+                                Conditions.getMonsterCardTypeCondition(owner, MonsterCardType.NORMAL),
+                                Conditions.getMonsterTypeCondition(owner, MonsterType.CYBERSE),
+                                Conditions.getIsPlayersCard(owner),
+                                Conditions.or(
+                                        Conditions.getInZoneCondition(ZoneType.HAND),
+                                        Conditions.getInZoneCondition(ZoneType.GRAVEYARD),
+                                        Conditions.getInZoneCondition(ZoneType.DECK)
+                                )
+                        )
+                )[0];
+                controller.summon(chosen);
+            } catch (LogicException | ResistToChooseCard e){
+                CustomPrinter.println("We didn't summoned monster", Color.Red);
             }
         } else {
             damageStep(attacker);

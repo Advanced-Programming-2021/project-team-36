@@ -54,8 +54,10 @@ public class Board {
         cardsOnHand.add(card);
     }
 
-    public void removeCard(Card card) {
+    public void removeCardIfHas(Card card) {
         CardAddress cardAddress = getCardAddress(card);
+        if(cardAddress == null)
+            return;
         if(cardAddress.isInDeck())
             mainDeck.getCards().remove(card);
         if(cardAddress.isInFieldZone())
@@ -185,7 +187,7 @@ public class Board {
     }
 
     public void moveCardToGraveYard(Card card) {
-        removeCard(card);
+        removeCardIfHas(card);
         graveYard.add(card);
     }
 

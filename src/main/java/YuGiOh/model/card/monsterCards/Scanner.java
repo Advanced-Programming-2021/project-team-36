@@ -23,10 +23,14 @@ public class Scanner extends Monster {
     Monster copiedMonster;
 
     @Override
+    public boolean canActivateEffect(){
+        return lastTurnActivated != GameController.instance.getGame().getTurn();
+    }
+
+    @Override
     public Effect activateEffect() throws LogicException {
         if(lastTurnActivated == GameController.instance.getGame().getTurn())
             throw new LogicException("you can only activate this once in a turn");
-        lastTurnActivated = GameController.instance.getGame().getTurn();
         return ()-> {
             try {
                 copiedMonster = (Monster) GameController.getInstance().getCurrentPlayerController().chooseKCards(
@@ -35,6 +39,7 @@ public class Scanner extends Monster {
                         Conditions.OpponentMonsterFromGraveYard
                 )[0];
                 copiedMonster = (Monster) copiedMonster.clone().readyForBattle(this.owner);
+                lastTurnActivated = GameController.instance.getGame().getTurn();
             } catch (ResistToChooseCard ignored) {
             }
         };
@@ -43,14 +48,14 @@ public class Scanner extends Monster {
     @Override
     public int getAttackDamageOnCard(){
         if(copiedMonster != null && lastTurnActivated == GameController.getInstance().getGame().getTurn())
-            return copiedMonster.getAttackDamage();
+            return copiedMonster.getAttackDamageOnCard();
         return attackDamage;
     }
 
     @Override
     public int getDefenseRateOnCard(){
         if(copiedMonster != null && lastTurnActivated == GameController.getInstance().getGame().getTurn())
-            return copiedMonster.getDefenseRate();
+            return copiedMonster.getDefenseRateOnCard();
         return defenseRate;
     }
 

@@ -2,12 +2,9 @@ package YuGiOh.view;
 
 import YuGiOh.controller.GameController;
 import YuGiOh.controller.ProgramController;
-import YuGiOh.controller.QueryGameThread;
 import YuGiOh.controller.menu.DuelMenuController;
 import YuGiOh.controller.menu.LoginMenuController;
-import YuGiOh.controller.player.AIPlayerController;
 import YuGiOh.controller.player.AggressiveAIPlayerController;
-import YuGiOh.controller.player.HumanPlayerController;
 import YuGiOh.model.Game;
 import YuGiOh.model.Player.AIPlayer;
 import YuGiOh.model.Player.HumanPlayer;
@@ -29,12 +26,13 @@ public class DummyStarter extends Application {
 
             User abolfazl = User.getUserByUsername("Abolfazl");
             User fakeUser2 = new User("magool", "magool.m", "123");
-            Cheat.buildSuperUserWithManyOfThisCards(abolfazl, 40, "TheTricky", "AxeRaider", "TexChanger", "Forest");
-            Cheat.buildSuperUser(fakeUser2);
+            Cheat.buildSuperUserWithManyOfThisCards(fakeUser2, 40, "AxeRaider", "TheTricky", "MonsterReborn", "ManEaterBug");
+            Cheat.buildSuperUserWithManyOfThisCards(abolfazl, 40, "AxeRaider", "TheTricky", "MonsterReborn", "ManEaterBug");
+//            Cheat.buildSuperUser(fakeUser2);
 
             Game game = new Game(
-                    new HumanPlayer(abolfazl),
-                    new AIPlayer(),
+                    new AIPlayer(abolfazl),
+                    new AIPlayer(fakeUser2),
                     3
             );
             new DuelMenuController(game);
