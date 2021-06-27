@@ -33,6 +33,7 @@ public class MonsterReborn extends Spell {
             )[0];
             playerController.summon(monster, 0, true);
             CustomPrinter.println(String.format("<%s>'s <%s> activated successfully", this.owner.getUser().getUsername(), this.getName()), Color.Yellow);
+            CustomPrinter.println(this, Color.Gray);
         };
     }
 

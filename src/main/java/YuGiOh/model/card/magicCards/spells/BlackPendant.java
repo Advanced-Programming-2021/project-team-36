@@ -41,6 +41,7 @@ public class BlackPendant extends Spell {
                     Conditions.getPlayerMonsterFromMonsterZone(this.owner))[0];
             setEquippedMonster(monster);
             CustomPrinter.println(String.format("<%s> equipped <%s> to monster <%s>", this.owner.getUser().getUsername(), this.getName(), monster.getName()), Color.Yellow);
+            CustomPrinter.println(this, Color.Gray);
         };
     }
 

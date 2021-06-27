@@ -32,6 +32,8 @@ public class ManEaterBug extends Monster {
                             GameController.getInstance().getOtherPlayerController(controller).moveCardToGraveYard(monster);
                         else
                             controller.moveCardToGraveYard(monster);
+                        CustomPrinter.println(String.format("<%s>'s <%s> activated successfully", this.owner.getUser().getUsername(), this.getName()), Color.Yellow);
+                        CustomPrinter.println(this.asEffect(), Color.Gray);
                     }
                 } catch (ResistToChooseCard e){
                     CustomPrinter.println("canceled", Color.Default);

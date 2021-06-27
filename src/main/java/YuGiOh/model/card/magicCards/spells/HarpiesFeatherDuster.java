@@ -34,6 +34,7 @@ public class HarpiesFeatherDuster extends Spell {
             if (opponent.getPlayer().getBoard().getFieldZoneCard() != null)
                 opponent.moveCardToGraveYard(opponent.getPlayer().getBoard().getFieldZoneCard());
             CustomPrinter.println(String.format("<%s>'s <%s> activated successfully", this.owner.getUser().getUsername(), this.getName()), Color.Yellow);
+            CustomPrinter.println(this, Color.Gray);
         };
     }
 

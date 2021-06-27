@@ -25,6 +25,7 @@ public class TrapHole extends Trap {
             GameController.getInstance().getPlayerControllerByPlayer(monster.owner).moveCardToGraveYard(monster);
             GameController.getInstance().getPlayerControllerByPlayer(this.owner).moveCardToGraveYard(this);
             CustomPrinter.println(String.format("<%s>'s <%s> activated successfully", this.owner.getUser().getUsername(), this.getName()), Color.Yellow);
+            CustomPrinter.println(this, Color.Gray);
         };
     }
 

@@ -37,7 +37,7 @@ public class Marshmallon extends Monster {
             );
         }
         CustomPrinter.println(String.format("<%s> activated <%s> successfully", this.owner.getUser().getUsername(), this.getName()), Color.Yellow);
-        CustomPrinter.println(this, Color.Gray);
+        CustomPrinter.println(this.asEffect(), Color.Gray);
         damageStep(attacker);
 
     }

@@ -2,9 +2,11 @@ package YuGiOh.model.card.monsterCards;
 
 import YuGiOh.controller.GameController;
 import YuGiOh.controller.LogicException;
+import YuGiOh.model.enums.Color;
 import YuGiOh.model.enums.MonsterAttribute;
 import YuGiOh.model.enums.MonsterCardType;
 import YuGiOh.model.enums.MonsterType;
+import YuGiOh.utils.CustomPrinter;
 import YuGiOh.view.cardSelector.Conditions;
 import YuGiOh.view.cardSelector.ResistToChooseCard;
 import YuGiOh.model.card.action.Effect;
@@ -36,6 +38,8 @@ public class Scanner extends Monster {
                 )[0];
                 copiedMonster = (Monster) copiedMonster.clone().readyForBattle(this.owner);
                 lastTurnActivated = GameController.instance.getGame().getTurn();
+                CustomPrinter.println(String.format("<%s>'s <%s> activated successfully", this.owner.getUser().getUsername(), this.getName()), Color.Yellow);
+                CustomPrinter.println(this.asEffect(), Color.Gray);
             } catch (ResistToChooseCard ignored) {
             }
         };

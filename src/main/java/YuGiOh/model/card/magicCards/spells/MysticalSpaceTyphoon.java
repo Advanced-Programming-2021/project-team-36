@@ -28,6 +28,7 @@ public class MysticalSpaceTyphoon extends Spell {
             PlayerController controller = GameController.getInstance().getPlayerControllerByPlayer(magic.owner);
             controller.moveCardToGraveYard(magic);
             CustomPrinter.println(String.format("<%s>'s <%s> activated successfully", this.owner.getUser().getUsername(), this.getName()), Color.Yellow);
+            CustomPrinter.println(this, Color.Gray);
         };
     }
 

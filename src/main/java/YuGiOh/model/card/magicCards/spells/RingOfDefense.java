@@ -5,8 +5,11 @@ import YuGiOh.controller.events.RoundOverExceptionEvent;
 import YuGiOh.controller.player.PlayerController;
 import YuGiOh.model.card.Magic;
 import YuGiOh.model.card.Spell;
+import YuGiOh.model.card.Trap;
 import YuGiOh.model.card.action.Action;
 import YuGiOh.model.card.action.Effect;
+import YuGiOh.model.card.action.MagicActivation;
+import YuGiOh.model.card.magicCards.traps.MagicCylinder;
 import YuGiOh.model.enums.Color;
 import YuGiOh.model.enums.Icon;
 import YuGiOh.model.enums.Status;
@@ -28,13 +31,15 @@ public class RingOfDefense extends Spell {
                 action.runEffect();
             } catch (RoundOverExceptionEvent ignored) {
             }
+            GameController.getInstance().increaseLifePoint(this.owner,myLifePoint - this.owner.getLifePoint());
             CustomPrinter.println(String.format("<%s>'s <%s> activated successfully.", this.owner.getUser().getUsername(), this.getName()), Color.Yellow);
-            this.owner.setLifePoint(myLifePoint - this.owner.getLifePoint());
+            CustomPrinter.println(this, Color.Gray);
         };
     }
 
     @Override
     public boolean canActivateEffect() {
-        return !getChain().isEmpty();
+        return !getChain().isEmpty() && getChain().peek().getEvent() instanceof MagicActivation &&
+                ((MagicActivation) getChain().peek().getEvent()).getCard() instanceof MagicCylinder;
     }
 }

@@ -23,6 +23,7 @@ public class NegateAttack extends Trap {
             GameController.getInstance().goNextPhase();
             GameController.getInstance().getPlayerControllerByPlayer(this.owner).moveCardToGraveYard(this);
             CustomPrinter.println(String.format("<%s>'s <%s> activated successfully", this.owner.getUser().getUsername(), this.getName()), Color.Yellow);
+            CustomPrinter.println(this, Color.Gray);
         };
     }
 

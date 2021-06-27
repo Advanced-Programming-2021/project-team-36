@@ -108,7 +108,7 @@ public abstract class PlayerController {
         if (card == null)
             throw new LogicException("There is no card to draw");
         player.getBoard().drawCardFromDeck();
-        CustomPrinter.println(String.format("New card added to <%s>'s hand : <%s>", player.getUser().getUsername(), card), Color.Blue);
+        CustomPrinter.println(String.format("new card added to <%s>'s hand : <%s>", player.getUser().getUsername(), card), Color.Blue);
     }
 
     public void validateSummon(Monster monster, int requiredTributes, SelectCondition condition) throws LogicException {

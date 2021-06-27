@@ -245,6 +245,10 @@ public class Monster extends Card {
         return 1;
     }
 
+    public String asEffect() {
+        return String.format("%s (Monster - %s) : %s", getName(), getMonsterCardType(), getDescription());
+    }
+
     @Override
     public String toString() {
         return String.format("%s (Monster - %s, Level <%d>, Attribute <%s>, Monster Type <%s>, Attack <%d>, Defense <%s>) %s", getName(), getMonsterCardType(), getLevel(), getAttribute(), getMonsterType(), getAttackDamageOnCard(), getDefenseRateOnCard(), getDescription());

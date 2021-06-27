@@ -36,11 +36,12 @@ public class Terraforming extends Spell {
                     if (spell.getIcon().equals(Icon.FIELD)) {
                         cards.remove(spell);
                         player.getBoard().getCardsOnHand().add(spell);
-                        CustomPrinter.println(String.format("New card added to <%s>'s hand : <%s>", player.getUser().getUsername(), card), Color.Blue);
+                        CustomPrinter.println(String.format("new card added to <%s>'s hand : <%s>", player.getUser().getUsername(), card), Color.Blue);
+                        CustomPrinter.println(String.format("<%s> activated <%s> successfully", this.owner.getUser().getUsername(), this.getName()), Color.Yellow);
+                        CustomPrinter.println(this, Color.Gray);
                         break;
                     }
                 }
-            CustomPrinter.println(String.format("<%s> activated <%s> successfully", this.owner.getUser().getUsername(), this.getName()), Color.Yellow);
         };
     }
 

@@ -57,6 +57,10 @@ public class GameController {
             throw new RoundOverExceptionEvent(GameResult.NOT_DRAW, game.getOpponentPlayer(), game.getCurrentPlayer(), game.getCurrentPlayer().getLifePoint());
     }
 
+    public void increaseLifePoint(Player player, int amount) {
+        player.increaseLifePoint(amount);
+        CustomPrinter.println(String.format("<%s>'s life point increased by <%d> and it is <%d> now", player.getUser().getUsername(), amount, player.getLifePoint()), Color.Yellow);
+    }
     public void decreaseLifePoint(Player player, int amount, boolean checkEndGame) {
         player.decreaseLifePoint(amount);
         CustomPrinter.println(String.format("<%s>'s life point decreased by <%d> and it is <%d> now", player.getUser().getUsername(), amount, player.getLifePoint()), Color.Yellow);

@@ -25,6 +25,7 @@ public class PotOfGreed extends Spell {
             if (this.owner.getBoard().getMainDeck().getTopCard() != null)
                 gameController.getPlayerControllerByPlayer(this.owner).drawCard();
             CustomPrinter.println(String.format("<%s>'s <%s> activated successfully", this.owner.getUser().getUsername(), this.getName()), Color.Yellow);
+            CustomPrinter.println(this, Color.Gray);
         };
     }
 
