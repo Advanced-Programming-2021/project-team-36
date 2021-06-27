@@ -22,11 +22,10 @@ public class HumanPlayerController extends PlayerController {
     }
 
     private void runUntilEndOfPhase() {
-        DuelMenuView view = new DuelMenuView();
         Game game = GameController.instance.getGame();
         Phase phase = game.getPhase();
         while (game.getPhase().equals(phase)) {
-            view.runNextCommand();
+            DuelMenuController.getInstance().getView().runNextCommand();
         }
     }
 
@@ -89,7 +88,7 @@ public class HumanPlayerController extends PlayerController {
             throw new ResistToChooseCard();
 
         while (cards.size() < numberOfCards) {
-            Card card = getView().askUserToChooseCard(message, condition);
+            Card card = getView().askUserToChooseCard(message + " select twice to deselect!", condition);
             if (cards.contains(card))
                 cards.remove(card);
             else

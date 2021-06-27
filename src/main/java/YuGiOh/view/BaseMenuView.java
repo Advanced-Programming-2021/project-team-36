@@ -52,46 +52,18 @@ abstract public class BaseMenuView {
                 "help",
                 mp -> {
                     this.cmd.printAllHelpers();
+                    String[] navigates = ProgramController.getInstance().getCurrentController().possibleNavigates();
+                    CustomPrinter.println("you are in " + getMenuName(), Color.Cyan);
+                    if(navigates.length == 0) {
+                        CustomPrinter.println("no menu navigation is possible from here", Color.Blue);
+                    } else {
+                        CustomPrinter.println("you can navigate to this menus from here: ", Color.Blue);
+                        for(int i = 0; i < navigates.length; i++)
+                            CustomPrinter.println((i+1) + ". " + navigates[i], Color.Cyan);
+                    }
                 }
-        ));
-        this.cmd.addCommand(new Command(
-                "debug",
-                mp -> {
-                    Debugger.setDebugMode(mp.get("mode"));
-                },
-                Options.mode(true)
-        ));
-        this.cmd.addCommand(new Command(
-                "debug",
-                mp -> {
-                    Debugger.setCaptureMode(mp.get("capture"));
-                },
-                Options.captureMode(true)
-        ));
-        this.cmd.addCommand(new Command(
-                "debug import test",
-                mp -> {
-                    Debugger.importTest(mp.get("file"), mp.get("count"));
-                },
-                Options.file(true),
-                Options.count(false)
-        ));
-        this.cmd.addCommand(new Command(
-                "debug",
-                mp -> {
-                    Debugger.setAutomaticSave(mp.get("automatic_save"));
-                },
-                Options.automatic_save(true)
-        ));
-        this.cmd.addCommand(new Command(
-                "load from database",
-                mp -> {
-                    DatabaseHandler.loadFromDatabase(mp.get("file"));
-                    System.out.println("successfully loaded from database");
-                },
-                Options.file(false)
         ));
     }
 
-    abstract protected String getMenuName();
+    abstract public String getMenuName();
 }

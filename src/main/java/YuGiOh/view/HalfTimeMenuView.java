@@ -75,7 +75,7 @@ public class HalfTimeMenuView extends BaseMenuView {
     }
 
     @Override
-    protected String getMenuName() {
+    public String getMenuName() {
         return "Half-Time Menu";
     }
 }

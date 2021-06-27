@@ -30,7 +30,8 @@ public class Game {
     public Game(Player firstPlayer, Player secondPlayer) throws ModelException {
         if (firstPlayer.getUser().getUsername().equals(secondPlayer.getUser().getUsername()))
             throw new ModelException("you can't play with yourself");
-    /*    Random random = new Random(); movagghat: comment kardam ke too graphic ma paeeni bashim
+
+        Random random = new Random();
         if (random.nextInt(2) == 0) {
             this.firstPlayer = firstPlayer;
             this.secondPlayer = secondPlayer;
@@ -38,9 +39,7 @@ public class Game {
             this.firstPlayer = secondPlayer;
             this.secondPlayer = firstPlayer;
         }
-     */
-        this.firstPlayer = firstPlayer;
-        this.secondPlayer = secondPlayer;
+
         firstPlayer.getMainDeck().shuffleCards();
         secondPlayer.getMainDeck().shuffleCards();
 

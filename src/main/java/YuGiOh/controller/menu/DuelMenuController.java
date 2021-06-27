@@ -157,31 +157,33 @@ public class DuelMenuController extends BaseMenuController {
 
     @Override
     public BaseMenuController getNavigatingMenuObject(Class<? extends BaseMenuController> menu) throws RoutingException {
+        if (!duel.isFinished())
+            throw new RoutingException("you cannot navigate out of an ongoing game");
         if (menu.equals(MainMenuController.class))
             return MainMenuController.getInstance();
-        if (!Debugger.getMode())
-            throw new RoutingException("you cannot navigate out of an ongoing game");
         throw new RoutingException("menu navigation is not possible");
     }
 
-    public void increaseLP(String valueAsString) {
-        try {
-            int value = Integer.parseInt(valueAsString);
-            game.getCurrentPlayer().increaseLifePoint(value);
-        } catch (Exception exception) {
-            System.out.println("lp should be an integer");
-        }
+    @Override
+    public String[] possibleNavigates(){
+        return new String[]{};
+    }
+
+    public void increaseLP(int extra) {
+        game.getCurrentPlayer().increaseLifePoint(extra);
+        CustomPrinter.println("lp increased successfully", Color.Cyan);
     }
 
     public void ultimateCheat() throws RoundOverExceptionEvent {
         surrender(game.getOpponentPlayer());
+        CustomPrinter.println("you forced opponent to surrender", Color.Cyan);
     }
 
     @Override
     public void control(){
         while (!duel.isFinished()){
             this.game = duel.getCurrentGame();
-            ((DuelMenuView) view).startNewGame(game);
+            ((DuelMenuView) view).startNewGame();
             this.gameController = new GameController(game);
             try {
                 gameController.control();
@@ -201,7 +203,7 @@ public class DuelMenuController extends BaseMenuController {
                     }
                     PlayerController secondPlayerController = GameController.getInstance().getPlayerControllerByPlayer(duel.getSecondPlayer());
                     if (secondPlayerController instanceof HumanPlayerController) {
-                        HalfTimeMenuController halfTimeMenuController = new HalfTimeMenuController(firstPlayerController);
+                        HalfTimeMenuController halfTimeMenuController = new HalfTimeMenuController(secondPlayerController);
                         try {
                             halfTimeMenuController.control();
                         } catch (PlayerReadyExceptionEvent ignored) {

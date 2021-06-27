@@ -55,6 +55,11 @@ public class LoginMenuController extends BaseMenuController {
     }
 
     @Override
+    public String[] possibleNavigates() {
+        return new String[]{};
+    }
+
+    @Override
     public void exitMenu() {
         ProgramController.getInstance().programExit();
     }

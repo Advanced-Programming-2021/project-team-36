@@ -11,6 +11,7 @@ import YuGiOh.model.enums.Color;
 import YuGiOh.utils.CustomPrinter;
 import YuGiOh.utils.RoutingException;
 import YuGiOh.view.MainMenuView;
+import YuGiOh.view.ParserException;
 import lombok.Getter;
 
 public class MainMenuController extends BaseMenuController {
@@ -60,13 +61,8 @@ public class MainMenuController extends BaseMenuController {
         );
     }
 
-    public void increaseBalance(String balanceAsString) {
-        try {
-            int balance = Integer.parseInt(balanceAsString);
-            user.increaseBalance(balance);
-        } catch (Exception exception) {
-            System.out.println("balance should be an integer");
-        }
+    public void increaseBalance(int extra) {
+        user.increaseBalance(extra);
     }
 
     public void logout() throws RoutingException {
@@ -89,6 +85,11 @@ public class MainMenuController extends BaseMenuController {
         if (menu.equals(DeckMenuController.class))
             return new DeckMenuController(user);
         throw new RoutingException("menu navigation is not possible");
+    }
+
+    @Override
+    public String[] possibleNavigates() {
+        return new String[]{"Profile", "Scoreboard", "Shop", "Deck"};
     }
 
     @Override

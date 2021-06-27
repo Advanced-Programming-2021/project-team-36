@@ -48,4 +48,8 @@ public class ScoreboardMenuController extends BaseMenuController {
         throw new RoutingException("menu navigation is not possible");
     }
 
+    @Override
+    public String[] possibleNavigates() {
+        return new String[]{"Main"};
+    }
 }

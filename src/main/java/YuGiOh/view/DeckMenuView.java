@@ -72,7 +72,7 @@ public class DeckMenuView extends BaseMenuView {
     }
 
     @Override
-    protected String getMenuName() {
+    public String getMenuName() {
         return "Deck Menu";
     }
 }

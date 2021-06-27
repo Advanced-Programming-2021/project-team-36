@@ -54,14 +54,14 @@ public class MainMenuView extends BaseMenuView {
         this.cmd.addCommand(new Command(
                 "cheat increase",
                 mp -> {
-                    MainMenuController.getInstance().increaseBalance(mp.get("balance"));
+                    MainMenuController.getInstance().increaseBalance(Parser.IntegerParser(mp.get("balance")));
                 },
                 Options.balance(true)
         ));
     }
 
     @Override
-    protected String getMenuName() {
+    public String getMenuName() {
         return "Main Menu";
     }
 }

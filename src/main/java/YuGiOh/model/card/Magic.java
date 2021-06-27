@@ -48,7 +48,7 @@ abstract public class Magic extends Card {
 
     @Override
     public boolean isFacedUp(){
-        return magicState.equals(MagicState.OCCUPIED);
+        return magicState != null && magicState.equals(MagicState.OCCUPIED);
     }
 
     @Override

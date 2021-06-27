@@ -13,6 +13,7 @@ import YuGiOh.view.ParserException;
 import lombok.Getter;
 
 import java.util.Arrays;
+import java.util.List;
 
 
 public class DeckMenuController extends BaseMenuController {
@@ -114,4 +115,8 @@ public class DeckMenuController extends BaseMenuController {
         throw new RoutingException("menu navigation is not possible");
     }
 
+    @Override
+    public String[] possibleNavigates() {
+        return new String[]{"Main"};
+    }
 }

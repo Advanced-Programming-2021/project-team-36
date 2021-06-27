@@ -131,7 +131,7 @@ public class DuelMenuView extends BaseMenuView {
         this.cmd.addCommand(new Command(
                 "cheat increase",
                 mp -> {
-                    DuelMenuController.getInstance().increaseLP(mp.get("lp"));
+                    DuelMenuController.getInstance().increaseLP(Parser.IntegerParser(mp.get("lp")));
                 },
                 Options.lp(true)
         ));
@@ -145,8 +145,8 @@ public class DuelMenuView extends BaseMenuView {
 
     public boolean askUser(String question, String yes, String no) {
         CustomPrinter.println(String.format("%s(%s/%s)", question, yes, no), Color.Cyan);
-        String response = CustomScanner.nextLine();
         while (true) {
+            String response = CustomScanner.nextLine();
             if (response.equalsIgnoreCase(yes))
                 return true;
             else if (response.equalsIgnoreCase(no))
@@ -160,28 +160,31 @@ public class DuelMenuView extends BaseMenuView {
         CustomPrinter.println(message, Color.Default);
         resetSelector();
         CustomPrinter.println("you have to select a card(q to quit)", Color.Cyan);
-        String line = CustomScanner.nextLine();
 
-        if (line.equalsIgnoreCase("q"))
-            throw new ResistToChooseCard();
-        try {
-            CommandLine commandLine = new CommandLine();
-            CardSelector.addSelectingCommandsToCmd(
-                    commandLine,
-                    cardAddress -> {
-                        Card card = GameController.getInstance().getGame().getCardByCardAddress(cardAddress);
-                        if (card == null)
-                            throw new LogicException("no card found in the given position");
-                        if (!condition.canSelect(card))
-                            throw new LogicException("you can't select this card");
-                        cardSelector.selectCard(cardAddress);
-                    },
-                    null
-            );
-            commandLine.runNextCommand(line);
-        } catch (CommandLineException | ParserException | LogicException | ModelException | RoutingException e) {
-            CustomPrinter.println(e.getMessage(), Color.Default);
-            throw new ResistToChooseCard();
+        CommandLine commandLine = new CommandLine();
+        CardSelector.addSelectingCommandsToCmd(
+                commandLine,
+                cardAddress -> {
+                    Card card = GameController.getInstance().getGame().getCardByCardAddress(cardAddress);
+                    if (card == null)
+                        throw new LogicException("no card found in the given position");
+                    if (!condition.canSelect(card))
+                        throw new LogicException("you can't select this card");
+                    cardSelector.selectCard(cardAddress);
+                },
+                null
+        );
+
+        while(true) {
+            String line = CustomScanner.nextLine();
+            if (line.equalsIgnoreCase("q"))
+                throw new ResistToChooseCard();
+            try {
+                commandLine.runNextCommand(line);
+                break;
+            } catch (CommandLineException | ParserException | LogicException | ModelException | RoutingException e) {
+                CustomPrinter.println(e.getMessage(), Color.Red);
+            }
         }
         try {
             return cardSelector.getSelectedCard();
@@ -214,6 +217,7 @@ public class DuelMenuView extends BaseMenuView {
         for(String s : choices)
             sb.append(count + ". " + s);
         CustomPrinter.println(question, Color.Default);
+        CustomPrinter.println(sb.toString(), Color.Cyan);
         int ret = -1;
         while (true) {
             String number = CustomScanner.nextLine();
@@ -233,7 +237,7 @@ public class DuelMenuView extends BaseMenuView {
         return ret;
     }
 
-    public void startNewGame(Game game) {
+    public void startNewGame() {
         CustomPrinter.println("new round begins!", Color.Red);
         CustomPrinter.println("3 .. 2 .. 1 .. fight!", Color.Red);
         resetSelector();
@@ -256,7 +260,7 @@ public class DuelMenuView extends BaseMenuView {
     }
 
     @Override
-    protected String getMenuName() {
+    public String getMenuName() {
         return "Duel Menu";
     }
 }

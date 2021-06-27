@@ -410,11 +410,11 @@ public abstract class PlayerController {
                 new Action(
                         new MagicActivation(spell),
                         () -> {
+                            spell.activateEffect().run();
                             if (player.getBoard().getCardsOnHand().contains(spell)) {
                                 player.getBoard().removeFromHand(spell);
                                 addMagicToBoard(spell, MagicState.OCCUPIED);
                             }
-                            spell.activateEffect().run();
                         }
                 )
         );

@@ -63,6 +63,9 @@ public class HalfTimeMenuController {
     }
 
     public void control() {
+        CustomPrinter.println("nice job " + playerController.getPlayer().getUser().getNickname(), Color.Blue);
+        CustomPrinter.println("now you are in half time", Color.Blue);
+        CustomPrinter.println("when you say ready new round begins", Color.Blue);
         HalfTimeMenuView view = new HalfTimeMenuView();
         while (true) {
             view.runNextCommand();

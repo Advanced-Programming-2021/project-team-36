@@ -13,7 +13,7 @@ public class Debugger {
     private static boolean testMode = false;
     private static boolean mode = false;
     private static boolean captureMode = false;
-    private static boolean automaticSave = false;
+    private static boolean automaticSave = true;
     private static int currentTestBatch = 1;
     final private static String testFileHeader = "tests/TestBatch";
     private static BufferedWriter bufferedWriter;

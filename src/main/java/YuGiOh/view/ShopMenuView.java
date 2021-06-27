@@ -27,7 +27,7 @@ public class ShopMenuView extends BaseMenuView {
     }
 
     @Override
-    protected String getMenuName() {
+    public String getMenuName() {
         return "Shop Menu";
     }
 }

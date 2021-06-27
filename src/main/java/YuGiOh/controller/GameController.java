@@ -98,6 +98,7 @@ public class GameController {
     }
 
     public void control() {
+        CustomPrinter.println(String.format("its %s's turn%n", game.getCurrentPlayer().getUser().getUsername()), Color.Blue);
         while (true) {
             if(!game.getPhase().equals(previousIterationPhase)){
                 previousIterationPhase = game.getPhase();
@@ -110,10 +111,13 @@ public class GameController {
             } else if (game.getPhase().equals(Phase.STANDBY_PHASE)) {
                 goNextPhase();
             } else if (game.getPhase().equals(Phase.MAIN_PHASE1)) {
+                DuelMenuController.getInstance().showBoard();
                 getCurrentPlayerController().controlMainPhase1();
             } else if (game.getPhase().equals(Phase.BATTLE_PHASE)) {
+                DuelMenuController.getInstance().showBoard();
                 getCurrentPlayerController().controlBattlePhase();
             } else if (game.getPhase().equals(Phase.MAIN_PHASE2)) {
+                DuelMenuController.getInstance().showBoard();
                 getCurrentPlayerController().controlMainPhase2();
             } else if (game.getPhase().equals(Phase.END_PHASE)) {
                 goNextPhase();

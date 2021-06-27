@@ -1,4 +1,6 @@
+import YuGiOh.controller.ProgramController;
 import YuGiOh.controller.menu.DuelMenuController;
+import YuGiOh.controller.menu.MainMenuController;
 import YuGiOh.model.Duel;
 import YuGiOh.model.ModelException;
 import YuGiOh.model.Player.AIPlayer;
@@ -16,7 +18,9 @@ public class DoubleAITest extends IntegrationTestBase {
 
     @Test
     public void multipleTest() throws ModelException {
-        int numberOfTests = 1;
+        new ProgramController();
+        new MainMenuController(new User("salam", "this", "test"));
+        int numberOfTests = 10;
         for (int i = 0; i < numberOfTests; i ++) {
             battle();
         }
@@ -36,7 +40,7 @@ public class DoubleAITest extends IntegrationTestBase {
             for (int j = 0; j < numberOfCards; j ++)
                 user.addCard(allCards[random.nextInt(allCards.length)]);
         }
-        DuelMenuController duelMenuController = new DuelMenuController(new Duel(players[0], players[1], 1));
+        DuelMenuController duelMenuController = new DuelMenuController(new Duel(players[0], players[1], 3));
         duelMenuController.control();
     }
 }

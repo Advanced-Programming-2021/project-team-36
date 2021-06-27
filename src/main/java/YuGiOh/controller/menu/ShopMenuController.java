@@ -28,6 +28,7 @@ public class ShopMenuController extends BaseMenuController {
         if(user.getBalance() < card.getPrice())
             throw new ModelException("not enough money");
         user.buy(card);
+        CustomPrinter.println("You bought " + card.getName() + " successfully", Color.Cyan);
     }
 
     public void showAll() {
@@ -48,5 +49,10 @@ public class ShopMenuController extends BaseMenuController {
         if (menu.equals(MainMenuController.class))
             return MainMenuController.getInstance();
         throw new RoutingException("menu navigation is not possible");
+    }
+
+    @Override
+    public String[] possibleNavigates() {
+        return new String[]{"Main"};
     }
 }
