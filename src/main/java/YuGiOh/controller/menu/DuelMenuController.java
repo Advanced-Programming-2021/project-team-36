@@ -41,7 +41,7 @@ public class DuelMenuController extends BaseMenuController {
     }
 
     public void printCurrentPhase() {
-        CustomPrinter.println("phase: " + game.getPhase().getVerboseName(), Color.Blue);
+        CustomPrinter.println("phase: " + game.getPhase().getVerboseName(), Color.Cyan);
     }
 
     public void goNextPhase() {

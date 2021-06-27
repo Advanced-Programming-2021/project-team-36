@@ -43,6 +43,7 @@ public class UnitedWeStand extends Spell {
                     1,
                     Conditions.getPlayerMonsterFromMonsterZone(this.owner))[0];
             setEquippedMonster(monster);
+            CustomPrinter.println(String.format("<%s> equipped <%s> to monster <%s>", this.owner.getUser().getUsername(), this.getName(), monster.getName()), Color.Yellow);
         };
     }
 
@@ -53,6 +54,6 @@ public class UnitedWeStand extends Spell {
             if (GameController.getInstance().getGame().getCardByCardAddress(cardAddress) != null)
                 return true;
         }
-        return false;
+        return !isFacedUp();
     }
 }

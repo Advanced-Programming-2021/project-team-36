@@ -35,7 +35,9 @@ public class Forest extends Spell {
 
     @Override
     protected Effect getEffect() {
-        return () -> {};
+        return () -> {
+            CustomPrinter.println(String.format("<%s> activated field spell <%s>", this.owner.getUser().getUsername(), this.getName()), Color.Yellow);
+        };
     }
 
     @Override

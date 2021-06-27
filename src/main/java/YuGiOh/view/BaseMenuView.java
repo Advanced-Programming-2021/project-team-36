@@ -25,7 +25,7 @@ abstract public class BaseMenuView {
                 Debugger.captureCommand(line);
             this.cmd.runNextCommand(line);
         } catch (CommandLineException | ParserException | ModelException | LogicException | RoutingException e) {
-            CustomPrinter.println(e.getMessage(), Color.Default);
+            CustomPrinter.println(e.getMessage(), Color.Red);
         }
     }
 

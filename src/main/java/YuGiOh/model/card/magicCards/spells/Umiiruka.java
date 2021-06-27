@@ -31,6 +31,7 @@ public class Umiiruka extends Spell {
     @Override
     protected Effect getEffect() {
         return () -> {
+            CustomPrinter.println(String.format("<%s> activated field spell <%s>", this.owner.getUser().getUsername(), this.getName()), Color.Yellow);
         };
     }
 

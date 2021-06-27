@@ -8,10 +8,8 @@ import YuGiOh.model.Player.Player;
 import YuGiOh.model.card.Monster;
 import YuGiOh.model.card.Spell;
 import YuGiOh.model.card.action.Effect;
-import YuGiOh.model.enums.Icon;
-import YuGiOh.model.enums.MonsterAttribute;
-import YuGiOh.model.enums.Status;
-import YuGiOh.model.enums.ZoneType;
+import YuGiOh.model.enums.*;
+import YuGiOh.utils.CustomPrinter;
 import YuGiOh.view.cardSelector.Conditions;
 
 public class BlackPendant extends Spell {
@@ -38,17 +36,21 @@ public class BlackPendant extends Spell {
     public Effect getEffect() {
         return () -> {
             PlayerController playerController = GameController.getInstance().getPlayerControllerByPlayer(this.owner);
-            Monster monster = (Monster) playerController.chooseKCards("Equip this <Black Pendant> to a monster on your field",
+            Monster monster = (Monster) playerController.chooseKCards("Equip this <BlackPendant> to a monster on your field",
                     1,
                     Conditions.getPlayerMonsterFromMonsterZone(this.owner))[0];
             setEquippedMonster(monster);
+            CustomPrinter.println(String.format("<%s> equipped <%s> to monster <%s>", this.owner.getUser().getUsername(), this.getName(), monster.getName()), Color.Yellow);
         };
     }
 
     @Override
     public void onMovingToGraveYard() {
         Player opponent = GameController.getInstance().getGame().getOtherPlayer(this.owner);
-        GameController.getInstance().decreaseLifePoint(opponent, 500);
+        GameController.getInstance().decreaseLifePoint(opponent, 500, false);
+        CustomPrinter.println(String.format("<%s> activated <%s> successfully", this.owner.getUser().getUsername(), this.getName()), Color.Yellow);
+        CustomPrinter.println(this, Color.Gray);
+        GameController.getInstance().checkBothLivesEndGame();
     }
 
     @Override
@@ -58,6 +60,6 @@ public class BlackPendant extends Spell {
             if (GameController.getInstance().getGame().getCardByCardAddress(cardAddress) != null)
                 return true;
         }
-        return false;
+        return !isFacedUp();
     }
 }

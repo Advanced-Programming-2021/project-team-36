@@ -1,6 +1,7 @@
 package YuGiOh.model.card.magicCards.traps;
 
 import YuGiOh.controller.GameController;
+import YuGiOh.model.enums.Color;
 import YuGiOh.model.enums.Icon;
 import YuGiOh.model.enums.MonsterState;
 import YuGiOh.model.enums.Status;
@@ -10,6 +11,7 @@ import YuGiOh.model.card.Trap;
 import YuGiOh.model.card.action.Action;
 import YuGiOh.model.card.action.AttackEvent;
 import YuGiOh.model.card.action.Effect;
+import YuGiOh.utils.CustomPrinter;
 
 public class MirrorForce extends Trap {
 
@@ -29,6 +31,7 @@ public class MirrorForce extends Trap {
                 }
             }
             GameController.getInstance().getPlayerControllerByPlayer(this.owner).moveCardToGraveYard(this);
+            CustomPrinter.println(String.format("<%s>'s <%s> activated successfully", this.owner.getUser().getUsername(), this.getName()), Color.Yellow);
         };
     }
 

@@ -43,9 +43,9 @@ public class ChainController {
 
                 if (action.getEvent() instanceof MagicActivation && ((MagicActivation) action.getEvent()).getCard() instanceof Spell)
                     for (Card card : GameController.getInstance().getGame().getAllCardsOnBoard())
-                        if (card instanceof SpellAbsorption)
+                        if (card instanceof SpellAbsorption && card.isFacedUp())
                             ((SpellAbsorption) card).onSpellResolve();
-            } catch (Exception exception) {
+            } catch (Exception ignored) {
             }
         }
     }

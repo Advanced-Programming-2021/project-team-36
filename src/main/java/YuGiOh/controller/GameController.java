@@ -57,10 +57,11 @@ public class GameController {
             throw new RoundOverExceptionEvent(GameResult.NOT_DRAW, game.getOpponentPlayer(), game.getCurrentPlayer(), game.getCurrentPlayer().getLifePoint());
     }
 
-    public void decreaseLifePoint(Player player, int amount) {
+    public void decreaseLifePoint(Player player, int amount, boolean checkEndGame) {
         player.decreaseLifePoint(amount);
-        CustomPrinter.println(String.format("User <%s>'s life point decreased by <%d> and it is <%d> now", player.getUser().getNickname(), amount, player.getLifePoint()), Color.Blue);
-        checkBothLivesEndGame();
+        CustomPrinter.println(String.format("<%s>'s life point decreased by <%d> and it is <%d> now", player.getUser().getUsername(), amount, player.getLifePoint()), Color.Yellow);
+        if (checkEndGame)
+            checkBothLivesEndGame();
     }
 
     public PlayerController getCurrentPlayerController() {
@@ -99,7 +100,7 @@ public class GameController {
                 DuelMenuController.getInstance().printCurrentPhase();
             }
             if (game.getPhase().equals(Phase.DRAW_PHASE)) {
-                CustomPrinter.println(String.format("its %s's turn%n", game.getCurrentPlayer().getUser().getNickname()), Color.Blue);
+                CustomPrinter.println(String.format("its %s's turn%n", game.getCurrentPlayer().getUser().getUsername()), Color.Blue);
                 drawCard();
                 goNextPhase();
             } else if (game.getPhase().equals(Phase.STANDBY_PHASE)) {

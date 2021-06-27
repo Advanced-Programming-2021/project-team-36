@@ -20,14 +20,14 @@ public class CardSelector {
         if (GameController.getInstance().getGame().getCardByCardAddress(cardAddress) == null)
             throw new LogicException("no card found in the given position");
         selectedCardAddress = cardAddress;
-        CustomPrinter.println("card selected", Color.Default);
+        CustomPrinter.println("card selected", Color.Green);
     }
 
     public void deselectCard() throws LogicException {
         if (selectedCardAddress == null)
             throw new LogicException("no card is selected");
         selectedCardAddress = null;
-        CustomPrinter.println("card deselected", Color.Default);
+        CustomPrinter.println("card deselected", Color.Green);
     }
 
     public Card getSelectedCard() throws LogicException {

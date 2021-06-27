@@ -36,7 +36,7 @@ public class DarkHole extends Spell {
                 if (monster != null)
                     opponent.moveCardToGraveYard(monster);
             }
-            CustomPrinter.println("Dark Hole activated successfully.", Color.Green);
+            CustomPrinter.println(String.format("<%s>'s <%s> activated successfully", this.owner.getUser().getUsername(), this.getName()), Color.Yellow);
         };
     }
 

@@ -19,7 +19,8 @@ public class Game {
     @Getter
     private int turn;
 
-    @Getter @Setter
+    @Getter
+    @Setter
     private Phase phase;
 
     @Getter
@@ -56,22 +57,22 @@ public class Game {
         return cardAddress.getOwner().getBoard().getCardByCardAddress(cardAddress);
     }
 
-    public CardAddress getCardAddress(Card card){
+    public CardAddress getCardAddress(Card card) {
         CardAddress firstCardAddress = firstPlayer.getBoard().getCardAddress(card);
         CardAddress secondCardAddress = secondPlayer.getBoard().getCardAddress(card);
-        if(firstCardAddress != null)
+        if (firstCardAddress != null)
             return firstCardAddress;
-        if(secondCardAddress != null)
+        if (secondCardAddress != null)
             return secondCardAddress;
         throw new Error("There is no such card in game");
     }
 
-    public ZoneType getCardZoneType(Card card){
+    public ZoneType getCardZoneType(Card card) {
         ZoneType firstPlayerZone = firstPlayer.getBoard().getCardZoneType(card);
         ZoneType secondPlayerZone = secondPlayer.getBoard().getCardZoneType(card);
-        if(firstPlayerZone != null)
+        if (firstPlayerZone != null)
             return firstPlayerZone;
-        if(secondPlayerZone != null)
+        if (secondPlayerZone != null)
             return secondPlayerZone;
         throw new Error("There is no such card in game");
     }
@@ -99,22 +100,22 @@ public class Game {
         secondPlayer.getBoard().moveCardToGraveYard(card);
     }
 
-    public Player getOtherPlayer(Player player){
-        if(player.equals(firstPlayer))
+    public Player getOtherPlayer(Player player) {
+        if (player.equals(firstPlayer))
             return secondPlayer;
-        if(player.equals(secondPlayer))
+        if (player.equals(secondPlayer))
             return firstPlayer;
         throw new Error("no such player in the game");
     }
 
-    public List<Card> getAllCardsOnBoard(){
+    public List<Card> getAllCardsOnBoard() {
         List<Card> cards = new ArrayList<>();
         cards.addAll(firstPlayer.getBoard().getAllCardsOnBoard());
         cards.addAll(secondPlayer.getBoard().getAllCardsOnBoard());
         return cards;
     }
 
-    public List<Card> getAllCards(){
+    public List<Card> getAllCards() {
         List<Card> cards = new ArrayList<>();
         cards.addAll(firstPlayer.getBoard().getAllCards());
         cards.addAll(secondPlayer.getBoard().getAllCards());

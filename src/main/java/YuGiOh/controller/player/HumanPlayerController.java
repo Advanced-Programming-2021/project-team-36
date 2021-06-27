@@ -21,33 +21,34 @@ public class HumanPlayerController extends PlayerController {
         super(player);
     }
 
-    private void runUntilEndOfPhase(){
+    private void runUntilEndOfPhase() {
         DuelMenuView view = new DuelMenuView();
         Game game = GameController.instance.getGame();
         Phase phase = game.getPhase();
-        while(game.getPhase().equals(phase)) {
+        while (game.getPhase().equals(phase)) {
             view.runNextCommand();
         }
     }
 
     @Override
-    public void controlMainPhase1(){
+    public void controlMainPhase1() {
         runUntilEndOfPhase();
     }
 
     @Override
-    public void controlMainPhase2(){
+    public void controlMainPhase2() {
         runUntilEndOfPhase();
     }
 
     @Override
-    public void controlBattlePhase(){
+    public void controlBattlePhase() {
         runUntilEndOfPhase();
     }
 
-    private DuelMenuView getView(){
+    private DuelMenuView getView() {
         return (DuelMenuView) DuelMenuController.getInstance().getView();
     }
+
     @Override
     public boolean askRespondToChain() {
         return getView().askUser(
@@ -64,16 +65,16 @@ public class HumanPlayerController extends PlayerController {
         DuelMenuView view = (DuelMenuView) DuelMenuController.getInstance().getView();
         List<Action> actions = listOfAvailableActionsInResponse();
         List<String> choices = new ArrayList<>();
-        for(int i = 0; i < actions.size(); i++)
+        for (int i = 0; i < actions.size(); i++)
             choices.add(actions.get(i).getEvent().getActivationQuestion());
         try {
             int choice = getView().askUserToChoose(
                     "choose one of this options", choices
             );
             addActionToChain(actions.get(choice));
-        } catch (ResistToChooseCard e){
+        } catch (ResistToChooseCard e) {
             boolean retry = view.askUser("Do you want to choose another one?", "yes", "no");
-            if(retry){
+            if (retry) {
                 doRespondToChain();
                 return;
             }
@@ -84,7 +85,7 @@ public class HumanPlayerController extends PlayerController {
     @Override
     public Card[] chooseKCards(String message, int numberOfCards, SelectCondition condition) throws ResistToChooseCard {
         ArrayList<Card> cards = new ArrayList<>();
-        if(GameController.getInstance().getGame().getAllCards().stream().filter(condition::canSelect).count() < numberOfCards)
+        if (GameController.getInstance().getGame().getAllCards().stream().filter(condition::canSelect).count() < numberOfCards)
             throw new ResistToChooseCard();
 
         while (cards.size() < numberOfCards) {
@@ -106,8 +107,7 @@ public class HumanPlayerController extends PlayerController {
             if (monsters.contains(monster)) {
                 monsters.remove(monster);
                 sumLevels -= ((Monster) monster).getLevel();
-            }
-            else {
+            } else {
                 monsters.add(monster);
                 sumLevels += ((Monster) monster).getLevel();
             }

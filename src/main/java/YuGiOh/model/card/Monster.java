@@ -75,7 +75,7 @@ public class Monster extends Card {
     }
 
     public void tryToDecreaseLifePointOfMe(int amount) {
-        GameController.getInstance().decreaseLifePoint(this.owner, amount);
+        GameController.getInstance().decreaseLifePoint(this.owner, amount, true);
     }
 
     public void tryToDecreaseLifePoint(Monster monster, int amount) {
@@ -182,7 +182,7 @@ public class Monster extends Card {
                 CustomPrinter.println(this.getName() + " is dead so it cannot attack", Color.Yellow);
                 return;
             }
-            GameController.getInstance().decreaseLifePoint(opponent, this.getAttackDamage());
+            GameController.getInstance().decreaseLifePoint(opponent, this.getAttackDamage(), true);
             this.setAllowAttack(false);
         };
     }
@@ -247,15 +247,6 @@ public class Monster extends Card {
 
     @Override
     public String toString() {
-        return "Monster{" +
-                "name='" + name + '\'' +
-                ", \ndescription='" + description + '\'' +
-                ", \nattackDamage=" + attackDamage +
-                ", \ndefenseRate=" + defenseRate +
-                ", \nattribute=" + attribute +
-                ", \nmonsterType=" + monsterType +
-                ", \nmonsterCardType=" + monsterCardType +
-                ", \nlevel=" + level +
-                "\n}";
+        return String.format("%s (Monster - %s, Level <%d>, Attribute <%s>, Monster Type <%s>, Attack <%d>, Defense <%s>) %s", getName(), getMonsterCardType(), getLevel(), getAttribute(), getMonsterType(), getAttackDamageOnCard(), getDefenseRateOnCard(), getDescription());
     }
 }

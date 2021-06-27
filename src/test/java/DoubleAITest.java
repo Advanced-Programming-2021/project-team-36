@@ -16,7 +16,7 @@ public class DoubleAITest extends IntegrationTestBase {
 
     @Test
     public void multipleTest() throws ModelException {
-        int numberOfTests = 300;
+        int numberOfTests = 1;
         for (int i = 0; i < numberOfTests; i ++) {
             battle();
         }
