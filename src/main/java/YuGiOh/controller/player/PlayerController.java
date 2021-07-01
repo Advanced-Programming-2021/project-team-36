@@ -208,6 +208,9 @@ public abstract class PlayerController {
 
     public void setMonster(Monster monster) throws LogicException, ResistToChooseCard {
         validateMainPhase();
+        validateCurrentPlayersCard(monster);
+        validateNotSummonedInThisTurn();
+        validateHasInHand(monster);
         validateSummon(monster, monster.getNumberOfRequiredTribute(), Conditions.myMonsterFromMyMonsterZone(player));
         startChain(setMonsterAction(monster));
     }
