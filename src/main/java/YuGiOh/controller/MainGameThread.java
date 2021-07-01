@@ -53,6 +53,13 @@ public class MainGameThread extends Thread {
         return ret.get();
     }
 
+    public void blockUnblockRunningThreadAndDoInGui(Runnable r){
+        blockUnblockRunningThreadAndDoInGui((Task<Void>) ()->{
+            r.run();
+            return null;
+        });
+    }
+
     public synchronized void addTask(MainGameThread.Task<?> t){
         tasks.add(t);
     }
