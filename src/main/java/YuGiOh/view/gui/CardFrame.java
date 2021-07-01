@@ -16,7 +16,6 @@ import javafx.beans.binding.DoubleBinding;
 import javafx.beans.property.BooleanProperty;
 import javafx.beans.property.SimpleBooleanProperty;
 import javafx.geometry.Bounds;
-import javafx.scene.Cursor;
 import javafx.scene.control.ContextMenu;
 import javafx.scene.control.MenuItem;
 import javafx.scene.effect.DropShadow;
@@ -30,18 +29,15 @@ import lombok.Getter;
 
 import java.util.ArrayList;
 
-public class CardFrame extends Pane {
+public class CardFrame extends DraggablePane {
     private final BooleanProperty isSelected = new SimpleBooleanProperty();
     @Getter
     private final Card card;
 
-    // todo add draggable component
-    private double mouseDifX, mouseDifY;
     private final SimpleBooleanProperty inHandObservable;
     private final DoubleBinding widthProperty, heightProperty;
     private final ImageView imageView = new ImageView();
     private final Image faceUpImage, faceDownImage;
-    private final GameField gameRoot;
 
     public Image getImage(){
         return imageView.getImage();
@@ -80,8 +76,6 @@ public class CardFrame extends Pane {
     CardFrame(GameField gameRoot, Card card, DoubleBinding widthProperty, DoubleBinding heightProperty){
         super();
 
-        this.gameRoot = gameRoot;
-
         getChildren().add(imageView);
 
         this.faceDownImage = new Image(Utils.getAsset("Cards/hidden.png").toURI().toString());
@@ -113,24 +107,9 @@ public class CardFrame extends Pane {
                         .then((Effect) new DropShadow(28, Color.BLUE))
                         .otherwise(new DropShadow())
         );
-
         setOnMouseClicked(e->{
             // todo we haven't handled clicking on dead cards
             GuiReporter.getInstance().report(new ClickOnCardEvent(this));
-        });
-        setOnMousePressed(e->{
-            mouseDifX = getTranslateX() - e.getSceneX();
-            mouseDifY = getTranslateY() - e.getSceneY();
-            setCursor(Cursor.MOVE);
-        });
-        setOnMouseReleased(e->{
-            Bounds bounds = getBoundsInParent();
-            setCursor(Cursor.HAND);
-            moveByTranslateValue(0, 0);
-            GuiReporter.getInstance().report(new DropCardEvent(this, bounds));
-        });
-        setOnMouseDragged(e->{
-            moveByTranslateValue(e.getSceneX() + mouseDifX, e.getSceneY() + mouseDifY);
         });
         setOnMouseEntered(e->{
             if(!card.isFacedUp() && !inHandObservable.get()) {
@@ -219,15 +198,20 @@ public class CardFrame extends Pane {
         setTranslateX(0);
         setTranslateY(0);
     }
-    public void moveByTranslateValue(double x, double y){
-        setTranslateX(x);
-        setTranslateY(y);
-    }
 
     public void select(){
         isSelected.set(true);
     }
     public void deselect(){
         isSelected.set(false);
+    }
+
+    @Override
+    void onDrop(Bounds bounds) {
+        GuiReporter.getInstance().report(new DropCardEvent(this, bounds));
+    }
+
+    @Override
+    void onDrag() {
     }
 }
