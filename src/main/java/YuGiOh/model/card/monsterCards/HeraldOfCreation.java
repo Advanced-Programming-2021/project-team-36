@@ -22,16 +22,16 @@ public class HeraldOfCreation extends Monster {
     int lastTurnActivated = -1;
 
     @Override
-    public boolean canActivateEffect(){
+    public boolean canActivateEffect() {
         return lastTurnActivated != GameController.instance.getGame().getTurn();
     }
 
     @Override
     public Effect activateEffect() throws LogicException {
-        if(lastTurnActivated == GameController.instance.getGame().getTurn())
+        if (lastTurnActivated == GameController.instance.getGame().getTurn())
             throw new LogicException("you can only activate this once in a turn");
 
-        return ()->{
+        return () -> {
             PlayerController controller = GameController.getInstance().getPlayerControllerByPlayer(this.owner);
             Card discarded;
             Monster monster;
@@ -41,7 +41,7 @@ public class HeraldOfCreation extends Monster {
                         1,
                         Conditions.getInPlayersHandCondition(this.owner)
                 )[0];
-            } catch (ResistToChooseCard e){
+            } catch (ResistToChooseCard e) {
                 CustomPrinter.println("canceled", Color.Default);
                 return;
             }
@@ -51,18 +51,20 @@ public class HeraldOfCreation extends Monster {
                         1,
                         Conditions.getInPlayerGraveYardMonster(this.owner, 7)
                 )[0];
-            } catch (ResistToChooseCard e){
+            } catch (ResistToChooseCard e) {
                 CustomPrinter.println("canceled", Color.Default);
                 return;
             }
             this.owner.getBoard().removeFromHand(discarded);
             this.owner.getBoard().addCardToHand(monster);
             lastTurnActivated = GameController.instance.getGame().getTurn();
+            CustomPrinter.println(String.format("<%s>'s <%s> activated successfully", this.owner.getUser().getUsername(), this.getName()), Color.Yellow);
+            CustomPrinter.println(this.asEffect(), Color.Gray);
         };
     }
 
     @Override
-    public Monster clone(){
+    public Monster clone() {
         HeraldOfCreation cloned = (HeraldOfCreation) super.clone();
         cloned.lastTurnActivated = -1;
         return cloned;

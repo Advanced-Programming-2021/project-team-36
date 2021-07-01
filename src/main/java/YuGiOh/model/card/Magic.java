@@ -18,10 +18,9 @@ abstract public class Magic extends Card {
     @Getter
     protected Icon icon;
     protected Status status;
-    @Getter
-    @Setter
-    protected Monster equippedMonster; // it means only for equip spells
-    protected SimpleObjectProperty<MagicState> magicStateProperty;
+    @Getter @Setter
+    protected Monster equippedMonster;
+    private SimpleObjectProperty<MagicState> magicStateProperty;
 
     public Magic(String name, String description, int price, Icon icon, Status status) {
         super(name, description, price);

@@ -13,7 +13,7 @@ public class Debugger {
     private static boolean testMode = false;
     private static boolean mode = false;
     private static boolean captureMode = false;
-    private static boolean automaticSave = false;
+    private static boolean automaticSave = true;
     private static int currentTestBatch = 1;
     final private static String testFileHeader = "tests/TestBatch";
     private static BufferedWriter bufferedWriter;
@@ -27,18 +27,6 @@ public class Debugger {
             return;
         }
         Debugger.mode = mode;
-        if (mode)
-            initializeDebuggingMode();
-        else
-            finalizeDebuggingMode();
-    }
-
-    private static void initializeDebuggingMode() {
-        // TODO : Add some cool stuff.
-    }
-
-    private static void finalizeDebuggingMode() {
-        // TODO : Add some cool stuff.
     }
 
     public static void setAutomaticSave(String mode) throws InvalidCommandException {
@@ -46,7 +34,7 @@ public class Debugger {
             throw new InvalidCommandException();
         boolean automaticSave = mode.equals("on");
         if (Debugger.automaticSave == automaticSave) {
-            CustomPrinter.println(String.format("debug automatic database mode is already set to %", automaticSave), Color.Default);
+            CustomPrinter.println(String.format("debug automatic database mode is already set to %s", automaticSave), Color.Default);
             return;
         }
         Debugger.automaticSave = automaticSave;
@@ -61,7 +49,7 @@ public class Debugger {
             throw new InvalidCommandException();
         boolean captureMode = captureModeAsString.equals("on");
         if (Debugger.captureMode == captureMode) {
-            CustomPrinter.println(String.format("debug capture mode is already set to %", captureModeAsString), Color.Default);
+            CustomPrinter.println(String.format("debug capture mode is already set to %s", captureModeAsString), Color.Default);
             return;
         }
         Debugger.captureMode = captureMode;
@@ -108,7 +96,7 @@ public class Debugger {
 
     public static void importTest(String fileAsString, String countAsString) throws InvalidCommandException {
         if (countAsString == null)
-            countAsString = "9999999"; // Just a large number.
+            countAsString = "9999999";
         try {
             CustomScanner.readTestFile(fileAsString, Integer.parseInt(countAsString));
         } catch (Exception exception) {

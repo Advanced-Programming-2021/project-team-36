@@ -78,13 +78,8 @@ public class Deck implements Comparable<Deck>, Cloneable, Serializable {
     }
 
     public Deck readyForBattle(Player player){
-        // todo or only mainDeck should be ready for battle?
         mainDeck.readyForBattle(player);
         sideDeck.readyForBattle(player);
         return this;
-    }
-
-    public void save() {
-        // TODO
     }
 }

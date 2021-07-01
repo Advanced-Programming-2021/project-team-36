@@ -9,6 +9,11 @@ import YuGiOh.model.card.action.Effect;
 import YuGiOh.model.enums.Icon;
 import YuGiOh.model.enums.Status;
 import YuGiOh.model.enums.ZoneType;
+import YuGiOh.model.enums.Color;
+import YuGiOh.model.enums.Icon;
+import YuGiOh.model.enums.Status;
+import YuGiOh.model.enums.ZoneType;
+import YuGiOh.utils.CustomPrinter;
 import YuGiOh.view.cardSelector.Conditions;
 
 public class MagnumShield extends Spell {
@@ -31,10 +36,12 @@ public class MagnumShield extends Spell {
     public Effect getEffect() {
         return () -> {
             PlayerController playerController = GameController.getInstance().getPlayerControllerByPlayer(this.owner);
-            Monster monster = (Monster) playerController.chooseKCards("Equip this <United We Stand> to a monster on your field",
+            Monster monster = (Monster) playerController.chooseKCards("Equip this <MagnumShield> to a monster on your field",
                     1,
                     Conditions.getPlayerMonsterFromMonsterZone(this.owner))[0];
             setEquippedMonster(monster);
+            CustomPrinter.println(String.format("<%s> equipped <%s> to monster <%s>", this.owner.getUser().getUsername(), this.getName(), monster.getName()), Color.Yellow);
+            CustomPrinter.println(this, Color.Gray);
         };
     }
 
@@ -45,6 +52,6 @@ public class MagnumShield extends Spell {
             if (GameController.getInstance().getGame().getCardByCardAddress(cardAddress) != null)
                 return true;
         }
-        return false;
+        return !isFacedUp();
     }
 }

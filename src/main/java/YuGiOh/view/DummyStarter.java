@@ -39,13 +39,10 @@ public class DummyStarter extends Application {
             );
             new DuelMenuController(duel);
 
-            // todo remove this
-//            if(duel.getFirstPlayer() instanceof AIPlayer)
-//                GameController.getInstance().setPlayerController1(new AggressiveAIPlayerController((AIPlayer) duel.getFirstPlayer()));
-//            if(duel.getSecondPlayer() instanceof AIPlayer)
-//                GameController.getInstance().setPlayerController2(new AggressiveAIPlayerController((AIPlayer) duel.getSecondPlayer()));
+            // todo how to set aggressive AI player now?
 
             DuelMenuController.getInstance().getGraphicView().start(primaryStage);
+
             new MainGameThread(()->{
                 DuelMenuController.getInstance().control();
             }).start();

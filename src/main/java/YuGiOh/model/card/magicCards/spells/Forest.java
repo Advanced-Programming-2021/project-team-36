@@ -33,9 +33,13 @@ public class Forest extends Spell {
         return affectionOnAttackingMonster(monster);
     }
 
+    // todo in chie? chera toye activation hichi active nakardim?
     @Override
     protected Effect getEffect() {
-        return () -> {};
+        return () -> {
+            CustomPrinter.println(String.format("<%s> activated field spell <%s>", this.owner.getUser().getUsername(), this.getName()), Color.Yellow);
+            CustomPrinter.println(this, Color.Gray);
+        };
     }
 
     @Override

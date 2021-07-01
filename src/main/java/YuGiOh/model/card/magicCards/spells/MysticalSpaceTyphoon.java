@@ -27,7 +27,8 @@ public class MysticalSpaceTyphoon extends Spell {
                     Conditions.getMagicFromField())[0];
             PlayerController controller = GameController.getInstance().getPlayerControllerByPlayer(magic.owner);
             controller.moveCardToGraveYard(magic);
-            CustomPrinter.println("Mystical Space Typhoon successfully.", Color.Green);
+            CustomPrinter.println(String.format("<%s>'s <%s> activated successfully", this.owner.getUser().getUsername(), this.getName()), Color.Yellow);
+            CustomPrinter.println(this, Color.Gray);
         };
     }
 

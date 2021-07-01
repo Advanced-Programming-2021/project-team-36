@@ -9,7 +9,6 @@ import YuGiOh.model.card.Card;
 import YuGiOh.model.card.Utils;
 import YuGiOh.model.enums.MonsterState;
 import YuGiOh.model.enums.ZoneType;
-import YuGiOh.controller.menu.*;
 
 public class Parser {
     public static User UserParser(String username) throws ParserException {
@@ -36,17 +35,19 @@ public class Parser {
         throw new ParserException("number of rounds is not supported");
     }
 
-    // TODO : Proof-reading
     public static CardAddress cardAddressParser(String zoneName, String idString, boolean opponent) throws ParserException {
         ZoneType zone = ZoneType.getZoneByName(zoneName);
         if (zone == null)
             throw new ParserException("invalid selection");
-        int id = IntegerParser(idString);
-        Player owner = opponent ? GameController.getInstance().getGame().getOpponentPlayer() : GameController.getInstance().getGame().getCurrentPlayer();
-        return new CardAddress(zone, id, owner);
+        try {
+            int id = IntegerParser(idString);
+            Player owner = opponent ? GameController.getInstance().getGame().getOpponentPlayer() : GameController.getInstance().getGame().getCurrentPlayer();
+            return new CardAddress(zone, id, owner);
+        } catch (Exception ignored) {
+            throw new ParserException("invalid selection");
+        }
     }
 
-    // TODO : Proof-reading
     public static MonsterState cardStateParser(String state) throws ParserException {
         MonsterState ret = MonsterState.getOccupiedStateByName(state);
         if (ret == null)
@@ -54,22 +55,23 @@ public class Parser {
         return ret;
     }
 
-    // TODO : Proof-reading
-    public static int monsterPositionIdParser(String number) throws ParserException {
+    public static CardAddress monsterZoneParser(String number) throws ParserException {
+        int id = -1;
         if (number.equals("1"))
-            return 1;
+            id = 1;
         if (number.equals("2"))
-            return 1;
+            id = 2;
         if (number.equals("3"))
-            return 3;
+            id = 3;
         if (number.equals("4"))
-            return 4;
+            id = 4;
         if (number.equals("5"))
-            return 5;
-        throw new ParserException("monster id is not valid!");
+            id = 5;
+        if (id == -1)
+            throw new ParserException("monster id is not valid!");
+        return new CardAddress(ZoneType.MONSTER, id, GameController.getInstance().getGame().getCurrentPlayer());
     }
 
-    // TODO : Proof-reading
     public static Card cardParser(String cardName) throws ParserException {
         Card card = Utils.getCard(cardName);
         if (card != null)

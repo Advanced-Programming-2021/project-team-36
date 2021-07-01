@@ -70,7 +70,6 @@ public abstract class PlayerController {
         GameController.getInstance().getGame().getOtherPlayer(player).getBoard().removeCardIfHas(monster);
         if(!specialSummon)
             player.setSummonedInLastTurn(true);
-
         if (requiredTributes > 0)
             tributeMonster(requiredTributes, Conditions.myMonsterFromMyMonsterZone(player));
         Board board = player.getBoard();

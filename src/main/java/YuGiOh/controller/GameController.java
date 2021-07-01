@@ -3,25 +3,17 @@ package YuGiOh.controller;
 import YuGiOh.controller.events.RoundOverExceptionEvent;
 import YuGiOh.controller.menu.DuelMenuController;
 import YuGiOh.controller.player.AIPlayerController;
-import YuGiOh.controller.player.AggressiveAIPlayerController;
 import YuGiOh.controller.player.HumanPlayerController;
 import YuGiOh.controller.player.PlayerController;
 import YuGiOh.model.Player.Player;
 import YuGiOh.model.enums.Color;
 import YuGiOh.model.enums.GameResult;
 import YuGiOh.utils.CustomPrinter;
-import YuGiOh.view.gui.GuiReporter;
-import YuGiOh.view.gui.event.RoundOverEvent;
 import lombok.Getter;
 import YuGiOh.model.Game;
 import YuGiOh.model.Player.AIPlayer;
 import YuGiOh.model.Player.HumanPlayer;
-import YuGiOh.model.card.Card;
 import YuGiOh.model.enums.Phase;
-import lombok.Setter;
-
-// this controller provides functions for player controller to access to.
-// so for example players don't attack each other directly!
 
 public class GameController {
     @Getter
@@ -29,11 +21,7 @@ public class GameController {
     @Getter
     private final Game game;
 
-    // todo remove this in production
-    // private final PlayerController playerController1, playerController2;
-
-    @Setter
-    private PlayerController playerController1, playerController2;
+    private final PlayerController playerController1, playerController2;
 
     private Phase previousIterationPhase;
 
@@ -67,11 +55,17 @@ public class GameController {
             throw new RoundOverExceptionEvent(GameResult.NOT_DRAW, game.getOpponentPlayer(), game.getCurrentPlayer(), game.getCurrentPlayer().getLifePoint());
     }
 
-    public void decreaseLifePoint(Player player, int amount) {
-        // also you can do some extra things here
+    public void increaseLifePoint(Player player, int amount) {
+        player.increaseLifePoint(amount);
+        CustomPrinter.println(String.format("<%s>'s life point increased by <%d> and it is <%d> now", player.getUser().getUsername(), amount, player.getLifePoint()), Color.Yellow);
+    }
+
+    // todo in baraye cheat e? momken nist bug bokhorim saresh?
+    public void decreaseLifePoint(Player player, int amount, boolean checkEndGame) {
         player.decreaseLifePoint(amount);
-        CustomPrinter.println(String.format("User <%s>'s life point decreased by <%d> and it is <%d> now", player.getUser().getNickname(), amount, player.getLifePoint()), Color.Blue);
-        checkBothLivesEndGame();
+        CustomPrinter.println(String.format("<%s>'s life point decreased by <%d> and it is <%d> now", player.getUser().getUsername(), amount, player.getLifePoint()), Color.Yellow);
+        if (checkEndGame)
+            checkBothLivesEndGame();
     }
 
     public PlayerController getCurrentPlayerController() {
@@ -109,23 +103,26 @@ public class GameController {
     }
 
     public void control() {
+        CustomPrinter.println(String.format("its %s's turn%n", game.getCurrentPlayer().getUser().getUsername()), Color.Blue);
         while (true) {
             if(!game.getPhase().equals(previousIterationPhase)){
                 previousIterationPhase = game.getPhase();
                 DuelMenuController.getInstance().printCurrentPhase();
             }
             if (game.getPhase().equals(Phase.DRAW_PHASE)) {
-                CustomPrinter.println(String.format("its %s's turn%n", game.getCurrentPlayer().getUser().getNickname()), Color.Blue);
-                // todo : check player can draw or not (effects)
+                CustomPrinter.println(String.format("its %s's turn%n", game.getCurrentPlayer().getUser().getUsername()), Color.Blue);
                 drawCard();
                 goNextPhase();
             } else if (game.getPhase().equals(Phase.STANDBY_PHASE)) {
                 goNextPhase();
             } else if (game.getPhase().equals(Phase.MAIN_PHASE1)) {
+                DuelMenuController.getInstance().showBoard();
                 getCurrentPlayerController().controlMainPhase1();
             } else if (game.getPhase().equals(Phase.BATTLE_PHASE)) {
+                DuelMenuController.getInstance().showBoard();
                 getCurrentPlayerController().controlBattlePhase();
             } else if (game.getPhase().equals(Phase.MAIN_PHASE2)) {
+                DuelMenuController.getInstance().showBoard();
                 getCurrentPlayerController().controlMainPhase2();
             } else if (game.getPhase().equals(Phase.END_PHASE)) {
                 goNextPhase();

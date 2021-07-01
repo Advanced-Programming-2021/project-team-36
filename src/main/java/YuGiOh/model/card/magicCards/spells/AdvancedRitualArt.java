@@ -42,24 +42,23 @@ public class AdvancedRitualArt extends Spell {
                         Conditions.getPlayerRitualMonsterFromHand(this.owner, sumOwnerMonstersInHandAndInZone())
                 )[0];
                 Monster[] tributeMonsters = playerController.chooseKSumLevelMonsters(
-                        String.format("choose a monsters from your hand or board for ritual summon. Sum of your selected cards hasn't reach the limit yet. You can select one of your selected card to deselect it", ritualMonster.getLevel()),
+                        "choose a monsters from your hand or board for ritual summon. Sum of your selected cards hasn't reach the limit yet. You can select one of your selected card to deselect it",
                         ritualMonster.getLevel(),
                         Conditions.getPlayerMonsterFromMonsterZoneOrHand(this.owner, ritualMonster)
                 );
 
-                // todo in baaes mishe yek seri monster haye khas be graveyard naran!
                 for (Monster monster : tributeMonsters)
                     monster.tryToSendToGraveYardOfMe();
 
                 try {
                     playerController.summon(ritualMonster, 0, true);
                     GameController.getInstance().getPlayerControllerByPlayer(this.owner).moveCardToGraveYard(this);
-                    CustomPrinter.println(String.format("<%s> ritual summoned <%s> in <%s> position successfully", this.owner.getUser().getUsername(), ritualMonster.getName(), ritualMonster.getMonsterState()), Color.Green);
+                    CustomPrinter.println(String.format("<%s> ritual summoned <%s> in <%s> position successfully", this.owner.getUser().getUsername(), ritualMonster.getName(), ritualMonster.getMonsterState()), Color.Yellow);
                 } catch (LogicException logicException) {
                     CustomPrinter.println("this shouldn't happens", Color.Red);
                 }
             } catch (ResistToChooseCard resistToChooseCard) {
-                CustomPrinter.println("ritual monster cancelled", Color.Green);
+                CustomPrinter.println(this.owner.getUser().getUsername() + " cancelled ritual monster", Color.Green);
             }
         };
     }

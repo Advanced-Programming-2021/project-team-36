@@ -12,6 +12,10 @@ import YuGiOh.model.card.action.MagicActivation;
 import YuGiOh.model.card.action.SummonEvent;
 import YuGiOh.model.enums.Icon;
 import YuGiOh.model.enums.Status;
+import YuGiOh.model.enums.Color;
+import YuGiOh.model.enums.Icon;
+import YuGiOh.model.enums.Status;
+import YuGiOh.utils.CustomPrinter;
 import YuGiOh.view.cardSelector.Conditions;
 import YuGiOh.view.cardSelector.SelectCondition;
 
@@ -33,6 +37,8 @@ public class MagicJammer extends Trap {
             Action action = getChain().pop();
             Card card1 = ((MagicActivation) action.getEvent()).getCard();
             GameController.getInstance().getOtherPlayerController(playerController).moveCardToGraveYard(card1);
+            CustomPrinter.println(String.format("<%s>'s <%s> activated successfully", this.owner.getUser().getUsername(), this.getName()), Color.Yellow);
+            CustomPrinter.println(this, Color.Gray);
         };
     }
 

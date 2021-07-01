@@ -49,12 +49,18 @@ public class MainMenuView extends BaseMenuView {
                     DatabaseHandler.saveToDatabase(mp.get("file"));
                 },
                 Options.file(false)
-                // todo why is it not required? @Kasra
+        ));
+        this.cmd.addCommand(new Command(
+                "cheat increase",
+                mp -> {
+                    MainMenuController.getInstance().increaseBalance(Parser.IntegerParser(mp.get("balance")));
+                },
+                Options.balance(true)
         ));
     }
 
     @Override
-    protected String getMenuName() {
+    public String getMenuName() {
         return "Main Menu";
     }
 }

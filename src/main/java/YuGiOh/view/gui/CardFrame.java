@@ -34,12 +34,14 @@ public class CardFrame extends Pane {
     private final BooleanProperty isSelected = new SimpleBooleanProperty();
     @Getter
     private final Card card;
+
+    // todo add draggable component
     private double mouseDifX, mouseDifY;
-    private SimpleBooleanProperty inHandObservable;
-    private DoubleBinding widthProperty, heightProperty;
-    private ImageView imageView = new ImageView();
-    private Image faceUpImage, faceDownImage;
-    private GameField gameRoot;
+    private final SimpleBooleanProperty inHandObservable;
+    private final DoubleBinding widthProperty, heightProperty;
+    private final ImageView imageView = new ImageView();
+    private final Image faceUpImage, faceDownImage;
+    private final GameField gameRoot;
 
     public Image getImage(){
         return imageView.getImage();

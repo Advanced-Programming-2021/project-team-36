@@ -24,7 +24,8 @@ public class MagicCylinder extends Trap {
             AttackEvent event = (AttackEvent) getChain().pop().getEvent();
             GameController.getInstance().decreaseLifePoint(
                     GameController.getInstance().getGame().getOtherPlayer(this.owner),
-                    event.getAttacker().getAttackDamage()
+                    event.getAttacker().getAttackDamage(),
+                    true
             );
             event.getAttacker().setAllowAttack(false);
             GameController.getInstance().getPlayerControllerByPlayer(this.owner).moveCardToGraveYard(this);

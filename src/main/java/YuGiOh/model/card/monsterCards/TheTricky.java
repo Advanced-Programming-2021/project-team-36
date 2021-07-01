@@ -19,7 +19,7 @@ public class TheTricky extends Monster {
 
     @Override
     public void validateSpecialSummon() throws LogicException {
-        if(!owner.hasInHand(this))
+        if (!owner.hasInHand(this))
             throw new LogicException("you can only summon the tricky from your hand");
     }
 
@@ -32,8 +32,8 @@ public class TheTricky extends Monster {
                     controller.tributeMonster(1,
                             Conditions.and(
                                     Conditions.or(
-                                        Conditions.getOnPlayersBoard(owner),
-                                        Conditions.getInPlayersHandCondition(owner)
+                                            Conditions.getOnPlayersBoard(owner),
+                                            Conditions.getInPlayersHandCondition(owner)
                                     ),
                                     Conditions.getNotThisCard(this)
                             )

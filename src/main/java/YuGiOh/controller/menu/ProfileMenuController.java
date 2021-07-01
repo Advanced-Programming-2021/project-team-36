@@ -52,5 +52,4 @@ public class ProfileMenuController extends BaseMenuController {
             return MainMenuController.getInstance();
         throw new RoutingException("menu navigation is not possible");
     }
-
 }

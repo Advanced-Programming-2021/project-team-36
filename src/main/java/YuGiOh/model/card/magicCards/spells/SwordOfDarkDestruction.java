@@ -35,10 +35,12 @@ public class SwordOfDarkDestruction extends Spell {
     public Effect getEffect() {
         return () -> {
             PlayerController playerController = GameController.getInstance().getPlayerControllerByPlayer(this.owner);
-            Monster monster = (Monster) playerController.chooseKCards("Equip this <Sword of Dark Destruction> to a monster on your field",
+            Monster monster = (Monster) playerController.chooseKCards("Equip this <SwordofDarkDestruction> to a monster on your field",
                     1,
                     Conditions.getPlayerMonsterFromMonsterZone(this.owner))[0];
             setEquippedMonster(monster);
+            CustomPrinter.println(String.format("<%s> equipped <%s> to monster <%s>", this.owner.getUser().getUsername(), this.getName(), monster.getName()), Color.Yellow);
+            CustomPrinter.println(this, Color.Gray);
         };
     }
 
@@ -49,6 +51,6 @@ public class SwordOfDarkDestruction extends Spell {
             if (GameController.getInstance().getGame().getCardByCardAddress(cardAddress) != null)
                 return true;
         }
-        return false;
+        return !isFacedUp();
     }
 }

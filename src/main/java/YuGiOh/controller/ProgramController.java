@@ -3,10 +3,13 @@ package YuGiOh.controller;
 
 import YuGiOh.controller.menu.BaseMenuController;
 import YuGiOh.controller.menu.LoginMenuController;
+import YuGiOh.model.enums.Color;
+import YuGiOh.utils.CustomPrinter;
 import YuGiOh.utils.DatabaseHandler;
 import YuGiOh.utils.RoutingException;
 import lombok.Getter;
 import YuGiOh.utils.Debugger;
+
 
 public class ProgramController {
     @Getter
@@ -39,10 +42,12 @@ public class ProgramController {
 
     public void navigateToMenu(Class<? extends BaseMenuController> menu) throws RoutingException {
         currentController = currentController.getNavigatingMenuObject(menu);
+        CustomPrinter.println("you entered " + currentController.getView().getMenuName(), Color.Blue);
     }
 
     public void navigateToMenu(BaseMenuController menuController) {
         currentController = menuController;
+        CustomPrinter.println("you entered " + currentController.getView().getMenuName(), Color.Blue);
     }
 
     public void control() {

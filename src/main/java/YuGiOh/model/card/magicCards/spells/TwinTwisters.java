@@ -41,7 +41,8 @@ public class TwinTwisters extends Spell {
             ).forEach(magicCard -> {
                 GameController.getInstance().getPlayerControllerByPlayer(magicCard.owner).moveCardToGraveYard(magicCard);
             });
-            CustomPrinter.println("Twin Twisters activated successfully.", Color.Green);
+            CustomPrinter.println(String.format("<%s> activated <%s> successfully", this.owner.getUser().getUsername(), this.getName()), Color.Yellow);
+            CustomPrinter.println(this, Color.Gray);
         };
     }
 

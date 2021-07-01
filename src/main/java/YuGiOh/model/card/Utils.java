@@ -2,7 +2,6 @@ package YuGiOh.model.card;
 
 import YuGiOh.model.enums.*;
 import YuGiOh.utils.ClassFinder;
-import YuGiOh.model.enums.*;
 
 import java.util.*;
 
@@ -83,8 +82,6 @@ public class Utils {
                         throw new Error("error in initiating from monster class");
                     }
             }
-        /*if (!monsterData.get("Card Type").equals("Normal"))
-            return null;*/ // TODO : Temporarily commented this out but it should be present in production.
         return new Monster(monsterData.get("Name"),
                 monsterData.get("Description"),
                 Integer.parseInt(monsterData.get("Price")),

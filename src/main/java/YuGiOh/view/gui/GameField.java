@@ -227,9 +227,6 @@ public class GameField extends Pane {
                 }).start();
             });
         });
-        //        setOnMouseClicked(e->{
-//            System.out.println(((e.getSceneX() - getLayoutX()) / getWidth()) + " " + ((e.getSceneY() - getLayoutY()) / getHeight()));
-//        });
     }
 
     private int getPlayerUpDown(Player player){

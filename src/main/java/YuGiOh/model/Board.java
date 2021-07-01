@@ -13,6 +13,7 @@ import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.collections.ObservableMap;
 import lombok.Getter;
+import lombok.Setter;
 
 import java.util.*;
 

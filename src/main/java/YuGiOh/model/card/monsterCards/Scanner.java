@@ -5,6 +5,11 @@ import YuGiOh.controller.LogicException;
 import YuGiOh.model.enums.MonsterAttribute;
 import YuGiOh.model.enums.MonsterCardType;
 import YuGiOh.model.enums.MonsterType;
+import YuGiOh.model.enums.Color;
+import YuGiOh.model.enums.MonsterAttribute;
+import YuGiOh.model.enums.MonsterCardType;
+import YuGiOh.model.enums.MonsterType;
+import YuGiOh.utils.CustomPrinter;
 import YuGiOh.view.cardSelector.Conditions;
 import YuGiOh.view.cardSelector.ResistToChooseCard;
 import YuGiOh.model.card.action.Effect;
@@ -14,10 +19,6 @@ public class Scanner extends Monster {
     public Scanner(String name, String description, int price, int attackDamage, int defenseRate, MonsterAttribute attribute, MonsterType monsterType, MonsterCardType monsterCardType, int level) {
         super(name, description, price, attackDamage, defenseRate, attribute, monsterType, monsterCardType, level);
     }
-
-    // todo will the card also get special abilities of its copy?
-    // also do we have to delete the other card from graveyard?
-    // todo what if copied monster dies?
 
     int lastTurnActivated = -1;
     Monster copiedMonster;
@@ -40,6 +41,8 @@ public class Scanner extends Monster {
                 )[0];
                 copiedMonster = (Monster) copiedMonster.clone().readyForBattle(this.owner);
                 lastTurnActivated = GameController.instance.getGame().getTurn();
+                CustomPrinter.println(String.format("<%s>'s <%s> activated successfully", this.owner.getUser().getUsername(), this.getName()), Color.Yellow);
+                CustomPrinter.println(this.asEffect(), Color.Gray);
             } catch (ResistToChooseCard ignored) {
             }
         };

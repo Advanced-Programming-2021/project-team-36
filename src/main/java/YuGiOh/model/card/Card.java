@@ -4,8 +4,6 @@ import YuGiOh.controller.LogicException;
 import YuGiOh.model.Player.Player;
 import YuGiOh.model.card.action.Effect;
 import javafx.beans.binding.BooleanBinding;
-import javafx.event.ActionEvent;
-import javafx.event.Event;
 import lombok.Getter;
 
 import java.io.Serializable;
@@ -84,10 +82,6 @@ public abstract class Card implements Comparable<Card>, Cloneable, Serializable 
     }
 
     public void startOfNewTurn() {
-    }
-
-    public void save() {
-        // TODO
     }
 
     @Override

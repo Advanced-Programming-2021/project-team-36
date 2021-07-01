@@ -9,6 +9,11 @@ import YuGiOh.view.CommandLine.Command;
 import YuGiOh.view.CommandLine.CommandLine;
 import YuGiOh.view.CommandLine.CommandLineException;
 import YuGiOh.utils.*;
+import YuGiOh.controller.menu.LoginMenuController;
+import YuGiOh.utils.DatabaseHandler;
+import YuGiOh.utils.Debugger;
+import YuGiOh.view.CommandLine.Command;
+
 
 abstract public class BaseMenuView {
     protected final CommandLine cmd;
@@ -25,7 +30,7 @@ abstract public class BaseMenuView {
                 Debugger.captureCommand(line);
             this.cmd.runNextCommand(line);
         } catch (CommandLineException | ParserException | ModelException | LogicException | RoutingException e) {
-            CustomPrinter.println(e.getMessage(), Color.Default);
+            CustomPrinter.println(e.getMessage(), Color.Red);
         }
     }
 
@@ -54,44 +59,7 @@ abstract public class BaseMenuView {
                     this.cmd.printAllHelpers();
                 }
         ));
-        this.cmd.addCommand(new Command(
-                "debug",
-                mp -> {
-                    Debugger.setDebugMode(mp.get("mode"));
-                },
-                Options.mode(true)
-        ));
-        this.cmd.addCommand(new Command(
-                "debug",
-                mp -> {
-                    Debugger.setCaptureMode(mp.get("capture"));
-                },
-                Options.captureMode(true)
-        ));
-        this.cmd.addCommand(new Command(
-                "debug import test",
-                mp -> {
-                    Debugger.importTest(mp.get("file"), mp.get("count"));
-                },
-                Options.file(true),
-                Options.count(false)
-        ));
-        this.cmd.addCommand(new Command(
-                "debug",
-                mp -> {
-                    Debugger.setAutomaticSave(mp.get("automatic_save"));
-                },
-                Options.automatic_save(false)
-        ));
-        this.cmd.addCommand(new Command(
-                "load from database",
-                mp -> {
-                    DatabaseHandler.loadFromDatabase(mp.get("file"));
-                    System.out.println("successfully loaded from database");
-                },
-                Options.file(false)
-        ));
     }
 
-    abstract protected String getMenuName();
+    abstract public String getMenuName();
 }

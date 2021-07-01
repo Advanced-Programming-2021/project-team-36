@@ -4,6 +4,8 @@ import YuGiOh.controller.LogicException;
 import YuGiOh.view.cardSelector.ResistToChooseCard;
 import YuGiOh.view.gui.GuiReporter;
 import YuGiOh.view.gui.event.GameActionEvent;
+import YuGiOh.model.enums.Color;
+import YuGiOh.utils.CustomPrinter;
 import lombok.Getter;
 
 public class Action {
@@ -21,8 +23,10 @@ public class Action {
         try {
             effect.run();
         } catch (LogicException e){
-            // this must never happen :))
-            e.printStackTrace();
+            CustomPrinter.println(
+                    "We cannot run effect of " + this.event.getDescription() + " because something had changed in chain!",
+                    Color.Red
+            );
         }
     }
 }

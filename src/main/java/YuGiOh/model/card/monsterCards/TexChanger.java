@@ -43,6 +43,8 @@ public class TexChanger extends Monster {
                         )
                 )[0];
                 controller.summon(chosen, true);
+                CustomPrinter.println(String.format("<%s>'s <%s> activated successfully", this.owner.getUser().getUsername(), this.getName()), Color.Yellow);
+                CustomPrinter.println(this.asEffect(), Color.Gray);
             } catch (LogicException | ResistToChooseCard e){
                 CustomPrinter.println("We didn't summoned monster", Color.Red);
             }

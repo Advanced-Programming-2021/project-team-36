@@ -60,6 +60,10 @@ public class MainMenuController extends BaseMenuController {
         );
     }
 
+    public void increaseBalance(int extra) {
+        user.increaseBalance(extra);
+    }
+
     public void logout() throws RoutingException {
         ProgramController.getInstance().navigateToMenu(new LoginMenuController());
         CustomPrinter.println("user logged out successfully!", Color.Default);

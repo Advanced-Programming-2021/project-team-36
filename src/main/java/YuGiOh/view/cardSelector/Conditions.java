@@ -115,7 +115,7 @@ public class Conditions {
     public static SelectCondition or(SelectCondition... conditions){
         return (card) -> {
             for(SelectCondition condition : conditions) {
-                if (condition.canSelect(card) == true)
+                if (condition.canSelect(card))
                     return true;
             }
             return false;
@@ -125,7 +125,7 @@ public class Conditions {
     public static SelectCondition and(SelectCondition... conditions){
         return (card) -> {
             for(SelectCondition condition : conditions) {
-                if (condition.canSelect(card) == false)
+                if (!condition.canSelect(card))
                     return false;
             }
             return true;

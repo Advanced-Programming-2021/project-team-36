@@ -28,7 +28,8 @@ public class Raigeki extends Spell {
                 if (monster != null)
                     opponent.moveCardToGraveYard(monster);
             }
-            CustomPrinter.println("Raigeki activated successfully.", Color.Green);
+            CustomPrinter.println(String.format("<%s>'s <%s> activated successfully", this.owner.getUser().getUsername(), this.getName()), Color.Yellow);
+            CustomPrinter.println(this, Color.Gray);
         };
     }
 

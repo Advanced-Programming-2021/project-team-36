@@ -9,7 +9,5 @@ public class CardNullTest extends Sample {
         run("menu enter shop");
         run("shop buy Suijin");
         checkNoInvalidCommandsInBuffer();
-//        run("duel --new --second_player shayan --round 1");
-//        run("show hand");
     }
 }

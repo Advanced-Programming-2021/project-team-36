@@ -1,6 +1,7 @@
 package YuGiOh.model.card.magicCards.traps;
 
 import YuGiOh.controller.GameController;
+import YuGiOh.model.enums.Color;
 import YuGiOh.model.enums.Icon;
 import YuGiOh.model.enums.Phase;
 import YuGiOh.model.enums.Status;
@@ -8,6 +9,7 @@ import YuGiOh.model.card.Trap;
 import YuGiOh.model.card.action.Action;
 import YuGiOh.model.card.action.Effect;
 import YuGiOh.model.card.action.AttackEvent;
+import YuGiOh.utils.CustomPrinter;
 
 public class NegateAttack extends Trap {
     public NegateAttack(String name, String description, int price, Icon icon, Status status) {
@@ -18,11 +20,10 @@ public class NegateAttack extends Trap {
     protected Effect getEffect() {
         return ()->{
             getChain().pop();
-            // todo how to end battle phase when there is still action in chain?
-            assert GameController.getInstance().getGame().getPhase().equals(Phase.BATTLE_PHASE);
-            // todo remove this assert?
             GameController.getInstance().goNextPhaseAndNotify();
             GameController.getInstance().getPlayerControllerByPlayer(this.owner).moveCardToGraveYard(this);
+            CustomPrinter.println(String.format("<%s>'s <%s> activated successfully", this.owner.getUser().getUsername(), this.getName()), Color.Yellow);
+            CustomPrinter.println(this, Color.Gray);
         };
     }
 

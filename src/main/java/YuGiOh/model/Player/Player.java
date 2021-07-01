@@ -17,13 +17,13 @@ import YuGiOh.model.enums.Constants;
 
 abstract public class Player {
     private final User user;
+    @Getter
     private Deck deck;
     private Board board;
 
     private IntegerProperty lifePoint;
 
-    @Getter
-    @Setter
+    @Getter @Setter
     private boolean summonedInLastTurn;
 
     public Player(User user) throws ModelException {

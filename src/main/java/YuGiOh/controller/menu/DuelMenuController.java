@@ -155,7 +155,11 @@ public class DuelMenuController extends BaseMenuController {
             this.game = duel.getCurrentGame();
 
             // todo change this when we wanted to connect the whole part
-            Platform.runLater(()-> this.graphicView.startNewGame(game));
+            Platform.runLater(()-> {
+                this.graphicView.startNewGame(game);
+                MainGameThread.getInstance().unlockTheThread();
+            });
+            MainGameThread.getInstance().lockRunningThread();
 
             this.gameController = new GameController(game);
             try {

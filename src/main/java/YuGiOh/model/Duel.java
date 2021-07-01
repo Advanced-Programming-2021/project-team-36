@@ -1,12 +1,13 @@
 package YuGiOh.model;
 
+import YuGiOh.controller.LogicException;
+import YuGiOh.controller.ProgramController;
 import YuGiOh.controller.events.RoundOverExceptionEvent;
+import YuGiOh.controller.menu.HalfTimeMenuController;
 import YuGiOh.model.Player.Player;
 import YuGiOh.model.enums.Color;
 import YuGiOh.model.enums.GameResult;
-import YuGiOh.model.enums.Phase;
 import YuGiOh.utils.CustomPrinter;
-import javafx.beans.property.SimpleObjectProperty;
 import lombok.Getter;
 
 import java.util.ArrayList;
@@ -34,7 +35,7 @@ public class Duel {
     private final List<Integer> firstPlayerScores = new ArrayList<>();
     private final List<Integer> secondPlayerScores = new ArrayList<>();
 
-    public Duel(Player firstPlayer, Player secondPlayer, int rounds) throws ModelException{
+    public Duel(Player firstPlayer, Player secondPlayer, int rounds) throws ModelException {
         this.firstPlayer = firstPlayer;
         this.secondPlayer = secondPlayer;
         this.rounds = rounds;
@@ -73,7 +74,7 @@ public class Duel {
     }
 
     public void goNextRound(RoundOverExceptionEvent event) throws ModelException {
-        if(!finished) {
+        if (!finished) {
             if (event.gameResult.equals(GameResult.DRAW)) {
                 CustomPrinter.println(String.format("game is a draw and the score is %d-%d", totalScore(getFirstPlayer()), totalScore(getSecondPlayer())), Color.Blue);
                 addFirstPlayerLastRoundScore(0);

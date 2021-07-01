@@ -12,7 +12,7 @@ public class ImportAndExportMenuView extends BaseMenuView { // Should this even 
     }
 
     @Override
-    protected String getMenuName() {
+    public String getMenuName() {
         return "Import/Export Menu";
     }
 }

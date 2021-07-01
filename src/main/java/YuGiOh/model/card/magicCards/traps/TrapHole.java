@@ -3,12 +3,14 @@ package YuGiOh.model.card.magicCards.traps;
 import YuGiOh.controller.GameController;
 import YuGiOh.model.card.action.Effect;
 import YuGiOh.model.card.action.SummonEvent;
+import YuGiOh.model.enums.Color;
 import YuGiOh.model.enums.Icon;
 import YuGiOh.model.enums.Status;
 import YuGiOh.model.enums.SummonType;
 import YuGiOh.model.card.Monster;
 import YuGiOh.model.card.Trap;
 import YuGiOh.model.card.action.Action;
+import YuGiOh.utils.CustomPrinter;
 
 public class TrapHole extends Trap {
     public TrapHole(String name, String description, int price, Icon icon, Status status) {
@@ -22,6 +24,9 @@ public class TrapHole extends Trap {
         return ()->{
             GameController.getInstance().getPlayerControllerByPlayer(monster.owner).moveCardToGraveYard(monster);
             GameController.getInstance().getPlayerControllerByPlayer(this.owner).moveCardToGraveYard(this);
+            getChain().pop(); // do not summon
+            CustomPrinter.println(String.format("<%s>'s <%s> activated successfully", this.owner.getUser().getUsername(), this.getName()), Color.Yellow);
+            CustomPrinter.println(this, Color.Gray);
         };
     }
 

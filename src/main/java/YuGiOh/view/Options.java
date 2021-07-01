@@ -71,7 +71,6 @@ public class Options {
 
     static Option secondPlayer(boolean required) {
         Option ret = new Option("second_player", true, "second_player");
-        // this was second-player before. I had to change it because it was not compatible with java.cli how to fix it? todo
         ret.setRequired(required);
         return ret;
     }
@@ -94,37 +93,37 @@ public class Options {
         return ret;
     }
 
-    static Option monsterZone(boolean required) {
+    public static Option monsterZone(boolean required) {
         Option ret = new Option("monster", true, "monster");
         ret.setRequired(required);
         return ret;
     }
 
-    static Option spellZone(boolean required) {
+    public static Option spellZone(boolean required) {
         Option ret = new Option("spell", true, "spell");
         ret.setRequired(required);
         return ret;
     }
 
-    static Option fieldZone(boolean required) {
+    public static Option fieldZone(boolean required) {
         Option ret = new Option("field", true, "field");
         ret.setRequired(required);
         return ret;
     }
 
-    static Option handZone(boolean required) {
+    public static Option handZone(boolean required) {
         Option ret = new Option("hand", true, "hand");
         ret.setRequired(required);
         return ret;
     }
 
-    static Option opponent(boolean required) {
+    public static Option opponent(boolean required) {
         Option ret = new Option("opponent", false, "opponent");
         ret.setRequired(required);
         return ret;
     }
 
-    static Option Deselect(boolean required) {
+    public static Option Deselect(boolean required) {
         Option ret = new Option("d", false, "deselect");
         ret.setRequired(required);
         return ret;
@@ -161,6 +160,18 @@ public class Options {
 
     static Option count(boolean required) {
         Option ret = new Option("count", true, "count");
+        ret.setRequired(required);
+        return ret;
+    }
+
+    static Option balance(boolean required) {
+        Option ret = new Option("balance", true, "balance");
+        ret.setRequired(required);
+        return ret;
+    }
+
+    static Option lp(boolean required) {
+        Option ret = new Option("lp", true, "life_points");
         ret.setRequired(required);
         return ret;
     }

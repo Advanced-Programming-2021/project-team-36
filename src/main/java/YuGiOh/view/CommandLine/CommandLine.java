@@ -2,6 +2,8 @@ package YuGiOh.view.CommandLine;
 
 import YuGiOh.controller.LogicException;
 import YuGiOh.model.ModelException;
+import YuGiOh.model.enums.Color;
+import YuGiOh.utils.CustomPrinter;
 import YuGiOh.utils.RoutingException;
 import YuGiOh.view.cardSelector.ResistToChooseCard;
 import YuGiOh.view.ParserException;
@@ -29,7 +31,6 @@ public class CommandLine {
 
             }
         }
-        // if still alive, then no command has been matched
         for (Command command : commandList) {
             if (command.initStringMatch(line)) {
                 command.printHelper();
@@ -42,6 +43,7 @@ public class CommandLine {
     public void printAllHelpers() {
         for (Command command : commandList) {
             command.printHelper();
+            CustomPrinter.println("----------------", Color.Cyan);
         }
     }
 }

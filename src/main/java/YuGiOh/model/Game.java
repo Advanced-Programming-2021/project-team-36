@@ -2,8 +2,6 @@ package YuGiOh.model;
 
 import YuGiOh.model.Player.Player;
 import YuGiOh.model.card.Card;
-import YuGiOh.model.card.Monster;
-import YuGiOh.model.card.Spell;
 import YuGiOh.model.card.action.Action;
 import YuGiOh.model.enums.Phase;
 import YuGiOh.model.enums.ZoneType;
@@ -31,7 +29,8 @@ public class Game {
     public Game(Player firstPlayer, Player secondPlayer) throws ModelException {
         if (firstPlayer.getUser().getUsername().equals(secondPlayer.getUser().getUsername()))
             throw new ModelException("you can't play with yourself");
-    /*    Random random = new Random(); movagghat: comment kardam ke too graphic ma paeeni bashim
+
+        Random random = new Random();
         if (random.nextInt(2) == 0) {
             this.firstPlayer = firstPlayer;
             this.secondPlayer = secondPlayer;
@@ -39,9 +38,6 @@ public class Game {
             this.firstPlayer = secondPlayer;
             this.secondPlayer = firstPlayer;
         }
-     */
-        this.firstPlayer = firstPlayer;
-        this.secondPlayer = secondPlayer;
         firstPlayer.getMainDeck().shuffleCards();
         secondPlayer.getMainDeck().shuffleCards();
 
@@ -58,22 +54,22 @@ public class Game {
         return cardAddress.getOwner().getBoard().getCardByCardAddress(cardAddress);
     }
 
-    public CardAddress getCardAddress(Card card){
+    public CardAddress getCardAddress(Card card) {
         CardAddress firstCardAddress = firstPlayer.getBoard().getCardAddress(card);
         CardAddress secondCardAddress = secondPlayer.getBoard().getCardAddress(card);
-        if(firstCardAddress != null)
+        if (firstCardAddress != null)
             return firstCardAddress;
-        if(secondCardAddress != null)
+        if (secondCardAddress != null)
             return secondCardAddress;
         throw new Error("There is no such card in game");
     }
 
-    public ZoneType getCardZoneType(Card card){
+    public ZoneType getCardZoneType(Card card) {
         ZoneType firstPlayerZone = firstPlayer.getBoard().getCardZoneType(card);
         ZoneType secondPlayerZone = secondPlayer.getBoard().getCardZoneType(card);
-        if(firstPlayerZone != null)
+        if (firstPlayerZone != null)
             return firstPlayerZone;
-        if(secondPlayerZone != null)
+        if (secondPlayerZone != null)
             return secondPlayerZone;
         throw new Error("There is no such card in game");
     }
@@ -97,27 +93,26 @@ public class Game {
     }
 
     public void moveCardToGraveYard(Card card) {
-        // exactly one of them contain this card
         firstPlayer.getBoard().moveCardToGraveYard(card);
         secondPlayer.getBoard().moveCardToGraveYard(card);
     }
 
-    public Player getOtherPlayer(Player player){
-        if(player.equals(firstPlayer))
+    public Player getOtherPlayer(Player player) {
+        if (player.equals(firstPlayer))
             return secondPlayer;
-        if(player.equals(secondPlayer))
+        if (player.equals(secondPlayer))
             return firstPlayer;
         throw new Error("no such player in the game");
     }
 
-    public List<Card> getAllCardsOnBoard(){
+    public List<Card> getAllCardsOnBoard() {
         List<Card> cards = new ArrayList<>();
         cards.addAll(firstPlayer.getBoard().getAllCardsOnBoard());
         cards.addAll(secondPlayer.getBoard().getAllCardsOnBoard());
         return cards;
     }
 
-    public List<Card> getAllCards(){
+    public List<Card> getAllCards() {
         List<Card> cards = new ArrayList<>();
         cards.addAll(firstPlayer.getBoard().getAllCards());
         cards.addAll(secondPlayer.getBoard().getAllCards());

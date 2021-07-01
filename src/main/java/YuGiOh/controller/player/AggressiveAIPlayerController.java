@@ -25,6 +25,7 @@ public class AggressiveAIPlayerController extends AIPlayerController {
                 if (rnd.nextInt(2) == 0)
                     noErrorSpecialSummonCard((Monster) card);
                 noErrorSummonCard((Monster) card);
+                noErrorMonsterActivateEffect((Monster) card);
             }
             if (card instanceof Trap) {
                 noErrorSetMagic((Magic) card);
