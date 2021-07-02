@@ -1,5 +1,6 @@
 import YuGiOh.controller.ProgramController;
 import YuGiOh.controller.menu.MainMenuController;
+import YuGiOh.model.enums.AIMode;
 import org.junit.Test;
 import utils.IntegrationTestBase;
 
@@ -23,7 +24,7 @@ public class MenuTest extends IntegrationTestBase {
         run("menu enter scorebo13d");
         run("menu enter main");
         try {
-            MainMenuController.getInstance().startDuelAiWithAI(1);
+            MainMenuController.getInstance().startDuelAIWithAI(1, AIMode.AGGRESSIVE, AIMode.NORMAL);
         } catch (Exception exception) {
         }
 

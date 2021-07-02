@@ -8,6 +8,7 @@ import YuGiOh.model.Player.Player;
 import YuGiOh.model.User;
 import YuGiOh.model.card.Card;
 import YuGiOh.model.deck.Deck;
+import YuGiOh.model.enums.AIMode;
 import org.junit.Test;
 import utils.IntegrationTestBase;
 
@@ -28,8 +29,8 @@ public class DoubleAITest extends IntegrationTestBase {
 
     public void battle() throws ModelException {
         Player players[] = new Player[2];
-        players[0] = new AIPlayer();
-        players[1] = new AIPlayer();
+        players[0] = new AIPlayer(random.nextInt(2) == 0 ? AIMode.NORMAL : AIMode.AGGRESSIVE);
+        players[1] = new AIPlayer(random.nextInt(2) == 0 ? AIMode.NORMAL : AIMode.AGGRESSIVE);
 
         Card allCards[] = YuGiOh.model.card.Utils.getAllCards();
         int numberOfCards = 20;

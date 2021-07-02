@@ -1,6 +1,7 @@
 package YuGiOh.view;
 
 import YuGiOh.controller.menu.MainMenuController;
+import YuGiOh.model.enums.AIMode;
 import YuGiOh.utils.DatabaseHandler;
 import YuGiOh.view.CommandLine.Command;
 
@@ -24,7 +25,7 @@ public class MainMenuView extends BaseMenuView {
         this.cmd.addCommand(new Command(
                 "duel",
                 mp -> {
-                    MainMenuController.getInstance().startDuelWithAI(Parser.RoundParser(mp.get("round")));
+                    MainMenuController.getInstance().startDuelWithAI(Parser.RoundParser(mp.get("round")), AIMode.NORMAL);
                 },
                 Options.newRound(true),
                 Options.ai(true),
@@ -33,7 +34,7 @@ public class MainMenuView extends BaseMenuView {
         this.cmd.addCommand(new Command(
                 "duel",
                 mp -> {
-                    MainMenuController.getInstance().startDuelAiWithAI(Parser.RoundParser(mp.get("round")));
+                    MainMenuController.getInstance().startDuelAIWithAI(Parser.RoundParser(mp.get("round")), AIMode.NORMAL, AIMode.NORMAL);
                 },
                 Options.round(true)
         ));

@@ -6,6 +6,7 @@ import YuGiOh.model.Player.Player;
 import YuGiOh.model.User;
 import YuGiOh.model.card.Card;
 import YuGiOh.model.deck.Deck;
+import YuGiOh.model.enums.AIMode;
 import initialize.Sample;
 import org.junit.Test;
 
@@ -23,8 +24,8 @@ public class ScoreBoardTest extends Sample {
     public void battle() throws ModelException {
         Random random = new Random();
         Player players[] = new Player[2];
-        players[0] = new AIPlayer();
-        players[1] = new AIPlayer();
+        players[0] = new AIPlayer(AIMode.NORMAL);
+        players[1] = new AIPlayer(AIMode.AGGRESSIVE);
 
         Card allCards[] = YuGiOh.model.card.Utils.getAllCards();
         int numberOfCards = 20;

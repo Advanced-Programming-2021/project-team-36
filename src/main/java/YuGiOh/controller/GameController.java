@@ -15,6 +15,8 @@ import YuGiOh.model.Player.AIPlayer;
 import YuGiOh.model.Player.HumanPlayer;
 import YuGiOh.model.enums.Phase;
 
+import java.lang.reflect.InvocationTargetException;
+
 public class GameController {
     @Getter
     public static GameController instance;
@@ -29,12 +31,18 @@ public class GameController {
         this.game = game;
         instance = this;
 
-        this.playerController1 = game.getFirstPlayer() instanceof HumanPlayer ?
-                new HumanPlayerController((HumanPlayer) game.getFirstPlayer()) :
-                new AIPlayerController((AIPlayer) game.getFirstPlayer());
-        this.playerController2 = game.getSecondPlayer() instanceof HumanPlayer ?
-                new HumanPlayerController((HumanPlayer) game.getSecondPlayer()) :
-                new AIPlayerController((AIPlayer) game.getSecondPlayer());
+        this.playerController1 = createPlayerControllerByPlayer(game.getFirstPlayer());
+        this.playerController2 = createPlayerControllerByPlayer(game.getSecondPlayer());
+    }
+
+    private PlayerController createPlayerControllerByPlayer(Player player) {
+        if(player instanceof HumanPlayer) {
+            HumanPlayer humanPlayer = (HumanPlayer) player;
+            return new HumanPlayerController(humanPlayer);
+        } else {
+            AIPlayer aiPlayer = (AIPlayer) player;
+            return aiPlayer.getAiMode().getNewInstance(aiPlayer);
+        }
     }
 
     public void drawCard() throws RoundOverExceptionEvent {

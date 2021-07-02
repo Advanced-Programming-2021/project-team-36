@@ -7,6 +7,7 @@ import YuGiOh.model.ModelException;
 import YuGiOh.model.Player.AIPlayer;
 import YuGiOh.model.Player.HumanPlayer;
 import YuGiOh.model.User;
+import YuGiOh.model.enums.AIMode;
 import YuGiOh.model.enums.Color;
 import YuGiOh.utils.CustomPrinter;
 import YuGiOh.utils.RoutingException;
@@ -36,10 +37,10 @@ public class MainMenuController extends BaseMenuController {
         );
     }
 
-    public void startDuelWithAI(int round) throws RoutingException, ModelException {
+    public void startDuelWithAI(int round, AIMode aiMode) throws RoutingException, ModelException {
         Duel duel = new Duel(
                 new HumanPlayer(user),
-                new AIPlayer(),
+                new AIPlayer(aiMode),
                 round
         );
         CustomPrinter.println(String.format("start new duel between %s and %s", duel.getFirstPlayer().getUser().getNickname(), duel.getSecondPlayer().getUser().getNickname()), Color.Default);
@@ -48,10 +49,10 @@ public class MainMenuController extends BaseMenuController {
         );
     }
 
-    public void startDuelAiWithAI(int round) throws ModelException {
+    public void startDuelAIWithAI(int round, AIMode aiMode1, AIMode aiMode2) throws ModelException {
         Duel duel = new Duel(
-                new AIPlayer(),
-                new AIPlayer(),
+                new AIPlayer(aiMode1),
+                new AIPlayer(aiMode2),
                 round
         );
         CustomPrinter.println(String.format("start new duel between  and %s", duel.getFirstPlayer().getUser().getNickname(), duel.getSecondPlayer().getUser().getNickname()), Color.Default);

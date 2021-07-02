@@ -11,6 +11,7 @@ import YuGiOh.model.Game;
 import YuGiOh.model.Player.AIPlayer;
 import YuGiOh.model.Player.HumanPlayer;
 import YuGiOh.model.User;
+import YuGiOh.model.enums.AIMode;
 import YuGiOh.utils.Cheat;
 import YuGiOh.utils.DatabaseHandler;
 import javafx.application.Application;
@@ -33,8 +34,9 @@ public class DummyStarter extends Application {
 //            Cheat.buildSuperUser(fakeUser2);
 
             Duel duel = new Duel(
-                    new HumanPlayer(abolfazl),
-                    new AIPlayer(fakeUser2),
+//                    new HumanPlayer(abolfazl),
+                    new AIPlayer(abolfazl, AIMode.AGGRESSIVE),
+                    new AIPlayer(fakeUser2, AIMode.NORMAL),
                     3
             );
             new DuelMenuController(duel);

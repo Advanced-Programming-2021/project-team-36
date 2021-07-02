@@ -22,6 +22,7 @@ import javafx.scene.effect.DropShadow;
 import javafx.scene.effect.Effect;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
+import javafx.scene.layout.Background;
 import javafx.scene.paint.Color;
 import javafx.util.Duration;
 import lombok.Getter;
@@ -168,6 +169,7 @@ public class CardFrame extends DraggablePane {
             contextMenu.getItems().forEach(item->{
                 item.setOnAction(E-> item.getGraphic().getOnMouseClicked().handle(null));
             });
+            contextMenu.setStyle("-fx-background-color: #006699;");
             contextMenu.show(this, e.getScreenX(), e.getScreenY());
         });
     }

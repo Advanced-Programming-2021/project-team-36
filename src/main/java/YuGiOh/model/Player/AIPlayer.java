@@ -1,16 +1,22 @@
 package YuGiOh.model.Player;
 
+import YuGiOh.model.enums.AIMode;
 import YuGiOh.utils.Cheat;
 import YuGiOh.model.ModelException;
 import YuGiOh.model.User;
+import lombok.Getter;
 
 public class AIPlayer extends Player {
-    public AIPlayer() throws ModelException {
-        this(getAIUser());
+    @Getter
+    private AIMode aiMode;
+
+    public AIPlayer(AIMode aiMode) throws ModelException {
+        this(getAIUser(), aiMode);
     }
 
-    public AIPlayer(User user) throws ModelException {
+    public AIPlayer(User user, AIMode aiMode) throws ModelException {
         super(user);
+        this.aiMode = aiMode;
     }
 
     private static User getAIUser() {
