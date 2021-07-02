@@ -11,7 +11,7 @@ import YuGiOh.model.enums.MonsterState;
 import YuGiOh.model.enums.MonsterType;
 import YuGiOh.model.enums.ZoneType;
 
-public class Conditions {
+public class SelectConditions {
     public static final SelectCondition noCondition = (Card card) -> true;
 
     private static Game getGame() {

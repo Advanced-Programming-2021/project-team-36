@@ -2,10 +2,7 @@ package YuGiOh.model.card.magicCards.spells;
 
 import YuGiOh.controller.GameController;
 import YuGiOh.controller.events.RoundOverExceptionEvent;
-import YuGiOh.controller.player.PlayerController;
-import YuGiOh.model.card.Magic;
 import YuGiOh.model.card.Spell;
-import YuGiOh.model.card.Trap;
 import YuGiOh.model.card.action.Action;
 import YuGiOh.model.card.action.Effect;
 import YuGiOh.model.card.action.MagicActivation;
@@ -14,7 +11,6 @@ import YuGiOh.model.enums.Color;
 import YuGiOh.model.enums.Icon;
 import YuGiOh.model.enums.Status;
 import YuGiOh.utils.CustomPrinter;
-import YuGiOh.view.cardSelector.Conditions;
 
 public class RingOfDefense extends Spell {
 

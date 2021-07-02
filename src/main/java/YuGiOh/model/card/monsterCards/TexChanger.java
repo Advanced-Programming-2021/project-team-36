@@ -2,14 +2,11 @@ package YuGiOh.model.card.monsterCards;
 
 import YuGiOh.controller.GameController;
 import YuGiOh.controller.LogicException;
-import YuGiOh.controller.events.RoundOverExceptionEvent;
 import YuGiOh.controller.player.PlayerController;
-import YuGiOh.model.card.Card;
-import YuGiOh.model.card.action.Effect;
 import YuGiOh.model.enums.*;
 import YuGiOh.model.card.Monster;
 import YuGiOh.utils.CustomPrinter;
-import YuGiOh.view.cardSelector.Conditions;
+import YuGiOh.view.cardSelector.SelectConditions;
 import YuGiOh.view.cardSelector.ResistToChooseCard;
 
 public class TexChanger extends Monster {
@@ -31,14 +28,14 @@ public class TexChanger extends Monster {
                 Monster chosen = (Monster) controller.chooseKCards(
                         "choose 1 cyberse monster from your hand or graveyard or deck",
                         1,
-                        Conditions.and(
-                                Conditions.getMonsterCardTypeCondition(owner, MonsterCardType.NORMAL),
-                                Conditions.getMonsterTypeCondition(owner, MonsterType.CYBERSE),
-                                Conditions.getIsPlayersCard(owner),
-                                Conditions.or(
-                                        Conditions.getInZoneCondition(ZoneType.HAND),
-                                        Conditions.getInZoneCondition(ZoneType.GRAVEYARD),
-                                        Conditions.getInZoneCondition(ZoneType.DECK)
+                        SelectConditions.and(
+                                SelectConditions.getMonsterCardTypeCondition(owner, MonsterCardType.NORMAL),
+                                SelectConditions.getMonsterTypeCondition(owner, MonsterType.CYBERSE),
+                                SelectConditions.getIsPlayersCard(owner),
+                                SelectConditions.or(
+                                        SelectConditions.getInZoneCondition(ZoneType.HAND),
+                                        SelectConditions.getInZoneCondition(ZoneType.GRAVEYARD),
+                                        SelectConditions.getInZoneCondition(ZoneType.DECK)
                                 )
                         )
                 )[0];

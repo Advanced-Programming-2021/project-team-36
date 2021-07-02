@@ -1,19 +1,21 @@
 package YuGiOh.view;
 
 import YuGiOh.controller.MainGameThread;
+import YuGiOh.controller.menu.MainMenuController;
 import YuGiOh.model.Game;
 import YuGiOh.model.card.Card;
 import YuGiOh.view.cardSelector.CardSelector;
+import YuGiOh.view.cardSelector.FinishSelectingCondition;
 import YuGiOh.view.cardSelector.ResistToChooseCard;
 import YuGiOh.view.cardSelector.SelectCondition;
-import YuGiOh.view.gui.AlertBox;
-import YuGiOh.view.gui.CustomButton;
-import YuGiOh.view.gui.DuelInfoBox;
-import YuGiOh.view.gui.GameField;
+import YuGiOh.view.gui.*;
 import javafx.application.Application;
+import javafx.geometry.Insets;
 import javafx.scene.Scene;
 import javafx.scene.input.KeyCode;
 import javafx.scene.layout.*;
+import javafx.scene.paint.Color;
+import javafx.scene.text.Text;
 import javafx.stage.Stage;
 import lombok.Getter;
 
@@ -76,22 +78,47 @@ public class DuelMenuView extends Application {
                 new AlertBox().displayYesNoStandAlone(question, yes, no));
     }
 
-    public Card askUserToChooseCard(String message, SelectCondition condition) throws ResistToChooseCard {
-        List<Card> cards = new ArrayList<>();
-        game.getAllCards().forEach(c->{
-            if (condition.canSelect(c))
-                cards.add(c);
+    public List<Card> askUserToChooseCard(String message, SelectCondition selectCondition, FinishSelectingCondition finishCondition) throws ResistToChooseCard {
+//        MainGameThread.getInstance().onlyBlockRunningThreadThenDoInGui(()->{
+//            Pane spaceRoot = new Pane();
+//            spaceRoot.setBackground(new Background(new BackgroundFill(Color.ROSYBROWN, CornerRadii.EMPTY, Insets.EMPTY)));
+//            gameField.getChildren().forEach(node->{
+//                if(node instanceof CardFrame){
+//                    if(selectCondition.canSelect(((CardFrame) node).getCard()))
+//                        spaceRoot.getChildren().add(node);
+//                    // we hope that layout does not change
+//                }
+//            });
+//            Text text = new Text();
+//            spaceRoot.getChildren().add(text);
+//
+//            selector.refresh(selectCondition, CardSelector.SelectMode.Choosing);
+//            selector.setOnAction(() -> {
+//                if(finishCondition.canFinish(selector.getSelectedCards()))
+//                    text.setText("OK!");
+//                else
+//                    text.setText("BAD!");
+//            });
+//
+//            Scene spaceScene = new Scene(spaceRoot, WIDTH, HEIGHT);
+//            stage.setScene(spaceScene);
+//            stage.show();
+//        });
+//        return selector.getSelectedCards();
+        // todo we still can't choose from deck or graveyard
+        announce(message);
+        MainGameThread.getInstance().onlyBlockRunningThreadThenDoInGui(()->{
+            selector.refresh(selectCondition, CardSelector.SelectMode.Choosing);
+            selector.setOnAction(()->{
+                if(finishCondition.canFinish(selector.getSelectedCards())){
+                    System.out.println("now you can finish");
+                    MainGameThread.getInstance().unlockTheThreadIfMain();
+                } else {
+                    System.out.println("you have to select more");
+                }
+            });
         });
-        List<CustomButton> buttons = new ArrayList<>();
-        cards.forEach(c->{
-            buttons.add(new CustomButton(c.getName(), 17, ()->{}));
-        });
-
-        int ret = MainGameThread.getInstance().blockUnblockRunningThreadAndDoInGui((MainGameThread.Task<Integer>) ()->
-                new AlertBox().displayChoicesStandAlone(message, buttons));
-        if(ret == -1)
-            throw new ResistToChooseCard();
-        return cards.get(ret);
+        return selector.getSelectedCards();
     }
 
     public int askUserToChoose(String question, List<String> choices) throws ResistToChooseCard {
@@ -106,7 +133,9 @@ public class DuelMenuView extends Application {
     }
 
     public void announce(String message){
-        new AlertBox().displayMessageStandAlone(message);
+        MainGameThread.getInstance().blockUnblockRunningThreadAndDoInGui(()->
+            new AlertBox().displayMessageStandAlone(message)
+        );
     }
 
     public void resetSelector(){

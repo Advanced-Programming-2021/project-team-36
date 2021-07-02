@@ -2,7 +2,6 @@ package YuGiOh.model.card.magicCards.spells;
 
 import YuGiOh.controller.GameController;
 import YuGiOh.controller.player.PlayerController;
-import YuGiOh.model.CardAddress;
 import YuGiOh.model.Player.Player;
 import YuGiOh.model.card.Card;
 import YuGiOh.model.card.Monster;
@@ -10,9 +9,8 @@ import YuGiOh.model.card.Spell;
 import YuGiOh.model.card.action.Effect;
 import YuGiOh.model.enums.*;
 import YuGiOh.utils.CustomPrinter;
-import YuGiOh.view.cardSelector.Conditions;
+import YuGiOh.view.cardSelector.SelectConditions;
 
-import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -29,7 +27,7 @@ public class MonsterReborn extends Spell {
             PlayerController playerController = GameController.getInstance().getPlayerControllerByPlayer(this.owner);
             Monster monster = (Monster) playerController.chooseKCards("Choose 1 monster in GraveYard to special summon it",
                     1,
-                    Conditions.getMonsterFromGraveYard()
+                    SelectConditions.getMonsterFromGraveYard()
             )[0];
             playerController.summon(monster, 0, true);
             CustomPrinter.println(String.format("<%s>'s <%s> activated successfully", this.owner.getUser().getUsername(), this.getName()), Color.Yellow);

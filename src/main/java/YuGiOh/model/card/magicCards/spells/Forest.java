@@ -1,16 +1,10 @@
 package YuGiOh.model.card.magicCards.spells;
 
-import YuGiOh.controller.GameController;
-import YuGiOh.controller.player.PlayerController;
-import YuGiOh.model.CardAddress;
-import YuGiOh.model.Player.Player;
-import YuGiOh.model.card.Card;
 import YuGiOh.model.card.Monster;
 import YuGiOh.model.card.Spell;
 import YuGiOh.model.card.action.Effect;
 import YuGiOh.model.enums.*;
 import YuGiOh.utils.CustomPrinter;
-import YuGiOh.view.cardSelector.Conditions;
 
 public class Forest extends Spell {
 

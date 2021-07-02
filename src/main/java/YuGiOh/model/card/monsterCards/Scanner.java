@@ -6,11 +6,8 @@ import YuGiOh.model.enums.MonsterAttribute;
 import YuGiOh.model.enums.MonsterCardType;
 import YuGiOh.model.enums.MonsterType;
 import YuGiOh.model.enums.Color;
-import YuGiOh.model.enums.MonsterAttribute;
-import YuGiOh.model.enums.MonsterCardType;
-import YuGiOh.model.enums.MonsterType;
 import YuGiOh.utils.CustomPrinter;
-import YuGiOh.view.cardSelector.Conditions;
+import YuGiOh.view.cardSelector.SelectConditions;
 import YuGiOh.view.cardSelector.ResistToChooseCard;
 import YuGiOh.model.card.action.Effect;
 import YuGiOh.model.card.Monster;
@@ -37,7 +34,7 @@ public class Scanner extends Monster {
                 copiedMonster = (Monster) GameController.getInstance().getCurrentPlayerController().chooseKCards(
                         "choose a monster to copy",
                         1,
-                        Conditions.OpponentMonsterFromGraveYard
+                        SelectConditions.OpponentMonsterFromGraveYard
                 )[0];
                 copiedMonster = (Monster) copiedMonster.clone().readyForBattle(this.owner);
                 lastTurnActivated = GameController.instance.getGame().getTurn();

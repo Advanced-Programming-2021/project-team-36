@@ -6,6 +6,7 @@ import YuGiOh.controller.ProgramController;
 import YuGiOh.controller.menu.DuelMenuController;
 import YuGiOh.controller.menu.LoginMenuController;
 import YuGiOh.controller.player.AggressiveAIPlayerController;
+import YuGiOh.controller.player.HumanPlayerController;
 import YuGiOh.model.Duel;
 import YuGiOh.model.Game;
 import YuGiOh.model.Player.AIPlayer;
@@ -35,8 +36,8 @@ public class DummyStarter extends Application {
 
             Duel duel = new Duel(
 //                    new HumanPlayer(abolfazl),
-                    new AIPlayer(abolfazl, AIMode.AGGRESSIVE),
-                    new AIPlayer(fakeUser2, AIMode.NORMAL),
+                    new HumanPlayer(abolfazl),
+                    new AIPlayer(fakeUser2, AIMode.AGGRESSIVE),
                     3
             );
             new DuelMenuController(duel);

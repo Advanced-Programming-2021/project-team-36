@@ -4,10 +4,7 @@ import YuGiOh.controller.*;
 import YuGiOh.controller.events.RoundOverExceptionEvent;
 import YuGiOh.model.Duel;
 import YuGiOh.model.ModelException;
-import YuGiOh.model.Player.Player;
 import YuGiOh.model.card.*;
-import YuGiOh.model.enums.GameResult;
-import YuGiOh.view.cardSelector.Conditions;
 import YuGiOh.view.cardSelector.ResistToChooseCard;
 import YuGiOh.model.CardAddress;
 import YuGiOh.model.Game;
@@ -16,7 +13,6 @@ import YuGiOh.utils.CustomPrinter;
 import YuGiOh.utils.Debugger;
 import YuGiOh.utils.RoutingException;
 import YuGiOh.view.DuelMenuView;
-import javafx.application.Platform;
 import lombok.Getter;
 import YuGiOh.model.enums.MonsterState;
 

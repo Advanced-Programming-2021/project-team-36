@@ -3,13 +3,12 @@ package YuGiOh.model.card.magicCards.spells;
 import YuGiOh.controller.GameController;
 import YuGiOh.controller.player.PlayerController;
 import YuGiOh.model.CardAddress;
-import YuGiOh.model.card.Card;
 import YuGiOh.model.card.Monster;
 import YuGiOh.model.card.Spell;
 import YuGiOh.model.card.action.Effect;
 import YuGiOh.model.enums.*;
 import YuGiOh.utils.CustomPrinter;
-import YuGiOh.view.cardSelector.Conditions;
+import YuGiOh.view.cardSelector.SelectConditions;
 
 public class SwordOfDarkDestruction extends Spell {
 
@@ -37,7 +36,7 @@ public class SwordOfDarkDestruction extends Spell {
             PlayerController playerController = GameController.getInstance().getPlayerControllerByPlayer(this.owner);
             Monster monster = (Monster) playerController.chooseKCards("Equip this <SwordofDarkDestruction> to a monster on your field",
                     1,
-                    Conditions.getPlayerMonsterFromMonsterZone(this.owner))[0];
+                    SelectConditions.getPlayerMonsterFromMonsterZone(this.owner))[0];
             setEquippedMonster(monster);
             CustomPrinter.println(String.format("<%s> equipped <%s> to monster <%s>", this.owner.getUser().getUsername(), this.getName(), monster.getName()), Color.Yellow);
             CustomPrinter.println(this, Color.Gray);

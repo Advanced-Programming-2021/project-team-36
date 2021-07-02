@@ -8,7 +8,7 @@ import YuGiOh.model.enums.MonsterAttribute;
 import YuGiOh.model.enums.MonsterCardType;
 import YuGiOh.model.enums.MonsterType;
 import YuGiOh.utils.CustomPrinter;
-import YuGiOh.view.cardSelector.Conditions;
+import YuGiOh.view.cardSelector.SelectConditions;
 import YuGiOh.view.cardSelector.ResistToChooseCard;
 import YuGiOh.model.card.action.Effect;
 import YuGiOh.model.card.Card;
@@ -39,7 +39,7 @@ public class HeraldOfCreation extends Monster {
                 discarded = controller.chooseKCards(
                         "choose 1 card to discard from your hand",
                         1,
-                        Conditions.getInPlayersHandCondition(this.owner)
+                        SelectConditions.getInPlayersHandCondition(this.owner)
                 )[0];
             } catch (ResistToChooseCard e) {
                 CustomPrinter.println("canceled", Color.Default);
@@ -49,7 +49,7 @@ public class HeraldOfCreation extends Monster {
                 monster = (Monster) controller.chooseKCards(
                         "choose 1 level 7 or higher monster from your graveyard",
                         1,
-                        Conditions.getInPlayerGraveYardMonster(this.owner, 7)
+                        SelectConditions.getInPlayerGraveYardMonster(this.owner, 7)
                 )[0];
             } catch (ResistToChooseCard e) {
                 CustomPrinter.println("canceled", Color.Default);

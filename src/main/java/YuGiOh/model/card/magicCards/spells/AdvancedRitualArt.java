@@ -6,8 +6,7 @@ import YuGiOh.controller.player.PlayerController;
 import YuGiOh.model.Player.Player;
 import YuGiOh.model.enums.*;
 import YuGiOh.utils.CustomPrinter;
-import YuGiOh.model.enums.*;
-import YuGiOh.view.cardSelector.Conditions;
+import YuGiOh.view.cardSelector.SelectConditions;
 import YuGiOh.view.cardSelector.ResistToChooseCard;
 import YuGiOh.model.card.Card;
 import YuGiOh.model.card.Monster;
@@ -39,12 +38,12 @@ public class AdvancedRitualArt extends Spell {
                 Monster ritualMonster = (Monster) playerController.chooseKCards(
                         "choose the ritual monster you want to ritual summon.",
                         1,
-                        Conditions.getPlayerRitualMonsterFromHand(this.owner, sumOwnerMonstersInHandAndInZone())
+                        SelectConditions.getPlayerRitualMonsterFromHand(this.owner, sumOwnerMonstersInHandAndInZone())
                 )[0];
                 Monster[] tributeMonsters = playerController.chooseKSumLevelMonsters(
                         "choose a monsters from your hand or board for ritual summon. Sum of your selected cards hasn't reach the limit yet. You can select one of your selected card to deselect it",
                         ritualMonster.getLevel(),
-                        Conditions.getPlayerMonsterFromMonsterZoneOrHand(this.owner, ritualMonster)
+                        SelectConditions.getPlayerMonsterFromMonsterZoneOrHand(this.owner, ritualMonster)
                 );
 
                 for (Monster monster : tributeMonsters)

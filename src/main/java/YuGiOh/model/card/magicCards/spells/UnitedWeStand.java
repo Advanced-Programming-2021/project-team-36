@@ -10,11 +10,8 @@ import YuGiOh.model.enums.Icon;
 import YuGiOh.model.enums.Status;
 import YuGiOh.model.enums.ZoneType;
 import YuGiOh.model.enums.Color;
-import YuGiOh.model.enums.Icon;
-import YuGiOh.model.enums.Status;
-import YuGiOh.model.enums.ZoneType;
 import YuGiOh.utils.CustomPrinter;
-import YuGiOh.view.cardSelector.Conditions;
+import YuGiOh.view.cardSelector.SelectConditions;
 
 public class UnitedWeStand extends Spell {
 
@@ -44,7 +41,7 @@ public class UnitedWeStand extends Spell {
             PlayerController playerController = GameController.getInstance().getPlayerControllerByPlayer(this.owner);
             Monster monster = (Monster) playerController.chooseKCards("Equip this <UnitedWeStand> to a monster on your field",
                     1,
-                    Conditions.getPlayerMonsterFromMonsterZone(this.owner))[0];
+                    SelectConditions.getPlayerMonsterFromMonsterZone(this.owner))[0];
             setEquippedMonster(monster);
             CustomPrinter.println(String.format("<%s> equipped <%s> to monster <%s>", this.owner.getUser().getUsername(), this.getName(), monster.getName()), Color.Yellow);
             CustomPrinter.println(this, Color.Gray);

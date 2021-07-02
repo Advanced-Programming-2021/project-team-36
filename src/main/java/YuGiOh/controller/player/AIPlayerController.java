@@ -3,7 +3,6 @@ package YuGiOh.controller.player;
 import YuGiOh.model.card.Magic;
 import YuGiOh.controller.GameController;
 import YuGiOh.controller.LogicException;
-import YuGiOh.view.cardSelector.Conditions;
 import YuGiOh.view.cardSelector.ResistToChooseCard;
 import YuGiOh.view.cardSelector.SelectCondition;
 import YuGiOh.model.Game;

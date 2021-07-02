@@ -13,6 +13,7 @@ public class CardSelector {
     private SelectCondition condition;
     private SelectMode selectMode;
     private final DuelInfoBox infoBox;
+    private Runnable onAction;
 
     public CardSelector(DuelInfoBox infoBox){
         this.infoBox = infoBox;
@@ -28,6 +29,9 @@ public class CardSelector {
                     }
                     selectCard(e.getCardFrame());
                 }
+            }
+            if(onAction != null) {
+                onAction.run();
             }
         });
         refresh();
@@ -80,12 +84,17 @@ public class CardSelector {
         this.condition = condition;
         this.selectMode = mode;
         deselectAll();
+        onAction = null;
     }
     public void refresh(){
-        refresh(Conditions.noCondition, SelectMode.Normal);
+        refresh(SelectConditions.noCondition, SelectMode.Normal);
     }
 
     public enum SelectMode{
         Normal, Choosing;
+    }
+
+    public void setOnAction(Runnable onAction) {
+        this.onAction = onAction;
     }
 }

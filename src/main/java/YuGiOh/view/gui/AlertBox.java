@@ -30,7 +30,6 @@ public class AlertBox {
 
     public int displayChoicesStandAlone(String question, List<CustomButton> buttons) {
         Stage stage = stageGenerator("alert", 300, 100);
-        // todo now if the user closes, the answer will be false. is it ok?
         AtomicInteger ret = new AtomicInteger(-1);
         Pane root = new Pane();
         Scene scene = new Scene(root);
@@ -52,6 +51,8 @@ public class AlertBox {
         stage.showAndWait();
         return ret.get();
     }
+
+    // todo check what happens if user close the page
 
     public boolean displayYesNoStandAlone(String question, String yes, String no){
         ArrayList<CustomButton> buttons = new ArrayList<>();

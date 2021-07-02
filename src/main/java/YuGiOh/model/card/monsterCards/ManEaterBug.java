@@ -1,12 +1,11 @@
 package YuGiOh.model.card.monsterCards;
 
 import YuGiOh.controller.GameController;
-import YuGiOh.controller.LogicException;
 import YuGiOh.controller.player.PlayerController;
 import YuGiOh.model.enums.*;
 import YuGiOh.utils.CustomPrinter;
 import YuGiOh.model.card.action.Effect;
-import YuGiOh.view.cardSelector.Conditions;
+import YuGiOh.view.cardSelector.SelectConditions;
 import YuGiOh.view.cardSelector.ResistToChooseCard;
 import YuGiOh.model.card.Monster;
 
@@ -26,7 +25,7 @@ public class ManEaterBug extends Monster {
                         Monster monster = (Monster) controller.chooseKCards(
                                 "choose a monster card to kill",
                                 1,
-                                Conditions.getInZoneCondition(ZoneType.MONSTER)
+                                SelectConditions.getInZoneCondition(ZoneType.MONSTER)
                         )[0];
                         if(!owner.getBoard().getAllCards().contains(monster))
                             GameController.getInstance().getOtherPlayerController(controller).moveCardToGraveYard(monster);
