@@ -48,8 +48,8 @@ public class SwordOfDarkDestruction extends Spell {
         for (int i = 1; i <= 5; i++) {
             CardAddress cardAddress = new CardAddress(ZoneType.MONSTER, i, this.owner);
             if (GameController.getInstance().getGame().getCardByCardAddress(cardAddress) != null)
-                return true;
+                return !isActivated();
         }
-        return !isFacedUp();
+        return false;
     }
 }
