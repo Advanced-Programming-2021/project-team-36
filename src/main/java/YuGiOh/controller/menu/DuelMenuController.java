@@ -153,17 +153,11 @@ public class DuelMenuController extends BaseMenuController {
     public void control(){
         while (!duel.isFinished()){
             this.game = duel.getCurrentGame();
+            this.gameController = new GameController(game);
 
             // todo change this when we wanted to connect the whole part
             MainGameThread.getInstance().blockUnblockRunningThreadAndDoInGui(()-> this.graphicView.startNewGame(game));
 
-            Platform.runLater(()-> {
-                this.graphicView.startNewGame(game);
-                MainGameThread.getInstance().unlockTheThread();
-            });
-            MainGameThread.getInstance().lockRunningThread();
-
-            this.gameController = new GameController(game);
             try {
                 gameController.control();
             } catch (RoundOverExceptionEvent roundOverEvent) {

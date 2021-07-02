@@ -19,9 +19,9 @@ abstract public class DraggablePane extends Pane {
         });
         setOnMouseReleased(e->{
             Bounds bounds = getBoundsInParent();
+            onDrop(bounds);
             setCursor(Cursor.HAND);
             moveByTranslateValue(0, 0);
-            onDrop(bounds);
         });
     }
 

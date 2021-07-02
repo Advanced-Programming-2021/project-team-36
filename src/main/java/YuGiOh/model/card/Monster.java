@@ -267,6 +267,13 @@ public class Monster extends Card {
     }
 
     @Override
+    public Card outOfBattle() {
+        super.outOfBattle();
+        setMonsterState(null);
+        return this;
+    }
+
+    @Override
     public String toString() {
         return String.format("%s (Monster - %s, Level <%d>, Attribute <%s>, Monster Type <%s>, Attack <%d>, Defense <%s>) %s", getName(), getMonsterCardType(), getLevel(), getAttribute(), getMonsterType(), getAttackDamageOnCard(), getDefenseRateOnCard(), getDescription());
     }

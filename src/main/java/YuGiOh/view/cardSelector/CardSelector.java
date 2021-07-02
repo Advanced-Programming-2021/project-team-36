@@ -12,7 +12,7 @@ public class CardSelector {
     private final List<CardFrame> selectedCards;
     private SelectCondition condition;
     private SelectMode selectMode;
-    private DuelInfoBox infoBox;
+    private final DuelInfoBox infoBox;
 
     public CardSelector(DuelInfoBox infoBox){
         this.infoBox = infoBox;
@@ -34,9 +34,7 @@ public class CardSelector {
     }
 
     private void loadInfoBox(CardFrame cardFrame){
-        // todo this should come from the card not me :))
-        int buttonFontSize = 14;
-        infoBox.addInfo(cardFrame.getImage());
+        infoBox.addInfo(cardFrame);
     }
 
     private void clearInfoBox(){

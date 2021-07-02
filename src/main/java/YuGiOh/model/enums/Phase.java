@@ -3,18 +3,23 @@ package YuGiOh.model.enums;
 import lombok.Getter;
 
 public enum Phase {
-    DRAW_PHASE("draw phase"),
-    STANDBY_PHASE("standby phase"),
-    MAIN_PHASE1("main phase 1"),
-    BATTLE_PHASE("battle phase"),
-    MAIN_PHASE2("main phase 2"),
-    END_PHASE("end phase");
+    DRAW_PHASE("draw phase", "DP"),
+    STANDBY_PHASE("standby phase", "SP"),
+    MAIN_PHASE1("main phase 1", "MP1"),
+    BATTLE_PHASE("battle phase", "BP"),
+    MAIN_PHASE2("main phase 2", "MP2"),
+    END_PHASE("end phase", "EP");
 
     @Getter
     private String verboseName;
-    Phase(String verboseName){
+    @Getter
+    private String shortName;
+
+    Phase(String verboseName, String shortName){
         this.verboseName = verboseName;
+        this.shortName = shortName;
     }
+
     public Phase nextPhase(){
         if (this.equals(DRAW_PHASE))
             return STANDBY_PHASE;

@@ -22,7 +22,6 @@ import javafx.scene.effect.DropShadow;
 import javafx.scene.effect.Effect;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
-import javafx.scene.layout.Pane;
 import javafx.scene.paint.Color;
 import javafx.util.Duration;
 import lombok.Getter;
@@ -89,15 +88,15 @@ public class CardFrame extends DraggablePane {
             inHandObservable.set(card.owner.getBoard().getCardsOnHand().contains(card));
         });
 
-
-        this.widthProperty = widthProperty;
-        this.heightProperty = heightProperty;
+        DoubleBinding inHandCof = Bindings.when(inHandObservable).then(1.3).otherwise(1.0);
+        this.widthProperty = widthProperty.multiply(inHandCof);
+        this.heightProperty = heightProperty.multiply(inHandCof);
 
         bindImage(false);
-        bindImageHeight(heightProperty);
-        bindImageWidth(widthProperty);
-        minWidthProperty().bind(widthProperty);
-        minHeightProperty().bind(heightProperty);
+        bindImageHeight(this.heightProperty);
+        bindImageWidth(this.widthProperty);
+        minWidthProperty().bind(this.widthProperty);
+        minHeightProperty().bind(this.heightProperty);
 
         if(card instanceof Monster)
             rotateProperty().bind(Bindings.when(((Monster) card).isDefensive()).then(90).otherwise(0));
@@ -186,7 +185,7 @@ public class CardFrame extends DraggablePane {
                 moveByBindingCoordinates(x, y);
                 setTranslateX(0);
                 setTranslateY(0);
-                MainGameThread.getInstance().unlockTheThread();
+                MainGameThread.getInstance().unlockTheThreadIfMain();
             });
             tt.play();
         });

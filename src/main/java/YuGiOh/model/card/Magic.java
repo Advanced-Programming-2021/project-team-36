@@ -96,6 +96,13 @@ abstract public class Magic extends Card {
     public void onDestroyMyMonster() {
     }
 
+    @Override
+    public Card outOfBattle() {
+        super.outOfBattle();
+        setMagicState(null);
+        return this;
+    }
+
     public boolean letMagicActivate(Magic magic){
         return true;
     }

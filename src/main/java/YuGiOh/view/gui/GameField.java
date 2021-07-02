@@ -15,6 +15,7 @@ import YuGiOh.model.card.Magic;
 import YuGiOh.model.card.action.DirectAttackEvent;
 import YuGiOh.model.card.action.MagicActivation;
 import YuGiOh.model.card.action.MonsterAttackEvent;
+import YuGiOh.model.enums.Phase;
 import YuGiOh.model.enums.ZoneType;
 import YuGiOh.utils.CustomPrinter;
 import YuGiOh.view.cardSelector.ResistToChooseCard;
@@ -25,6 +26,7 @@ import javafx.application.Platform;
 import javafx.beans.InvalidationListener;
 import javafx.beans.binding.DoubleBinding;
 import javafx.collections.ListChangeListener;
+import javafx.scene.Node;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.*;
@@ -36,7 +38,9 @@ import lombok.Getter;
 import lombok.Setter;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 
 public class GameField extends Pane {
     private final HashMap<CardFrame, CardAddress> occupied = new HashMap<>();
@@ -97,24 +101,31 @@ public class GameField extends Pane {
     public CardLocation getGraveYardLocation(int id, int totalCards, int up){
         double x = graveYardLocation[up].xRatio;
         double y = graveYardLocation[up].yRatio;
-        return new CardLocation(x + (1/widthProperty.get()) * 40 * id / totalCards, y);
+        return new CardLocation(x + 0.02 * id / totalCards, y);
     }
 
-    private void refreshHand(Board board){
-        int[] counter = new int[1];
-        counter[0] = 1;
-        board.getCardsOnHand().forEach(card->{
-            moveOrCreateCardByCardAddress(new CardAddress(ZoneType.HAND, counter[0], board.getOwner()), card);
-            counter[0]+=1;
+    private void refreshCardOrder() {
+        MainGameThread.getInstance().blockUnblockRunningThreadAndDoInGui(()->{
+            List<Node> nodes = getChildren().sorted((a, b) -> {
+                int valA = a instanceof CardFrame ? getCardAddressByCard(((CardFrame) a).getCard()).getId() : -1;
+                int valB = b instanceof CardFrame ? getCardAddressByCard(((CardFrame) b).getCard()).getId() : -1;
+                return valA - valB;
+            });
+            getChildren().setAll(nodes);
         });
     }
+    private void refreshHand(Board board){
+        for (int i = 0; i < board.getCardsOnHand().size(); i++) {
+            Card card = board.getCardsOnHand().get(i);
+            moveOrCreateCardByCardAddress(new CardAddress(ZoneType.HAND, i+1, board.getOwner()), card);
+        }
+    }
     private void refreshGraveYard(Board board){
-        int[] counter = new int[1];
-        counter[0] = 1;
-        board.getGraveYard().forEach(card->{
-            moveOrCreateCardByCardAddress(new CardAddress(ZoneType.GRAVEYARD, counter[0], board.getOwner()), card);
-            counter[0]+=1;
-        });
+        for (int i = 0; i < board.getGraveYard().size(); i++) {
+            Card card = board.getGraveYard().get(i);
+            moveOrCreateCardByCardAddress(new CardAddress(ZoneType.GRAVEYARD, i+1, board.getOwner()), card);
+        }
+        refreshCardOrder();
     }
     private void refreshMonsterZone(Board board){
         board.getMonsterCardZone().forEach((id, card)->{
@@ -163,6 +174,17 @@ public class GameField extends Pane {
         background.fitWidthProperty().bind(widthProperty);
         background.fitHeightProperty().bind(heightProperty);
         getChildren().add(background);
+        getChildren().add(new PhaseLamps(
+                widthProperty.multiply(0.01),
+                heightProperty.multiply(0.07),
+                widthProperty.multiply(0.001),
+                heightProperty.multiply(0.26),
+                heightProperty.multiply(0.06),
+                Phase.DRAW_PHASE,
+                Phase.MAIN_PHASE1,
+                Phase.BATTLE_PHASE,
+                Phase.MAIN_PHASE2
+        ));
 
         cardWidthProperty = widthProperty.multiply(0.1);
         cardHeightProperty = heightProperty.multiply(0.12);
@@ -227,6 +249,9 @@ public class GameField extends Pane {
                 }).start();
             });
         });
+//        setOnMouseClicked(e->{
+//            System.out.println(((e.getX() - getLayoutX()) / getWidth()) + "  " + ((e.getY() - getLayoutY()) / getHeight()));
+//        });
     }
 
     private int getPlayerUpDown(Player player){
@@ -251,6 +276,8 @@ public class GameField extends Pane {
         throw new Error("this will never happen");
     }
     private Duration getAnimationDuration(CardAddress address, Card card){
+        if(getCardAddressByCard(card) == null)
+            return Duration.ZERO;
         double speedRatio = 1;
         if(address.isInHand()) {
             return Duration.millis(100 * speedRatio);
@@ -292,7 +319,6 @@ public class GameField extends Pane {
     private void moveOrCreateCardByCardAddress(CardAddress address, Card card) {
         CardFrame cardFrame = getCardFrameByCard(card);
         CardLocation cardLocation = getCardLocationByAddress(address);
-        Duration animationDuration = getAnimationDuration(address, card);
         // if it is new born we don't animate
         boolean newBorn = cardFrame == null;
         if (newBorn){
@@ -304,22 +330,10 @@ public class GameField extends Pane {
             final CardFrame finalCardFrame = cardFrame;
             Platform.runLater(()-> getChildren().add(finalCardFrame));
         } else {
+            Duration animationDuration = getAnimationDuration(address, card);
             tellCardFrameToMoveByCardLocation(cardFrame, cardLocation, animationDuration);
         }
         occupied.put(cardFrame, address);
-    }
-
-    public double getCenterPositionX(int i, int j, boolean isUp){
-        double x = cardWidthProperty.get() * (i+1);
-        if(!isUp)
-            x = widthProperty.get() - x;
-        return x;
-    }
-    public double getCenterPositionY(int i, int j, boolean isUp){
-        double y = cardHeightProperty.get() * (j+1.06);
-        if(!isUp)
-            y = heightProperty.get() - y;
-        return y;
     }
 
     public void addRunnableToMainThreadForCard(Card card, GameRunnable runnable){
@@ -330,8 +344,10 @@ public class GameField extends Pane {
     }
     public void addRunnableToMainThread(GameRunnable runnable){
         // we must not do stuff in AI's turn
-        if(GameController.getInstance().getCurrentPlayerController() instanceof AIPlayerController)
+        if(GameController.getInstance().getCurrentPlayerController() instanceof AIPlayerController){
+            CustomPrinter.println("you can't do stuff in opponent's turn", YuGiOh.model.enums.Color.Red);
             return;
+        }
 
         MainGameThread.getInstance().addRunnable(()->{
             try {
