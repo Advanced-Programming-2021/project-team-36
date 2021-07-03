@@ -5,11 +5,10 @@ import javafx.beans.InvalidationListener;
 import javafx.beans.binding.Bindings;
 import javafx.beans.binding.NumberBinding;
 import javafx.beans.property.SimpleBooleanProperty;
-import javafx.beans.value.ObservableValue;
 import javafx.util.Duration;
 
 abstract public class ReversibleTransition extends Transition {
-    private final SimpleBooleanProperty isActive = new SimpleBooleanProperty(true);
+    private final SimpleBooleanProperty isActive = new SimpleBooleanProperty(false);
     private final NumberBinding direction;
 
     public ReversibleTransition(SimpleBooleanProperty animationStateProperty) {
@@ -31,6 +30,7 @@ abstract public class ReversibleTransition extends Transition {
             play();
     }
     public void start() {
+        activate();
         refresh();
     }
     public void activate() {
