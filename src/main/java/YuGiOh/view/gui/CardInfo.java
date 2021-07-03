@@ -22,7 +22,7 @@ public class CardInfo extends StackPane {
     }
 
     public void setCardFrame(CardFrame cardFrame) {
-        if(cardFrame == null) {
+        if(cardFrame == null || !cardFrame.isFacedUp()) {
             getChildren().clear();
             cardFrameProperty.set(null);
         } else {

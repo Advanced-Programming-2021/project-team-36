@@ -47,6 +47,10 @@ public class CardFrame extends DraggablePane {
         return imageView.getImage();
     }
 
+    public boolean isFacedUp() {
+        return imageView.getImage().equals(faceUpImage);
+    }
+
     public void bindImageWidth(DoubleBinding binding){
         imageView.fitWidthProperty().unbind();
         imageView.fitWidthProperty().bind(binding);
