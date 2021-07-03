@@ -155,13 +155,15 @@ public class GameField extends Pane {
         };
         return new PileOfCardManager[] {
             new PileOfCardManager(
-                    Direction.RIGHT,
+                    Direction.LEFT,
                     widthProperty.multiply(ratioLocation[0].xRatio),
                     heightProperty.multiply(ratioLocation[0].yRatio),
                     widthProperty.multiply(ratioLocation[0].xRatio),
                     heightProperty.multiply(ratioLocation[0].yRatio),
                     widthProperty.multiply(ratioLocation[0].xRatio),
-                    heightProperty.multiply(ratioLocation[0].yRatio - 0.4)
+                    heightProperty.multiply(ratioLocation[0].yRatio - 0.4),
+                    cardWidthProperty,
+                    cardHeightProperty
             ),
             new PileOfCardManager(
                     Direction.RIGHT,
@@ -170,7 +172,9 @@ public class GameField extends Pane {
                     widthProperty.multiply(ratioLocation[1].xRatio),
                     heightProperty.multiply(ratioLocation[1].yRatio),
                     widthProperty.multiply(ratioLocation[1].xRatio),
-                    heightProperty.multiply(ratioLocation[1].yRatio + 0.4)
+                    heightProperty.multiply(ratioLocation[1].yRatio + 0.4),
+                    cardWidthProperty,
+                    cardHeightProperty
             )
         };
     }
@@ -270,6 +274,8 @@ public class GameField extends Pane {
             Platform.runLater(()-> getChildren().add(cardFrame));
             cardFrameManager.put(cardFrame, address);
         });
+        refreshGraveYard(board);
+        refreshDeckZone(board);
     }
 
     private void moveByCardAddress(Card card, CardAddress address, Duration duration) {
