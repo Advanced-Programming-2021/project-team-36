@@ -3,6 +3,7 @@ package YuGiOh.controller;
 import YuGiOh.controller.events.RoundOverExceptionEvent;
 import YuGiOh.controller.player.PlayerController;
 import YuGiOh.model.Game;
+import YuGiOh.model.Player.Player;
 import YuGiOh.model.card.Card;
 import YuGiOh.model.card.Spell;
 import YuGiOh.model.card.action.Action;
@@ -16,31 +17,34 @@ import java.util.Stack;
 
 public class ChainController {
     @Getter
-    ChainController instance;
-    PlayerController active;
+    private final ChainController instance;
 
     public ChainController(PlayerController starter, Action firstAction) {
         instance = this;
-        this.active = GameController.instance.getOtherPlayerController(starter);
         GameController.getInstance().getGame().setChain(new Stack<>());
         GameController.getInstance().getGame().getChain().push(firstAction);
     }
 
     public void control() throws RoundOverExceptionEvent, ResistToChooseCard {
         Stack<Action> chain = GameController.getInstance().getGame().getChain();
-        while (this.active.listOfAvailableActionsInResponse().size() > 0 && this.active.askRespondToChain()) {
+        while (true) {
+            GameController.getInstance().getGame().changeTurnInChain();
+            PlayerController other = GameController.getInstance().getOpponentPlayerController();
+            if(other.listOfAvailableActionsInResponse().size() <= 0 || !other.askRespondToChain())
+                break;
             try {
-                this.active.doRespondToChain();
-            } catch (ResistToChooseCard e){
+                other.doRespondToChain();
+            } catch (ResistToChooseCard e) {
                 break;
             }
-            this.active = GameController.instance.getOtherPlayerController(this.active);
         }
         while (!chain.isEmpty()) {
+            GameController.getInstance().getGame().changeTurnInChain();
+
             Action action = chain.pop();
             try {
                 action.runEffect();
-
+                // todo remove this
                 if (action.getEvent() instanceof MagicActivation && ((MagicActivation) action.getEvent()).getCard() instanceof Spell)
                     for (Card card : GameController.getInstance().getGame().getAllCardsOnBoard())
                         if (card instanceof SpellAbsorption && card.isFacedUp())
@@ -48,5 +52,12 @@ public class ChainController {
             } catch (Exception ignored) {
             }
         }
+
+        // todo remove this last part for production
+        Player beforePlayer = GameController.getInstance().getGame().getCurrentPlayer();
+        GameController.getInstance().getGame().resetCurrentPlayerAfterChain();
+        Player afterPlayer =  GameController.getInstance().getGame().getCurrentPlayer();
+        if(!beforePlayer.equals(afterPlayer))
+            throw new Error("chain error. this must never happen");
     }
 }

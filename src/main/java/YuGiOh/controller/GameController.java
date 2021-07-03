@@ -76,6 +76,10 @@ public class GameController {
             checkBothLivesEndGame();
     }
 
+    public PlayerController getOpponentPlayerController() {
+        return getOtherPlayerController(getCurrentPlayerController());
+    }
+
     public PlayerController getCurrentPlayerController() {
         if (game.getCurrentPlayer().equals(playerController1.getPlayer()))
             return playerController1;

@@ -4,21 +4,25 @@ import YuGiOh.controller.MainGameThread;
 import javafx.beans.binding.DoubleBinding;
 import javafx.geometry.Insets;
 import javafx.scene.control.Button;
-import javafx.scene.layout.Background;
-import javafx.scene.layout.BackgroundFill;
-import javafx.scene.layout.CornerRadii;
+import javafx.scene.layout.*;
 import javafx.scene.paint.Color;
+import javafx.scene.paint.Paint;
 import javafx.scene.shape.Circle;
+import javafx.scene.text.Font;
+import javafx.scene.text.Text;
 
 import java.util.ArrayList;
 import java.util.List;
 
-public class PileOfCardManager extends Button {
+public class PileOfCardManager extends StackPane {
     private final List<CardFrame> cardFrames;
     private final Direction openButtonPosition;
     private final DoubleBinding closeX, closeY, openX, openY, startX, startY, cardWidthProperty, cardHeightProperty;
+    private final Text counterText;
 
     private boolean open = false;
+
+    // todo we don't use open button position now
 
     public PileOfCardManager(Direction openButtonPosition, DoubleBinding startX, DoubleBinding startY, DoubleBinding closeX, DoubleBinding closeY, DoubleBinding openX, DoubleBinding openY, DoubleBinding cardWidthProperty, DoubleBinding cardHeightProperty) {
         this.openButtonPosition = openButtonPosition;
@@ -33,12 +37,19 @@ public class PileOfCardManager extends Button {
 
         cardFrames = new ArrayList<>();
 
-        setOnMouseClicked(e-> toggle());
-        setShape(new Circle(10));
-        setBackground(new Background(new BackgroundFill(Color.BLUE, CornerRadii.EMPTY, Insets.EMPTY)));
         layoutXProperty().bind(startX);
         layoutYProperty().bind(startY);
+
+        setOnMouseClicked(e-> toggle());
+        setShape(new Circle(15));
+        setBackground(new Background(new BackgroundFill(Color.BLUE, CornerRadii.EMPTY, Insets.EMPTY)));
         setVisible(false);
+
+        counterText = new Text();
+        counterText.setFill(Color.WHEAT);
+        counterText.setFont(Font.font(20));
+
+        getChildren().add(counterText);
     }
 
     public void open() {
@@ -76,11 +87,10 @@ public class PileOfCardManager extends Button {
                 );
                 cardFrames.get(i).toFront();
             }
-            if(cardFrames.size() >= 2) {
+            toFront();
+            if(cardFrames.size() >= 1) {
                 setVisible(true);
-                translateXProperty().bind(cardWidthProperty.multiply(0.6 * openButtonPosition.getX()));
-                translateYProperty().bind(cardHeightProperty.multiply(0.6 * openButtonPosition.getY()));
-                toFront();
+                counterText.setText(String.valueOf(cardFrames.size()));
             } else {
                 setVisible(false);
             }

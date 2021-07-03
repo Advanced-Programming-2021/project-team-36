@@ -2,6 +2,7 @@ package YuGiOh.model.card.monsterCards;
 
 import YuGiOh.controller.GameController;
 import YuGiOh.controller.LogicException;
+import YuGiOh.controller.player.PlayerController;
 import YuGiOh.model.enums.MonsterAttribute;
 import YuGiOh.model.enums.MonsterCardType;
 import YuGiOh.model.enums.MonsterType;
@@ -31,7 +32,8 @@ public class Scanner extends Monster {
             throw new LogicException("you can only activate this once in a turn");
         return ()-> {
             try {
-                copiedMonster = (Monster) GameController.getInstance().getCurrentPlayerController().chooseKCards(
+                PlayerController controller = GameController.getInstance().getPlayerControllerByPlayer(this.owner);
+                copiedMonster = (Monster) controller.chooseKCards(
                         "choose a monster to copy",
                         1,
                         SelectConditions.OpponentMonsterFromGraveYard

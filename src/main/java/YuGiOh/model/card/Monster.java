@@ -100,7 +100,7 @@ public class Monster extends Card {
             if (magic != null && magic.isFacedUp())
                 affects += magic.affectionOnAttackingMonster(this);
         }
-        PlayerController playerController = GameController.getInstance().getCurrentPlayerController();
+        PlayerController playerController = GameController.getInstance().getPlayerControllerByPlayer(this.owner);
         Spell spell = (Spell) playerController.getPlayer().getBoard().getFieldZoneCard();
         if (spell != null)
             affects += spell.affectionOnAttackingMonster(this);

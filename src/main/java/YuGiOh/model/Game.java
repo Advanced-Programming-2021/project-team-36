@@ -26,7 +26,8 @@ public class Game {
     @Setter
     private Stack<Action> chain;
 
-    private SimpleObjectProperty<Player> currentPlayerProperty;
+    private final SimpleObjectProperty<Player> currentPlayerProperty;
+    private Player storeCurrentPlayerForChane;
 
     public Game(Player firstPlayer, Player secondPlayer) throws ModelException {
         if (firstPlayer.getUser().getUsername().equals(secondPlayer.getUser().getUsername()))
@@ -83,6 +84,18 @@ public class Game {
 
     public Player getOpponentPlayer() {
         return getOtherPlayer(getCurrentPlayer());
+    }
+
+    public void changeTurnInChain() {
+        if(storeCurrentPlayerForChane == null)
+            storeCurrentPlayerForChane = getCurrentPlayer();
+        currentPlayerProperty.set(getOtherPlayer(getCurrentPlayer()));
+    }
+    public void resetCurrentPlayerAfterChain() {
+        if(storeCurrentPlayerForChane != null) {
+            currentPlayerProperty.set(storeCurrentPlayerForChane);
+            storeCurrentPlayerForChane = null;
+        }
     }
 
     public void changeTurn() {

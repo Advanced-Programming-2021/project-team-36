@@ -135,7 +135,7 @@ public class CardFrame extends DraggablePane {
         imageView.imageProperty().bind(Bindings.when(forceImageFaceUp).then(faceUpImage).otherwise(faceDownImage));
 
         SimpleBooleanProperty flipCardActivation = new SimpleBooleanProperty(false);
-        flipCardActivation.bind(hoverProperty().or(currentPlayerCanSee).or(this.forceFlipCardAnimation));
+        flipCardActivation.bind(hoverProperty().or(this.forceFlipCardAnimation).or(currentPlayerCanSee));
 
         flipCardAnimation = new CardRotateTransition(this, flipCardActivation, widthProperty);
         flipCardAnimation.start();
