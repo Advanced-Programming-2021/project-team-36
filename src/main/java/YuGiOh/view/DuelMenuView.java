@@ -41,7 +41,7 @@ public class DuelMenuView extends Application {
         stackPane = new StackPane(root);
         stackPane.setMinWidth(WIDTH);
         stackPane.setMinHeight(HEIGHT);
-        gameField = new GameField(game, root.widthProperty().multiply(0.8), root.heightProperty().multiply(1));
+        gameField = new GameField(game, root.widthProperty().multiply(0.8), root.heightProperty().multiply(1), new GameMapLocationIml(game));
         infoBox = new DuelInfoBox(game, root.widthProperty().multiply(0.2), root.heightProperty().multiply(1));
         infoBox.setGameField(gameField);
         root.getChildren().addAll(infoBox, gameField);
@@ -111,10 +111,9 @@ public class DuelMenuView extends Application {
             selector.refresh(selectCondition, CardSelector.SelectMode.Choosing);
             selector.setOnAction(()->{
                 if(finishCondition.canFinish(selector.getSelectedCards())){
-                    System.out.println("now you can finish");
                     MainGameThread.getInstance().unlockTheThreadIfMain();
                 } else {
-                    System.out.println("you have to select more");
+                    // todo show some error thing in gui
                 }
             });
         });

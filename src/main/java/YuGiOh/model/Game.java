@@ -26,6 +26,8 @@ public class Game {
     @Setter
     private Stack<Action> chain;
 
+    private SimpleObjectProperty<Player> currentPlayerProperty;
+
     public Game(Player firstPlayer, Player secondPlayer) throws ModelException {
         if (firstPlayer.getUser().getUsername().equals(secondPlayer.getUser().getUsername()))
             throw new ModelException("you can't play with yourself");
@@ -48,6 +50,7 @@ public class Game {
 
         this.turn = 0;
         this.phase = new SimpleObjectProperty<>(Phase.MAIN_PHASE2);
+        this.currentPlayerProperty = new SimpleObjectProperty<>(this.firstPlayer);
     }
 
     public Card getCardByCardAddress(CardAddress cardAddress) {
@@ -75,20 +78,15 @@ public class Game {
     }
 
     public Player getCurrentPlayer() {
-        if (turn % 2 == 0)
-            return firstPlayer;
-        else
-            return secondPlayer;
+        return currentPlayerProperty.get();
     }
 
     public Player getOpponentPlayer() {
-        if (turn % 2 == 0)
-            return secondPlayer;
-        else
-            return firstPlayer;
+        return getOtherPlayer(getCurrentPlayer());
     }
 
     public void changeTurn() {
+        currentPlayerProperty.set(getOtherPlayer(getCurrentPlayer()));
         turn++;
     }
 
@@ -129,5 +127,8 @@ public class Game {
 
     public SimpleObjectProperty<Phase> phaseProperty() {
         return phase;
+    }
+    public SimpleObjectProperty<Player> currentPlayerProperty() {
+        return currentPlayerProperty;
     }
 }

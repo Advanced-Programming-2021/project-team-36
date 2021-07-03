@@ -1,19 +1,21 @@
 package YuGiOh.view.gui;
 
-import YuGiOh.controller.MainGameThread;
+import YuGiOh.controller.GameController;
 import YuGiOh.controller.menu.DuelMenuController;
+import YuGiOh.model.CardAddress;
+import YuGiOh.model.Game;
 import YuGiOh.model.card.Card;
 import YuGiOh.model.card.Monster;
 import YuGiOh.model.enums.MonsterState;
+import YuGiOh.view.gui.Transitions.CardRotateTransition;
+import YuGiOh.view.gui.Transitions.JumpingAnimation;
 import YuGiOh.view.gui.event.ClickOnCardEvent;
 import YuGiOh.view.gui.event.DropCardEvent;
-import javafx.animation.Animation;
-import javafx.animation.Transition;
-import javafx.animation.TranslateTransition;
 import javafx.beans.InvalidationListener;
 import javafx.beans.binding.Bindings;
 import javafx.beans.binding.DoubleBinding;
 import javafx.beans.property.BooleanProperty;
+import javafx.beans.property.ReadOnlyDoubleProperty;
 import javafx.beans.property.SimpleBooleanProperty;
 import javafx.geometry.Bounds;
 import javafx.scene.control.ContextMenu;
@@ -22,9 +24,7 @@ import javafx.scene.effect.DropShadow;
 import javafx.scene.effect.Effect;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
-import javafx.scene.layout.Background;
 import javafx.scene.paint.Color;
-import javafx.util.Duration;
 import lombok.Getter;
 
 import java.util.ArrayList;
@@ -34,66 +34,113 @@ public class CardFrame extends DraggablePane {
     @Getter
     private final Card card;
 
-    private final SimpleBooleanProperty inHandObservable;
     private final DoubleBinding widthProperty, heightProperty;
-    private final ImageView imageView = new ImageView();
+    private final ImageView imageView;
     private final Image faceUpImage, faceDownImage;
+    private final CardRotateTransition flipCardAnimation;
+    private final JumpingAnimation jumpingAnimation;
+
+    @Getter
+    private final SimpleBooleanProperty forceImageFaceUp, forceFlipCardAnimation;
 
     public Image getImage(){
         return imageView.getImage();
     }
 
-    private final Animation flipCardAnimation = new Transition() {
-        {
-            setCycleDuration(Duration.millis(600));
-        }
-
-        @Override
-        protected void interpolate(double frac) {
-            bindImage(frac >= 0.5);
-            DoubleBinding newWidthProperty = widthProperty.multiply((frac - 0.5) * (frac - 0.5) * 4);
-            bindImageWidth(widthProperty.multiply((frac - 0.5) * (frac - 0.5) * 4));
-            imageView.setTranslateX((widthProperty.get() - newWidthProperty.get()) / 2);
-        }
-    };
-
-    private void bindImageWidth(DoubleBinding binding){
+    public void bindImageWidth(DoubleBinding binding){
         imageView.fitWidthProperty().unbind();
         imageView.fitWidthProperty().bind(binding);
     }
-    private void bindImageHeight(DoubleBinding binding){
+    public void bindImageHeight(DoubleBinding binding){
         imageView.fitHeightProperty().unbind();
         imageView.fitHeightProperty().bind(binding);
     }
-    private void bindImage(boolean forceFaceUp){
-        imageView.imageProperty().unbind();
-        if(forceFaceUp)
-            imageView.setImage(faceUpImage);
+    public void setImageTranslateX(double value) {
+        imageView.setTranslateX(value);
+    }
+    public void changeActivationFlippingAnimation(boolean activate) {
+        if(activate)
+            flipCardAnimation.activate();
         else
-            imageView.imageProperty().bind(Bindings.when(card.facedUpProperty().or(inHandObservable)).then(faceUpImage).otherwise(faceDownImage));
+            flipCardAnimation.deactivate();
+    }
+    public void changeActivationJumpingAnimation(boolean activate) {
+        if(activate)
+            jumpingAnimation.activate();
+        else
+            jumpingAnimation.deactivate();
+    }
+
+    private SimpleBooleanProperty getInHandObservable() {
+        SimpleBooleanProperty ret = new SimpleBooleanProperty(card.owner.getBoard().getCardsOnHand().contains(card));
+        card.owner.getBoard().getCardsOnHand().addListener((InvalidationListener) (o)->{
+            ret.set(card.owner.getBoard().getCardsOnHand().contains(card));
+        });
+        return  ret;
+    }
+
+    private SimpleBooleanProperty myTurnObservable() {
+        SimpleBooleanProperty ret = new SimpleBooleanProperty(false);
+        Game game = GameController.getInstance().getGame();
+        Runnable refresh = ()->{
+            ret.set(game.getCurrentPlayer().equals(card.owner));
+        };
+        refresh.run();
+        game.phaseProperty().addListener((InvalidationListener) (o) -> refresh.run());
+        // todo add owner
+        return ret;
+    }
+
+    private SimpleBooleanProperty currentPlayerCanSee() {
+        SimpleBooleanProperty ret = new SimpleBooleanProperty(false);
+        Game game = GameController.getInstance().getGame();
+        Runnable refresh = ()->{
+            CardAddress address = game.getCardAddress(card);
+            if(game.getCurrentPlayer().equals(address.getOwner())){
+                ret.set(!address.isInGraveYard() && !address.isInDeck());
+            } else {
+                ret.set(card.isFacedUp());
+            }
+        };
+        refresh.run();
+        game.phaseProperty().addListener((InvalidationListener) (o) -> refresh.run());
+        // todo add owner
+        return ret;
     }
 
     CardFrame(GameField gameRoot, Card card, DoubleBinding widthProperty, DoubleBinding heightProperty){
         super();
 
-        getChildren().add(imageView);
-
+        this.card = card;
         this.faceDownImage = new Image(Utils.getAsset("Cards/hidden.png").toURI().toString());
         this.faceUpImage = Utils.getCardImage(card);
+        this.imageView = new ImageView();
 
-        this.card = card;
+        getChildren().add(imageView);
 
-        // todo implement this in hand observable better
-        this.inHandObservable = new SimpleBooleanProperty(true);
-        card.owner.getBoard().getCardsOnHand().addListener((InvalidationListener) (o)->{
-            inHandObservable.set(card.owner.getBoard().getCardsOnHand().contains(card));
-        });
+        this.forceImageFaceUp = new SimpleBooleanProperty(false);
+        this.forceFlipCardAnimation = new SimpleBooleanProperty(false);
 
+        SimpleBooleanProperty inHandObservable = getInHandObservable();
+
+        SimpleBooleanProperty currentPlayerCanSee = currentPlayerCanSee();
         DoubleBinding inHandCof = Bindings.when(inHandObservable).then(1.3).otherwise(1.0);
         this.widthProperty = widthProperty.multiply(inHandCof);
         this.heightProperty = heightProperty.multiply(inHandCof);
 
-        bindImage(false);
+        imageView.imageProperty().bind(Bindings.when(forceImageFaceUp).then(faceUpImage).otherwise(faceDownImage));
+
+        SimpleBooleanProperty flipCardActivation = new SimpleBooleanProperty(false);
+        flipCardActivation.bind(hoverProperty().or(currentPlayerCanSee).or(this.forceFlipCardAnimation));
+
+        flipCardAnimation = new CardRotateTransition(this, flipCardActivation, widthProperty);
+        flipCardAnimation.start();
+
+        SimpleBooleanProperty jumpingActivation = new SimpleBooleanProperty(false);
+        jumpingActivation.bind(hoverProperty().and(inHandObservable).and(myTurnObservable()));
+        jumpingAnimation = new JumpingAnimation(this, jumpingActivation);
+        jumpingAnimation.start();
+
         bindImageHeight(this.heightProperty);
         bindImageWidth(this.widthProperty);
         minWidthProperty().bind(this.widthProperty);
@@ -105,23 +152,10 @@ public class CardFrame extends DraggablePane {
         effectProperty().bind(
                 Bindings.when(hoverProperty().or(isSelected))
                         .then((Effect) new DropShadow(28, Color.BLUE))
-                        .otherwise(new DropShadow())
+                        .otherwise((Effect) null)
         );
         setOnMouseClicked(e->{
-            // todo we haven't handled clicking on dead cards
             GuiReporter.getInstance().report(new ClickOnCardEvent(this));
-        });
-        setOnMouseEntered(e->{
-            if(!card.isFacedUp() && !inHandObservable.get()) {
-                flipCardAnimation.setRate(Math.abs(flipCardAnimation.getRate()));
-                flipCardAnimation.play();
-            }
-        });
-        setOnMouseExited(e->{
-            if(!card.isFacedUp() && !inHandObservable.get()) {
-                flipCardAnimation.setRate(-Math.abs(flipCardAnimation.getRate()));
-                flipCardAnimation.play();
-            }
         });
         setOnContextMenuRequested(e->{
             ContextMenu contextMenu = new ContextMenu();
@@ -174,28 +208,16 @@ public class CardFrame extends DraggablePane {
         });
     }
 
-    public void animateCardMoving(DoubleBinding x, DoubleBinding y, Duration animationDuration) {
-        MainGameThread.getInstance().onlyBlockRunningThreadThenDoInGui(()-> {
-            layoutXProperty().unbind();
-            layoutYProperty().unbind();
-            TranslateTransition tt = new TranslateTransition(animationDuration, this);
-            tt.setFromX(0);
-            tt.setFromY(0);
-            tt.toXProperty().bind(x.add(layoutXProperty().negate()));
-            tt.toYProperty().bind(y.add(layoutYProperty().negate()));
-            tt.setOnFinished(e -> {
-                moveByBindingCoordinates(x, y);
-                setTranslateX(0);
-                setTranslateY(0);
-                MainGameThread.getInstance().unlockTheThreadIfMain();
-            });
-            tt.play();
-        });
+    public DoubleBinding getCenterXProperty() {
+        return layoutXProperty().add(widthProperty.divide(2));
+    }
+    public DoubleBinding getCenterYProperty() {
+        return layoutYProperty().add(heightProperty.divide(2));
     }
 
     public void moveByBindingCoordinates(DoubleBinding x, DoubleBinding y){
-        layoutXProperty().bind(x);
-        layoutYProperty().bind(y);
+        layoutXProperty().bind(x.add(widthProperty.divide(2).negate()));
+        layoutYProperty().bind(y.add(heightProperty.divide(2).negate()));
         setTranslateX(0);
         setTranslateY(0);
     }

@@ -4,18 +4,20 @@ import YuGiOh.model.Player.Player;
 import YuGiOh.model.card.Magic;
 import YuGiOh.model.card.Card;
 import YuGiOh.model.card.Monster;
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
 
 import java.io.Serializable;
 import java.util.*;
 
 public class BaseDeck implements Cloneable, Serializable {
-    protected ArrayList<Card> cards;
+    protected ObservableList<Card> cards;
 
     {
-        cards = new ArrayList<>();
+        cards = FXCollections.observableArrayList();
     }
 
-    public ArrayList<Card> getCards() {
+    public ObservableList<Card> getCards() {
         return cards;
     }
 
@@ -80,7 +82,7 @@ public class BaseDeck implements Cloneable, Serializable {
             e.printStackTrace();
             return null;
         }
-        baseDeck.cards = new ArrayList<>();
+        baseDeck.cards = FXCollections.observableArrayList();
         for (Card card : cards) {
             baseDeck.cards.add(card.clone());
         }
