@@ -15,12 +15,8 @@ public abstract class Card implements Comparable<Card>, Cloneable, Serializable 
     protected int price;
     private SimpleObjectProperty<Player> ownerProperty;
 
-    @Getter
-    boolean isInBattle;
-
     {
         ownerProperty = new SimpleObjectProperty<>(null);
-        isInBattle = false;
     }
 
     public Card(String name, String description, int price) {
@@ -50,13 +46,7 @@ public abstract class Card implements Comparable<Card>, Cloneable, Serializable 
     }
 
     public Card readyForBattle(Player owner) {
-        isInBattle = true;
         setOwner(owner);
-        return this;
-    }
-
-    public Card outOfBattle() {
-        isInBattle = false;
         return this;
     }
 
@@ -75,7 +65,6 @@ public abstract class Card implements Comparable<Card>, Cloneable, Serializable 
             cloned.name = name;
             cloned.description = description;
             cloned.price = price;
-            cloned.isInBattle = false;
             return cloned;
         } catch (CloneNotSupportedException e) {
             e.printStackTrace();
@@ -90,7 +79,10 @@ public abstract class Card implements Comparable<Card>, Cloneable, Serializable 
     public void startOfNewTurn() {
     }
 
-    protected void setOwner(Player player) {
+    public void preprocessForEffect() {
+    }
+
+    public void setOwner(Player player) {
         ownerProperty.set(player);
     }
     public Player getOwner() {

@@ -1,6 +1,6 @@
 package YuGiOh.view.gui;
 
-import YuGiOh.model.card.action.Event;
+import YuGiOh.model.card.event.Event;
 import YuGiOh.view.gui.component.GameField;
 import YuGiOh.view.gui.event.GameActionEvent;
 import javafx.event.EventHandler;

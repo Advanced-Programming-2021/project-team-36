@@ -5,7 +5,7 @@ import YuGiOh.controller.events.RoundOverExceptionEvent;
 import YuGiOh.model.card.Spell;
 import YuGiOh.model.card.action.Action;
 import YuGiOh.model.card.action.Effect;
-import YuGiOh.model.card.action.MagicActivation;
+import YuGiOh.model.card.event.MagicActivation;
 import YuGiOh.model.card.magicCards.traps.MagicCylinder;
 import YuGiOh.model.enums.Color;
 import YuGiOh.model.enums.Icon;

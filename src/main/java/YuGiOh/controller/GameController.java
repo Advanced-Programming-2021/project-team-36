@@ -6,8 +6,13 @@ import YuGiOh.controller.player.AIPlayerController;
 import YuGiOh.controller.player.HumanPlayerController;
 import YuGiOh.controller.player.PlayerController;
 import YuGiOh.model.Player.Player;
+import YuGiOh.model.card.Card;
+import YuGiOh.model.card.Magic;
+import YuGiOh.model.card.Monster;
+import YuGiOh.model.card.Spell;
 import YuGiOh.model.enums.Color;
 import YuGiOh.model.enums.GameResult;
+import YuGiOh.model.enums.Icon;
 import YuGiOh.utils.CustomPrinter;
 import lombok.Getter;
 import YuGiOh.model.Game;
@@ -74,6 +79,43 @@ public class GameController {
         CustomPrinter.println(String.format("<%s>'s life point decreased by <%d> and it is <%d> now", player.getUser().getUsername(), amount, player.getLifePoint()), Color.Yellow);
         if (checkEndGame)
             checkBothLivesEndGame();
+    }
+
+    public void moveCardToGraveYard(Card card) {
+        Player player = card.getOwner();
+        player.moveCardToGraveYard(card);
+        // todo this is really bad :)) change this
+        if (card instanceof Monster) {
+            for (int i = 1; i <= 5; i++) {
+                Magic magic = player.getBoard().getMagicCardZone().get(i);
+                if (magic != null && magic.getIcon().equals(Icon.EQUIP) && magic.getEquippedMonster().equals(card))
+                    moveCardToGraveYard(magic);
+            }
+        }
+        if (card instanceof Spell)
+            ((Spell) card).onMovingToGraveYard();
+        CustomPrinter.println(String.format("<%s>'s Card <%s> moved to graveyard", player.getUser().getUsername(), card.getName()), Color.Blue);
+        if (card instanceof Monster)
+            for (int i = 1; i <= 5; i++)
+                if (player.getBoard().getMagicCardZone().get(i) != null)
+                    player.getBoard().getMagicCardZone().get(i).onDestroyMyMonster();
+    }
+
+    public void addCardToBoard(Card card) {
+        Player player = card.getOwner();
+        if (card instanceof Monster)
+            player.getBoard().addMonster((Monster) card);
+        else
+            player.getBoard().addMagic((Magic) card);
+    }
+
+    public void removeCardFromGame(Card card) {
+        game.getFirstPlayer().getBoard().removeCardIfHas(card);
+        game.getSecondPlayer().getBoard().removeCardIfHas(card);
+    }
+
+    public void setSummoned(Player player) {
+        player.setSummonedInLastTurn(true);
     }
 
     public PlayerController getOpponentPlayerController() {

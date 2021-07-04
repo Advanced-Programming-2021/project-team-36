@@ -1,6 +1,7 @@
 package YuGiOh.model.card.action;
 
 import YuGiOh.controller.LogicException;
+import YuGiOh.model.card.event.Event;
 import YuGiOh.view.cardSelector.ResistToChooseCard;
 import YuGiOh.view.gui.GuiReporter;
 import YuGiOh.view.gui.event.GameActionEvent;
@@ -10,8 +11,13 @@ import lombok.Getter;
 
 public class Action {
     @Getter
-    private final Event event;
-    private final Effect effect;
+    protected Event event;
+    protected Effect effect;
+
+    public Action(Event event) {
+        this.event = event;
+        this.effect = () -> {};
+    }
 
     public Action(Event event, Effect effect){
         this.event = event;
@@ -28,5 +34,8 @@ public class Action {
                     Color.Red
             );
         }
+    }
+
+    public void validateEffect() throws ValidateResult {
     }
 }

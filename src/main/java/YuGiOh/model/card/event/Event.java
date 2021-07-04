@@ -1,4 +1,4 @@
-package YuGiOh.model.card.action;
+package YuGiOh.model.card.event;
 
 abstract public class Event {
     abstract public int getSpeed();

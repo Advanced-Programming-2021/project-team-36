@@ -6,6 +6,7 @@ import YuGiOh.model.enums.MonsterCardType;
 import YuGiOh.model.deck.Deck;
 import YuGiOh.model.deck.MainDeck;
 import YuGiOh.model.deck.SideDeck;
+import YuGiOh.model.enums.ZoneType;
 import javafx.beans.property.IntegerProperty;
 import javafx.beans.property.SimpleIntegerProperty;
 import lombok.Getter;
@@ -74,6 +75,21 @@ abstract public class Player {
     }
 
     public boolean hasInGraveYard(Card card) { return this.board.getGraveYard().contains(card); }
+
+    public boolean hasCardInZone(Card card, ZoneType zoneType) {
+        if (zoneType.equals(ZoneType.HAND))
+            return board.getCardsOnHand().contains(card);
+        else if (zoneType.equals(ZoneType.MAGIC))
+            return board.getMagicCardZone().containsValue(card);
+        else if (zoneType.equals(ZoneType.MONSTER))
+            return board.getMonsterCardZone().containsValue(card);
+        else if (zoneType.equals(ZoneType.FIELD))
+            return board.getFieldZoneCard().equals(card);
+        else if (zoneType.equals(ZoneType.GRAVEYARD))
+            return board.getGraveYard().contains(card);
+        else
+            return board.getMainDeck().hasCard(card);
+    }
 
     public void moveCardToGraveYard(Card card) {
         board.moveCardToGraveYard(card);

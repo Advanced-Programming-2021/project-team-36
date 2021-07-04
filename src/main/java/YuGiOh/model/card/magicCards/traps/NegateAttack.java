@@ -3,12 +3,11 @@ package YuGiOh.model.card.magicCards.traps;
 import YuGiOh.controller.GameController;
 import YuGiOh.model.enums.Color;
 import YuGiOh.model.enums.Icon;
-import YuGiOh.model.enums.Phase;
 import YuGiOh.model.enums.Status;
 import YuGiOh.model.card.Trap;
 import YuGiOh.model.card.action.Action;
 import YuGiOh.model.card.action.Effect;
-import YuGiOh.model.card.action.AttackEvent;
+import YuGiOh.model.card.event.AttackEvent;
 import YuGiOh.utils.CustomPrinter;
 
 public class NegateAttack extends Trap {
@@ -21,7 +20,7 @@ public class NegateAttack extends Trap {
         return ()->{
             getChain().pop();
             GameController.getInstance().goNextPhaseAndNotify();
-            GameController.getInstance().getPlayerControllerByPlayer(this.getOwner()).moveCardToGraveYard(this);
+            GameController.getInstance().moveCardToGraveYard(this);
             CustomPrinter.println(String.format("<%s>'s <%s> activated successfully", this.getOwner().getUser().getUsername(), this.getName()), Color.Yellow);
             CustomPrinter.println(this, Color.Gray);
         };
