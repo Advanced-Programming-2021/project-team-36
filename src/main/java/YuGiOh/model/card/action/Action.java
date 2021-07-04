@@ -17,6 +17,8 @@ public class Action {
     }
 
     public void runEffect() throws ResistToChooseCard {
+        if (GuiReporter.getInstance() == null)
+            System.out.println("shit");
         GuiReporter.getInstance().report(new GameActionEvent(this));
         try {
             effect.run();
