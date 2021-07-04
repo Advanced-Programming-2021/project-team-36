@@ -324,7 +324,7 @@ public abstract class PlayerController {
             throw new LogicException("this card already attacked");
         if (!GameController.getInstance().getGame().getOtherPlayer(player).getBoard().getMonsterCardZone().containsValue(opponentMonster))
             throw new LogicException("you can't attack that monster");
-        CustomPrinter.println(String.format("<%s> declares an attack with <%s> to <%s>'s <%s>", getPlayer().getUser().getUsername(), monster.getName(), opponentMonster.owner.getUser().getUsername(), opponentMonster.getName()), Color.Blue);
+        CustomPrinter.println(String.format("<%s> declares an attack with <%s> to <%s>'s <%s>", getPlayer().getUser().getUsername(), monster.getName(), opponentMonster.getOwner().getUser().getUsername(), opponentMonster.getName()), Color.Blue);
         startChain(
                 new Action(
                         new MonsterAttackEvent(monster, opponentMonster),

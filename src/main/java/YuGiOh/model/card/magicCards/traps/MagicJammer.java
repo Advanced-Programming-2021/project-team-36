@@ -22,16 +22,16 @@ public class MagicJammer extends Trap {
     protected Effect getEffect() {
         assert canActivateEffect();
         return () -> {
-            PlayerController playerController = GameController.getInstance().getPlayerControllerByPlayer(this.owner);
+            PlayerController playerController = GameController.getInstance().getPlayerControllerByPlayer(this.getOwner());
             playerController.moveCardToGraveYard(this);
             Card card = playerController.chooseKCards("Discard 1 card to activate Magic Jamamer",
                     1,
-                    SelectConditions.getCardFromPlayerHand(this.owner, this))[0];
+                    SelectConditions.getCardFromPlayerHand(this.getOwner(), this))[0];
             playerController.moveCardToGraveYard(card);
             Action action = getChain().pop();
             Card card1 = ((MagicActivation) action.getEvent()).getCard();
             GameController.getInstance().getOtherPlayerController(playerController).moveCardToGraveYard(card1);
-            CustomPrinter.println(String.format("<%s>'s <%s> activated successfully", this.owner.getUser().getUsername(), this.getName()), Color.Yellow);
+            CustomPrinter.println(String.format("<%s>'s <%s> activated successfully", this.getOwner().getUser().getUsername(), this.getName()), Color.Yellow);
             CustomPrinter.println(this, Color.Gray);
         };
     }
@@ -41,6 +41,6 @@ public class MagicJammer extends Trap {
         if (getChain().isEmpty())
             return false;
         Action action = getChain().peek();
-        return action.getEvent() instanceof MagicActivation && this.owner.getBoard().getCardsOnHand().size() > 0;
+        return action.getEvent() instanceof MagicActivation && this.getOwner().getBoard().getCardsOnHand().size() > 0;
     }
 }

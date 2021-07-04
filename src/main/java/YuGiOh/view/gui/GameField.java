@@ -201,8 +201,8 @@ public class GameField extends Pane {
             // todo this is just a sample
         });
         GuiReporter.getInstance().addGameEventHandler((GuiReporter.GameEventHandler<MonsterAttackEvent>) (event)->{
-            moveByCardAddress(event.getAttacker(), cardFrameManager.getCardAddressByCard(event.getDefender()), Duration.millis(300));
-            moveByCardAddress(event.getAttacker(), cardFrameManager.getCardAddressByCard(event.getAttacker()), Duration.millis(300));
+            moveCardByAddress(event.getAttacker(), cardFrameManager.getCardAddressByCard(event.getDefender()), Duration.millis(300));
+            moveCardByAddress(event.getAttacker(), cardFrameManager.getCardAddressByCard(event.getAttacker()), Duration.millis(300));
         });
         GuiReporter.getInstance().addGameEventHandler((GuiReporter.GameEventHandler<DirectAttackEvent>) (event)->{
             RatioLocation opponentPlayerLocation = gameMapLocation.getDirectPlayerLocation(event.getPlayer());
@@ -278,7 +278,7 @@ public class GameField extends Pane {
         refreshDeckZone(board);
     }
 
-    private void moveByCardAddress(Card card, CardAddress address, Duration duration) {
+    private void moveCardByAddress(Card card, CardAddress address, Duration duration) {
         movementManager.animateCardMoving(
                 cardFrameManager.getCardFrameByCard(card),
                 gameMapLocation.getLocationByCardAddress(address),
@@ -289,11 +289,11 @@ public class GameField extends Pane {
     }
 
     private void moveCardByAddress(CardAddress address, Card card) {
-        moveByCardAddress(card, address, getAnimationDuration(address, card));
+        moveCardByAddress(card, address, getAnimationDuration(address, card));
     }
 
     public void addRunnableToMainThreadForCard(Card card, GameRunnable runnable){
-        if(card.owner.equals(GameController.getInstance().getGame().getCurrentPlayer()))
+        if(card.getOwner().equals(GameController.getInstance().getGame().getCurrentPlayer()))
             addRunnableToMainThread(runnable);
         else
             CustomPrinter.println("You can't control your opponent's card", YuGiOh.model.enums.Color.Red);

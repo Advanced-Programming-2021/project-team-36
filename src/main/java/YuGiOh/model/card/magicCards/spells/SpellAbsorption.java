@@ -16,8 +16,8 @@ public class SpellAbsorption extends Spell {
     }
 
     public void onSpellResolve() {
-        GameController.getInstance().increaseLifePoint(this.owner, 500);
-        CustomPrinter.println(String.format("<%s>'s <%s> activated successfully.", this.owner.getUser().getUsername(), this.getName()), Color.Yellow);
+        GameController.getInstance().increaseLifePoint(this.getOwner(), 500);
+        CustomPrinter.println(String.format("<%s>'s <%s> activated successfully.", this.getOwner().getUser().getUsername(), this.getName()), Color.Yellow);
         CustomPrinter.println(this, Color.Gray);
     }
 

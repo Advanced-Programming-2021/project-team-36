@@ -19,7 +19,7 @@ public class AdvancedRitualArt extends Spell {
     }
 
     int sumOwnerMonstersInHandAndInZone() {
-        Player player = this.owner;
+        Player player = this.getOwner();
         int sumMonstersLevel = 0;
         for (Monster monster : player.getBoard().getMonsterCardZone().values())
             sumMonstersLevel += monster.getLevel();
@@ -34,16 +34,16 @@ public class AdvancedRitualArt extends Spell {
         assert canActivateEffect();
         return () -> {
             try {
-                PlayerController playerController = GameController.getInstance().getPlayerControllerByPlayer(this.owner);
+                PlayerController playerController = GameController.getInstance().getPlayerControllerByPlayer(this.getOwner());
                 Monster ritualMonster = (Monster) playerController.chooseKCards(
                         "choose the ritual monster you want to ritual summon.",
                         1,
-                        SelectConditions.getPlayerRitualMonsterFromHand(this.owner, sumOwnerMonstersInHandAndInZone())
+                        SelectConditions.getPlayerRitualMonsterFromHand(this.getOwner(), sumOwnerMonstersInHandAndInZone())
                 )[0];
                 Monster[] tributeMonsters = playerController.chooseKSumLevelMonsters(
                         "choose a monsters from your hand or board for ritual summon. Sum of your selected cards hasn't reach the limit yet. You can select one of your selected card to deselect it",
                         ritualMonster.getLevel(),
-                        SelectConditions.getPlayerMonsterFromMonsterZoneOrHand(this.owner, ritualMonster)
+                        SelectConditions.getPlayerMonsterFromMonsterZoneOrHand(this.getOwner(), ritualMonster)
                 );
 
                 for (Monster monster : tributeMonsters)
@@ -51,20 +51,20 @@ public class AdvancedRitualArt extends Spell {
 
                 try {
                     playerController.summon(ritualMonster, 0, true);
-                    GameController.getInstance().getPlayerControllerByPlayer(this.owner).moveCardToGraveYard(this);
-                    CustomPrinter.println(String.format("<%s> ritual summoned <%s> in <%s> position successfully", this.owner.getUser().getUsername(), ritualMonster.getName(), ritualMonster.getMonsterState()), Color.Yellow);
+                    GameController.getInstance().getPlayerControllerByPlayer(this.getOwner()).moveCardToGraveYard(this);
+                    CustomPrinter.println(String.format("<%s> ritual summoned <%s> in <%s> position successfully", this.getOwner().getUser().getUsername(), ritualMonster.getName(), ritualMonster.getMonsterState()), Color.Yellow);
                 } catch (LogicException logicException) {
                     CustomPrinter.println("this shouldn't happens", Color.Red);
                 }
             } catch (ResistToChooseCard resistToChooseCard) {
-                CustomPrinter.println(this.owner.getUser().getUsername() + " cancelled ritual monster", Color.Green);
+                CustomPrinter.println(this.getOwner().getUser().getUsername() + " cancelled ritual monster", Color.Green);
             }
         };
     }
 
     @Override
     public boolean canActivateEffect() {
-        Player player = GameController.getInstance().getPlayerControllerByPlayer(this.owner).getPlayer();
+        Player player = GameController.getInstance().getPlayerControllerByPlayer(this.getOwner()).getPlayer();
         int minimumMonsterRitualLevelOnHand = 1000;
         for (Card card : player.getBoard().getCardsOnHand()) {
             if (card instanceof Monster) {

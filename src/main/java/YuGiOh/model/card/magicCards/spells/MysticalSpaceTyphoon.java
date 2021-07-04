@@ -20,13 +20,13 @@ public class MysticalSpaceTyphoon extends Spell {
     @Override
     protected Effect getEffect() {
         return () -> {
-            PlayerController playerController = GameController.getInstance().getPlayerControllerByPlayer(this.owner);
+            PlayerController playerController = GameController.getInstance().getPlayerControllerByPlayer(this.getOwner());
             Magic magic = (Magic) playerController.chooseKCards("Destroy one spell or trap on field",
                     1,
                     SelectConditions.getMagicFromField())[0];
-            PlayerController controller = GameController.getInstance().getPlayerControllerByPlayer(magic.owner);
+            PlayerController controller = GameController.getInstance().getPlayerControllerByPlayer(magic.getOwner());
             controller.moveCardToGraveYard(magic);
-            CustomPrinter.println(String.format("<%s>'s <%s> activated successfully", this.owner.getUser().getUsername(), this.getName()), Color.Yellow);
+            CustomPrinter.println(String.format("<%s>'s <%s> activated successfully", this.getOwner().getUser().getUsername(), this.getName()), Color.Yellow);
             CustomPrinter.println(this, Color.Gray);
         };
     }

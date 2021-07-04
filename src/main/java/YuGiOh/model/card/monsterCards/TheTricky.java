@@ -18,29 +18,28 @@ public class TheTricky extends Monster {
 
     @Override
     public void validateSpecialSummon() throws LogicException {
-        if (!owner.hasInHand(this))
+        if (!getOwner().hasInHand(this))
             throw new LogicException("you can only summon the tricky from your hand");
     }
 
     @Override
     public Action specialSummonAction() {
-        PlayerController controller = GameController.getInstance().getPlayerControllerByPlayer(owner);
+        PlayerController controller = GameController.getInstance().getPlayerControllerByPlayer(getOwner());
         return new Action(
                 new SummonEvent(this, SummonType.SPECIAL),
                 () -> {
                     controller.tributeMonster(1,
                             SelectConditions.and(
                                     SelectConditions.or(
-                                            SelectConditions.getOnPlayersBoard(owner),
-                                            SelectConditions.getInPlayersHandCondition(owner)
+                                            SelectConditions.getOnPlayersBoard(getOwner()),
+                                            SelectConditions.getInPlayersHandCondition(getOwner())
                                     ),
                                     SelectConditions.getNotThisCard(this)
                             )
                     );
                     controller.summon(this, 0, MonsterState.OFFENSIVE_OCCUPIED, true);
-                    CustomPrinter.println(String.format("<%s> special summoned <%s> successfully", owner.getUser().getUsername(), getName(), getMonsterState()), Color.Green);
+                    CustomPrinter.println(String.format("<%s> special summoned <%s> successfully", getOwner().getUser().getUsername(), getName(), getMonsterState()), Color.Green);
                 }
         );
     }
-
 }

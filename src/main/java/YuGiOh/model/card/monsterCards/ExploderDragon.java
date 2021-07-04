@@ -20,8 +20,8 @@ public class ExploderDragon extends Monster {
 
     @Override
     public void specialEffectWhenBeingAttacked(Monster attacker) {
-        int myLifePoint = this.owner.getLifePoint();
-        int opponentLifePoint = attacker.owner.getLifePoint();
+        int myLifePoint = this.getOwner().getLifePoint();
+        int opponentLifePoint = attacker.getOwner().getLifePoint();
         try {
             damageStep(attacker);
         } catch (RoundOverExceptionEvent ignored) {
@@ -29,9 +29,9 @@ public class ExploderDragon extends Monster {
         if (GameController.getInstance().getGame().getCardZoneType(this).equals(ZoneType.GRAVEYARD)) {
             attacker.tryToSendToGraveYardOfMe();
         }
-        this.owner.setLifePoint(myLifePoint);
-        attacker.owner.setLifePoint(opponentLifePoint);
-        CustomPrinter.println(String.format("<%s>'s <%s> activated successfully", this.owner.getUser().getUsername(), this.getName()), Color.Yellow);
+        this.getOwner().setLifePoint(myLifePoint);
+        attacker.getOwner().setLifePoint(opponentLifePoint);
+        CustomPrinter.println(String.format("<%s>'s <%s> activated successfully", this.getOwner().getUser().getUsername(), this.getName()), Color.Yellow);
         CustomPrinter.println(this.asEffect(), Color.Gray);
     }
 }

@@ -22,10 +22,10 @@ public class TrapHole extends Trap {
         assert canActivateEffect();
         Monster monster = ((SummonEvent) getChain().peek().getEvent()).getMonster();
         return ()->{
-            GameController.getInstance().getPlayerControllerByPlayer(monster.owner).moveCardToGraveYard(monster);
-            GameController.getInstance().getPlayerControllerByPlayer(this.owner).moveCardToGraveYard(this);
+            GameController.getInstance().getPlayerControllerByPlayer(monster.getOwner()).moveCardToGraveYard(monster);
+            GameController.getInstance().getPlayerControllerByPlayer(this.getOwner()).moveCardToGraveYard(this);
             getChain().pop(); // do not summon
-            CustomPrinter.println(String.format("<%s>'s <%s> activated successfully", this.owner.getUser().getUsername(), this.getName()), Color.Yellow);
+            CustomPrinter.println(String.format("<%s>'s <%s> activated successfully", this.getOwner().getUser().getUsername(), this.getName()), Color.Yellow);
             CustomPrinter.println(this, Color.Gray);
         };
     }

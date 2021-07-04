@@ -32,14 +32,14 @@ public class HeraldOfCreation extends Monster {
             throw new LogicException("you can only activate this once in a turn");
 
         return () -> {
-            PlayerController controller = GameController.getInstance().getPlayerControllerByPlayer(this.owner);
+            PlayerController controller = GameController.getInstance().getPlayerControllerByPlayer(this.getOwner());
             Card discarded;
             Monster monster;
             try {
                 discarded = controller.chooseKCards(
                         "choose 1 card to discard from your hand",
                         1,
-                        SelectConditions.getInPlayersHandCondition(this.owner)
+                        SelectConditions.getInPlayersHandCondition(this.getOwner())
                 )[0];
             } catch (ResistToChooseCard e) {
                 CustomPrinter.println("canceled", Color.Default);
@@ -49,16 +49,16 @@ public class HeraldOfCreation extends Monster {
                 monster = (Monster) controller.chooseKCards(
                         "choose 1 level 7 or higher monster from your graveyard",
                         1,
-                        SelectConditions.getInPlayerGraveYardMonster(this.owner, 7)
+                        SelectConditions.getInPlayerGraveYardMonster(this.getOwner(), 7)
                 )[0];
             } catch (ResistToChooseCard e) {
                 CustomPrinter.println("canceled", Color.Default);
                 return;
             }
-            this.owner.getBoard().removeFromHand(discarded);
-            this.owner.getBoard().addCardToHand(monster);
+            this.getOwner().getBoard().removeFromHand(discarded);
+            this.getOwner().getBoard().addCardToHand(monster);
             lastTurnActivated = GameController.instance.getGame().getTurn();
-            CustomPrinter.println(String.format("<%s>'s <%s> activated successfully", this.owner.getUser().getUsername(), this.getName()), Color.Yellow);
+            CustomPrinter.println(String.format("<%s>'s <%s> activated successfully", this.getOwner().getUser().getUsername(), this.getName()), Color.Yellow);
             CustomPrinter.println(this.asEffect(), Color.Gray);
         };
     }

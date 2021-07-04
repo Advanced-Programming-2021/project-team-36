@@ -32,12 +32,12 @@ public class MagnumShield extends Spell {
     @Override
     public Effect getEffect() {
         return () -> {
-            PlayerController playerController = GameController.getInstance().getPlayerControllerByPlayer(this.owner);
+            PlayerController playerController = GameController.getInstance().getPlayerControllerByPlayer(this.getOwner());
             Monster monster = (Monster) playerController.chooseKCards("Equip this <MagnumShield> to a monster on your field",
                     1,
-                    SelectConditions.getPlayerMonsterFromMonsterZone(this.owner))[0];
+                    SelectConditions.getPlayerMonsterFromMonsterZone(this.getOwner()))[0];
             setEquippedMonster(monster);
-            CustomPrinter.println(String.format("<%s> equipped <%s> to monster <%s>", this.owner.getUser().getUsername(), this.getName(), monster.getName()), Color.Yellow);
+            CustomPrinter.println(String.format("<%s> equipped <%s> to monster <%s>", this.getOwner().getUser().getUsername(), this.getName(), monster.getName()), Color.Yellow);
             CustomPrinter.println(this, Color.Gray);
         };
     }
@@ -45,7 +45,7 @@ public class MagnumShield extends Spell {
     @Override
     public boolean canActivateEffect() {
         for (int i = 1; i <= 5; i++) {
-            CardAddress cardAddress = new CardAddress(ZoneType.MONSTER, i, this.owner);
+            CardAddress cardAddress = new CardAddress(ZoneType.MONSTER, i, this.getOwner());
             if (GameController.getInstance().getGame().getCardByCardAddress(cardAddress) != null)
                 return !isActivated();
         }

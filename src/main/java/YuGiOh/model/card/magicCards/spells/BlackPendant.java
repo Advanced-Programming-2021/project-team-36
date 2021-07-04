@@ -37,21 +37,21 @@ public class BlackPendant extends Spell {
     @Override
     public Effect getEffect() {
         return () -> {
-            PlayerController playerController = GameController.getInstance().getPlayerControllerByPlayer(this.owner);
+            PlayerController playerController = GameController.getInstance().getPlayerControllerByPlayer(this.getOwner());
             Monster monster = (Monster) playerController.chooseKCards("Equip this <BlackPendant> to a monster on your field",
                     1,
-                    SelectConditions.getPlayerMonsterFromMonsterZone(this.owner))[0];
+                    SelectConditions.getPlayerMonsterFromMonsterZone(this.getOwner()))[0];
             setEquippedMonster(monster);
-            CustomPrinter.println(String.format("<%s> equipped <%s> to monster <%s>", this.owner.getUser().getUsername(), this.getName(), monster.getName()), Color.Yellow);
+            CustomPrinter.println(String.format("<%s> equipped <%s> to monster <%s>", this.getOwner().getUser().getUsername(), this.getName(), monster.getName()), Color.Yellow);
             CustomPrinter.println(this, Color.Gray);
         };
     }
 
     @Override
     public void onMovingToGraveYard() {
-        Player opponent = GameController.getInstance().getGame().getOtherPlayer(this.owner);
+        Player opponent = GameController.getInstance().getGame().getOtherPlayer(this.getOwner());
         GameController.getInstance().decreaseLifePoint(opponent, 500, false);
-        CustomPrinter.println(String.format("<%s> activated <%s> successfully", this.owner.getUser().getUsername(), this.getName()), Color.Yellow);
+        CustomPrinter.println(String.format("<%s> activated <%s> successfully", this.getOwner().getUser().getUsername(), this.getName()), Color.Yellow);
         CustomPrinter.println(this, Color.Gray);
         GameController.getInstance().checkBothLivesEndGame();
     }
@@ -59,7 +59,7 @@ public class BlackPendant extends Spell {
     @Override
     public boolean canActivateEffect() {
         for (int i = 1; i <= 5; i++) {
-            CardAddress cardAddress = new CardAddress(ZoneType.MONSTER, i, this.owner);
+            CardAddress cardAddress = new CardAddress(ZoneType.MONSTER, i, this.getOwner());
             if (GameController.getInstance().getGame().getCardByCardAddress(cardAddress) != null)
                 return !isActivated();
         }

@@ -31,12 +31,12 @@ public class Marshmallon extends Monster {
     public void specialEffectWhenBeingAttacked(Monster attacker) {
         if (checkIfFaceIsDown) {
             GameController.getInstance().decreaseLifePoint(
-                    GameController.getInstance().getGame().getOtherPlayer(this.owner),
+                    GameController.getInstance().getGame().getOtherPlayer(this.getOwner()),
                     1000,
                     false
             );
         }
-        CustomPrinter.println(String.format("<%s> activated <%s> successfully", this.owner.getUser().getUsername(), this.getName()), Color.Yellow);
+        CustomPrinter.println(String.format("<%s> activated <%s> successfully", this.getOwner().getUser().getUsername(), this.getName()), Color.Yellow);
         CustomPrinter.println(this.asEffect(), Color.Gray);
         damageStep(attacker);
     }

@@ -23,7 +23,7 @@ public class HarpiesFeatherDuster extends Spell {
     protected Effect getEffect() {
         return () -> {
             GameController gameController = GameController.getInstance();
-            PlayerController current = gameController.getPlayerControllerByPlayer(this.owner);
+            PlayerController current = gameController.getPlayerControllerByPlayer(this.getOwner());
             PlayerController opponent = gameController.getOtherPlayerController(current);
             for (int i = 1; i <= 5; i++) {
                 CardAddress cardAddress = new CardAddress(ZoneType.MAGIC, i, opponent.getPlayer());
@@ -33,7 +33,7 @@ public class HarpiesFeatherDuster extends Spell {
             }
             if (opponent.getPlayer().getBoard().getFieldZoneCard() != null)
                 opponent.moveCardToGraveYard(opponent.getPlayer().getBoard().getFieldZoneCard());
-            CustomPrinter.println(String.format("<%s>'s <%s> activated successfully", this.owner.getUser().getUsername(), this.getName()), Color.Yellow);
+            CustomPrinter.println(String.format("<%s>'s <%s> activated successfully", this.getOwner().getUser().getUsername(), this.getName()), Color.Yellow);
             CustomPrinter.println(this, Color.Gray);
         };
     }

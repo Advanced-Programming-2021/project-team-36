@@ -25,8 +25,8 @@ public class ClosedForest extends Spell {
     @Override
     public int affectionOnAttackingMonster(Monster monster) {
         MonsterType monsterType = monster.getMonsterType();
-        if (monster.owner.equals(this.owner) && monsterType.equals(MonsterType.BEAST))
-            return 100 * this.owner.getBoard().getGraveYard().size();
+        if (monster.getOwner().equals(this.getOwner()) && monsterType.equals(MonsterType.BEAST))
+            return 100 * this.getOwner().getBoard().getGraveYard().size();
         return 0;
     }
 
@@ -34,7 +34,7 @@ public class ClosedForest extends Spell {
     protected Effect getEffect() {
         return () -> {
             lastAliveTurn = GameController.getInstance().getGame().getTurn();
-            CustomPrinter.println(String.format("<%s> activated field spell <%s>", this.owner.getUser().getUsername(), this.getName()), Color.Yellow);
+            CustomPrinter.println(String.format("<%s> activated field spell <%s>", this.getOwner().getUser().getUsername(), this.getName()), Color.Yellow);
             CustomPrinter.println(this, Color.Gray);
         };
     }

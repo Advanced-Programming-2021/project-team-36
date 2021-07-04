@@ -20,12 +20,12 @@ public class Suijin extends Monster {
     public void specialEffectWhenBeingAttacked(Monster attacker) {
         int _attackDamage = attacker.getAttackDamage();
         if (stillHasPower) {
-            boolean confirm = GameController.getInstance().getPlayerControllerByPlayer(this.owner).askRespondToQuestion(
+            boolean confirm = GameController.getInstance().getPlayerControllerByPlayer(this.getOwner()).askRespondToQuestion(
                     "Do you want to activate Suijin's effect?", "yes", "no");
             if (confirm) {
                 stillHasPower = false;
                 attacker.setAttackDamage(0);
-                CustomPrinter.println(String.format("<%s>'s <%s> activated successfully", this.owner.getUser().getUsername(), this.getName()), Color.Yellow);
+                CustomPrinter.println(String.format("<%s>'s <%s> activated successfully", this.getOwner().getUser().getUsername(), this.getName()), Color.Yellow);
                 CustomPrinter.println(this.asEffect(), Color.Gray);
             }
         }

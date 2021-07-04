@@ -69,7 +69,7 @@ public class Monster extends Card {
     }
 
     public void tryToSendToGraveYardOfMe() {
-        GameController.getInstance().getPlayerControllerByPlayer(this.owner).moveCardToGraveYard(this);
+        GameController.getInstance().getPlayerControllerByPlayer(this.getOwner()).moveCardToGraveYard(this);
     }
 
     public void tryToSendToGraveYard(Monster monster) {
@@ -77,7 +77,7 @@ public class Monster extends Card {
     }
 
     public void tryToDecreaseLifePointOfMe(int amount) {
-        GameController.getInstance().decreaseLifePoint(this.owner, amount, true);
+        GameController.getInstance().decreaseLifePoint(this.getOwner(), amount, true);
     }
 
     public void tryToDecreaseLifePoint(Monster monster, int amount) {
@@ -95,12 +95,12 @@ public class Monster extends Card {
     public final int getAttackDamage() {
         int affects = 0;
         for (int i = 1; i <= 5; i++) {
-            CardAddress cardAddress = new CardAddress(ZoneType.MAGIC, i, this.owner);
+            CardAddress cardAddress = new CardAddress(ZoneType.MAGIC, i, this.getOwner());
             Magic magic = (Magic) GameController.getInstance().getGame().getCardByCardAddress(cardAddress);
             if (magic != null && magic.isFacedUp())
                 affects += magic.affectionOnAttackingMonster(this);
         }
-        PlayerController playerController = GameController.getInstance().getPlayerControllerByPlayer(this.owner);
+        PlayerController playerController = GameController.getInstance().getPlayerControllerByPlayer(this.getOwner());
         Spell spell = (Spell) playerController.getPlayer().getBoard().getFieldZoneCard();
         if (spell != null)
             affects += spell.affectionOnAttackingMonster(this);
@@ -113,12 +113,12 @@ public class Monster extends Card {
     public final int getDefenseRate() {
         int affects = 0;
         for (int i = 1; i <= 5; i++) {
-            CardAddress cardAddress = new CardAddress(ZoneType.MAGIC, i, this.owner);
+            CardAddress cardAddress = new CardAddress(ZoneType.MAGIC, i, this.getOwner());
             Magic magic = (Magic) GameController.getInstance().getGame().getCardByCardAddress(cardAddress);
             if (magic != null)
                 affects += magic.affectionOnDefensiveMonster(this);
         }
-        Spell spell = (Spell) GameController.getInstance().getPlayerControllerByPlayer(this.owner).getPlayer().getBoard().getFieldZoneCard();
+        Spell spell = (Spell) GameController.getInstance().getPlayerControllerByPlayer(this.getOwner()).getPlayer().getBoard().getFieldZoneCard();
         if (spell != null)
             affects += spell.affectionOnDefensiveMonster(this);
         return getDefenseRateOnCard() + affects;

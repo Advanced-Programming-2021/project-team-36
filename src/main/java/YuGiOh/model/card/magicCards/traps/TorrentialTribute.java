@@ -23,10 +23,10 @@ public class TorrentialTribute extends Trap {
         return () -> {
             for (Card card : GameController.getInstance().getGame().getAllCardsOnBoard()) {
                 if (card instanceof Monster)
-                    GameController.getInstance().getPlayerControllerByPlayer(card.owner).moveCardToGraveYard(card);
+                    GameController.getInstance().getPlayerControllerByPlayer(card.getOwner()).moveCardToGraveYard(card);
             }
-            GameController.getInstance().getPlayerControllerByPlayer(this.owner).moveCardToGraveYard(this);
-            CustomPrinter.println(String.format("<%s>'s <%s> activated successfully", this.owner.getUser().getUsername(), this.getName()), Color.Yellow);
+            GameController.getInstance().getPlayerControllerByPlayer(this.getOwner()).moveCardToGraveYard(this);
+            CustomPrinter.println(String.format("<%s>'s <%s> activated successfully", this.getOwner().getUser().getUsername(), this.getName()), Color.Yellow);
             CustomPrinter.println(this, Color.Gray);
         };
     }

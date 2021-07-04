@@ -22,13 +22,13 @@ public class RingOfDefense extends Spell {
     protected Effect getEffect() {
         return () -> {
             Action action = getChain().pop();
-            int myLifePoint = this.owner.getLifePoint();
+            int myLifePoint = this.getOwner().getLifePoint();
             try {
                 action.runEffect();
             } catch (RoundOverExceptionEvent ignored) {
             }
-            GameController.getInstance().increaseLifePoint(this.owner,myLifePoint - this.owner.getLifePoint());
-            CustomPrinter.println(String.format("<%s>'s <%s> activated successfully.", this.owner.getUser().getUsername(), this.getName()), Color.Yellow);
+            GameController.getInstance().increaseLifePoint(this.getOwner(),myLifePoint - this.getOwner().getLifePoint());
+            CustomPrinter.println(String.format("<%s>'s <%s> activated successfully.", this.getOwner().getUser().getUsername(), this.getName()), Color.Yellow);
             CustomPrinter.println(this, Color.Gray);
         };
     }

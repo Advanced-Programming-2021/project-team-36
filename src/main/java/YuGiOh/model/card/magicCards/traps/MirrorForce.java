@@ -23,15 +23,15 @@ public class MirrorForce extends Trap {
     protected Effect getEffect() {
         assert canActivateEffect();
         return () -> {
-            for (Card card : GameController.getInstance().getGame().getOtherPlayer(this.owner).getBoard().getAllCardsOnBoard()) {
+            for (Card card : GameController.getInstance().getGame().getOtherPlayer(this.getOwner()).getBoard().getAllCardsOnBoard()) {
                 if (card instanceof Monster) {
                     Monster monster = (Monster) card;
                     if (monster.getMonsterState().equals(MonsterState.OFFENSIVE_OCCUPIED))
-                        GameController.getInstance().getPlayerControllerByPlayer(monster.owner).moveCardToGraveYard(card);
+                        GameController.getInstance().getPlayerControllerByPlayer(monster.getOwner()).moveCardToGraveYard(card);
                 }
             }
-            GameController.getInstance().getPlayerControllerByPlayer(this.owner).moveCardToGraveYard(this);
-            CustomPrinter.println(String.format("<%s>'s <%s> activated successfully", this.owner.getUser().getUsername(), this.getName()), Color.Yellow);
+            GameController.getInstance().getPlayerControllerByPlayer(this.getOwner()).moveCardToGraveYard(this);
+            CustomPrinter.println(String.format("<%s>'s <%s> activated successfully", this.getOwner().getUser().getUsername(), this.getName()), Color.Yellow);
             CustomPrinter.println(this, Color.Gray);
         };
     }
@@ -43,7 +43,7 @@ public class MirrorForce extends Trap {
         Action action = getChain().peek();
         if (action.getEvent() instanceof AttackEvent) {
             AttackEvent event = (AttackEvent) action.getEvent();
-            return event.getAttacker().owner.equals(GameController.getInstance().getGame().getOtherPlayer(this.owner));
+            return event.getAttacker().getOwner().equals(GameController.getInstance().getGame().getOtherPlayer(this.getOwner()));
         }
         return false;
     }

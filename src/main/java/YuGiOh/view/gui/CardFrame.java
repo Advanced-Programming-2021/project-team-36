@@ -13,6 +13,7 @@ import YuGiOh.view.gui.event.ClickOnCardEvent;
 import YuGiOh.view.gui.event.DropCardEvent;
 import javafx.beans.InvalidationListener;
 import javafx.beans.binding.Bindings;
+import javafx.beans.binding.BooleanBinding;
 import javafx.beans.binding.DoubleBinding;
 import javafx.beans.property.BooleanProperty;
 import javafx.beans.property.ReadOnlyDoubleProperty;
@@ -75,26 +76,6 @@ public class CardFrame extends DraggablePane {
             jumpingAnimation.deactivate();
     }
 
-    private SimpleBooleanProperty getInHandObservable() {
-        SimpleBooleanProperty ret = new SimpleBooleanProperty(card.owner.getBoard().getCardsOnHand().contains(card));
-        card.owner.getBoard().getCardsOnHand().addListener((InvalidationListener) (o)->{
-            ret.set(card.owner.getBoard().getCardsOnHand().contains(card));
-        });
-        return  ret;
-    }
-
-    private SimpleBooleanProperty myTurnObservable() {
-        SimpleBooleanProperty ret = new SimpleBooleanProperty(false);
-        Game game = GameController.getInstance().getGame();
-        Runnable refresh = ()->{
-            ret.set(game.getCurrentPlayer().equals(card.owner));
-        };
-        refresh.run();
-        game.phaseProperty().addListener((InvalidationListener) (o) -> refresh.run());
-        // todo add owner
-        return ret;
-    }
-
     private SimpleBooleanProperty currentPlayerCanSee() {
         SimpleBooleanProperty ret = new SimpleBooleanProperty(false);
         Game game = GameController.getInstance().getGame();
@@ -125,7 +106,7 @@ public class CardFrame extends DraggablePane {
         this.forceImageFaceUp = new SimpleBooleanProperty(false);
         this.forceFlipCardAnimation = new SimpleBooleanProperty(false);
 
-        SimpleBooleanProperty inHandObservable = getInHandObservable();
+        BooleanBinding inHandObservable = ObservableBuilder.getInHandBinding(card);
 
         SimpleBooleanProperty currentPlayerCanSee = currentPlayerCanSee();
         DoubleBinding inHandCof = Bindings.when(inHandObservable).then(1.3).otherwise(1.0);
@@ -141,7 +122,7 @@ public class CardFrame extends DraggablePane {
         flipCardAnimation.start();
 
         SimpleBooleanProperty jumpingActivation = new SimpleBooleanProperty(false);
-        jumpingActivation.bind(hoverProperty().and(inHandObservable).and(myTurnObservable()));
+        jumpingActivation.bind(hoverProperty().and(inHandObservable).and(ObservableBuilder.myTurnBinding(card)));
         jumpingAnimation = new JumpingAnimation(this, jumpingActivation);
         jumpingAnimation.start();
 

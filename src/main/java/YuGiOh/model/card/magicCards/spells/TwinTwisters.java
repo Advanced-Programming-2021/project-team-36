@@ -22,10 +22,10 @@ public class TwinTwisters extends Spell {
     @Override
     protected Effect getEffect() {
         return () -> {
-            PlayerController playerController = GameController.getInstance().getPlayerControllerByPlayer(this.owner);
+            PlayerController playerController = GameController.getInstance().getPlayerControllerByPlayer(this.getOwner());
             Card card = playerController.chooseKCards("Discard one card from your hand",
                     1,
-                    SelectConditions.getCardFromPlayerHand(this.owner, this))[0];
+                    SelectConditions.getCardFromPlayerHand(this.getOwner(), this))[0];
             playerController.moveCardToGraveYard(card);
             boolean askUser = playerController.askRespondToQuestion("How many spell and trap card you want to destroy?", "1", "2");
             int number;
@@ -37,9 +37,9 @@ public class TwinTwisters extends Spell {
                     number,
                     SelectConditions.getMagicFromField())
             ).forEach(magicCard -> {
-                GameController.getInstance().getPlayerControllerByPlayer(magicCard.owner).moveCardToGraveYard(magicCard);
+                GameController.getInstance().getPlayerControllerByPlayer(magicCard.getOwner()).moveCardToGraveYard(magicCard);
             });
-            CustomPrinter.println(String.format("<%s> activated <%s> successfully", this.owner.getUser().getUsername(), this.getName()), Color.Yellow);
+            CustomPrinter.println(String.format("<%s> activated <%s> successfully", this.getOwner().getUser().getUsername(), this.getName()), Color.Yellow);
             CustomPrinter.println(this, Color.Gray);
         };
     }

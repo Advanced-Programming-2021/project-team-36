@@ -23,12 +23,12 @@ public class MagicCylinder extends Trap {
                 throw new LogicException("You can't activate this effect");
             AttackEvent event = (AttackEvent) getChain().pop().getEvent();
             GameController.getInstance().decreaseLifePoint(
-                    GameController.getInstance().getGame().getOtherPlayer(this.owner),
+                    GameController.getInstance().getGame().getOtherPlayer(this.getOwner()),
                     event.getAttacker().getAttackDamage(),
                     true
             );
             event.getAttacker().setAllowAttack(false);
-            GameController.getInstance().getPlayerControllerByPlayer(this.owner).moveCardToGraveYard(this);
+            GameController.getInstance().getPlayerControllerByPlayer(this.getOwner()).moveCardToGraveYard(this);
         };
     }
 
@@ -39,7 +39,7 @@ public class MagicCylinder extends Trap {
         Action action = getChain().peek();
         if(action.getEvent() instanceof AttackEvent){
             AttackEvent event = (AttackEvent) action.getEvent();
-            return event.getAttacker().owner.equals(GameController.getInstance().getGame().getOtherPlayer(this.owner));
+            return event.getAttacker().getOwner().equals(GameController.getInstance().getGame().getOtherPlayer(this.getOwner()));
         }
         return false;
     }

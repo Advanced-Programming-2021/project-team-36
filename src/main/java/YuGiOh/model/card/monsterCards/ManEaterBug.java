@@ -20,18 +20,18 @@ public class ManEaterBug extends Monster {
             if (getMonsterState().equals(MonsterState.DEFENSIVE_HIDDEN)) {
                 try {
                     setMonsterState(MonsterState.DEFENSIVE_OCCUPIED);
-                    PlayerController controller = GameController.getInstance().getPlayerControllerByPlayer(owner);
+                    PlayerController controller = GameController.getInstance().getPlayerControllerByPlayer(getOwner());
                     if (controller.askRespondToQuestion("Do you want to activate effect of man easter bug?", "yes", "no")) {
                         Monster monster = (Monster) controller.chooseKCards(
                                 "choose a monster card to kill",
                                 1,
                                 SelectConditions.getInZoneCondition(ZoneType.MONSTER)
                         )[0];
-                        if(!owner.getBoard().getAllCards().contains(monster))
+                        if(!getOwner().getBoard().getAllCards().contains(monster))
                             GameController.getInstance().getOtherPlayerController(controller).moveCardToGraveYard(monster);
                         else
                             controller.moveCardToGraveYard(monster);
-                        CustomPrinter.println(String.format("<%s>'s <%s> activated successfully", this.owner.getUser().getUsername(), this.getName()), Color.Yellow);
+                        CustomPrinter.println(String.format("<%s>'s <%s> activated successfully", this.getOwner().getUser().getUsername(), this.getName()), Color.Yellow);
                         CustomPrinter.println(this.asEffect(), Color.Gray);
                     }
                 } catch (ResistToChooseCard e){

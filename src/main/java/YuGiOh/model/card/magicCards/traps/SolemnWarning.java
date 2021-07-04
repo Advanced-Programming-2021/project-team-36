@@ -21,13 +21,13 @@ public class SolemnWarning extends Trap {
     protected Effect getEffect() {
         assert canActivateEffect();
         return () -> {
-            PlayerController playerController = GameController.getInstance().getPlayerControllerByPlayer(this.owner);
+            PlayerController playerController = GameController.getInstance().getPlayerControllerByPlayer(this.getOwner());
             playerController.moveCardToGraveYard(this);
             Action action = getChain().pop();
-            GameController.getInstance().decreaseLifePoint(owner, 2000, false);
+            GameController.getInstance().decreaseLifePoint(getOwner(), 2000, false);
             Monster monster = ((SummonEvent) action.getEvent()).getMonster();
             GameController.getInstance().getOtherPlayerController(playerController).moveCardToGraveYard(monster);
-            CustomPrinter.println(String.format("<%s>'s <%s> activated successfully", this.owner.getUser().getUsername(), this.getName()), Color.Yellow);
+            CustomPrinter.println(String.format("<%s>'s <%s> activated successfully", this.getOwner().getUser().getUsername(), this.getName()), Color.Yellow);
             CustomPrinter.println(this, Color.Gray);
             GameController.getInstance().checkBothLivesEndGame();
         };

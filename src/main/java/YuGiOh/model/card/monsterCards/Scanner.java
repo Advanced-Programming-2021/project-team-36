@@ -32,15 +32,15 @@ public class Scanner extends Monster {
             throw new LogicException("you can only activate this once in a turn");
         return ()-> {
             try {
-                PlayerController controller = GameController.getInstance().getPlayerControllerByPlayer(this.owner);
+                PlayerController controller = GameController.getInstance().getPlayerControllerByPlayer(this.getOwner());
                 copiedMonster = (Monster) controller.chooseKCards(
                         "choose a monster to copy",
                         1,
                         SelectConditions.OpponentMonsterFromGraveYard
                 )[0];
-                copiedMonster = (Monster) copiedMonster.clone().readyForBattle(this.owner);
+                copiedMonster = (Monster) copiedMonster.clone().readyForBattle(this.getOwner());
                 lastTurnActivated = GameController.instance.getGame().getTurn();
-                CustomPrinter.println(String.format("<%s>'s <%s> activated successfully", this.owner.getUser().getUsername(), this.getName()), Color.Yellow);
+                CustomPrinter.println(String.format("<%s>'s <%s> activated successfully", this.getOwner().getUser().getUsername(), this.getName()), Color.Yellow);
                 CustomPrinter.println(this.asEffect(), Color.Gray);
             } catch (ResistToChooseCard ignored) {
             }
