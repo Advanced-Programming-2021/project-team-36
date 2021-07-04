@@ -1,8 +1,8 @@
 package YuGiOh.view.gui;
 
-import YuGiOh.controller.menu.DuelMenuController;
 import YuGiOh.model.CardAddress;
 import YuGiOh.model.card.Card;
+import YuGiOh.view.gui.component.CardFrame;
 import javafx.geometry.Bounds;
 
 import java.util.ArrayList;

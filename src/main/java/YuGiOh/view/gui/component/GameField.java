@@ -1,4 +1,4 @@
-package YuGiOh.view.gui;
+package YuGiOh.view.gui.component;
 
 import YuGiOh.controller.GameController;
 import YuGiOh.controller.LogicException;
@@ -18,6 +18,11 @@ import YuGiOh.model.enums.Phase;
 import YuGiOh.model.enums.ZoneType;
 import YuGiOh.utils.CustomPrinter;
 import YuGiOh.view.cardSelector.ResistToChooseCard;
+import YuGiOh.view.gui.*;
+import YuGiOh.view.gui.component.AlertBox;
+import YuGiOh.view.gui.component.CardFrame;
+import YuGiOh.view.gui.component.PhaseLamps;
+import YuGiOh.view.gui.component.PileOfCardManager;
 import YuGiOh.view.gui.event.DropCardEvent;
 import YuGiOh.view.gui.event.DuelOverEvent;
 import YuGiOh.view.gui.event.RoundOverEvent;

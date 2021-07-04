@@ -1,6 +1,6 @@
-package YuGiOh.view.gui;
+package YuGiOh.view.gui.component;
 
-import javafx.beans.binding.Bindings;
+import YuGiOh.view.gui.component.CardFrame;
 import javafx.beans.binding.DoubleBinding;
 import javafx.beans.property.SimpleObjectProperty;
 import javafx.geometry.Insets;

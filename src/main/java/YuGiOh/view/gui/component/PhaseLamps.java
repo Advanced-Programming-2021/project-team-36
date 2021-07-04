@@ -1,7 +1,8 @@
-package YuGiOh.view.gui;
+package YuGiOh.view.gui.component;
 
 import YuGiOh.controller.GameController;
 import YuGiOh.model.enums.Phase;
+import YuGiOh.view.gui.RatioLocation;
 import javafx.beans.binding.Bindings;
 import javafx.beans.binding.DoubleBinding;
 import javafx.geometry.Insets;
@@ -13,7 +14,7 @@ import javafx.scene.text.Text;
 import java.util.Map;
 
 public class PhaseLamps extends Pane {
-    PhaseLamps(DoubleBinding widthProperty, DoubleBinding heightProperty, Map<Phase, RatioLocation> phaseToLocation) {
+    public PhaseLamps(DoubleBinding widthProperty, DoubleBinding heightProperty, Map<Phase, RatioLocation> phaseToLocation) {
         phaseToLocation.forEach((phase, location) -> {
             Text text = new Text(phase.getShortName());
             text.setFont(Font.font(30));

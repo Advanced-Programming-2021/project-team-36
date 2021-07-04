@@ -1,18 +1,13 @@
-package YuGiOh.view.gui;
+package YuGiOh.view.gui.component;
 
 import YuGiOh.controller.menu.DuelMenuController;
-import YuGiOh.model.CardAddress;
 import YuGiOh.model.Game;
-import YuGiOh.model.enums.Phase;
+import YuGiOh.view.gui.Utils;
 import javafx.application.Platform;
 import javafx.beans.binding.DoubleBinding;
-import javafx.beans.property.SimpleObjectProperty;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.*;
-import javafx.scene.paint.Color;
-import javafx.scene.text.Font;
-import javafx.scene.text.Text;
 import lombok.Setter;
 
 public class DuelInfoBox extends BorderPane {

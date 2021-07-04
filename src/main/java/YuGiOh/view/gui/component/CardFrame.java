@@ -1,4 +1,4 @@
-package YuGiOh.view.gui;
+package YuGiOh.view.gui.component;
 
 import YuGiOh.controller.GameController;
 import YuGiOh.controller.menu.DuelMenuController;
@@ -7,8 +7,9 @@ import YuGiOh.model.Game;
 import YuGiOh.model.card.Card;
 import YuGiOh.model.card.Monster;
 import YuGiOh.model.enums.MonsterState;
-import YuGiOh.view.gui.Transitions.CardRotateTransition;
-import YuGiOh.view.gui.Transitions.JumpingAnimation;
+import YuGiOh.view.gui.*;
+import YuGiOh.view.gui.transition.CardRotateTransition;
+import YuGiOh.view.gui.transition.JumpingAnimation;
 import YuGiOh.view.gui.event.ClickOnCardEvent;
 import YuGiOh.view.gui.event.DropCardEvent;
 import javafx.beans.InvalidationListener;
@@ -16,7 +17,6 @@ import javafx.beans.binding.Bindings;
 import javafx.beans.binding.BooleanBinding;
 import javafx.beans.binding.DoubleBinding;
 import javafx.beans.property.BooleanProperty;
-import javafx.beans.property.ReadOnlyDoubleProperty;
 import javafx.beans.property.SimpleBooleanProperty;
 import javafx.geometry.Bounds;
 import javafx.scene.control.ContextMenu;

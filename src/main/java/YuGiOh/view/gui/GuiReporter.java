@@ -1,9 +1,8 @@
 package YuGiOh.view.gui;
 
-import YuGiOh.controller.MainGameThread;
 import YuGiOh.model.card.action.Event;
+import YuGiOh.view.gui.component.GameField;
 import YuGiOh.view.gui.event.GameActionEvent;
-import javafx.application.Platform;
 import javafx.event.EventHandler;
 import javafx.event.EventType;
 import lombok.Getter;
@@ -13,7 +12,7 @@ public class GuiReporter {
     private static GuiReporter instance;
     private GameField gameField;
 
-    GuiReporter(GameField gameField){
+    public GuiReporter(GameField gameField){
         instance = this;
         this.gameField = gameField;
     }

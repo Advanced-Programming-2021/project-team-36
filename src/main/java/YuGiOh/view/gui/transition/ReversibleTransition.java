@@ -1,4 +1,4 @@
-package YuGiOh.view.gui.Transitions;
+package YuGiOh.view.gui.transition;
 
 import javafx.animation.Transition;
 import javafx.beans.InvalidationListener;

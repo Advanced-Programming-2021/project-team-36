@@ -3,6 +3,8 @@ package YuGiOh.view.cardSelector;
 import YuGiOh.controller.LogicException;
 import YuGiOh.model.card.Card;
 import YuGiOh.view.gui.*;
+import YuGiOh.view.gui.component.CardFrame;
+import YuGiOh.view.gui.component.DuelInfoBox;
 import YuGiOh.view.gui.event.ClickOnCardEvent;
 
 import java.util.ArrayList;

@@ -1,12 +1,12 @@
-package YuGiOh.view.gui;
+package YuGiOh.view.gui.component;
 
 import YuGiOh.controller.MainGameThread;
+import YuGiOh.view.gui.Direction;
+import YuGiOh.view.gui.component.CardFrame;
 import javafx.beans.binding.DoubleBinding;
 import javafx.geometry.Insets;
-import javafx.scene.control.Button;
 import javafx.scene.layout.*;
 import javafx.scene.paint.Color;
-import javafx.scene.paint.Paint;
 import javafx.scene.shape.Circle;
 import javafx.scene.text.Font;
 import javafx.scene.text.Text;

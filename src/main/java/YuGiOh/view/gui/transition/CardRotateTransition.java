@@ -1,6 +1,6 @@
-package YuGiOh.view.gui.Transitions;
+package YuGiOh.view.gui.transition;
 
-import YuGiOh.view.gui.CardFrame;
+import YuGiOh.view.gui.component.CardFrame;
 import javafx.beans.binding.DoubleBinding;
 import javafx.beans.property.SimpleBooleanProperty;
 import javafx.util.Duration;

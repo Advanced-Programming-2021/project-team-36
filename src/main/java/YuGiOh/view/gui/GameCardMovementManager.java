@@ -1,6 +1,7 @@
 package YuGiOh.view.gui;
 
 import YuGiOh.controller.MainGameThread;
+import YuGiOh.view.gui.component.CardFrame;
 import javafx.animation.TranslateTransition;
 import javafx.application.Platform;
 import javafx.beans.binding.DoubleBinding;
@@ -10,7 +11,7 @@ public class GameCardMovementManager {
     private final GameCardFrameManager cardFrameManager;
     private final DoubleBinding widthProperty, heightProperty, cardWidthProperty, cardHeightProperty;
 
-    GameCardMovementManager(GameCardFrameManager cardFrameManager, DoubleBinding widthProperty, DoubleBinding heightProperty, DoubleBinding cardWidthProperty, DoubleBinding cardHeightProperty) {
+    public GameCardMovementManager(GameCardFrameManager cardFrameManager, DoubleBinding widthProperty, DoubleBinding heightProperty, DoubleBinding cardWidthProperty, DoubleBinding cardHeightProperty) {
         this.cardFrameManager = cardFrameManager;
         this.widthProperty = widthProperty;
         this.heightProperty = heightProperty;

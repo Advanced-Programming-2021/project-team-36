@@ -1,4 +1,4 @@
-package YuGiOh.view.gui;
+package YuGiOh.view.gui.component;
 
 import javafx.beans.binding.Bindings;
 import javafx.geometry.Insets;

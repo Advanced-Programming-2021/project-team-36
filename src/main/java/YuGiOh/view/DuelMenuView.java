@@ -1,7 +1,6 @@
 package YuGiOh.view;
 
 import YuGiOh.controller.MainGameThread;
-import YuGiOh.controller.menu.MainMenuController;
 import YuGiOh.model.Game;
 import YuGiOh.model.card.Card;
 import YuGiOh.view.cardSelector.CardSelector;
@@ -9,13 +8,14 @@ import YuGiOh.view.cardSelector.FinishSelectingCondition;
 import YuGiOh.view.cardSelector.ResistToChooseCard;
 import YuGiOh.view.cardSelector.SelectCondition;
 import YuGiOh.view.gui.*;
+import YuGiOh.view.gui.component.AlertBox;
+import YuGiOh.view.gui.component.CustomButton;
+import YuGiOh.view.gui.component.DuelInfoBox;
+import YuGiOh.view.gui.component.GameField;
 import javafx.application.Application;
-import javafx.geometry.Insets;
 import javafx.scene.Scene;
 import javafx.scene.input.KeyCode;
 import javafx.scene.layout.*;
-import javafx.scene.paint.Color;
-import javafx.scene.text.Text;
 import javafx.stage.Stage;
 import lombok.Getter;
 
