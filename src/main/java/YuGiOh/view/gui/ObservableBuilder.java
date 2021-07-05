@@ -1,20 +1,9 @@
 package YuGiOh.view.gui;
 
 import YuGiOh.controller.GameController;
-import YuGiOh.model.Game;
-import YuGiOh.model.Player.Player;
 import YuGiOh.model.card.Card;
 import YuGiOh.model.card.Monster;
-import YuGiOh.model.enums.ZoneType;
-import javafx.beans.InvalidationListener;
-import javafx.beans.Observable;
 import javafx.beans.binding.BooleanBinding;
-import javafx.beans.binding.DoubleBinding;
-import javafx.beans.property.Property;
-import javafx.beans.property.SimpleBooleanProperty;
-import javafx.beans.property.SimpleObjectProperty;
-import javafx.beans.value.ObservableBooleanValue;
-import javafx.beans.value.ObservableValue;
 
 public class ObservableBuilder {
     public static BooleanBinding getInHandBinding(Card card) {

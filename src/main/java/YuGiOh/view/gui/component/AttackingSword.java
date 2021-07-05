@@ -7,12 +7,11 @@ import YuGiOh.model.enums.Phase;
 import YuGiOh.view.gui.ObservableBuilder;
 import YuGiOh.view.gui.Utils;
 import javafx.animation.TranslateTransition;
-import javafx.application.Platform;
-import javafx.beans.InvalidationListener;
-import javafx.beans.binding.Bindings;
 import javafx.beans.binding.BooleanBinding;
 import javafx.beans.binding.DoubleBinding;
 import javafx.beans.property.SimpleBooleanProperty;
+import javafx.beans.value.ChangeListener;
+import javafx.beans.value.ObservableValue;
 import javafx.scene.image.ImageView;
 import javafx.scene.shape.Circle;
 import javafx.util.Duration;
@@ -46,15 +45,19 @@ public class AttackingSword extends ImageView {
     private void setActivationConditions() {
         if(cardFrame.getCard() instanceof Monster){
             Monster monster = (Monster) cardFrame.getCard();
+            BooleanBinding inBattlePhase = GameController.getInstance().getGame().phaseProperty().isEqualTo(Phase.BATTLE_PHASE);
             BooleanBinding activationNeeds = monster.facedUpProperty()
                     .and(monster.isDefensive().not())
                     .and(ObservableBuilder.inMonsterZoneBinding(monster))
-                    .and(GameController.getInstance().getGame().phaseProperty().isEqualTo(Phase.BATTLE_PHASE))
+                    .and(inBattlePhase)
                     .and(ObservableBuilder.myTurnBinding(monster));
             visibleProperty().bind(extraVisibility.and(activationNeeds));
-            activationNeeds.addListener((InvalidationListener) o->{
-                if(activationNeeds.get())
-                    ready();
+            inBattlePhase.addListener(new ChangeListener<Boolean>() {
+                @Override
+                public void changed(ObservableValue<? extends Boolean> observable, Boolean oldValue, Boolean newValue) {
+                    if(!oldValue && newValue)
+                        ready();
+                }
             });
         }
     }
@@ -65,7 +68,7 @@ public class AttackingSword extends ImageView {
         setRotate(0);
         show();
     }
-    public void ready() {
+    private void ready() {
         ready(cardFrame.getCenterXProperty(), cardFrame.getCenterYProperty());
     }
     public void shoot(DoubleBinding x, DoubleBinding y) {

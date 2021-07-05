@@ -35,10 +35,10 @@ public class DummyStarter extends Application {
 //            Cheat.buildSuperUser(fakeUser2);
 
             Duel duel = new Duel(
-//                    new HumanPlayer(abolfazl),
-//                    new HumanPlayer(fakeUser2),
-                    new AIPlayer(abolfazl, AIMode.AGGRESSIVE),
-                    new AIPlayer(fakeUser2, AIMode.NORMAL),
+                    new HumanPlayer(abolfazl),
+                    new HumanPlayer(fakeUser2),
+//                    new AIPlayer(abolfazl, AIMode.AGGRESSIVE),
+//                    new AIPlayer(fakeUser2, AIMode.NORMAL),
                     3
             );
             new DuelMenuController(duel);

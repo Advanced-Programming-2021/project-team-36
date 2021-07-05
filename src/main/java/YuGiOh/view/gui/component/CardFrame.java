@@ -60,10 +60,9 @@ public class CardFrame extends DraggablePane {
     }
 
     private BooleanBinding currentPlayerCanSee() {
-        BooleanBinding myTurn = ObservableBuilder.myTurnBinding(card);
-        BooleanBinding caseInMyTurn = ObservableBuilder.inGraveyardBinding(card).not().and(ObservableBuilder.inDeckBinding(card).not());
-        BooleanBinding caseInOpponentTurn = card.facedUpProperty();
-        return myTurn.and(caseInMyTurn).or(myTurn.not().and(caseInOpponentTurn));
+        return Bindings.when(ObservableBuilder.myTurnBinding(card))
+                .then(Bindings.and(ObservableBuilder.inGraveyardBinding(card).not(), ObservableBuilder.inDeckBinding(card).not()))
+                .otherwise(card.facedUpProperty());
     }
 
     CardFrame(GameField gameRoot, Card card, DoubleBinding widthProperty, DoubleBinding heightProperty){
@@ -121,10 +120,15 @@ public class CardFrame extends DraggablePane {
             GuiReporter.getInstance().report(new ClickOnCardEvent(this));
 
 
-            // todo remove this in production
-            System.out.println(card + "  " + isFacedUp() + "   " + GameController.getInstance().getGame().getCardZoneType(card));
+            // todo remove this in production. just debug info
+            System.out.println("CARD: " + card);
+            System.out.println("card faced up: " + card.facedUpProperty().get());
+            System.out.println("image faced up: " + isFacedUp());
+            System.out.println("actual zone: " + GameController.getInstance().getGame().getCardZoneType(card));
+            System.out.println("force image face up : " + forceImageFaceUp.get());
+            System.out.println("force flip card animation: " + forceFlipCardAnimation.get());
             if(card instanceof Monster)
-                System.out.println(((Monster) card).getMonsterState());
+                System.out.println("monster state: " + ((Monster) card).getMonsterState());
         });
         setOnContextMenuRequested(e->{
             ContextMenu contextMenu = new ContextMenu();

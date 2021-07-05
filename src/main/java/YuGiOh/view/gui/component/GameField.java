@@ -24,11 +24,7 @@ import YuGiOh.view.gui.event.DropCardEvent;
 import YuGiOh.view.gui.event.DuelOverEvent;
 import YuGiOh.view.gui.event.RoundOverEvent;
 import javafx.application.Platform;
-import javafx.beans.InvalidationListener;
 import javafx.beans.binding.DoubleBinding;
-import javafx.beans.property.ObjectProperty;
-import javafx.beans.property.Property;
-import javafx.collections.ListChangeListener;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.*;
@@ -201,31 +197,39 @@ public class GameField extends Pane {
     }
 
 
-    public Duration getAnimationDuration(CardAddress address, Card card){
-        if(cardFrameManager.getCardAddressByCard(card) == null)
-            return Duration.ZERO;
+    public Duration getAnimationDuration(CardAddress from, CardAddress to){
+        if(from == null || to == null)
+            throw new Error("this must never happen");
         double speedRatio = 1;
-        CardAddress previousAddress = cardFrameManager.getCardAddressByCard(card);
-        if(previousAddress.getZone().equals(address.getZone())){
-            if(address.isInGraveYard() || address.isInDeck())
+        if(from.getZone().equals(to.getZone())){
+            if(to.isInGraveYard() || to.isInDeck())
                 return Duration.ZERO;
         }
-        if(address.isInHand()) {
+        if(to.isInHand()) {
             return Duration.millis(100 * speedRatio);
-        }  else if(address.isInFieldZone()) {
+        }  else if(to.isInFieldZone()) {
             return Duration.millis(300 * speedRatio);
-        } else if(address.isInGraveYard()) {
-            if (previousAddress.isInGraveYard())
-                return Duration.millis(50 * speedRatio);
+        } else if(to.isInGraveYard()) {
             return Duration.millis(300 * speedRatio);
-        } else if(address.isInMagicZone()){
+        } else if(to.isInMagicZone()){
             return Duration.millis(300 * speedRatio);
-        } if(address.isInMonsterZone()) {
+        } if(to.isInMonsterZone()) {
             return Duration.millis(300 * speedRatio);
-        } if(address.isInDeck())
+        } if(to.isInDeck())
             return Duration.millis(100 * speedRatio);
         throw new Error("this will never happen");
     }
+
+    public boolean getAnimationBlocking(CardAddress from, CardAddress to){
+        if(from == null || to == null)
+            throw new Error("this must never happen");
+        if(from.getZone().equals(to.getZone())) {
+            ZoneType zoneType = from.getZone();
+            return zoneType.equals(ZoneType.HAND) || zoneType.equals(ZoneType.GRAVEYARD) || zoneType.equals(ZoneType.DECK);
+        }
+        return true;
+    }
+
 
     private void createCards(Board board) {
         board.getAllCards().forEach(card->{
@@ -248,13 +252,13 @@ public class GameField extends Pane {
                 cardFrame,
                 gameMapLocation.getLocationByCardAddress(address),
                 duration,
-                true
+                getAnimationBlocking(cardFrameManager.getCardAddressByCard(cardFrame.getCard()), address)
         );
         cardFrameManager.put(cardFrame, address);
     }
 
     private void moveCardByAddress(CardAddress address, CardFrame cardFrame) {
-        moveCardByAddress(cardFrame, address, getAnimationDuration(address, cardFrame.getCard()));
+        moveCardByAddress(cardFrame, address, getAnimationDuration(cardFrameManager.getCardAddressByCard(cardFrame.getCard()), address));
     }
 
     public void addRunnableToMainThreadForCard(Card card, GameRunnable runnable){
