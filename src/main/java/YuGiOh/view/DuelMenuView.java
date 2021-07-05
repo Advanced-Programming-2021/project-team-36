@@ -44,16 +44,16 @@ public class DuelMenuView extends Application {
         this.root = new HBox();
         this.game = game;
         StackPane stackPane = new StackPane(root);
+        scene = new Scene(stackPane, WIDTH, HEIGHT);
         stackPane.setMinWidth(WIDTH);
         stackPane.setMinHeight(HEIGHT);
-        this.gameField = new GameField(game, root.widthProperty().multiply(0.8), root.heightProperty().multiply(0.9), new GameMapLocationIml(game));
+        this.gameField = new GameField(game, scene.widthProperty().multiply(0.8), scene.heightProperty().multiply(0.9), new GameMapLocationIml(game));
         addNavBar();
         addSelectModeToNavBar();
         addMediaHandler();
         addInfoBox();
         root.getChildren().addAll(infoBox, new VBox(navBar, gameField));
         selector = new CardSelector(infoBox);
-        scene = new Scene(stackPane, WIDTH, HEIGHT);
         stage.setScene(scene);
         stage.show();
         addPlayPauseController();
@@ -61,10 +61,12 @@ public class DuelMenuView extends Application {
 
     private void addNavBar() {
         navBar = new GameNavBar();
-        navBar.minHeightProperty().bind(root.heightProperty().multiply(0.1));
+        navBar.minHeightProperty().bind(scene.heightProperty().multiply(0.1));
     }
     private void addMediaHandler() {
         GameMediaHandler mediaHandler = new GameMediaHandler(GuiReporter.getInstance());
+        // todo this is mute
+        mediaHandler.toggleMuteBackground();
         Text muteText = new Text();
         muteText.setFont(Font.font(25));
         muteText.textProperty().bind(Bindings.when(mediaHandler.backgroundMuteProperty()).then("unmute").otherwise("mute"));

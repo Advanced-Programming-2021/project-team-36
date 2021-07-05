@@ -22,7 +22,6 @@ import javafx.stage.Stage;
 import java.util.Random;
 
 public class DummyStarter extends Application {
-
     @Override
     public void start(Stage primaryStage) {
         try {

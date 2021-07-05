@@ -47,23 +47,23 @@ public class GameMediaHandler {
 
     private void addEventListeners(GuiReporter reporter) {
         reporter.addGameEventHandler((GuiReporter.GameEventHandler<SummonEvent>) event->{
-            if(!(event instanceof FlipSummonEvent))
-                summon.play();
+//            if(!(event instanceof FlipSummonEvent))
+//                summon.play();
         });
         reporter.addGameEventHandler((GuiReporter.GameEventHandler<AttackEvent>) event->{
-            attack.play();
+//            attack.play();
         });
         reporter.addGameEventHandler((GuiReporter.GameEventHandler<MagicActivation>) event->{
-            activateMagic.play();
+//            activateMagic.play();
         });
         reporter.addGameEventHandler((GuiReporter.GameEventHandler<FlipSummonEvent>) event->{
-            flip.play();
+//            flip.play();
         });
         reporter.addGameEventHandler((GuiReporter.GameEventHandler<SetMagic>) event->{
-            setMagic.play();
+//            setMagic.play();
         });
         reporter.addGameEventHandler((GuiReporter.GameEventHandler<SetMonster>) event->{
-            setMonster.play();
+//            setMonster.play();
         });
     }
 }

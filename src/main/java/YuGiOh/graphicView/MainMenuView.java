@@ -1,11 +1,17 @@
 package YuGiOh.graphicView;
 
 import YuGiOh.Main;
+import YuGiOh.controller.MainGameThread;
+import YuGiOh.controller.menu.DuelMenuController;
 import YuGiOh.graphicController.LoginMenuController;
 import YuGiOh.graphicController.MainMenuController;
 import YuGiOh.graphicController.ProfileMenuController;
+import YuGiOh.model.Duel;
 import YuGiOh.model.ModelException;
+import YuGiOh.model.Player.AIPlayer;
+import YuGiOh.model.Player.HumanPlayer;
 import YuGiOh.model.User;
+import YuGiOh.model.enums.AIMode;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Node;
@@ -87,7 +93,20 @@ public class MainMenuView extends BaseMenuView {
 
     @FXML
     private void startNewDuelWithAI() {
-        // TODO: Also Shayan
+        try {
+            Duel duel = new Duel(
+                    new HumanPlayer(MainMenuController.getInstance().getUser()),
+                    new AIPlayer(AIMode.NORMAL),
+                    3
+            );
+            new DuelMenuController(duel);
+            DuelMenuController.getInstance().getGraphicView().start(stage);
+            new MainGameThread(()->{
+                DuelMenuController.getInstance().control();
+            }).start();
+        } catch (ModelException exception) {
+            new Alert(Alert.AlertType.ERROR, exception.getMessage()).showAndWait();
+        }
     }
 
     @FXML
