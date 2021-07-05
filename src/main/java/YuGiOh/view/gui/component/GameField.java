@@ -86,21 +86,14 @@ public class GameField extends Pane {
         createCards(game.getSecondPlayer().getBoard());
 
         this.cardFrameManager.setMoveHandler((cardFrame, to)->{
-            CardAddress from = cardFrameManager.getCardAddressByCard(cardFrame.getCard());
-            for(CardAddress address : Arrays.asList(to, from)) {
-                if(address.isInGraveYard())
-                    graveYardPile[gameMapLocation.getPlayerUpDown(address.getOwner())].close();
-                if(address.isInDeck())
-                    deckPile[gameMapLocation.getPlayerUpDown(address.getOwner())].close();
+            for(int i = 0; i < 2; i++) {
+                graveYardPile[i].close();
+                deckPile[i].close();
             }
-
             moveCardByAddress(to, cardFrame);
-
-            for(CardAddress address : Arrays.asList(to, from)) {
-                if(address.isInGraveYard())
-                    graveYardPile[gameMapLocation.getPlayerUpDown(address.getOwner())].close();
-                if(address.isInDeck())
-                    deckPile[gameMapLocation.getPlayerUpDown(address.getOwner())].close();
+            for(int i = 0; i < 2; i++) {
+                graveYardPile[i].close();
+                deckPile[i].close();
             }
         });
         background.toBack();
