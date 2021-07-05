@@ -3,6 +3,7 @@ package YuGiOh.view.gui.transition;
 import javafx.animation.Transition;
 import javafx.beans.InvalidationListener;
 import javafx.beans.binding.Bindings;
+import javafx.beans.binding.BooleanBinding;
 import javafx.beans.binding.NumberBinding;
 import javafx.beans.property.SimpleBooleanProperty;
 import javafx.util.Duration;
@@ -11,7 +12,7 @@ abstract public class ReversibleTransition extends Transition {
     private final SimpleBooleanProperty isActive = new SimpleBooleanProperty(false);
     private final NumberBinding direction;
 
-    public ReversibleTransition(SimpleBooleanProperty animationStateProperty) {
+    public ReversibleTransition(BooleanBinding animationStateProperty) {
         super();
         this.direction = Bindings.when(animationStateProperty.and(isActive))
                 .then(1)

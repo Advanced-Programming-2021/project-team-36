@@ -9,7 +9,9 @@ import YuGiOh.view.cardSelector.ResistToChooseCard;
 import YuGiOh.view.cardSelector.SelectCondition;
 import YuGiOh.view.gui.*;
 import YuGiOh.view.gui.component.*;
+import YuGiOh.view.gui.sound.GameMediaHandler;
 import javafx.application.Application;
+import javafx.beans.binding.Bindings;
 import javafx.scene.Scene;
 import javafx.scene.input.KeyCode;
 import javafx.scene.layout.*;
@@ -30,29 +32,54 @@ public class DuelMenuView extends Application {
     private Scene scene;
     private GameNavBar navBar;
     private Text selectModeText;
+    private HBox root;
+    private Game game;
+    private DuelInfoBox infoBox;
+    private GameField gameField;
 
     @Getter
     private CardSelector selector;
 
     public void startNewGame(Game game) {
-        HBox root = new HBox();
+        this.root = new HBox();
+        this.game = game;
         StackPane stackPane = new StackPane(root);
         stackPane.setMinWidth(WIDTH);
         stackPane.setMinHeight(HEIGHT);
-        GameField gameField = new GameField(game, root.widthProperty().multiply(0.8), root.heightProperty().multiply(0.9), new GameMapLocationIml(game));
-        navBar = new GameNavBar();
-        navBar.minHeightProperty().bind(root.heightProperty().multiply(0.1));
-        selectModeText = new Text();
-        selectModeText.setFont(Font.font(30));
-        navBar.addItem(selectModeText);
-        DuelInfoBox infoBox = new DuelInfoBox(game, root.widthProperty().multiply(0.2), root.heightProperty().multiply(1));
-        infoBox.setGameField(gameField);
+        this.gameField = new GameField(game, root.widthProperty().multiply(0.8), root.heightProperty().multiply(0.9), new GameMapLocationIml(game));
+        addNavBar();
+        addSelectModeToNavBar();
+        addMediaHandler();
+        addInfoBox();
         root.getChildren().addAll(infoBox, new VBox(navBar, gameField));
         selector = new CardSelector(infoBox);
         scene = new Scene(stackPane, WIDTH, HEIGHT);
         stage.setScene(scene);
         stage.show();
         addPlayPauseController();
+    }
+
+    private void addNavBar() {
+        navBar = new GameNavBar();
+        navBar.minHeightProperty().bind(root.heightProperty().multiply(0.1));
+    }
+    private void addMediaHandler() {
+        GameMediaHandler mediaHandler = new GameMediaHandler(GuiReporter.getInstance());
+        Text muteText = new Text();
+        muteText.setFont(Font.font(25));
+        muteText.textProperty().bind(Bindings.when(mediaHandler.backgroundMuteProperty()).then("unmute").otherwise("mute"));
+        StackPane cover = new StackPane(muteText);
+        cover.setOnMouseClicked(e-> mediaHandler.toggleMuteBackground());
+        navBar.addItem(cover);
+    }
+    private void  addSelectModeToNavBar() {
+        selectModeText = new Text();
+        selectModeText.setFont(Font.font(30));
+        navBar.addItem(selectModeText);
+    }
+    private void addInfoBox() {
+        infoBox = new DuelInfoBox(game, root.widthProperty().multiply(0.2), root.heightProperty().multiply(1));
+        infoBox.setGameField(gameField);
     }
 
     @Override

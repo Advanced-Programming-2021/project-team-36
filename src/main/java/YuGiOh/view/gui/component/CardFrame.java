@@ -79,24 +79,18 @@ public class CardFrame extends DraggablePane {
         this.forceImageFaceUp = new SimpleBooleanProperty(false);
         this.forceFlipCardAnimation = new SimpleBooleanProperty(false);
 
-        BooleanBinding inHandObservable = ObservableBuilder.getInHandBinding(card);
+        BooleanBinding inHandBinding = ObservableBuilder.getInHandBinding(card);
 
-        BooleanBinding currentPlayerCanSee = currentPlayerCanSee();
-        DoubleBinding inHandCof = Bindings.when(inHandObservable).then(1.3).otherwise(1.0);
+        DoubleBinding inHandCof = Bindings.when(inHandBinding).then(1.3).otherwise(1.0);
         this.widthProperty = widthProperty.multiply(inHandCof);
         this.heightProperty = heightProperty.multiply(inHandCof);
 
         imageView.imageProperty().bind(Bindings.when(forceImageFaceUp).then(faceUpImage).otherwise(faceDownImage));
 
-        SimpleBooleanProperty flipCardActivation = new SimpleBooleanProperty(false);
-        flipCardActivation.bind(hoverProperty().or(this.forceFlipCardAnimation).or(currentPlayerCanSee));
-
-        flipCardAnimation = new CardRotateTransition(this, flipCardActivation);
+        flipCardAnimation = new CardRotateTransition(this, currentPlayerCanSee().or(forceFlipCardAnimation).or(hoverProperty()));
         flipCardAnimation.start();
 
-        SimpleBooleanProperty jumpingActivation = new SimpleBooleanProperty(false);
-        jumpingActivation.bind(hoverProperty().and(inHandObservable).and(ObservableBuilder.myTurnBinding(card)));
-        jumpingAnimation = new JumpingAnimation(this, jumpingActivation);
+        jumpingAnimation = new JumpingAnimation(this, hoverProperty().and(inHandBinding.and(ObservableBuilder.myTurnBinding(card))));
         jumpingAnimation.start();
 
         this.widthCompressionProperty = new SimpleDoubleProperty(1);

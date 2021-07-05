@@ -1,6 +1,7 @@
 package YuGiOh.view.gui.transition;
 
 import YuGiOh.view.gui.component.CardFrame;
+import javafx.beans.binding.BooleanBinding;
 import javafx.beans.binding.DoubleBinding;
 import javafx.beans.property.SimpleBooleanProperty;
 import javafx.util.Duration;
@@ -8,7 +9,7 @@ import javafx.util.Duration;
 public class CardRotateTransition extends ReversibleTransition {
     private final CardFrame cardFrame;
 
-    public CardRotateTransition(CardFrame cardFrame, SimpleBooleanProperty animationStateProperty) {
+    public CardRotateTransition(CardFrame cardFrame, BooleanBinding animationStateProperty) {
         super(animationStateProperty);
         this.cardFrame = cardFrame;
     }

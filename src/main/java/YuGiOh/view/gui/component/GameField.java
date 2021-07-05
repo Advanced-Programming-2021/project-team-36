@@ -22,6 +22,7 @@ import YuGiOh.view.gui.*;
 import YuGiOh.view.gui.event.DropCardEvent;
 import YuGiOh.view.gui.event.DuelOverEvent;
 import YuGiOh.view.gui.event.RoundOverEvent;
+import YuGiOh.view.gui.sound.GameMediaHandler;
 import javafx.application.Platform;
 import javafx.beans.binding.DoubleBinding;
 import javafx.scene.image.Image;
@@ -102,7 +103,6 @@ public class GameField extends Pane {
                     deckPile[gameMapLocation.getPlayerUpDown(address.getOwner())].close();
             }
         });
-
         background.toBack();
         setEventListeners();
     }
