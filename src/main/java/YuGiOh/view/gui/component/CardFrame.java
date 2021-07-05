@@ -104,8 +104,9 @@ public class CardFrame extends DraggablePane {
         imageView.fitHeightProperty().bind(this.heightProperty);
         imageView.translateXProperty().bind(this.widthProperty.multiply(widthCompressionProperty.negate().add(1).divide(2)));
 
-        if(card instanceof Monster)
+        if(card instanceof Monster) {
             rotateProperty().bind(Bindings.when(((Monster) card).isDefensive()).then(90).otherwise(0));
+        }
 
         effectProperty().bind(
                 Bindings.when(hoverProperty().or(isSelected))
