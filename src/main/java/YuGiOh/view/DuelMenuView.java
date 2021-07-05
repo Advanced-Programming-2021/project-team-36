@@ -64,9 +64,9 @@ public class DuelMenuView extends Application {
             if(e.getCode() == KeyCode.P){
                 stopped.set(!stopped.get());
                 if(stopped.get())
-                    MainGameThread.getInstance().suspend();
+                    MainGameThread.getInstance().lockRunningThreadIfMain();
                 else
-                    MainGameThread.getInstance().resume();
+                    MainGameThread.getInstance().unlockTheThreadIfMain();
             }
         });
     }

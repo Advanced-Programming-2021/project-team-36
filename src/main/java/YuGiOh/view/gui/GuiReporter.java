@@ -10,7 +10,7 @@ import lombok.Getter;
 public class GuiReporter {
     @Getter
     private static GuiReporter instance;
-    private GameField gameField;
+    private final GameField gameField;
 
     public GuiReporter(GameField gameField){
         instance = this;

@@ -226,7 +226,6 @@ public abstract class PlayerController {
     }
 
     public void tributeMonster(int count, SelectCondition condition) throws LogicException, ResistToChooseCard {
-
         validateTributeMonster(count, condition);
         Card[] tributeCards = chooseKCards(String.format("Choose %d cards to tribute", count), count, condition);
         for (Card card : tributeCards)

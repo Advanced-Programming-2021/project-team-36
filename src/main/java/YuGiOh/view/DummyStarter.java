@@ -36,8 +36,9 @@ public class DummyStarter extends Application {
 
             Duel duel = new Duel(
 //                    new HumanPlayer(abolfazl),
-                    new HumanPlayer(abolfazl),
-                    new AIPlayer(fakeUser2, AIMode.AGGRESSIVE),
+//                    new HumanPlayer(fakeUser2),
+                    new AIPlayer(abolfazl, AIMode.AGGRESSIVE),
+                    new AIPlayer(fakeUser2, AIMode.NORMAL),
                     3
             );
             new DuelMenuController(duel);
