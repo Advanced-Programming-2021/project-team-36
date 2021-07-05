@@ -17,7 +17,7 @@ public class DatabaseHandler {
     private final static String magicDatabase = "database/SpellTrap.csv";
 
     public static void importFromDatabase() {
-        //importUsersFromDatabase();
+        importUsersFromDatabase();
         importMonstersFromDatabase();
         importMagicsFromDatabase();
         Utils.checkIfAllImplementedCardsAreOk();

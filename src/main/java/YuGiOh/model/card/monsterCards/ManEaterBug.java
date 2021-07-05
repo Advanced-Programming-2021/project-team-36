@@ -1,12 +1,11 @@
 package YuGiOh.model.card.monsterCards;
 
 import YuGiOh.controller.GameController;
-import YuGiOh.controller.LogicException;
 import YuGiOh.controller.player.PlayerController;
 import YuGiOh.model.enums.*;
 import YuGiOh.utils.CustomPrinter;
 import YuGiOh.model.card.action.Effect;
-import YuGiOh.view.cardSelector.Conditions;
+import YuGiOh.view.cardSelector.SelectConditions;
 import YuGiOh.view.cardSelector.ResistToChooseCard;
 import YuGiOh.model.card.Monster;
 
@@ -21,17 +20,19 @@ public class ManEaterBug extends Monster {
             if (getMonsterState().equals(MonsterState.DEFENSIVE_HIDDEN)) {
                 try {
                     setMonsterState(MonsterState.DEFENSIVE_OCCUPIED);
-                    PlayerController controller = GameController.getInstance().getPlayerControllerByPlayer(owner);
+                    PlayerController controller = GameController.getInstance().getPlayerControllerByPlayer(getOwner());
                     if (controller.askRespondToQuestion("Do you want to activate effect of man easter bug?", "yes", "no")) {
                         Monster monster = (Monster) controller.chooseKCards(
                                 "choose a monster card to kill",
                                 1,
-                                Conditions.getInZoneCondition(ZoneType.MONSTER)
+                                SelectConditions.getInZoneCondition(ZoneType.MONSTER)
                         )[0];
-                        if(!owner.getBoard().getAllCards().contains(monster))
+                        if(!getOwner().getBoard().getAllCards().contains(monster))
                             GameController.getInstance().getOtherPlayerController(controller).moveCardToGraveYard(monster);
                         else
                             controller.moveCardToGraveYard(monster);
+                        CustomPrinter.println(String.format("<%s>'s <%s> activated successfully", this.getOwner().getUser().getUsername(), this.getName()), Color.Yellow);
+                        CustomPrinter.println(this.asEffect(), Color.Gray);
                     }
                 } catch (ResistToChooseCard e){
                     CustomPrinter.println("canceled", Color.Default);

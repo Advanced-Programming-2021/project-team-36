@@ -2,8 +2,6 @@ package YuGiOh.model;
 
 import YuGiOh.model.Player.Player;
 import YuGiOh.model.card.Card;
-import YuGiOh.model.card.Monster;
-import YuGiOh.model.card.Spell;
 import YuGiOh.model.card.action.Action;
 import YuGiOh.model.enums.Phase;
 import YuGiOh.model.enums.ZoneType;
@@ -28,10 +26,14 @@ public class Game {
     @Setter
     private Stack<Action> chain;
 
+    private final SimpleObjectProperty<Player> currentPlayerProperty;
+    private Player storeCurrentPlayerForChane;
+
     public Game(Player firstPlayer, Player secondPlayer) throws ModelException {
         if (firstPlayer.getUser().getUsername().equals(secondPlayer.getUser().getUsername()))
             throw new ModelException("you can't play with yourself");
-    /*    Random random = new Random(); movagghat: comment kardam ke too graphic ma paeeni bashim
+
+        Random random = new Random();
         if (random.nextInt(2) == 0) {
             this.firstPlayer = firstPlayer;
             this.secondPlayer = secondPlayer;
@@ -39,9 +41,6 @@ public class Game {
             this.firstPlayer = secondPlayer;
             this.secondPlayer = firstPlayer;
         }
-     */
-        this.firstPlayer = firstPlayer;
-        this.secondPlayer = secondPlayer;
         firstPlayer.getMainDeck().shuffleCards();
         secondPlayer.getMainDeck().shuffleCards();
 
@@ -52,72 +51,79 @@ public class Game {
 
         this.turn = 0;
         this.phase = new SimpleObjectProperty<>(Phase.MAIN_PHASE2);
+        this.currentPlayerProperty = new SimpleObjectProperty<>(this.firstPlayer);
     }
 
     public Card getCardByCardAddress(CardAddress cardAddress) {
         return cardAddress.getOwner().getBoard().getCardByCardAddress(cardAddress);
     }
 
-    public CardAddress getCardAddress(Card card){
+    public CardAddress getCardAddress(Card card) {
         CardAddress firstCardAddress = firstPlayer.getBoard().getCardAddress(card);
         CardAddress secondCardAddress = secondPlayer.getBoard().getCardAddress(card);
-        if(firstCardAddress != null)
+        if (firstCardAddress != null)
             return firstCardAddress;
-        if(secondCardAddress != null)
+        if (secondCardAddress != null)
             return secondCardAddress;
         throw new Error("There is no such card in game");
     }
 
-    public ZoneType getCardZoneType(Card card){
+    public ZoneType getCardZoneType(Card card) {
         ZoneType firstPlayerZone = firstPlayer.getBoard().getCardZoneType(card);
         ZoneType secondPlayerZone = secondPlayer.getBoard().getCardZoneType(card);
-        if(firstPlayerZone != null)
+        if (firstPlayerZone != null)
             return firstPlayerZone;
-        if(secondPlayerZone != null)
+        if (secondPlayerZone != null)
             return secondPlayerZone;
         throw new Error("There is no such card in game");
     }
 
     public Player getCurrentPlayer() {
-        if (turn % 2 == 0)
-            return firstPlayer;
-        else
-            return secondPlayer;
+        return currentPlayerProperty.get();
     }
 
     public Player getOpponentPlayer() {
-        if (turn % 2 == 0)
-            return secondPlayer;
-        else
-            return firstPlayer;
+        return getOtherPlayer(getCurrentPlayer());
+    }
+
+    public void changeTurnInChain() {
+        if(storeCurrentPlayerForChane == null)
+            storeCurrentPlayerForChane = getCurrentPlayer();
+        currentPlayerProperty.set(getOtherPlayer(getCurrentPlayer()));
+    }
+    public void resetCurrentPlayerAfterChain() {
+        if(storeCurrentPlayerForChane != null) {
+            currentPlayerProperty.set(storeCurrentPlayerForChane);
+            storeCurrentPlayerForChane = null;
+        }
     }
 
     public void changeTurn() {
+        currentPlayerProperty.set(getOtherPlayer(getCurrentPlayer()));
         turn++;
     }
 
     public void moveCardToGraveYard(Card card) {
-        // exactly one of them contain this card
         firstPlayer.getBoard().moveCardToGraveYard(card);
         secondPlayer.getBoard().moveCardToGraveYard(card);
     }
 
-    public Player getOtherPlayer(Player player){
-        if(player.equals(firstPlayer))
+    public Player getOtherPlayer(Player player) {
+        if (player.equals(firstPlayer))
             return secondPlayer;
-        if(player.equals(secondPlayer))
+        if (player.equals(secondPlayer))
             return firstPlayer;
         throw new Error("no such player in the game");
     }
 
-    public List<Card> getAllCardsOnBoard(){
+    public List<Card> getAllCardsOnBoard() {
         List<Card> cards = new ArrayList<>();
         cards.addAll(firstPlayer.getBoard().getAllCardsOnBoard());
         cards.addAll(secondPlayer.getBoard().getAllCardsOnBoard());
         return cards;
     }
 
-    public List<Card> getAllCards(){
+    public List<Card> getAllCards() {
         List<Card> cards = new ArrayList<>();
         cards.addAll(firstPlayer.getBoard().getAllCards());
         cards.addAll(secondPlayer.getBoard().getAllCards());
@@ -134,5 +140,8 @@ public class Game {
 
     public SimpleObjectProperty<Phase> phaseProperty() {
         return phase;
+    }
+    public SimpleObjectProperty<Player> currentPlayerProperty() {
+        return currentPlayerProperty;
     }
 }

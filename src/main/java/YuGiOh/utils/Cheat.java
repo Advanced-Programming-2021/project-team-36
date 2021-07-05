@@ -9,6 +9,7 @@ import YuGiOh.model.User;
 import YuGiOh.model.card.Card;
 import YuGiOh.model.card.Utils;
 import YuGiOh.model.deck.Deck;
+import YuGiOh.model.enums.Constants;
 
 import java.util.Random;
 
@@ -16,12 +17,11 @@ public class Cheat {
     private static final Random rnd = new Random();
 
     private static void buyRandomCardsForUser(User user, int count){
+        user.increaseBalance(Constants.InfMoney.val);
         try {
-            ShopMenuController shopController = new ShopMenuController(user);
             Card[] allCards = Utils.getAllCards();
-            while (user.getCards().size() < count) {
-                shopController.buyCard(allCards[rnd.nextInt(allCards.length)]);
-            }
+            while (user.getCards().size() < count)
+                user.buy(allCards[rnd.nextInt(allCards.length)]);
         } catch (ModelException ignored) {
         }
     }
@@ -33,18 +33,26 @@ public class Cheat {
             user.addDeck(deck);
             DeckMenuController deckController = new DeckMenuController(user);
             while (deck.getMainDeck().getCards().size() < 40) {
-                try {
-                    int index = rnd.nextInt(user.getCards().size());
-                    deckController.addCardToDeck(user.getCards().get(index), deck, false);
-                } catch (LogicException ignored) {
-                }
+                int index = rnd.nextInt(user.getCards().size());
+                Card card = user.getCards().get(index);
+                if (deck.getCardFrequency(card) >= user.getCardFrequency(card))
+                    continue;
+                if (deck.getCardFrequency(card) >= 3)
+                    continue;
+                if (deck.getMainDeck().isFull())
+                    continue;
+                deck.getMainDeck().addCard(card);
             }
             while (deck.getSideDeck().getCards().size() < 7) {
-                try {
-                    int index = rnd.nextInt(user.getCards().size());
-                    deckController.addCardToDeck(user.getCards().get(index), deck, true);
-                } catch (LogicException ignored) {
-                }
+                int index = rnd.nextInt(user.getCards().size());
+                Card card = user.getCards().get(index);
+                if (deck.getCardFrequency(card) >= user.getCardFrequency(card))
+                    continue;
+                if (deck.getCardFrequency(card) >= 3)
+                    continue;
+                if (deck.getSideDeck().isFull())
+                    continue;
+                deck.getSideDeck().addCard(card);
             }
         }
 
@@ -52,7 +60,6 @@ public class Cheat {
         user.setActiveDeck(user.getDecks().get(index));
     }
 
-    // this is for testing only
     public static void buildSuperUserWithManyOfThisCards(User user, int countOfInjection, String... cardNames){
         buildSuperUser(user);
 
@@ -68,7 +75,5 @@ public class Cheat {
     public static void buildSuperUser(User user){
         buyRandomCardsForUser(user, 100);
         buildRandomDecksForUser(user);
-        CustomPrinter.getLastBuffer();
-        // this will clear the buffer
     }
 }

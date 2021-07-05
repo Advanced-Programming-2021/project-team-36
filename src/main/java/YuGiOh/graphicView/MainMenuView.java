@@ -5,6 +5,7 @@ import YuGiOh.graphicController.LoginMenuController;
 import YuGiOh.graphicController.MainMenuController;
 import YuGiOh.graphicController.ProfileMenuController;
 import YuGiOh.model.ModelException;
+import YuGiOh.model.User;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Node;
@@ -22,12 +23,6 @@ import java.io.IOException;
 public class MainMenuView extends BaseMenuView {
     private static MainMenuView instance;
 
-    @FXML
-    private TextField registerUsernameTextField, registerPasswordTextField, registerNicknameTextField;
-    private TextField loginUsernameTextField, loginPasswordTextField;
-    @FXML
-    private Pane mainPane, loginPane, registerPane;
-
     public MainMenuView() {
         instance = this;
     }
@@ -38,40 +33,70 @@ public class MainMenuView extends BaseMenuView {
         return instance;
     }
 
+    public static void init(Stage primaryStage, User user) {
+        try {
+            Pane root = FXMLLoader.load(Main.class.getResource("/fxml/MainMenu.fxml"));
+            MainMenuView.getInstance().start(primaryStage, root, user);
+        } catch (IOException ignored) {
+        }
+        new MainMenuController(user);
+    }
+
+    public void start(Stage primaryStage, Pane root, User user) {
+        this.stage = primaryStage;
+        this.root = root;
+        new MainMenuController(user);
+        run();
+    }
+
     public void run() {
         renderScene();
         stage.setScene(scene);
         stage.show();
     }
 
-    public void renderScene() {
-        /*for (Node node : root.getChildren())
-            if (node.getId().equals("mainPane"))
-                mainPane = (Pane)node;
-            else if (node.getId().equals("loginPane"))
-                loginPane = (Pane)node;
-            else if (node.getId().equals("registerPane"))
-                registerPane = (Pane)node;
-        mainPane.toFront();
-        VBox registerVBox = (VBox)((HBox)((VBox)registerPane.getChildren().get(1)).getChildren().get(0)).getChildren().get(1);
-        registerUsernameTextField = (TextField)registerVBox.getChildren().get(0);
-        registerNicknameTextField = (TextField)registerVBox.getChildren().get(1);
-        registerPasswordTextField = (TextField)registerVBox.getChildren().get(2);
-        VBox loginVBox = (VBox)((HBox)((VBox)loginPane.getChildren().get(1)).getChildren().get(0)).getChildren().get(1);
-        loginUsernameTextField = (TextField)loginVBox.getChildren().get(0);
-        loginPasswordTextField = (TextField)loginVBox.getChildren().get(1);*/
-        scene = new Scene(root);
+    private void renderScene() {
+        if (scene == null)
+            scene = new Scene(root);
     }
 
-    public void load(MouseEvent mouseEvent) {
-        registerPane.toFront();
+    @FXML
+    private void loadProfileMenu() {
+        ProfileMenuView.init(stage, MainMenuController.getInstance().getUser());
     }
 
-    public void loadProfileMenu(MouseEvent mouseEvent) {
-        new ProfileMenuController(MainMenuController.getInstance().getUser()).start(stage);
+    @FXML
+    private void loadScoreboardMenu() {
+        ScoreboardMenuView.init(stage);
     }
 
-    public void logout(MouseEvent mouseEvent) {
-        MainMenuController.getInstance().logout();
+    @FXML
+    private void loadDeckMenu() {
+        // TODO: Kasra
+    }
+
+    @FXML
+    private void loadShopMenu() {
+        // TODO: Kasra
+    }
+
+    @FXML
+    private void startNewDuel() {
+        //TODO: Shayan
+    }
+
+    @FXML
+    private void startNewDuelWithAI() {
+        // TODO: Also Shayan
+    }
+
+    @FXML
+    private void startAIVersusAIDuel() {
+        // TODO : Yet again, Shayan
+    }
+
+    public void logout() {
+        new Alert(Alert.AlertType.INFORMATION, "user logged out successfully!").showAndWait();
+        LoginMenuView.getInstance().run();
     }
 }

@@ -54,6 +54,7 @@ public class LoginMenuController extends BaseMenuController {
         throw new RoutingException("please login first");
     }
 
+
     @Override
     public void exitMenu() {
         ProgramController.getInstance().programExit();

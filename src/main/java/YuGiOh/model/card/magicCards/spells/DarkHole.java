@@ -22,7 +22,7 @@ public class DarkHole extends Spell {
     protected Effect getEffect() {
         return () -> {
             GameController gameController = GameController.getInstance();
-            PlayerController current = gameController.getPlayerControllerByPlayer(this.owner);
+            PlayerController current = gameController.getPlayerControllerByPlayer(this.getOwner());
             for (int i = 1; i <= 5; i++) {
                 CardAddress cardAddress = new CardAddress(ZoneType.MONSTER, i, current.getPlayer());
                 Monster monster = (Monster) gameController.getGame().getCardByCardAddress(cardAddress);
@@ -36,7 +36,8 @@ public class DarkHole extends Spell {
                 if (monster != null)
                     opponent.moveCardToGraveYard(monster);
             }
-            CustomPrinter.println("Dark Hole activated successfully.", Color.Green);
+            CustomPrinter.println(String.format("<%s>'s <%s> activated successfully", this.getOwner().getUser().getUsername(), this.getName()), Color.Yellow);
+            CustomPrinter.println(this, Color.Gray);
         };
     }
 

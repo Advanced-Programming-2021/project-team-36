@@ -8,8 +8,7 @@ import YuGiOh.model.card.action.SummonEvent;
 import YuGiOh.model.enums.*;
 import YuGiOh.model.card.Monster;
 import YuGiOh.utils.CustomPrinter;
-import YuGiOh.view.cardSelector.Conditions;
-import YuGiOh.view.cardSelector.ResistToChooseCard;
+import YuGiOh.view.cardSelector.SelectConditions;
 
 public class TheTricky extends Monster {
 
@@ -19,29 +18,28 @@ public class TheTricky extends Monster {
 
     @Override
     public void validateSpecialSummon() throws LogicException {
-        if(!owner.hasInHand(this))
+        if (!getOwner().hasInHand(this))
             throw new LogicException("you can only summon the tricky from your hand");
     }
 
     @Override
     public Action specialSummonAction() {
-        PlayerController controller = GameController.getInstance().getPlayerControllerByPlayer(owner);
+        PlayerController controller = GameController.getInstance().getPlayerControllerByPlayer(getOwner());
         return new Action(
                 new SummonEvent(this, SummonType.SPECIAL),
                 () -> {
                     controller.tributeMonster(1,
-                            Conditions.and(
-                                    Conditions.or(
-                                        Conditions.getOnPlayersBoard(owner),
-                                        Conditions.getInPlayersHandCondition(owner)
+                            SelectConditions.and(
+                                    SelectConditions.or(
+                                            SelectConditions.getOnPlayersBoard(getOwner()),
+                                            SelectConditions.getInPlayersHandCondition(getOwner())
                                     ),
-                                    Conditions.getNotThisCard(this)
+                                    SelectConditions.getNotThisCard(this)
                             )
                     );
                     controller.summon(this, 0, MonsterState.OFFENSIVE_OCCUPIED, true);
-                    CustomPrinter.println(String.format("<%s> special summoned <%s> successfully", owner.getUser().getUsername(), getName(), getMonsterState()), Color.Green);
+                    CustomPrinter.println(String.format("<%s> special summoned <%s> successfully", getOwner().getUser().getUsername(), getName(), getMonsterState()), Color.Green);
                 }
         );
     }
-
 }

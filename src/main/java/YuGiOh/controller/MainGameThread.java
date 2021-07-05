@@ -1,13 +1,7 @@
 package YuGiOh.controller;
 
-import YuGiOh.controller.events.RoundOverExceptionEvent;
-import YuGiOh.model.enums.Color;
-import YuGiOh.utils.CustomPrinter;
-import YuGiOh.view.gui.GuiReporter;
-import YuGiOh.view.gui.event.RoundOverEvent;
 import javafx.application.Platform;
 import lombok.Getter;
-import lombok.Setter;
 
 import java.util.LinkedList;
 import java.util.Queue;
@@ -21,13 +15,18 @@ public class MainGameThread extends Thread {
 
     private boolean runQueuedTasksMode = false;
 
-    public void lockRunningThread(){
-        synchronized (lock){
-            try { lock.wait(); } catch (InterruptedException e){}
+    public void lockRunningThreadIfMain(){
+        if(Thread.currentThread() instanceof MainGameThread) {
+            synchronized (lock) {
+                try {
+                    lock.wait();
+                } catch (InterruptedException e) {
+                }
+            }
         }
     }
-    public void unlockTheThread(){
-        synchronized (lock){
+    public void unlockTheThreadIfMain(){
+        synchronized (lock) {
             lock.notify();
         }
     }
@@ -40,17 +39,28 @@ public class MainGameThread extends Thread {
 
     public void onlyBlockRunningThreadThenDoInGui(Runnable r){
         Platform.runLater(r);
-        lockRunningThread();
+        lockRunningThreadIfMain();
     }
 
     public <T> T blockUnblockRunningThreadAndDoInGui(MainGameThread.Task<T> task){
         AtomicReference<T> ret = new AtomicReference<T>();
         Platform.runLater(()->{
-            ret.set(task.run());
-            unlockTheThread();
+            try {
+                ret.set(task.run());
+            } catch(Exception e){
+                e.printStackTrace();
+            }
+            unlockTheThreadIfMain();
         });
-        lockRunningThread();
+        lockRunningThreadIfMain();
         return ret.get();
+    }
+
+    public void blockUnblockRunningThreadAndDoInGui(Runnable r){
+        blockUnblockRunningThreadAndDoInGui((Task<Void>) ()->{
+            r.run();
+            return null;
+        });
     }
 
     public synchronized void addTask(MainGameThread.Task<?> t){

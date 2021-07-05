@@ -9,5 +9,6 @@ public enum Color {
     Purple,
     Cyan,
     White,
+    Gray,
     Default
 }

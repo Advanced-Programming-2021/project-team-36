@@ -1,16 +1,10 @@
 package YuGiOh.model.card.magicCards.spells;
 
-import YuGiOh.controller.GameController;
-import YuGiOh.controller.player.PlayerController;
-import YuGiOh.model.CardAddress;
-import YuGiOh.model.Player.Player;
-import YuGiOh.model.card.Card;
 import YuGiOh.model.card.Monster;
 import YuGiOh.model.card.Spell;
 import YuGiOh.model.card.action.Effect;
 import YuGiOh.model.enums.*;
 import YuGiOh.utils.CustomPrinter;
-import YuGiOh.view.cardSelector.Conditions;
 
 public class Forest extends Spell {
 
@@ -33,9 +27,13 @@ public class Forest extends Spell {
         return affectionOnAttackingMonster(monster);
     }
 
+    // todo in chie? chera toye activation hichi active nakardim?
     @Override
     protected Effect getEffect() {
-        return () -> {};
+        return () -> {
+            CustomPrinter.println(String.format("<%s> activated field spell <%s>", this.getOwner().getUser().getUsername(), this.getName()), Color.Yellow);
+            CustomPrinter.println(this, Color.Gray);
+        };
     }
 
     @Override

@@ -1,11 +1,13 @@
 package YuGiOh.model.card.monsterCards;
 
 import YuGiOh.controller.GameController;
+import YuGiOh.model.enums.Color;
 import YuGiOh.model.enums.MonsterAttribute;
 import YuGiOh.model.enums.MonsterCardType;
 import YuGiOh.model.enums.MonsterType;
 import YuGiOh.model.card.action.Effect;
 import YuGiOh.model.card.Monster;
+import YuGiOh.utils.CustomPrinter;
 
 public class Suijin extends Monster {
     boolean stillHasPower = true;
@@ -16,14 +18,15 @@ public class Suijin extends Monster {
 
     @Override
     public void specialEffectWhenBeingAttacked(Monster attacker) {
-        // todo It's just a sample. correct it.
         int _attackDamage = attacker.getAttackDamage();
         if (stillHasPower) {
-            boolean confirm = GameController.getInstance().getPlayerControllerByPlayer(this.owner).askRespondToQuestion(
+            boolean confirm = GameController.getInstance().getPlayerControllerByPlayer(this.getOwner()).askRespondToQuestion(
                     "Do you want to activate Suijin's effect?", "yes", "no");
             if (confirm) {
                 stillHasPower = false;
                 attacker.setAttackDamage(0);
+                CustomPrinter.println(String.format("<%s>'s <%s> activated successfully", this.getOwner().getUser().getUsername(), this.getName()), Color.Yellow);
+                CustomPrinter.println(this.asEffect(), Color.Gray);
             }
         }
         damageStep(attacker);

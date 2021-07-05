@@ -20,10 +20,12 @@ public class PotOfGreed extends Spell {
     protected Effect getEffect() {
         return () -> {
             GameController gameController = GameController.getInstance();
-            if (this.owner.getBoard().getMainDeck().getTopCard() != null)
-                gameController.getPlayerControllerByPlayer(this.owner).drawCard();
-            if (this.owner.getBoard().getMainDeck().getTopCard() != null)
-                gameController.getPlayerControllerByPlayer(this.owner).drawCard();
+            if (this.getOwner().getBoard().getMainDeck().getTopCard() != null)
+                gameController.getPlayerControllerByPlayer(this.getOwner()).drawCard();
+            if (this.getOwner().getBoard().getMainDeck().getTopCard() != null)
+                gameController.getPlayerControllerByPlayer(this.getOwner()).drawCard();
+            CustomPrinter.println(String.format("<%s>'s <%s> activated successfully", this.getOwner().getUser().getUsername(), this.getName()), Color.Yellow);
+            CustomPrinter.println(this, Color.Gray);
         };
     }
 

@@ -3,6 +3,8 @@ package YuGiOh.view.cardSelector;
 import YuGiOh.controller.LogicException;
 import YuGiOh.model.card.Card;
 import YuGiOh.view.gui.*;
+import YuGiOh.view.gui.component.CardFrame;
+import YuGiOh.view.gui.component.DuelInfoBox;
 import YuGiOh.view.gui.event.ClickOnCardEvent;
 
 import java.util.ArrayList;
@@ -12,7 +14,8 @@ public class CardSelector {
     private final List<CardFrame> selectedCards;
     private SelectCondition condition;
     private SelectMode selectMode;
-    private DuelInfoBox infoBox;
+    private final DuelInfoBox infoBox;
+    private Runnable onAction;
 
     public CardSelector(DuelInfoBox infoBox){
         this.infoBox = infoBox;
@@ -29,14 +32,15 @@ public class CardSelector {
                     selectCard(e.getCardFrame());
                 }
             }
+            if(onAction != null) {
+                onAction.run();
+            }
         });
         refresh();
     }
 
     private void loadInfoBox(CardFrame cardFrame){
-        // todo this should come from the card not me :))
-        int buttonFontSize = 14;
-        infoBox.addInfo(cardFrame.getImage());
+        infoBox.addInfo(cardFrame);
     }
 
     private void clearInfoBox(){
@@ -82,12 +86,17 @@ public class CardSelector {
         this.condition = condition;
         this.selectMode = mode;
         deselectAll();
+        onAction = null;
     }
     public void refresh(){
-        refresh(Conditions.noCondition, SelectMode.Normal);
+        refresh(SelectConditions.noCondition, SelectMode.Normal);
     }
 
     public enum SelectMode{
         Normal, Choosing;
+    }
+
+    public void setOnAction(Runnable onAction) {
+        this.onAction = onAction;
     }
 }

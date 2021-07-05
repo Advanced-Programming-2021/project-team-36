@@ -3,13 +3,12 @@ package YuGiOh.model.card.magicCards.spells;
 import YuGiOh.controller.GameController;
 import YuGiOh.controller.player.PlayerController;
 import YuGiOh.model.CardAddress;
-import YuGiOh.model.card.Card;
 import YuGiOh.model.card.Monster;
 import YuGiOh.model.card.Spell;
 import YuGiOh.model.card.action.Effect;
 import YuGiOh.model.enums.*;
 import YuGiOh.utils.CustomPrinter;
-import YuGiOh.view.cardSelector.Conditions;
+import YuGiOh.view.cardSelector.SelectConditions;
 
 public class SwordOfDarkDestruction extends Spell {
 
@@ -34,20 +33,22 @@ public class SwordOfDarkDestruction extends Spell {
     @Override
     public Effect getEffect() {
         return () -> {
-            PlayerController playerController = GameController.getInstance().getPlayerControllerByPlayer(this.owner);
-            Monster monster = (Monster) playerController.chooseKCards("Equip this <Sword of Dark Destruction> to a monster on your field",
+            PlayerController playerController = GameController.getInstance().getPlayerControllerByPlayer(this.getOwner());
+            Monster monster = (Monster) playerController.chooseKCards("Equip this <SwordofDarkDestruction> to a monster on your field",
                     1,
-                    Conditions.getPlayerMonsterFromMonsterZone(this.owner))[0];
+                    SelectConditions.getPlayerMonsterFromMonsterZone(this.getOwner()))[0];
             setEquippedMonster(monster);
+            CustomPrinter.println(String.format("<%s> equipped <%s> to monster <%s>", this.getOwner().getUser().getUsername(), this.getName(), monster.getName()), Color.Yellow);
+            CustomPrinter.println(this, Color.Gray);
         };
     }
 
     @Override
     public boolean canActivateEffect() {
         for (int i = 1; i <= 5; i++) {
-            CardAddress cardAddress = new CardAddress(ZoneType.MONSTER, i, this.owner);
+            CardAddress cardAddress = new CardAddress(ZoneType.MONSTER, i, this.getOwner());
             if (GameController.getInstance().getGame().getCardByCardAddress(cardAddress) != null)
-                return true;
+                return !isActivated();
         }
         return false;
     }

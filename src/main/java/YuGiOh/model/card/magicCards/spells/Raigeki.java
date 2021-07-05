@@ -20,7 +20,7 @@ public class Raigeki extends Spell {
     protected Effect getEffect() {
         return () -> {
             GameController gameController = GameController.getInstance();
-            PlayerController current = gameController.getPlayerControllerByPlayer(this.owner);
+            PlayerController current = gameController.getPlayerControllerByPlayer(this.getOwner());
             PlayerController opponent = gameController.getOtherPlayerController(current);
             for (int i = 1; i <= 5; i++) {
                 CardAddress cardAddress = new CardAddress(ZoneType.MONSTER, i, opponent.getPlayer());
@@ -28,7 +28,8 @@ public class Raigeki extends Spell {
                 if (monster != null)
                     opponent.moveCardToGraveYard(monster);
             }
-            CustomPrinter.println("Raigeki activated successfully.", Color.Green);
+            CustomPrinter.println(String.format("<%s>'s <%s> activated successfully", this.getOwner().getUser().getUsername(), this.getName()), Color.Yellow);
+            CustomPrinter.println(this, Color.Gray);
         };
     }
 

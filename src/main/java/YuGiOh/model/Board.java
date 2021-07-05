@@ -13,6 +13,7 @@ import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.collections.ObservableMap;
 import lombok.Getter;
+import lombok.Setter;
 
 import java.util.*;
 
@@ -188,6 +189,7 @@ public class Board {
 
     public void moveCardToGraveYard(Card card) {
         removeCardIfHas(card);
+        card.outOfBattle();
         graveYard.add(card);
     }
 

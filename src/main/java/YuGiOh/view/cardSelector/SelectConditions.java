@@ -11,7 +11,7 @@ import YuGiOh.model.enums.MonsterState;
 import YuGiOh.model.enums.MonsterType;
 import YuGiOh.model.enums.ZoneType;
 
-public class Conditions {
+public class SelectConditions {
     public static final SelectCondition noCondition = (Card card) -> true;
 
     private static Game getGame() {
@@ -115,7 +115,7 @@ public class Conditions {
     public static SelectCondition or(SelectCondition... conditions){
         return (card) -> {
             for(SelectCondition condition : conditions) {
-                if (condition.canSelect(card) == true)
+                if (condition.canSelect(card))
                     return true;
             }
             return false;
@@ -125,7 +125,7 @@ public class Conditions {
     public static SelectCondition and(SelectCondition... conditions){
         return (card) -> {
             for(SelectCondition condition : conditions) {
-                if (condition.canSelect(card) == false)
+                if (!condition.canSelect(card))
                     return false;
             }
             return true;

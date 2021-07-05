@@ -2,7 +2,6 @@ package YuGiOh.model.card.magicCards.spells;
 
 import YuGiOh.controller.GameController;
 import YuGiOh.controller.player.PlayerController;
-import YuGiOh.model.card.Card;
 import YuGiOh.model.card.Magic;
 import YuGiOh.model.card.Spell;
 import YuGiOh.model.card.action.Effect;
@@ -10,7 +9,7 @@ import YuGiOh.model.enums.Color;
 import YuGiOh.model.enums.Icon;
 import YuGiOh.model.enums.Status;
 import YuGiOh.utils.CustomPrinter;
-import YuGiOh.view.cardSelector.Conditions;
+import YuGiOh.view.cardSelector.SelectConditions;
 
 public class MysticalSpaceTyphoon extends Spell {
 
@@ -21,13 +20,14 @@ public class MysticalSpaceTyphoon extends Spell {
     @Override
     protected Effect getEffect() {
         return () -> {
-            PlayerController playerController = GameController.getInstance().getPlayerControllerByPlayer(this.owner);
+            PlayerController playerController = GameController.getInstance().getPlayerControllerByPlayer(this.getOwner());
             Magic magic = (Magic) playerController.chooseKCards("Destroy one spell or trap on field",
                     1,
-                    Conditions.getMagicFromField())[0];
-            PlayerController controller = GameController.getInstance().getPlayerControllerByPlayer(magic.owner);
+                    SelectConditions.getMagicFromField())[0];
+            PlayerController controller = GameController.getInstance().getPlayerControllerByPlayer(magic.getOwner());
             controller.moveCardToGraveYard(magic);
-            CustomPrinter.println("Mystical Space Typhoon successfully.", Color.Green);
+            CustomPrinter.println(String.format("<%s>'s <%s> activated successfully", this.getOwner().getUser().getUsername(), this.getName()), Color.Yellow);
+            CustomPrinter.println(this, Color.Gray);
         };
     }
 

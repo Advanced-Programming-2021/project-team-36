@@ -47,5 +47,4 @@ public class ScoreboardMenuController extends BaseMenuController {
             return MainMenuController.getInstance();
         throw new RoutingException("menu navigation is not possible");
     }
-
 }

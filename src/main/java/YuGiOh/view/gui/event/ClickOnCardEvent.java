@@ -1,6 +1,6 @@
 package YuGiOh.view.gui.event;
 
-import YuGiOh.view.gui.CardFrame;
+import YuGiOh.view.gui.component.CardFrame;
 import javafx.event.Event;
 import javafx.event.EventType;
 import lombok.Getter;

@@ -5,7 +5,6 @@ import YuGiOh.controller.LogicException;
 import YuGiOh.controller.events.RoundOverExceptionEvent;
 import YuGiOh.controller.player.PlayerController;
 import YuGiOh.model.CardAddress;
-import YuGiOh.model.Game;
 import YuGiOh.model.Player.Player;
 import YuGiOh.model.card.action.Action;
 import YuGiOh.model.card.action.Effect;
@@ -70,7 +69,7 @@ public class Monster extends Card {
     }
 
     public void tryToSendToGraveYardOfMe() {
-        GameController.getInstance().getPlayerControllerByPlayer(this.owner).moveCardToGraveYard(this);
+        GameController.getInstance().getPlayerControllerByPlayer(this.getOwner()).moveCardToGraveYard(this);
     }
 
     public void tryToSendToGraveYard(Monster monster) {
@@ -78,7 +77,7 @@ public class Monster extends Card {
     }
 
     public void tryToDecreaseLifePointOfMe(int amount) {
-        GameController.getInstance().decreaseLifePoint(this.owner, amount);
+        GameController.getInstance().decreaseLifePoint(this.getOwner(), amount, true);
     }
 
     public void tryToDecreaseLifePoint(Monster monster, int amount) {
@@ -96,12 +95,12 @@ public class Monster extends Card {
     public final int getAttackDamage() {
         int affects = 0;
         for (int i = 1; i <= 5; i++) {
-            CardAddress cardAddress = new CardAddress(ZoneType.MAGIC, i, this.owner);
+            CardAddress cardAddress = new CardAddress(ZoneType.MAGIC, i, this.getOwner());
             Magic magic = (Magic) GameController.getInstance().getGame().getCardByCardAddress(cardAddress);
-            if (magic != null)
+            if (magic != null && magic.isFacedUp())
                 affects += magic.affectionOnAttackingMonster(this);
         }
-        PlayerController playerController = GameController.getInstance().getCurrentPlayerController();
+        PlayerController playerController = GameController.getInstance().getPlayerControllerByPlayer(this.getOwner());
         Spell spell = (Spell) playerController.getPlayer().getBoard().getFieldZoneCard();
         if (spell != null)
             affects += spell.affectionOnAttackingMonster(this);
@@ -114,20 +113,18 @@ public class Monster extends Card {
     public final int getDefenseRate() {
         int affects = 0;
         for (int i = 1; i <= 5; i++) {
-            CardAddress cardAddress = new CardAddress(ZoneType.MAGIC, i, this.owner);
+            CardAddress cardAddress = new CardAddress(ZoneType.MAGIC, i, this.getOwner());
             Magic magic = (Magic) GameController.getInstance().getGame().getCardByCardAddress(cardAddress);
             if (magic != null)
                 affects += magic.affectionOnDefensiveMonster(this);
         }
-        Spell spell = (Spell) GameController.getInstance().getPlayerControllerByPlayer(this.owner).getPlayer().getBoard().getFieldZoneCard();
+        Spell spell = (Spell) GameController.getInstance().getPlayerControllerByPlayer(this.getOwner()).getPlayer().getBoard().getFieldZoneCard();
         if (spell != null)
             affects += spell.affectionOnDefensiveMonster(this);
         return getDefenseRateOnCard() + affects;
     }
 
     public final void damageStep(Monster attacker) throws RoundOverExceptionEvent {
-        // todo are the responses ok? maybe we have to swap your and mine?
-        // todo remove this System.outs!
         if (getMonsterState().equals(MonsterState.OFFENSIVE_OCCUPIED)) {
             if (attacker.getAttackDamage() > this.getAttackDamage()) {
                 int difference = attacker.getAttackDamage() - this.getAttackDamage();
@@ -168,7 +165,6 @@ public class Monster extends Card {
     }
 
     public void flip() throws LogicException {
-        // todo is it correct?
         if (getMonsterState().equals(MonsterState.DEFENSIVE_HIDDEN))
             throw new LogicException("can't flip and defensive hidden monster");
         if (getMonsterState().equals(MonsterState.DEFENSIVE_OCCUPIED))
@@ -184,24 +180,24 @@ public class Monster extends Card {
     public Effect directAttack(Player player) {
         Player opponent = GameController.getInstance().getGame().getOtherPlayer(player);
         return () -> {
-            if(GameController.getInstance().getGame().getCardZoneType(this).equals(ZoneType.GRAVEYARD)){
+            if (GameController.getInstance().getGame().getCardZoneType(this).equals(ZoneType.GRAVEYARD)) {
                 CustomPrinter.println(this.getName() + " is dead so it cannot attack", Color.Yellow);
                 return;
             }
-            GameController.getInstance().decreaseLifePoint(opponent, this.getAttackDamage());
+            GameController.getInstance().decreaseLifePoint(opponent, this.getAttackDamage(), true);
             this.setAllowAttack(false);
         };
     }
 
-    // this are hooks to be overridden
-    protected void startOfBeingAttackedByMonster(){
-    }
-    protected void endOfBeingAttackedByMonster(){
+    protected void startOfBeingAttackedByMonster() {
     }
 
-    public final Effect onBeingAttackedByMonster(Monster attacker){
+    protected void endOfBeingAttackedByMonster() {
+    }
+
+    public final Effect onBeingAttackedByMonster(Monster attacker) {
         return () -> {
-            if (GameController.getInstance().getGame().getCardZoneType(attacker).equals(ZoneType.GRAVEYARD)){
+            if (GameController.getInstance().getGame().getCardZoneType(attacker).equals(ZoneType.GRAVEYARD)) {
                 CustomPrinter.println(this.getName() + " is dead so it cannot attack", Color.Yellow);
                 return;
             }
@@ -222,26 +218,27 @@ public class Monster extends Card {
 
     @Override
     public Effect activateEffect() throws LogicException {
-        return ()->{}; // todo
+        return () -> {
+        };
     }
 
     @Override
     public boolean hasEffect() {
-        return true; // todo
-    }
-
-    @Override
-    public boolean canActivateEffect() {
-        return false; // todo
-    }
-
-    @Override
-    public final void startOfNewTurn(){
-        setAllowAttack(true);
+        return true;
     }
 
     public BooleanBinding isDefensive() {
         return monsterStateProperty.isEqualTo(MonsterState.DEFENSIVE_HIDDEN).or(monsterStateProperty.isEqualTo(MonsterState.DEFENSIVE_OCCUPIED));
+    }
+
+    @Override
+    public boolean canActivateEffect() {
+        return false;
+    }
+
+    @Override
+    public final void startOfNewTurn() {
+        setAllowAttack(true);
     }
 
     public void validateSpecialSummon() throws LogicException, ResistToChooseCard {
@@ -260,21 +257,24 @@ public class Monster extends Card {
     }
 
     @Override
-    public int getSpeed(){
+    public int getSpeed() {
         return 1;
+    }
+
+    // todo not clean :))
+    public String asEffect() {
+        return String.format("%s (Monster - %s) : %s", getName(), getMonsterCardType(), getDescription());
+    }
+
+    @Override
+    public Card outOfBattle() {
+        super.outOfBattle();
+        setMonsterState(null);
+        return this;
     }
 
     @Override
     public String toString() {
-        return "Monster{" +
-                "name='" + name + '\'' +
-                ", \ndescription='" + description + '\'' +
-                ", \nattackDamage=" + attackDamage +
-                ", \ndefenseRate=" + defenseRate +
-                ", \nattribute=" + attribute +
-                ", \nmonsterType=" + monsterType +
-                ", \nmonsterCardType=" + monsterCardType +
-                ", \nlevel=" + level +
-                "\n}";
+        return String.format("%s (Monster - %s, Level <%d>, Attribute <%s>, Monster Type <%s>, Attack <%d>, Defense <%s>) %s", getName(), getMonsterCardType(), getLevel(), getAttribute(), getMonsterType(), getAttackDamageOnCard(), getDefenseRateOnCard(), getDescription());
     }
 }

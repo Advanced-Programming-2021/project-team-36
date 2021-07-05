@@ -3,7 +3,6 @@ package YuGiOh.controller.player;
 import YuGiOh.model.card.Magic;
 import YuGiOh.controller.GameController;
 import YuGiOh.controller.LogicException;
-import YuGiOh.view.cardSelector.Conditions;
 import YuGiOh.view.cardSelector.ResistToChooseCard;
 import YuGiOh.view.cardSelector.SelectCondition;
 import YuGiOh.model.Game;
@@ -22,8 +21,6 @@ public class AIPlayerController extends PlayerController {
     public AIPlayerController(AIPlayer player) {
         super(player);
     }
-
-    // todo complete this
 
     public void mainPhase() {
         Random rnd = new Random();
@@ -45,7 +42,8 @@ public class AIPlayerController extends PlayerController {
                 if (r == 1)
                     noErrorChangeMonsterPosition((Monster) card, MonsterState.DEFENSIVE_OCCUPIED);
                 if (r == 2)
-                    noErrorChangeMonsterPosition((Monster) card, MonsterState.DEFENSIVE_HIDDEN); // todo remove this
+                    noErrorChangeMonsterPosition((Monster) card, MonsterState.DEFENSIVE_HIDDEN);
+                noErrorMonsterActivateEffect((Monster) card);
             } else if (card instanceof Magic) {
                 noErrorSetMagic((Magic) card);
             }
@@ -69,7 +67,7 @@ public class AIPlayerController extends PlayerController {
     @Override
     public void controlBattlePhase() {
         Random rnd = new Random();
-        List<Card> allCards = new ArrayList<>(player.getBoard().getAllCards()); // or cards on board
+        List<Card> allCards = new ArrayList<>(player.getBoard().getAllCards());
         while (!allCards.isEmpty()) {
             Card card = allCards.get(rnd.nextInt(allCards.size()));
             allCards.remove(card);
@@ -89,7 +87,7 @@ public class AIPlayerController extends PlayerController {
                 if (r == 1)
                     noErrorChangeMonsterPosition((Monster) card, MonsterState.DEFENSIVE_OCCUPIED);
                 if (r == 2)
-                    noErrorChangeMonsterPosition((Monster) card, MonsterState.DEFENSIVE_HIDDEN); // todo remove this
+                    noErrorChangeMonsterPosition((Monster) card, MonsterState.DEFENSIVE_HIDDEN);
                 for (Card opponentCard : GameController.getInstance().getGame().getOtherPlayer(player).getBoard().getAllCardsOnBoard()) {
                     if (opponentCard instanceof Monster)
                         noErrorAttack((Monster) card, (Monster) opponentCard);

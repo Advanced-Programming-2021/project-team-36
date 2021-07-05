@@ -6,12 +6,14 @@ import YuGiOh.controller.ProgramController;
 import YuGiOh.controller.menu.DuelMenuController;
 import YuGiOh.controller.menu.LoginMenuController;
 import YuGiOh.controller.player.AggressiveAIPlayerController;
+import YuGiOh.controller.player.HumanPlayerController;
 import YuGiOh.model.Duel;
 import YuGiOh.model.Game;
 import YuGiOh.model.Player.AIPlayer;
 import YuGiOh.model.Player.HumanPlayer;
 import YuGiOh.model.User;
 import YuGiOh.model.card.Card;
+import YuGiOh.model.enums.AIMode;
 import YuGiOh.utils.Cheat;
 import YuGiOh.utils.DatabaseHandler;
 import javafx.application.Application;
@@ -31,6 +33,7 @@ public class DummyStarter extends Application {
 
             User abolfazl = User.getUserByUsername("Abolfazl");
             User fakeUser2 = new User("magool", "magool.m", "123");
+
             Card allCards[] = YuGiOh.model.card.Utils.getAllCards();
             Random random = new Random();
             int length = 1;
@@ -48,19 +51,16 @@ public class DummyStarter extends Application {
 
             Duel duel = new Duel(
                     //new AIPlayer(abolfazl),
-                    new AIPlayer(fakeUser2),
+                    new AIPlayer(fakeUser2, AIMode.AGGRESSIVE),
                     new HumanPlayer(abolfazl),
                     3
             );
             new DuelMenuController(duel);
 
-            // todo remove this
-//            if(duel.getFirstPlayer() instanceof AIPlayer)
-//                GameController.getInstance().setPlayerController1(new AggressiveAIPlayerController((AIPlayer) duel.getFirstPlayer()));
-//            if(duel.getSecondPlayer() instanceof AIPlayer)
-//                GameController.getInstance().setPlayerController2(new AggressiveAIPlayerController((AIPlayer) duel.getSecondPlayer()));
+            // todo how to set aggressive AI player now?
 
             DuelMenuController.getInstance().getGraphicView().start(primaryStage);
+
             new MainGameThread(()->{
                 DuelMenuController.getInstance().control();
             }).start();

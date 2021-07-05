@@ -1,23 +1,18 @@
-package YuGiOh.view.gui;
+package YuGiOh.view.gui.component;
 
 import YuGiOh.controller.menu.DuelMenuController;
 import YuGiOh.model.Game;
-import YuGiOh.model.enums.Phase;
+import YuGiOh.view.gui.Utils;
 import javafx.application.Platform;
 import javafx.beans.binding.DoubleBinding;
-import javafx.beans.property.SimpleObjectProperty;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.*;
-import javafx.scene.paint.Color;
-import javafx.scene.text.Font;
-import javafx.scene.text.Text;
 import lombok.Setter;
 
 public class DuelInfoBox extends BorderPane {
     private final DoubleBinding widthProperty, heightProperty;
-    private final ImageView imageView;
-    private final VBox buttonBox;
+    private final CardInfo cardInfo;
     private final Game game;
 
     @Setter
@@ -42,10 +37,7 @@ public class DuelInfoBox extends BorderPane {
         minWidthProperty().bind(widthProperty);
         minHeightProperty().bind(heightProperty);
 
-        imageView = new ImageView();
-        buttonBox = new VBox();
-        imageView.fitWidthProperty().bind(widthProperty.add(-10));
-        imageView.fitHeightProperty().bind(heightProperty.divide(2));
+        cardInfo = new CardInfo(widthProperty, heightProperty.multiply(0.55));
 
         CustomButton nextPhaseButton = new CustomButton("next phase", 23, ()->
                 gameField.addRunnableToMainThread(()-> DuelMenuController.getInstance().goNextPhase())
@@ -57,38 +49,21 @@ public class DuelInfoBox extends BorderPane {
         BorderPane insideBorderPane = new BorderPane();
 
         insideBorderPane.setBottom(new VBox(nextPhaseButton, surrenderButton));
-        insideBorderPane.setTop(imageView);
-        insideBorderPane.setCenter(buttonBox);
-
-        Text currentPhase = new Text(game.getPhase().getVerboseName());
-        currentPhase.setFont(Font.font(30));
-        currentPhase.setFill(Color.BLACK);
-        // todo I don't know why binding the text does not work. maybe because phase changes too fast?
-        game.phaseProperty().addListener((observable -> {
-            Platform.runLater(()-> {
-                currentPhase.setText(((SimpleObjectProperty<Phase>) observable).getValue().getVerboseName());
-            });
-        }));
-        insideBorderPane.setRight(currentPhase);
-
+        insideBorderPane.setCenter(cardInfo);
 
         setTop(new LifeBar(game.getSecondPlayer(), widthProperty));
         setCenter(insideBorderPane);
         setBottom(new LifeBar(game.getFirstPlayer(), widthProperty));
     }
 
-    public void addInfo(Image image, CustomButton... buttons){
+    public void addInfo(CardFrame cardFrame){
         Platform.runLater(()-> {
-            for (CustomButton button : buttons) {
-                buttonBox.getChildren().add(button);
-            }
-            imageView.setImage(image);
+            cardInfo.setCardFrame(cardFrame);
         });
     }
     public void clear(){
         Platform.runLater(()-> {
-            buttonBox.getChildren().clear();
-            imageView.setImage(null);
+            cardInfo.setCardFrame(null);
         });
     }
 }

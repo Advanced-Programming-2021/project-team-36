@@ -4,8 +4,7 @@ import YuGiOh.controller.LogicException;
 import YuGiOh.model.Player.Player;
 import YuGiOh.model.card.action.Effect;
 import javafx.beans.binding.BooleanBinding;
-import javafx.event.ActionEvent;
-import javafx.event.Event;
+import javafx.beans.property.SimpleObjectProperty;
 import lombok.Getter;
 
 import java.io.Serializable;
@@ -14,13 +13,13 @@ public abstract class Card implements Comparable<Card>, Cloneable, Serializable 
     protected String name;
     protected String description;
     protected int price;
-    public Player owner;
+    private SimpleObjectProperty<Player> ownerProperty;
 
     @Getter
     boolean isInBattle;
 
     {
-        owner = null;
+        ownerProperty = new SimpleObjectProperty<>(null);
         isInBattle = false;
     }
 
@@ -52,7 +51,12 @@ public abstract class Card implements Comparable<Card>, Cloneable, Serializable 
 
     public Card readyForBattle(Player owner) {
         isInBattle = true;
-        this.owner = owner;
+        setOwner(owner);
+        return this;
+    }
+
+    public Card outOfBattle() {
+        isInBattle = false;
         return this;
     }
 
@@ -80,14 +84,20 @@ public abstract class Card implements Comparable<Card>, Cloneable, Serializable 
     }
 
     public void moveCardToGraveYard(){
-        owner.moveCardToGraveYard(this);
+        getOwner().moveCardToGraveYard(this);
     }
 
     public void startOfNewTurn() {
     }
 
-    public void save() {
-        // TODO
+    protected void setOwner(Player player) {
+        ownerProperty.set(player);
+    }
+    public Player getOwner() {
+        return ownerProperty.get();
+    }
+    public SimpleObjectProperty<Player> ownerProperty() {
+        return ownerProperty;
     }
 
     @Override

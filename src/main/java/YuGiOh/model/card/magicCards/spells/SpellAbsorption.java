@@ -16,8 +16,9 @@ public class SpellAbsorption extends Spell {
     }
 
     public void onSpellResolve() {
-        CustomPrinter.println("Spell Absorption heals life point", Color.Purple);
-        this.owner.increaseLifePoint(500);
+        GameController.getInstance().increaseLifePoint(this.getOwner(), 500);
+        CustomPrinter.println(String.format("<%s>'s <%s> activated successfully.", this.getOwner().getUser().getUsername(), this.getName()), Color.Yellow);
+        CustomPrinter.println(this, Color.Gray);
     }
 
     @Override

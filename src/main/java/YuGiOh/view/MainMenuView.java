@@ -1,6 +1,7 @@
 package YuGiOh.view;
 
 import YuGiOh.controller.menu.MainMenuController;
+import YuGiOh.model.enums.AIMode;
 import YuGiOh.utils.DatabaseHandler;
 import YuGiOh.view.CommandLine.Command;
 
@@ -24,7 +25,7 @@ public class MainMenuView extends BaseMenuView {
         this.cmd.addCommand(new Command(
                 "duel",
                 mp -> {
-                    MainMenuController.getInstance().startDuelWithAI(Parser.RoundParser(mp.get("round")));
+                    MainMenuController.getInstance().startDuelWithAI(Parser.RoundParser(mp.get("round")), AIMode.NORMAL);
                 },
                 Options.newRound(true),
                 Options.ai(true),
@@ -33,7 +34,7 @@ public class MainMenuView extends BaseMenuView {
         this.cmd.addCommand(new Command(
                 "duel",
                 mp -> {
-                    MainMenuController.getInstance().startDuelAiWithAI(Parser.RoundParser(mp.get("round")));
+                    MainMenuController.getInstance().startDuelAIWithAI(Parser.RoundParser(mp.get("round")), AIMode.NORMAL, AIMode.NORMAL);
                 },
                 Options.round(true)
         ));
@@ -49,12 +50,18 @@ public class MainMenuView extends BaseMenuView {
                     DatabaseHandler.saveToDatabase(mp.get("file"));
                 },
                 Options.file(false)
-                // todo why is it not required? @Kasra
+        ));
+        this.cmd.addCommand(new Command(
+                "cheat increase",
+                mp -> {
+                    MainMenuController.getInstance().increaseBalance(Parser.IntegerParser(mp.get("balance")));
+                },
+                Options.balance(true)
         ));
     }
 
     @Override
-    protected String getMenuName() {
+    public String getMenuName() {
         return "Main Menu";
     }
 }

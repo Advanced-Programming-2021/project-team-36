@@ -13,9 +13,11 @@ public class TheCalculator extends Monster {
 
     @Override
     public int getAttackDamageOnCard() {
+        if(!isInBattle())
+            return attackDamage;
         int sum = 0;
-        for (Card card : this.owner.getBoard().getAllCardsOnBoard()) {
-            if (card instanceof Monster && isFacedUp() && card.owner.equals(this.owner)) {
+        for (Card card : this.getOwner().getBoard().getAllCardsOnBoard()) {
+            if (card instanceof Monster && card.isFacedUp() && card.getOwner().equals(this.getOwner())) {
                 sum += ((Monster) card).getLevel();
             }
         }

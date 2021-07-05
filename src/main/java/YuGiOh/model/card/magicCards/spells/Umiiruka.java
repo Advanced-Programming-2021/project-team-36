@@ -31,17 +31,8 @@ public class Umiiruka extends Spell {
     @Override
     protected Effect getEffect() {
         return () -> {
-            for (Card card : GameController.getInstance().getGame().getAllCards()) {
-                if (card instanceof Monster) {
-                    Monster monster = (Monster) card;
-                    if (monster.getAttribute().equals(MonsterAttribute.WATER)) {
-                        monster.setAttackDamage(monster.getAttackDamage() + 500);
-                        monster.setDefenseRate(monster.getDefenseRate() - 400);
-                    }
-                }
-            }
-            this.setMagicState(MagicState.OCCUPIED);
-            CustomPrinter.println(String.format("<%s> activated <Umiiruka> successfully.", this.owner.getUser().getUsername()), Color.Green);
+            CustomPrinter.println(String.format("<%s> activated field spell <%s>", this.getOwner().getUser().getUsername(), this.getName()), Color.Yellow);
+            CustomPrinter.println(this, Color.Gray);
         };
     }
 

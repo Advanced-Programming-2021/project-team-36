@@ -2,12 +2,15 @@ package YuGiOh.model;
 
 import YuGiOh.model.Player.Player;
 import YuGiOh.model.enums.ZoneType;
+import lombok.Generated;
 import lombok.Getter;
 
 import java.util.Objects;
 
 public class CardAddress {
+    @Getter
     private final ZoneType zone;
+    @Getter
     private final int id;
     @Getter
     private final Player owner;
@@ -30,9 +33,6 @@ public class CardAddress {
     public boolean isInFieldZone() { return zone.equals(ZoneType.FIELD); }
     public boolean isInGraveYard() { return zone.equals(ZoneType.GRAVEYARD); }
     public boolean isInDeck() { return zone.equals(ZoneType.DECK); }
-    public int getId() {
-        return id;
-    }
 
     @Override
     public boolean equals(Object o) {

@@ -2,14 +2,11 @@ package YuGiOh.model.card.monsterCards;
 
 import YuGiOh.controller.GameController;
 import YuGiOh.controller.LogicException;
-import YuGiOh.controller.events.RoundOverExceptionEvent;
 import YuGiOh.controller.player.PlayerController;
-import YuGiOh.model.card.Card;
-import YuGiOh.model.card.action.Effect;
 import YuGiOh.model.enums.*;
 import YuGiOh.model.card.Monster;
 import YuGiOh.utils.CustomPrinter;
-import YuGiOh.view.cardSelector.Conditions;
+import YuGiOh.view.cardSelector.SelectConditions;
 import YuGiOh.view.cardSelector.ResistToChooseCard;
 
 public class TexChanger extends Monster {
@@ -21,7 +18,7 @@ public class TexChanger extends Monster {
 
     @Override
     protected void specialEffectWhenBeingAttacked(Monster attacker) throws ResistToChooseCard, LogicException {
-        PlayerController controller = GameController.getInstance().getPlayerControllerByPlayer(owner);
+        PlayerController controller = GameController.getInstance().getPlayerControllerByPlayer(getOwner());
 
         if(lastTurnActivated != GameController.instance.getGame().getTurn() &&
                 controller.askRespondToQuestion("Do you want to activate the effect of tex changer?", "yes", "no")) {
@@ -31,18 +28,20 @@ public class TexChanger extends Monster {
                 Monster chosen = (Monster) controller.chooseKCards(
                         "choose 1 cyberse monster from your hand or graveyard or deck",
                         1,
-                        Conditions.and(
-                                Conditions.getMonsterCardTypeCondition(owner, MonsterCardType.NORMAL),
-                                Conditions.getMonsterTypeCondition(owner, MonsterType.CYBERSE),
-                                Conditions.getIsPlayersCard(owner),
-                                Conditions.or(
-                                        Conditions.getInZoneCondition(ZoneType.HAND),
-                                        Conditions.getInZoneCondition(ZoneType.GRAVEYARD),
-                                        Conditions.getInZoneCondition(ZoneType.DECK)
+                        SelectConditions.and(
+                                SelectConditions.getMonsterCardTypeCondition(getOwner(), MonsterCardType.NORMAL),
+                                SelectConditions.getMonsterTypeCondition(getOwner(), MonsterType.CYBERSE),
+                                SelectConditions.getIsPlayersCard(getOwner()),
+                                SelectConditions.or(
+                                        SelectConditions.getInZoneCondition(ZoneType.HAND),
+                                        SelectConditions.getInZoneCondition(ZoneType.GRAVEYARD),
+                                        SelectConditions.getInZoneCondition(ZoneType.DECK)
                                 )
                         )
                 )[0];
                 controller.summon(chosen, true);
+                CustomPrinter.println(String.format("<%s>'s <%s> activated successfully", this.getOwner().getUser().getUsername(), this.getName()), Color.Yellow);
+                CustomPrinter.println(this.asEffect(), Color.Gray);
             } catch (LogicException | ResistToChooseCard e){
                 CustomPrinter.println("We didn't summoned monster", Color.Red);
             }

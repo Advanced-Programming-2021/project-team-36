@@ -9,6 +9,4 @@ public class BeastKingBarbaros extends Monster {
     public BeastKingBarbaros(String name, String description, int price, int attackDamage, int defenseRate, MonsterAttribute attribute, MonsterType monsterType, MonsterCardType monsterCardType, int level) {
         super(name, description, price, attackDamage, defenseRate, attribute, monsterType, monsterCardType, level);
     }
-
-    // todo pending tribute summon
 }

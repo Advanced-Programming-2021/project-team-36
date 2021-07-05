@@ -33,10 +33,10 @@
 
 .textCss {
     -fx-font-weight: bold;
-    -fx-font-size: 12px;
+    -fx-font-size: 20px;
     -fx-text-fill: #ffc800;
     -fx-font-family: PacFont;
-    -fx-text-fill: radial-gradient(center 30% 30%,radius 100%, #00ffd9, #2b9903);
+    -fx-text-fill: radial-gradient(center 30% 30%,radius 100%, #8448f5, #2b9903);
 }
 
 .main {

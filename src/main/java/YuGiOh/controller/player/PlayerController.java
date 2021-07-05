@@ -4,7 +4,7 @@ import YuGiOh.controller.events.RoundOverExceptionEvent;
 import YuGiOh.model.card.Magic;
 import YuGiOh.model.card.action.*;
 import YuGiOh.model.enums.*;
-import YuGiOh.view.cardSelector.Conditions;
+import YuGiOh.view.cardSelector.SelectConditions;
 import YuGiOh.model.card.Spell;
 import YuGiOh.utils.CustomPrinter;
 import YuGiOh.controller.ChainController;
@@ -70,9 +70,8 @@ public abstract class PlayerController {
         GameController.getInstance().getGame().getOtherPlayer(player).getBoard().removeCardIfHas(monster);
         if(!specialSummon)
             player.setSummonedInLastTurn(true);
-
         if (requiredTributes > 0)
-            tributeMonster(requiredTributes, Conditions.myMonsterFromMyMonsterZone(player));
+            tributeMonster(requiredTributes, SelectConditions.myMonsterFromMyMonsterZone(player));
         Board board = player.getBoard();
         for (int i = 1; i <= 5; i++) {
             if (board.getMonsterCardZone().get(i) == null) {
@@ -196,7 +195,7 @@ public abstract class PlayerController {
         validateCurrentPlayersCard(monster);
         validateNotSummonedInThisTurn();
         validateHasInHand(monster);
-        validateSummon(monster, monster.getNumberOfRequiredTribute(), Conditions.myMonsterFromMyMonsterZone(player));
+        validateSummon(monster, monster.getNumberOfRequiredTribute(), SelectConditions.myMonsterFromMyMonsterZone(player));
         startChain(normalSummonAction(monster, false));
     }
 
@@ -209,7 +208,10 @@ public abstract class PlayerController {
 
     public void setMonster(Monster monster) throws LogicException, ResistToChooseCard {
         validateMainPhase();
-        validateSummon(monster, monster.getNumberOfRequiredTribute(), Conditions.myMonsterFromMyMonsterZone(player));
+        validateCurrentPlayersCard(monster);
+        validateNotSummonedInThisTurn();
+        validateHasInHand(monster);
+        validateSummon(monster, monster.getNumberOfRequiredTribute(), SelectConditions.myMonsterFromMyMonsterZone(player));
         startChain(setMonsterAction(monster));
     }
 
@@ -322,7 +324,7 @@ public abstract class PlayerController {
             throw new LogicException("this card already attacked");
         if (!GameController.getInstance().getGame().getOtherPlayer(player).getBoard().getMonsterCardZone().containsValue(opponentMonster))
             throw new LogicException("you can't attack that monster");
-        CustomPrinter.println(String.format("<%s> declares an attack with <%s> to <%s>'s <%s>", getPlayer().getUser().getUsername(), monster.getName(), opponentMonster.owner.getUser().getUsername(), opponentMonster.getName()), Color.Blue);
+        CustomPrinter.println(String.format("<%s> declares an attack with <%s> to <%s>'s <%s>", getPlayer().getUser().getUsername(), monster.getName(), opponentMonster.getOwner().getUser().getUsername(), opponentMonster.getName()), Color.Blue);
         startChain(
                 new Action(
                         new MonsterAttackEvent(monster, opponentMonster),

@@ -38,6 +38,8 @@ public class CustomPrinter {
             return "\u001B[35m";
         else if (color.equals(Color.Cyan))
             return "\u001B[36m";
+        else if (color.equals(Color.Gray))
+            return "\u001B[37m";
         else
             return "\u001B[0m";
     }

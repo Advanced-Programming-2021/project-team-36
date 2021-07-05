@@ -20,7 +20,7 @@ public class ScoreboardMenuView extends BaseMenuView {
     }
 
     @Override
-    protected String getMenuName() {
+    public String getMenuName() {
         return "Scoreboard Menu";
     }
 }

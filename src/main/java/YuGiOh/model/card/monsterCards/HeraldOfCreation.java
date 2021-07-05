@@ -8,7 +8,7 @@ import YuGiOh.model.enums.MonsterAttribute;
 import YuGiOh.model.enums.MonsterCardType;
 import YuGiOh.model.enums.MonsterType;
 import YuGiOh.utils.CustomPrinter;
-import YuGiOh.view.cardSelector.Conditions;
+import YuGiOh.view.cardSelector.SelectConditions;
 import YuGiOh.view.cardSelector.ResistToChooseCard;
 import YuGiOh.model.card.action.Effect;
 import YuGiOh.model.card.Card;
@@ -22,26 +22,26 @@ public class HeraldOfCreation extends Monster {
     int lastTurnActivated = -1;
 
     @Override
-    public boolean canActivateEffect(){
+    public boolean canActivateEffect() {
         return lastTurnActivated != GameController.instance.getGame().getTurn();
     }
 
     @Override
     public Effect activateEffect() throws LogicException {
-        if(lastTurnActivated == GameController.instance.getGame().getTurn())
+        if (lastTurnActivated == GameController.instance.getGame().getTurn())
             throw new LogicException("you can only activate this once in a turn");
 
-        return ()->{
-            PlayerController controller = GameController.getInstance().getPlayerControllerByPlayer(this.owner);
+        return () -> {
+            PlayerController controller = GameController.getInstance().getPlayerControllerByPlayer(this.getOwner());
             Card discarded;
             Monster monster;
             try {
                 discarded = controller.chooseKCards(
                         "choose 1 card to discard from your hand",
                         1,
-                        Conditions.getInPlayersHandCondition(this.owner)
+                        SelectConditions.getInPlayersHandCondition(this.getOwner())
                 )[0];
-            } catch (ResistToChooseCard e){
+            } catch (ResistToChooseCard e) {
                 CustomPrinter.println("canceled", Color.Default);
                 return;
             }
@@ -49,20 +49,22 @@ public class HeraldOfCreation extends Monster {
                 monster = (Monster) controller.chooseKCards(
                         "choose 1 level 7 or higher monster from your graveyard",
                         1,
-                        Conditions.getInPlayerGraveYardMonster(this.owner, 7)
+                        SelectConditions.getInPlayerGraveYardMonster(this.getOwner(), 7)
                 )[0];
-            } catch (ResistToChooseCard e){
+            } catch (ResistToChooseCard e) {
                 CustomPrinter.println("canceled", Color.Default);
                 return;
             }
-            this.owner.getBoard().removeFromHand(discarded);
-            this.owner.getBoard().addCardToHand(monster);
+            this.getOwner().getBoard().removeFromHand(discarded);
+            this.getOwner().getBoard().addCardToHand(monster);
             lastTurnActivated = GameController.instance.getGame().getTurn();
+            CustomPrinter.println(String.format("<%s>'s <%s> activated successfully", this.getOwner().getUser().getUsername(), this.getName()), Color.Yellow);
+            CustomPrinter.println(this.asEffect(), Color.Gray);
         };
     }
 
     @Override
-    public Monster clone(){
+    public Monster clone() {
         HeraldOfCreation cloned = (HeraldOfCreation) super.clone();
         cloned.lastTurnActivated = -1;
         return cloned;

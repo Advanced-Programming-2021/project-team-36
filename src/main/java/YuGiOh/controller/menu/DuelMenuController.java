@@ -4,10 +4,7 @@ import YuGiOh.controller.*;
 import YuGiOh.controller.events.RoundOverExceptionEvent;
 import YuGiOh.model.Duel;
 import YuGiOh.model.ModelException;
-import YuGiOh.model.Player.Player;
 import YuGiOh.model.card.*;
-import YuGiOh.model.enums.GameResult;
-import YuGiOh.view.cardSelector.Conditions;
 import YuGiOh.view.cardSelector.ResistToChooseCard;
 import YuGiOh.model.CardAddress;
 import YuGiOh.model.Game;
@@ -16,7 +13,6 @@ import YuGiOh.utils.CustomPrinter;
 import YuGiOh.utils.Debugger;
 import YuGiOh.utils.RoutingException;
 import YuGiOh.view.DuelMenuView;
-import javafx.application.Platform;
 import lombok.Getter;
 import YuGiOh.model.enums.MonsterState;
 
@@ -153,11 +149,11 @@ public class DuelMenuController extends BaseMenuController {
     public void control(){
         while (!duel.isFinished()){
             this.game = duel.getCurrentGame();
+            this.gameController = new GameController(game);
 
             // todo change this when we wanted to connect the whole part
-            Platform.runLater(()-> this.graphicView.startNewGame(game));
+            MainGameThread.getInstance().blockUnblockRunningThreadAndDoInGui(()-> this.graphicView.startNewGame(game));
 
-            this.gameController = new GameController(game);
             try {
                 gameController.control();
             } catch (RoundOverExceptionEvent roundOverEvent) {

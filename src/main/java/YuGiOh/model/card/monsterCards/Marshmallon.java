@@ -1,6 +1,7 @@
 package YuGiOh.model.card.monsterCards;
 
 import YuGiOh.controller.GameController;
+import YuGiOh.model.Game;
 import YuGiOh.model.enums.Color;
 import YuGiOh.model.enums.MonsterAttribute;
 import YuGiOh.model.enums.MonsterCardType;
@@ -17,9 +18,7 @@ public class Marshmallon extends Monster {
     }
 
     @Override
-    public void tryToSendToGraveYardOfMe(){
-        // it is really nothing!
-        // this monster cannot be killed!
+    public void tryToSendToGraveYardOfMe() {
         CustomPrinter.println("Marshmallon is still alive! ha ha ha", Color.Cyan);
     }
 
@@ -29,13 +28,16 @@ public class Marshmallon extends Monster {
     }
 
     @Override
-    public void specialEffectWhenBeingAttacked(Monster attacker){
-        if(checkIfFaceIsDown){
+    public void specialEffectWhenBeingAttacked(Monster attacker) {
+        if (checkIfFaceIsDown) {
             GameController.getInstance().decreaseLifePoint(
-                    GameController.getInstance().getGame().getOtherPlayer(this.owner),
-                    1000
+                    GameController.getInstance().getGame().getOtherPlayer(this.getOwner()),
+                    1000,
+                    false
             );
         }
+        CustomPrinter.println(String.format("<%s> activated <%s> successfully", this.getOwner().getUser().getUsername(), this.getName()), Color.Yellow);
+        CustomPrinter.println(this.asEffect(), Color.Gray);
         damageStep(attacker);
     }
 }

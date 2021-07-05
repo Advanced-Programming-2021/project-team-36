@@ -36,7 +36,7 @@ public class CustomScanner {
         try {
             bufferedReader = new BufferedReader(new FileReader(file));
         } catch (IOException exception) {
-            CustomPrinter.println("file not found", Color.Default);
+            CustomPrinter.println("file not found", Color.Red);
             return;
         }
         linesToReadFromFile = count;

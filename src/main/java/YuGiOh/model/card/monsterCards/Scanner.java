@@ -2,10 +2,13 @@ package YuGiOh.model.card.monsterCards;
 
 import YuGiOh.controller.GameController;
 import YuGiOh.controller.LogicException;
+import YuGiOh.controller.player.PlayerController;
 import YuGiOh.model.enums.MonsterAttribute;
 import YuGiOh.model.enums.MonsterCardType;
 import YuGiOh.model.enums.MonsterType;
-import YuGiOh.view.cardSelector.Conditions;
+import YuGiOh.model.enums.Color;
+import YuGiOh.utils.CustomPrinter;
+import YuGiOh.view.cardSelector.SelectConditions;
 import YuGiOh.view.cardSelector.ResistToChooseCard;
 import YuGiOh.model.card.action.Effect;
 import YuGiOh.model.card.Monster;
@@ -14,10 +17,6 @@ public class Scanner extends Monster {
     public Scanner(String name, String description, int price, int attackDamage, int defenseRate, MonsterAttribute attribute, MonsterType monsterType, MonsterCardType monsterCardType, int level) {
         super(name, description, price, attackDamage, defenseRate, attribute, monsterType, monsterCardType, level);
     }
-
-    // todo will the card also get special abilities of its copy?
-    // also do we have to delete the other card from graveyard?
-    // todo what if copied monster dies?
 
     int lastTurnActivated = -1;
     Monster copiedMonster;
@@ -33,13 +32,16 @@ public class Scanner extends Monster {
             throw new LogicException("you can only activate this once in a turn");
         return ()-> {
             try {
-                copiedMonster = (Monster) GameController.getInstance().getCurrentPlayerController().chooseKCards(
+                PlayerController controller = GameController.getInstance().getPlayerControllerByPlayer(this.getOwner());
+                copiedMonster = (Monster) controller.chooseKCards(
                         "choose a monster to copy",
                         1,
-                        Conditions.OpponentMonsterFromGraveYard
+                        SelectConditions.OpponentMonsterFromGraveYard
                 )[0];
-                copiedMonster = (Monster) copiedMonster.clone().readyForBattle(this.owner);
+                copiedMonster = (Monster) copiedMonster.clone().readyForBattle(this.getOwner());
                 lastTurnActivated = GameController.instance.getGame().getTurn();
+                CustomPrinter.println(String.format("<%s>'s <%s> activated successfully", this.getOwner().getUser().getUsername(), this.getName()), Color.Yellow);
+                CustomPrinter.println(this.asEffect(), Color.Gray);
             } catch (ResistToChooseCard ignored) {
             }
         };

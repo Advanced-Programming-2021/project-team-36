@@ -3,17 +3,15 @@ package YuGiOh.model.card.magicCards.traps;
 import YuGiOh.controller.GameController;
 import YuGiOh.controller.player.PlayerController;
 import YuGiOh.model.card.Card;
-import YuGiOh.model.card.Magic;
-import YuGiOh.model.card.Monster;
 import YuGiOh.model.card.Trap;
 import YuGiOh.model.card.action.Action;
 import YuGiOh.model.card.action.Effect;
 import YuGiOh.model.card.action.MagicActivation;
-import YuGiOh.model.card.action.SummonEvent;
 import YuGiOh.model.enums.Icon;
 import YuGiOh.model.enums.Status;
-import YuGiOh.view.cardSelector.Conditions;
-import YuGiOh.view.cardSelector.SelectCondition;
+import YuGiOh.model.enums.Color;
+import YuGiOh.utils.CustomPrinter;
+import YuGiOh.view.cardSelector.SelectConditions;
 
 public class MagicJammer extends Trap {
     public MagicJammer(String name, String description, int price, Icon icon, Status status) {
@@ -24,15 +22,17 @@ public class MagicJammer extends Trap {
     protected Effect getEffect() {
         assert canActivateEffect();
         return () -> {
-            PlayerController playerController = GameController.getInstance().getPlayerControllerByPlayer(this.owner);
+            PlayerController playerController = GameController.getInstance().getPlayerControllerByPlayer(this.getOwner());
             playerController.moveCardToGraveYard(this);
             Card card = playerController.chooseKCards("Discard 1 card to activate Magic Jamamer",
                     1,
-                    Conditions.getCardFromPlayerHand(this.owner, this))[0];
+                    SelectConditions.getCardFromPlayerHand(this.getOwner(), this))[0];
             playerController.moveCardToGraveYard(card);
             Action action = getChain().pop();
             Card card1 = ((MagicActivation) action.getEvent()).getCard();
             GameController.getInstance().getOtherPlayerController(playerController).moveCardToGraveYard(card1);
+            CustomPrinter.println(String.format("<%s>'s <%s> activated successfully", this.getOwner().getUser().getUsername(), this.getName()), Color.Yellow);
+            CustomPrinter.println(this, Color.Gray);
         };
     }
 
@@ -41,6 +41,6 @@ public class MagicJammer extends Trap {
         if (getChain().isEmpty())
             return false;
         Action action = getChain().peek();
-        return action.getEvent() instanceof MagicActivation && this.owner.getBoard().getCardsOnHand().size() > 0;
+        return action.getEvent() instanceof MagicActivation && this.getOwner().getBoard().getCardsOnHand().size() > 0;
     }
 }
