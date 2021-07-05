@@ -111,10 +111,17 @@ public class ValidateTree {
             throw new ValidateResult("spell card zone is full");
     }
 
-    public static void checkActivateMagic(Card card) throws ValidateResult {
-        if (!(card instanceof Spell))
-            throw new ValidateResult("this card is not spell");
-        Spell spell = (Spell) card;
+    public static void checkActivateMonster(Monster monster) throws ValidateResult {
+        Game game = GameController.getInstance().getGame();
+        if (!game.getPhase().equals(Phase.MAIN_PHASE1) && !game.getPhase().equals(Phase.MAIN_PHASE2))
+            throw new ValidateResult("you can't activate an effect on this turn");
+        if (!monster.getOwner().getBoard().getMonsterCardZone().containsValue(monster) || !monster.getMonsterState().equals(MonsterState.OFFENSIVE_OCCUPIED))
+            throw new ValidateResult("only faced up monsters can activate their effect");
+        if (!monster.canActivateEffect())
+            throw new ValidateResult("you cannot activate this monster now");
+    }
+
+    public static void checkActivateMagic(Spell spell) throws ValidateResult {
         Player player = spell.getOwner();
         Game game = GameController.getInstance().getGame();
         if (!player.getBoard().getMagicCardZone().containsValue(spell) && !player.getBoard().getCardsOnHand().contains(spell))

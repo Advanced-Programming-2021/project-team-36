@@ -38,7 +38,6 @@ abstract public class Magic extends Card {
         };
     }
 
-
     abstract protected Effect getEffect();
 
     abstract public boolean canActivateEffect();

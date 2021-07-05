@@ -8,9 +8,11 @@ public class SetMagicAction extends Action {
         super(event, effect);
     }
 
-    @Override
     public void validateEffect() throws ValidateResult {
         SetMagic event = (SetMagic) getEvent();
         ValidateTree.checkSetMagic(event.getMagic());
+    }
+
+    public void preprocess() {
     }
 }

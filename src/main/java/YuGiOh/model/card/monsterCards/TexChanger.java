@@ -3,9 +3,14 @@ package YuGiOh.model.card.monsterCards;
 import YuGiOh.controller.GameController;
 import YuGiOh.controller.LogicException;
 import YuGiOh.controller.player.PlayerController;
+import YuGiOh.model.card.action.Action;
+import YuGiOh.model.card.action.SummonAction;
+import YuGiOh.model.card.action.ValidateResult;
+import YuGiOh.model.card.event.SummonEvent;
 import YuGiOh.model.enums.*;
 import YuGiOh.model.card.Monster;
 import YuGiOh.utils.CustomPrinter;
+import YuGiOh.view.cardSelector.SelectCondition;
 import YuGiOh.view.cardSelector.SelectConditions;
 import YuGiOh.view.cardSelector.ResistToChooseCard;
 
@@ -20,7 +25,7 @@ public class TexChanger extends Monster {
     protected void specialEffectWhenBeingAttacked(Monster attacker) throws ResistToChooseCard, LogicException {
         PlayerController controller = GameController.getInstance().getPlayerControllerByPlayer(getOwner());
 
-        if(lastTurnActivated != GameController.instance.getGame().getTurn() &&
+        if (lastTurnActivated != GameController.instance.getGame().getTurn() &&
                 controller.askRespondToQuestion("Do you want to activate the effect of tex changer?", "yes", "no")) {
 
             lastTurnActivated = GameController.instance.getGame().getTurn();
@@ -39,11 +44,17 @@ public class TexChanger extends Monster {
                                 )
                         )
                 )[0];
-                controller.summon(chosen, true);
+                SummonAction action = new SummonAction(
+                        new SummonEvent(this.getOwner(), chosen, SummonType.SPECIAL, 0, SelectConditions.noCondition)
+                );
+                action.validateEffect();
+                action.runEffect();
                 CustomPrinter.println(String.format("<%s>'s <%s> activated successfully", this.getOwner().getUser().getUsername(), this.getName()), Color.Yellow);
                 CustomPrinter.println(this.asEffect(), Color.Gray);
-            } catch (LogicException | ResistToChooseCard e){
+            } catch (ResistToChooseCard e) {
                 CustomPrinter.println("We didn't summoned monster", Color.Red);
+            } catch (ValidateResult e) {
+                CustomPrinter.println(e.getMessage(), Color.Red);
             }
         } else {
             damageStep(attacker);

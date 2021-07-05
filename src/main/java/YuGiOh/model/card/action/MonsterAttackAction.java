@@ -8,10 +8,12 @@ public class MonsterAttackAction extends Action {
         super(event, effect);
     }
 
-    @Override
     public void validateEffect() throws ValidateResult {
         MonsterAttackEvent event = (MonsterAttackEvent) getEvent();
         ValidateTree.checkMonsterAttack(event.getAttacker(), event.getDefender());
         Card attacker = event.getAttacker();
+    }
+
+    public void preprocess() {
     }
 }

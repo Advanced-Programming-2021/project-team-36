@@ -23,7 +23,7 @@ public class SummonAction extends Action {
             preprocess();
             Player player = event.getPlayer();
             Monster monster = event.getMonster();
-            monster.setOwner(player);
+            monster.readyForBattle(player);
             if (event.getRequiredTributes() > 0)
                 for (Card card : event.getChosenCardsToTribute())
                     gameController.moveCardToGraveYard(card);
@@ -36,7 +36,14 @@ public class SummonAction extends Action {
         };
     }
 
-    private void preprocess() throws ResistToChooseCard {
+    public void validateEffect() throws ValidateResult {
+        SummonEvent event = (SummonEvent) getEvent();
+        ValidateTree.checkSummon(event.getPlayer(), event.getMonster(), event.getSummonType());
+        ValidateTree.checkTribute(event.getPlayer(), event.getRequiredTributes(), event.getTributeCondition());
+
+    }
+
+    protected void preprocess() throws ResistToChooseCard {
         SummonEvent event = (SummonEvent) getEvent();
         PlayerController playerController = GameController.getInstance().getPlayerControllerByPlayer(event.getPlayer());
         if (event.getRequiredTributes() > 0)
@@ -45,13 +52,5 @@ public class SummonAction extends Action {
             boolean AttackingState = playerController.askRespondToQuestion("which position you want to summon?", "defending", "attacking");
             event.setMonsterState((AttackingState ? MonsterState.DEFENSIVE_OCCUPIED : MonsterState.OFFENSIVE_OCCUPIED));
         }
-    }
-
-    @Override
-    public void validateEffect() throws ValidateResult {
-        SummonEvent event = (SummonEvent) getEvent();
-        ValidateTree.checkSummon(event.getPlayer(), event.getMonster(), event.getSummonType());
-        ValidateTree.checkTribute(event.getPlayer(), event.getRequiredTributes(), event.getTributeCondition());
-
     }
 }

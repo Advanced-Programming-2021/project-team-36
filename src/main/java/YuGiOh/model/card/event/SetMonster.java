@@ -1,13 +1,35 @@
 package YuGiOh.model.card.event;
 
+import YuGiOh.model.Player.Player;
+import YuGiOh.model.card.Card;
+import YuGiOh.model.enums.MonsterState;
+import YuGiOh.model.enums.SummonType;
+import YuGiOh.view.cardSelector.SelectCondition;
+import YuGiOh.view.cardSelector.SelectConditions;
 import lombok.Getter;
 import YuGiOh.model.card.Monster;
+import lombok.Setter;
+
+import java.util.List;
 
 public class SetMonster extends Event {
     @Getter
-    Monster monster;
-    public SetMonster(Monster monster){
+    private final Player player;
+    @Getter
+    private final Monster monster;
+    @Getter
+    private final int requiredTributes;
+    @Getter
+    private final SelectCondition tributeCondition;
+    @Getter
+    @Setter
+    private List<Card> chosenCardsToTribute;
+
+    public SetMonster(Player player, Monster monster) {
+        this.player = player;
         this.monster = monster;
+        requiredTributes = monster.getNumberOfRequiredTribute();
+        tributeCondition = SelectConditions.myMonsterFromMyMonsterZone(player);
     }
 
     @Override
