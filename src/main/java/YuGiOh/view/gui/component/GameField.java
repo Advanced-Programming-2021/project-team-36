@@ -10,26 +10,21 @@ import YuGiOh.model.Board;
 import YuGiOh.model.CardAddress;
 import YuGiOh.model.Game;
 import YuGiOh.model.card.Card;
-import YuGiOh.model.card.Magic;
-import YuGiOh.model.card.action.DirectAttackEvent;
-import YuGiOh.model.card.action.MagicActivation;
-import YuGiOh.model.card.action.MonsterAttackEvent;
+import YuGiOh.model.card.Monster;
+import YuGiOh.model.card.event.DirectAttackEvent;
+import YuGiOh.model.card.event.MagicActivation;
+import YuGiOh.model.card.event.MonsterAttackEvent;
 import YuGiOh.model.enums.Phase;
 import YuGiOh.model.enums.ZoneType;
 import YuGiOh.utils.CustomPrinter;
 import YuGiOh.view.cardSelector.ResistToChooseCard;
 import YuGiOh.view.gui.*;
-import YuGiOh.view.gui.component.AlertBox;
-import YuGiOh.view.gui.component.CardFrame;
-import YuGiOh.view.gui.component.PhaseLamps;
-import YuGiOh.view.gui.component.PileOfCardManager;
 import YuGiOh.view.gui.event.DropCardEvent;
 import YuGiOh.view.gui.event.DuelOverEvent;
 import YuGiOh.view.gui.event.RoundOverEvent;
+import YuGiOh.view.gui.sound.GameMediaHandler;
 import javafx.application.Platform;
-import javafx.beans.InvalidationListener;
 import javafx.beans.binding.DoubleBinding;
-import javafx.collections.ListChangeListener;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.*;
@@ -46,68 +41,10 @@ public class GameField extends Pane {
     @Getter
     private final DoubleBinding cardHeightProperty, cardWidthProperty, widthProperty, heightProperty;
     private final Game game;
-    private final ImageView background;
     private final GameMapLocation gameMapLocation;
     private final GameCardFrameManager cardFrameManager;
     private final GameCardMovementManager movementManager;
     private final PileOfCardManager[] deckPile, graveYardPile;
-
-    private void refreshHand(Board board){
-        for (int i = 0; i < board.getCardsOnHand().size(); i++) {
-            Card card = board.getCardsOnHand().get(i);
-            moveCardByAddress(new CardAddress(ZoneType.HAND, i+1, board.getOwner()), card);
-        }
-    }
-    private void refreshGraveYard(Board board){
-        int up = gameMapLocation.getPlayerUpDown(board.getOwner());
-        graveYardPile[up].close();
-        for (int i = 0; i < board.getGraveYard().size(); i++) {
-            Card card = board.getGraveYard().get(i);
-            moveCardByAddress(new CardAddress(ZoneType.GRAVEYARD, i+1, board.getOwner()), card);
-        }
-        graveYardPile[up].setCardFrames(board.getGraveYard().stream().map(cardFrameManager::getCardFrameByCard).collect(Collectors.toList()));
-    }
-    private void refreshMonsterZone(Board board){
-        board.getMonsterCardZone().forEach((id, card)->{
-            moveCardByAddress(new CardAddress(ZoneType.MONSTER, id, board.getOwner()), card);
-        });
-    }
-    private void refreshMagicZone(Board board){
-        board.getMagicCardZone().forEach((id, card)->{
-            moveCardByAddress(new CardAddress(ZoneType.MAGIC, id, board.getOwner()), card);
-        });
-    }
-    private void refreshFieldZone(Board board){
-        // why is id required for field zone?
-        if(board.getFieldZoneCard() != null) {
-            moveCardByAddress(new CardAddress(ZoneType.FIELD, 0, board.getOwner()), board.getFieldZoneCard());
-        }
-        Magic fieldSpell = null;
-        if(game.getFirstPlayer().getBoard().getFieldZoneCard() != null)
-            fieldSpell = game.getFirstPlayer().getBoard().getFieldZoneCard();
-        if(game.getSecondPlayer().getBoard().getFieldZoneCard() != null)
-            fieldSpell = game.getSecondPlayer().getBoard().getFieldZoneCard();
-        String address = "Field/" + (fieldSpell == null ? "Normal" : fieldSpell.getName()) + ".bmp";
-        background.setImage(new Image(Utils.getAsset(address).toURI().toString()));
-    }
-    private void refreshDeckZone(Board board) {
-        int up = gameMapLocation.getPlayerUpDown(board.getOwner());
-        deckPile[up].close();
-        for (int i = 0; i < board.getMainDeck().getCards().size(); i++) {
-            Card card = board.getMainDeck().getCards().get(i);
-            moveCardByAddress(new CardAddress(ZoneType.DECK, i+1, board.getOwner()), card);
-        }
-        deckPile[up].setCardFrames(board.getMainDeck().getCards().stream().map(cardFrameManager::getCardFrameByCard).collect(Collectors.toList()));
-    }
-
-    public void addBoardListeners(Board board){
-        board.getCardsOnHand().addListener((InvalidationListener) (observable)-> refreshHand(board));
-        board.getGraveYard().addListener((InvalidationListener) (observable)-> refreshGraveYard(board));
-        board.getMonsterCardZone().addListener((InvalidationListener) (observable)-> refreshMonsterZone(board));
-        board.getMagicCardZone().addListener((InvalidationListener) (observable)-> refreshMagicZone(board));
-        board.getFieldZoneCardObservableList().addListener((ListChangeListener<Magic>) (c)-> refreshFieldZone(board));
-        board.getMainDeck().getCards().addListener((InvalidationListener) (observable) -> refreshDeckZone(board));
-    }
 
     public GameField(Game game, DoubleBinding widthProperty, DoubleBinding heightProperty, GameMapLocation gameMapLocation){
         this.widthProperty = widthProperty;
@@ -117,14 +54,15 @@ public class GameField extends Pane {
 
         this.game = game;
         this.gameMapLocation = gameMapLocation;
-        this.cardFrameManager = new GameCardFrameManager();
+        this.cardFrameManager = new GameCardFrameManager(game);
+
         this.movementManager = new GameCardMovementManager(cardFrameManager, widthProperty, heightProperty, cardWidthProperty, cardHeightProperty);
         this.deckPile = createPiles(ZoneType.DECK);
         this.graveYardPile = createPiles(ZoneType.GRAVEYARD);
 
         new GuiReporter(this);
 
-        background = new ImageView(new Image(Utils.getAsset("Field/Normal.bmp").toURI().toString()));
+        ImageView background = new ImageView(new Image(Utils.getAsset("Field/Normal.bmp").toURI().toString()));
 
         minWidthProperty().bind(widthProperty);
         minHeightProperty().bind(heightProperty);
@@ -144,15 +82,24 @@ public class GameField extends Pane {
         getChildren().addAll(deckPile);
         getChildren().addAll(graveYardPile);
 
-        for(Board board : new Board[]{ game.getFirstPlayer().getBoard(), game.getSecondPlayer().getBoard()}){
-            createCards(board);
-            addBoardListeners(board);
-        }
+        createCards(game.getFirstPlayer().getBoard());
+        createCards(game.getSecondPlayer().getBoard());
+
+        this.cardFrameManager.setMoveHandler((cardFrame, to)->{
+            for(int i = 0; i < 2; i++) {
+                graveYardPile[i].close();
+                deckPile[i].close();
+            }
+            moveCardByAddress(to, cardFrame);
+            for(int i = 0; i < 2; i++) {
+                graveYardPile[i].close();
+                deckPile[i].close();
+            }
+        });
         background.toBack();
         setEventListeners();
     }
 
-    // todo this is tof
     private PileOfCardManager[] createPiles(ZoneType zoneType) {
         RatioLocation[] ratioLocation = new RatioLocation[] {
                 gameMapLocation.getLocationByCardAddress(new CardAddress(zoneType, 1, game.getFirstPlayer())),
@@ -160,26 +107,28 @@ public class GameField extends Pane {
         };
         return new PileOfCardManager[] {
             new PileOfCardManager(
+                    cardFrameManager,
+                    zoneType,
+                    game.getFirstPlayer(),
                     Direction.LEFT,
                     widthProperty.multiply(ratioLocation[0].xRatio),
                     heightProperty.multiply(ratioLocation[0].yRatio),
                     widthProperty.multiply(ratioLocation[0].xRatio),
                     heightProperty.multiply(ratioLocation[0].yRatio),
                     widthProperty.multiply(ratioLocation[0].xRatio),
-                    heightProperty.multiply(ratioLocation[0].yRatio - 0.4),
-                    cardWidthProperty,
-                    cardHeightProperty
+                    heightProperty.multiply(ratioLocation[0].yRatio - 0.4)
             ),
             new PileOfCardManager(
+                    cardFrameManager,
+                    zoneType,
+                    game.getSecondPlayer(),
                     Direction.RIGHT,
                     widthProperty.multiply(ratioLocation[1].xRatio),
                     heightProperty.multiply(ratioLocation[1].yRatio),
                     widthProperty.multiply(ratioLocation[1].xRatio),
                     heightProperty.multiply(ratioLocation[1].yRatio),
                     widthProperty.multiply(ratioLocation[1].xRatio),
-                    heightProperty.multiply(ratioLocation[1].yRatio + 0.4),
-                    cardWidthProperty,
-                    cardHeightProperty
+                    heightProperty.multiply(ratioLocation[1].yRatio + 0.4)
             )
         };
     }
@@ -206,15 +155,14 @@ public class GameField extends Pane {
             // todo this is just a sample
         });
         GuiReporter.getInstance().addGameEventHandler((GuiReporter.GameEventHandler<MonsterAttackEvent>) (event)->{
-            moveCardByAddress(event.getAttacker(), cardFrameManager.getCardAddressByCard(event.getDefender()), Duration.millis(300));
-            moveCardByAddress(event.getAttacker(), cardFrameManager.getCardAddressByCard(event.getAttacker()), Duration.millis(300));
+            DoubleBinding x = widthProperty.multiply(gameMapLocation.getLocationByCardAddress(cardFrameManager.getCardAddressByCard(event.getDefender())).xRatio);
+            DoubleBinding y = heightProperty.multiply(gameMapLocation.getLocationByCardAddress(cardFrameManager.getCardAddressByCard(event.getDefender())).yRatio);
+            AttackingSword.getOrCreateSwordForCard(cardFrameManager.getCardFrameByCard(event.getAttacker())).shoot(x, y);
         });
         GuiReporter.getInstance().addGameEventHandler((GuiReporter.GameEventHandler<DirectAttackEvent>) (event)->{
-            RatioLocation opponentPlayerLocation = gameMapLocation.getDirectPlayerLocation(event.getPlayer());
-            CardFrame cardFrame = cardFrameManager.getCardFrameByCard(event.getAttacker());
-            assert cardFrame != null;
-            movementManager.animateCardMoving(cardFrame, opponentPlayerLocation, Duration.millis(400), true);
-            movementManager.animateCardMoving(cardFrame, gameMapLocation.getLocationByCardAddress(game.getCardAddress(event.getAttacker())), Duration.millis(400), true);
+            DoubleBinding x = widthProperty.multiply(gameMapLocation.getDirectPlayerLocation(event.getPlayer()).xRatio);
+            DoubleBinding y = heightProperty.multiply(gameMapLocation.getDirectPlayerLocation(event.getPlayer()).yRatio);
+            AttackingSword.getOrCreateSwordForCard(cardFrameManager.getCardFrameByCard(event.getAttacker())).shoot(x, y);
         });
         GuiReporter.getInstance().addGameEventHandler((GuiReporter.GameEventHandler<MagicActivation>) (event)->{
             Platform.runLater(()-> {
@@ -241,37 +189,47 @@ public class GameField extends Pane {
     }
 
 
-    public Duration getAnimationDuration(CardAddress address, Card card){
-        if(cardFrameManager.getCardAddressByCard(card) == null)
-            return Duration.ZERO;
+    public Duration getAnimationDuration(CardAddress from, CardAddress to){
+        if(from == null || to == null)
+            throw new Error("this must never happen");
         double speedRatio = 1;
-        CardAddress previousAddress = cardFrameManager.getCardAddressByCard(card);
-        if(previousAddress.getZone().equals(address.getZone())){
-            if(address.isInGraveYard() || address.isInDeck())
+        if(from.getZone().equals(to.getZone())){
+            if(to.isInGraveYard() || to.isInDeck())
                 return Duration.ZERO;
         }
-        if(address.isInHand()) {
+        if(to.isInHand()) {
             return Duration.millis(100 * speedRatio);
-        }  else if(address.isInFieldZone()) {
+        }  else if(to.isInFieldZone()) {
             return Duration.millis(300 * speedRatio);
-        } else if(address.isInGraveYard()) {
-            if (previousAddress.isInGraveYard())
-                return Duration.millis(50 * speedRatio);
+        } else if(to.isInGraveYard()) {
             return Duration.millis(300 * speedRatio);
-        } else if(address.isInMagicZone()){
+        } else if(to.isInMagicZone()){
             return Duration.millis(300 * speedRatio);
-        } if(address.isInMonsterZone()) {
+        } if(to.isInMonsterZone()) {
             return Duration.millis(300 * speedRatio);
-        } if(address.isInDeck())
+        } if(to.isInDeck())
             return Duration.millis(100 * speedRatio);
         throw new Error("this will never happen");
     }
+
+    public boolean getAnimationBlocking(CardAddress from, CardAddress to){
+        if(from == null || to == null)
+            throw new Error("this must never happen");
+        if(from.getZone().equals(to.getZone())) {
+            ZoneType zoneType = from.getZone();
+            return zoneType.equals(ZoneType.HAND) || zoneType.equals(ZoneType.GRAVEYARD) || zoneType.equals(ZoneType.DECK);
+        }
+        return true;
+    }
+
 
     private void createCards(Board board) {
         board.getAllCards().forEach(card->{
             CardAddress address = board.getCardAddress(card);
             RatioLocation location = gameMapLocation.getLocationByCardAddress(address);
             CardFrame cardFrame = new CardFrame(this, card, cardWidthProperty, cardHeightProperty);
+            if(card instanceof Monster)
+                AttackingSword.getOrCreateSwordForCard(cardFrame);
             cardFrame.moveByBindingCoordinates(
                     widthProperty.multiply(location.xRatio),
                     heightProperty.multiply(location.yRatio)
@@ -279,22 +237,20 @@ public class GameField extends Pane {
             Platform.runLater(()-> getChildren().add(cardFrame));
             cardFrameManager.put(cardFrame, address);
         });
-        refreshGraveYard(board);
-        refreshDeckZone(board);
     }
 
-    private void moveCardByAddress(Card card, CardAddress address, Duration duration) {
+    private void moveCardByAddress(CardFrame cardFrame, CardAddress address, Duration duration) {
         movementManager.animateCardMoving(
-                cardFrameManager.getCardFrameByCard(card),
+                cardFrame,
                 gameMapLocation.getLocationByCardAddress(address),
                 duration,
-                true
+                getAnimationBlocking(cardFrameManager.getCardAddressByCard(cardFrame.getCard()), address)
         );
-        cardFrameManager.put(cardFrameManager.getCardFrameByCard(card), address);
+        cardFrameManager.put(cardFrame, address);
     }
 
-    private void moveCardByAddress(CardAddress address, Card card) {
-        moveCardByAddress(card, address, getAnimationDuration(address, card));
+    private void moveCardByAddress(CardAddress address, CardFrame cardFrame) {
+        moveCardByAddress(cardFrame, address, getAnimationDuration(cardFrameManager.getCardAddressByCard(cardFrame.getCard()), address));
     }
 
     public void addRunnableToMainThreadForCard(Card card, GameRunnable runnable){

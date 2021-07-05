@@ -29,10 +29,10 @@ public class HarpiesFeatherDuster extends Spell {
                 CardAddress cardAddress = new CardAddress(ZoneType.MAGIC, i, opponent.getPlayer());
                 Magic magic = (Magic) gameController.getGame().getCardByCardAddress(cardAddress);
                 if (magic != null)
-                    opponent.moveCardToGraveYard(magic);
+                    gameController.moveCardToGraveYard(magic);
             }
             if (opponent.getPlayer().getBoard().getFieldZoneCard() != null)
-                opponent.moveCardToGraveYard(opponent.getPlayer().getBoard().getFieldZoneCard());
+                gameController.moveCardToGraveYard(opponent.getPlayer().getBoard().getFieldZoneCard());
             CustomPrinter.println(String.format("<%s>'s <%s> activated successfully", this.getOwner().getUser().getUsername(), this.getName()), Color.Yellow);
             CustomPrinter.println(this, Color.Gray);
         };

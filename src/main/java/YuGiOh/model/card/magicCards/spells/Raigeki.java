@@ -26,7 +26,7 @@ public class Raigeki extends Spell {
                 CardAddress cardAddress = new CardAddress(ZoneType.MONSTER, i, opponent.getPlayer());
                 Monster monster = (Monster) gameController.getGame().getCardByCardAddress(cardAddress);
                 if (monster != null)
-                    opponent.moveCardToGraveYard(monster);
+                    gameController.moveCardToGraveYard(monster);
             }
             CustomPrinter.println(String.format("<%s>'s <%s> activated successfully", this.getOwner().getUser().getUsername(), this.getName()), Color.Yellow);
             CustomPrinter.println(this, Color.Gray);

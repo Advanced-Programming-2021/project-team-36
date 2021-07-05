@@ -9,7 +9,7 @@ import YuGiOh.model.card.Card;
 import YuGiOh.model.card.Monster;
 import YuGiOh.model.card.Trap;
 import YuGiOh.model.card.action.Action;
-import YuGiOh.model.card.action.AttackEvent;
+import YuGiOh.model.card.event.AttackEvent;
 import YuGiOh.model.card.action.Effect;
 import YuGiOh.utils.CustomPrinter;
 
@@ -27,10 +27,10 @@ public class MirrorForce extends Trap {
                 if (card instanceof Monster) {
                     Monster monster = (Monster) card;
                     if (monster.getMonsterState().equals(MonsterState.OFFENSIVE_OCCUPIED))
-                        GameController.getInstance().getPlayerControllerByPlayer(monster.getOwner()).moveCardToGraveYard(card);
+                        GameController.getInstance().moveCardToGraveYard(card);
                 }
             }
-            GameController.getInstance().getPlayerControllerByPlayer(this.getOwner()).moveCardToGraveYard(this);
+            GameController.getInstance().moveCardToGraveYard(this);
             CustomPrinter.println(String.format("<%s>'s <%s> activated successfully", this.getOwner().getUser().getUsername(), this.getName()), Color.Yellow);
             CustomPrinter.println(this, Color.Gray);
         };

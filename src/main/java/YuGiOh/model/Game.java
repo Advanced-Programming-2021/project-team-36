@@ -33,14 +33,14 @@ public class Game {
         if (firstPlayer.getUser().getUsername().equals(secondPlayer.getUser().getUsername()))
             throw new ModelException("you can't play with yourself");
 
-        Random random = new Random();
-        if (random.nextInt(2) == 0) {
+//        Random random = new Random();
+//        if (random.nextInt(2) == 0) {
             this.firstPlayer = firstPlayer;
             this.secondPlayer = secondPlayer;
-        } else {
-            this.firstPlayer = secondPlayer;
-            this.secondPlayer = firstPlayer;
-        }
+//        } else {
+//            this.firstPlayer = secondPlayer;
+//            this.secondPlayer = firstPlayer;
+//        }
         firstPlayer.getMainDeck().shuffleCards();
         secondPlayer.getMainDeck().shuffleCards();
 

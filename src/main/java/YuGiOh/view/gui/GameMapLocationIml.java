@@ -53,7 +53,6 @@ public class GameMapLocationIml extends GameMapLocation {
 
     @Override
     public RatioLocation getPhaseLocation(Phase phase) {
-        // todo write this one by one to be more exact
         return new RatioLocation(0.001, 0.13 + 0.13 * phase.ordinal());
     }
 

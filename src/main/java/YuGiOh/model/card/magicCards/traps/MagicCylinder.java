@@ -2,11 +2,11 @@ package YuGiOh.model.card.magicCards.traps;
 
 import YuGiOh.controller.GameController;
 import YuGiOh.controller.LogicException;
-import YuGiOh.model.card.action.Event;
+import YuGiOh.model.card.Monster;
 import YuGiOh.model.enums.Icon;
 import YuGiOh.model.enums.Status;
 import YuGiOh.model.card.action.Action;
-import YuGiOh.model.card.action.AttackEvent;
+import YuGiOh.model.card.event.AttackEvent;
 import YuGiOh.model.card.action.Effect;
 import YuGiOh.model.card.Trap;
 
@@ -18,26 +18,27 @@ public class MagicCylinder extends Trap {
 
     @Override
     protected Effect getEffect() {
-        return ()->{
-            if(!canActivateEffect())
+        return () -> {
+            if (!canActivateEffect())
                 throw new LogicException("You can't activate this effect");
             AttackEvent event = (AttackEvent) getChain().pop().getEvent();
+            Monster attacker = (Monster) event.getAttacker();
             GameController.getInstance().decreaseLifePoint(
                     GameController.getInstance().getGame().getOtherPlayer(this.getOwner()),
-                    event.getAttacker().getAttackDamage(),
+                    attacker.getAttackDamage(),
                     true
             );
-            event.getAttacker().setAllowAttack(false);
-            GameController.getInstance().getPlayerControllerByPlayer(this.getOwner()).moveCardToGraveYard(this);
+            attacker.setAllowAttack(false);
+            GameController.getInstance().moveCardToGraveYard(this);
         };
     }
 
     @Override
     public boolean canActivateEffect() {
-        if(getChain().isEmpty())
+        if (getChain().isEmpty())
             return false;
         Action action = getChain().peek();
-        if(action.getEvent() instanceof AttackEvent){
+        if (action.getEvent() instanceof AttackEvent) {
             AttackEvent event = (AttackEvent) action.getEvent();
             return event.getAttacker().getOwner().equals(GameController.getInstance().getGame().getOtherPlayer(this.getOwner()));
         }

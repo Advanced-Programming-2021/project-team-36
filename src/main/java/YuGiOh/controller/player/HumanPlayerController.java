@@ -63,19 +63,10 @@ public class HumanPlayerController extends PlayerController {
         List<String> choices = new ArrayList<>();
         for(int i = 0; i < actions.size(); i++)
             choices.add(actions.get(i).getEvent().getActivationQuestion());
-        try {
-            int choice = getView().askUserToChoose(
-                    "choose one of this options", choices
-            );
-            addActionToChain(actions.get(choice));
-        } catch (ResistToChooseCard e){
-            boolean retry = getView().askUser("Do you want to choose another one?", "yes", "no");
-            if (retry) {
-                doRespondToChain();
-                return;
-            }
-            throw new ResistToChooseCard();
-        }
+        int choice = getView().askUserToChoose(
+                "choose one of this options", choices
+        );
+        addActionToChain(actions.get(choice));
     }
 
     @Override

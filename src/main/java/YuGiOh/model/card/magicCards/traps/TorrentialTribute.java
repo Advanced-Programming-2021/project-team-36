@@ -9,7 +9,7 @@ import YuGiOh.model.card.Monster;
 import YuGiOh.model.card.Trap;
 import YuGiOh.model.card.action.Action;
 import YuGiOh.model.card.action.Effect;
-import YuGiOh.model.card.action.SummonEvent;
+import YuGiOh.model.card.event.SummonEvent;
 import YuGiOh.utils.CustomPrinter;
 
 public class TorrentialTribute extends Trap {
@@ -23,9 +23,9 @@ public class TorrentialTribute extends Trap {
         return () -> {
             for (Card card : GameController.getInstance().getGame().getAllCardsOnBoard()) {
                 if (card instanceof Monster)
-                    GameController.getInstance().getPlayerControllerByPlayer(card.getOwner()).moveCardToGraveYard(card);
+                    GameController.getInstance().moveCardToGraveYard(card);
             }
-            GameController.getInstance().getPlayerControllerByPlayer(this.getOwner()).moveCardToGraveYard(this);
+            GameController.getInstance().moveCardToGraveYard(this);
             CustomPrinter.println(String.format("<%s>'s <%s> activated successfully", this.getOwner().getUser().getUsername(), this.getName()), Color.Yellow);
             CustomPrinter.println(this, Color.Gray);
         };

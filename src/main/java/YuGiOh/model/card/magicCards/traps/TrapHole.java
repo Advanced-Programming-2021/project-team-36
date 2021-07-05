@@ -2,7 +2,7 @@ package YuGiOh.model.card.magicCards.traps;
 
 import YuGiOh.controller.GameController;
 import YuGiOh.model.card.action.Effect;
-import YuGiOh.model.card.action.SummonEvent;
+import YuGiOh.model.card.event.SummonEvent;
 import YuGiOh.model.enums.Color;
 import YuGiOh.model.enums.Icon;
 import YuGiOh.model.enums.Status;
@@ -22,8 +22,8 @@ public class TrapHole extends Trap {
         assert canActivateEffect();
         Monster monster = ((SummonEvent) getChain().peek().getEvent()).getMonster();
         return ()->{
-            GameController.getInstance().getPlayerControllerByPlayer(monster.getOwner()).moveCardToGraveYard(monster);
-            GameController.getInstance().getPlayerControllerByPlayer(this.getOwner()).moveCardToGraveYard(this);
+            GameController.getInstance().moveCardToGraveYard(monster);
+            GameController.getInstance().moveCardToGraveYard(this);
             getChain().pop(); // do not summon
             CustomPrinter.println(String.format("<%s>'s <%s> activated successfully", this.getOwner().getUser().getUsername(), this.getName()), Color.Yellow);
             CustomPrinter.println(this, Color.Gray);

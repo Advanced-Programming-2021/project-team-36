@@ -18,17 +18,20 @@ public class Utils {
         }
         return file;
     }
+    public static Image getImage(String address) {
+        return new Image(getAsset(address).toURI().toString());
+    }
     public static Image getMonsterImage(String name){
-        return new Image(getAsset("Cards/Monsters/" + name + ".jpg").toURI().toString());
+        return getImage("Cards/Monsters/" + name + ".jpg");
     }
     public static Image getTrapImage(String name){
-        return new Image(getAsset("Cards/SpellTrap/" + name + ".jpg").toURI().toString());
+        return getImage("Cards/SpellTrap/" + name + ".jpg");
     }
     public static Image getSpellImage(String name){
-        return new Image(getAsset("Cards/SpellTrap/" + name + ".jpg").toURI().toString());
+        return getImage("Cards/SpellTrap/" + name + ".jpg");
     }
     public static Image getTexture(String name){
-        return new Image(getAsset("Texture/" + name).toURI().toString());
+        return getImage("Texture/" + name);
     }
     public static Image getCardImage(Card card){
         if(card instanceof Monster) {

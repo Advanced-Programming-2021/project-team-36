@@ -1,13 +1,14 @@
-package YuGiOh.model.card.action;
+package YuGiOh.model.card.event;
 
+import YuGiOh.model.card.Card;
 import YuGiOh.model.card.Monster;
 import lombok.Getter;
 
 public abstract class AttackEvent extends Event{
     @Getter
-    private final Monster attacker;
+    private final Card attacker;
 
-    public AttackEvent(Monster attacker){
+    public AttackEvent(Card attacker){
         this.attacker = attacker;
     }
 

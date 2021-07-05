@@ -1,4 +1,4 @@
-package YuGiOh.model.card.action;
+package YuGiOh.model.card.event;
 
 import lombok.Getter;
 import YuGiOh.model.card.Monster;

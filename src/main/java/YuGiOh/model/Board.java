@@ -167,6 +167,15 @@ public class Board {
         }
     }
 
+    public void addMonster(Monster monster) {
+        for (int i = 1; i <= 5; i++) {
+            if (getMonsterCardZone().get(i) == null) {
+                addCardToBoard(monster, new CardAddress(ZoneType.MONSTER, i, owner));
+                break;
+            }
+        }
+    }
+
     public void addMagic(Magic magic) {
         if (magic.getIcon().equals(Icon.FIELD))
             addCardToBoard((Card) magic, new CardAddress(ZoneType.FIELD, 1, owner));
@@ -189,7 +198,6 @@ public class Board {
 
     public void moveCardToGraveYard(Card card) {
         removeCardIfHas(card);
-        card.outOfBattle();
         graveYard.add(card);
     }
 
