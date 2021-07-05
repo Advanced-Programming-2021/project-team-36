@@ -34,14 +34,6 @@ public class MainMenuController extends BaseMenuController {
         instance = this;
     }
 
-    public void start(Stage primaryStage) {
-        try {
-            Pane root = FXMLLoader.load(Main.class.getResource("/fxml/MainMenu.fxml"));
-            MainMenuView.getInstance().start(primaryStage, root);
-        } catch (IOException ignored) {
-        }
-    }
-
     public void startNewDuel(User secondUser, int round) throws RoutingException, ModelException {
         Duel duel = new Duel(
                 new HumanPlayer(user),
@@ -81,27 +73,5 @@ public class MainMenuController extends BaseMenuController {
     public void logout() {
         LoginMenuView.getInstance().run();
         CustomPrinter.println("user logged out successfully!", Color.Default);
-    }
-
-    @Override
-    public void exitMenu() throws RoutingException {
-        MainMenuController.getInstance().logout();
-    }
-
-    @Override
-    public BaseMenuController getNavigatingMenuObject(Class<? extends BaseMenuController> menu) throws RoutingException {
-        if (menu.equals(LoginMenuController.class))
-            throw new RoutingException("you must logout for that!");
-        if (menu.equals(MainMenuController.class))
-            throw new RoutingException("can't navigate to your current menu!");
-        if (menu.equals(ProfileMenuController.class))
-            return new ProfileMenuController(user);
-//        if (menu.equals(ScoreboardMenuController.class))
-//            return new ScoreboardMenuController(user);
-//        if (menu.equals(ShopMenuController.class))
-//            return new ShopMenuController(user);
-//        if (menu.equals(DeckMenuController.class))
-//            return new DeckMenuController(user);
-        throw new RoutingException("menu navigation is not possible");
     }
 }

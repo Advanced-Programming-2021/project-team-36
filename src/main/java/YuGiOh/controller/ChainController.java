@@ -1,5 +1,6 @@
 package YuGiOh.controller;
 
+import YuGiOh.controller.events.GameExceptionEvent;
 import YuGiOh.controller.events.RoundOverExceptionEvent;
 import YuGiOh.controller.player.PlayerController;
 import YuGiOh.model.Player.Player;
@@ -47,7 +48,10 @@ public class ChainController {
                     for (Card card : GameController.getInstance().getGame().getAllCardsOnBoard())
                         if (card instanceof SpellAbsorption && card.isFacedUp())
                             ((SpellAbsorption) card).onSpellResolve();
-            } catch (Exception ignored) {
+            } catch (Exception e) {
+                // todo inja game exception event ro nabayad befrestim bala?
+                if(!(e instanceof GameExceptionEvent))
+                    e.printStackTrace();
             }
         }
 

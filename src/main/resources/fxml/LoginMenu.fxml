@@ -28,9 +28,9 @@
                     <Label text=" Password:" styleClass="textCss"/>
                 </VBox>
                 <VBox alignment="CENTER" spacing="5">
-                    <TextField styleClass="text-field" fx:id="registerUsernameTextField" prefWidth="110"/>
-                    <TextField styleClass="text-field" fx:id="registerNicknameTextField" prefWidth="110"/>
-                    <TextField styleClass="text-field" fx:id="registerPasswordTextField" prefWidth="110"/>
+                    <TextField styleClass="text-field" promptText="username" fx:id="registerUsernameTextField" prefWidth="110"/>
+                    <TextField styleClass="text-field" promptText="nickname" fx:id="registerNicknameTextField" prefWidth="110"/>
+                    <TextField styleClass="text-field" promptText="password" fx:id="registerPasswordTextField" prefWidth="110"/>
                 </VBox>
                 <padding><Insets bottom="40"/></padding>
             </HBox>
@@ -49,8 +49,8 @@
                     <Label text=" Password:" styleClass="textCss"/>
                 </VBox>
                 <VBox alignment="CENTER" spacing="5">
-                    <TextField styleClass="text-field" fx:id="loginUsernameTextField" prefWidth="110"/>
-                    <TextField styleClass="text-field" fx:id="loginPasswordTextField" prefWidth="110"/>
+                    <TextField styleClass="text-field" promptText="username" fx:id="loginUsernameTextField" prefWidth="110"/>
+                    <TextField styleClass="text-field" promptText="password" fx:id="loginPasswordTextField" prefWidth="110"/>
                 </VBox>
                 <padding><Insets bottom="40"/></padding>
             </HBox>

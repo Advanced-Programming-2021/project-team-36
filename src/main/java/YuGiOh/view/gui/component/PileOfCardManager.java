@@ -1,8 +1,13 @@
 package YuGiOh.view.gui.component;
 
 import YuGiOh.controller.MainGameThread;
+import YuGiOh.model.CardAddress;
+import YuGiOh.model.Player.Player;
+import YuGiOh.model.enums.ZoneType;
 import YuGiOh.view.gui.Direction;
+import YuGiOh.view.gui.GameCardFrameManager;
 import YuGiOh.view.gui.component.CardFrame;
+import javafx.application.Platform;
 import javafx.beans.binding.DoubleBinding;
 import javafx.geometry.Insets;
 import javafx.scene.layout.*;
@@ -15,16 +20,18 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class PileOfCardManager extends StackPane {
-    private final List<CardFrame> cardFrames;
     private final Direction openButtonPosition;
-    private final DoubleBinding closeX, closeY, openX, openY, startX, startY, cardWidthProperty, cardHeightProperty;
+    private final DoubleBinding closeX, closeY, openX, openY, startX, startY;
     private final Text counterText;
+    private final ZoneType zoneType;
+    private final Player owner;
+    private final GameCardFrameManager manager;
 
     private boolean open = false;
 
     // todo we don't use open button position now
 
-    public PileOfCardManager(Direction openButtonPosition, DoubleBinding startX, DoubleBinding startY, DoubleBinding closeX, DoubleBinding closeY, DoubleBinding openX, DoubleBinding openY, DoubleBinding cardWidthProperty, DoubleBinding cardHeightProperty) {
+    public PileOfCardManager(GameCardFrameManager manager, ZoneType zoneType, Player owner, Direction openButtonPosition, DoubleBinding startX, DoubleBinding startY, DoubleBinding closeX, DoubleBinding closeY, DoubleBinding openX, DoubleBinding openY) {
         this.openButtonPosition = openButtonPosition;
         this.startX = startX;
         this.startY = startY;
@@ -32,10 +39,9 @@ public class PileOfCardManager extends StackPane {
         this.closeY = closeY;
         this.openX = openX;
         this.openY = openY;
-        this.cardWidthProperty = cardWidthProperty;
-        this.cardHeightProperty = cardHeightProperty;
-
-        cardFrames = new ArrayList<>();
+        this.manager = manager;
+        this.zoneType = zoneType;
+        this.owner = owner;
 
         layoutXProperty().bind(startX);
         layoutYProperty().bind(startY);
@@ -50,18 +56,24 @@ public class PileOfCardManager extends StackPane {
         counterText.setFont(Font.font(20));
 
         getChildren().add(counterText);
+
+        refresh();
+    }
+
+    private List<CardFrame> getCardFrames() {
+        return manager.getCardsByZoneAndPlayer(zoneType, owner);
     }
 
     public void open() {
         if(!open)
             open = true;
-        cardFrames.forEach(cardFrame -> cardFrame.getForceFlipCardAnimation().set(true));
+        getCardFrames().forEach(cardFrame -> cardFrame.getForceFlipCardAnimation().set(true));
         refresh();
     }
     public void close() {
         if(open)
             open = false;
-        cardFrames.forEach(cardFrame -> cardFrame.getForceFlipCardAnimation().set(false));
+        getCardFrames().forEach(cardFrame -> cardFrame.getForceFlipCardAnimation().set(false));
         refresh();
     }
     public void toggle() {
@@ -70,16 +82,11 @@ public class PileOfCardManager extends StackPane {
         else
             open();
     }
-    public void setCardFrames(List<CardFrame> cardFrames) {
-        close();
-        this.cardFrames.clear();
-        this.cardFrames.addAll(cardFrames);
-        close();
-    }
     private void refresh() {
         MainGameThread.getInstance().blockUnblockRunningThreadAndDoInGui(()-> {
             DoubleBinding lastX = open ? openX : closeX;
             DoubleBinding lastY = open ? openY : closeY;
+            List<CardFrame> cardFrames = getCardFrames();
             for (int i = 0; i < cardFrames.size(); i++) {
                 cardFrames.get(i).moveByBindingCoordinates(
                         startX.add(lastX.add(startX.negate()).divide(cardFrames.size()).multiply(i)),
@@ -87,7 +94,7 @@ public class PileOfCardManager extends StackPane {
                 );
                 cardFrames.get(i).toFront();
             }
-            toFront();
+            setViewOrder(-3);
             if(cardFrames.size() >= 1) {
                 setVisible(true);
                 counterText.setText(String.valueOf(cardFrames.size()));

@@ -12,14 +12,16 @@ import YuGiOh.model.Game;
 import YuGiOh.model.Player.AIPlayer;
 import YuGiOh.model.Player.HumanPlayer;
 import YuGiOh.model.User;
+import YuGiOh.model.card.Card;
 import YuGiOh.model.enums.AIMode;
 import YuGiOh.utils.Cheat;
 import YuGiOh.utils.DatabaseHandler;
 import javafx.application.Application;
 import javafx.stage.Stage;
 
-public class DummyStarter extends Application {
+import java.util.Random;
 
+public class DummyStarter extends Application {
     @Override
     public void start(Stage primaryStage) {
         try {
@@ -30,14 +32,28 @@ public class DummyStarter extends Application {
 
             User abolfazl = User.getUserByUsername("Abolfazl");
             User fakeUser2 = new User("magool", "magool.m", "123");
-            Cheat.buildSuperUser(fakeUser2);
-            Cheat.buildSuperUser(abolfazl);
+
+            Card allCards[] = YuGiOh.model.card.Utils.getAllCards();
+            Random random = new Random();
+            int length = 1;
+            String some_cards1[] = new String[length];
+            String some_cards2[] = new String[length];
+            for (int i = 0; i < length; i ++) {
+                some_cards1[i] = "AxeRaider";//allCards[random.nextInt(allCards.length)].getName();
+                some_cards2[i] = "AxeRaider";//allCards[random.nextInt(allCards.length)].getName();
+            }
+            Cheat.buildSuperUserWithManyOfThisCards(fakeUser2, 40, some_cards1);
+            Cheat.buildSuperUserWithManyOfThisCards(abolfazl, 40, some_cards2);
+            //Cheat.buildSuperUserWithManyOfThisCards(fakeUser2, 40, "AxeRaider", "TheTricky", "MonsterReborn", "ManEaterBug");
+            //Cheat.buildSuperUserWithManyOfThisCards(abolfazl, 40, "AxeRaider", "TheTricky", "MonsterReborn", "ManEaterBug");
 //            Cheat.buildSuperUser(fakeUser2);
 
             Duel duel = new Duel(
 //                    new HumanPlayer(abolfazl),
                     new HumanPlayer(abolfazl),
-                    new AIPlayer(fakeUser2, AIMode.AGGRESSIVE),
+                    new HumanPlayer(fakeUser2),
+//                    new AIPlayer(abolfazl, AIMode.AGGRESSIVE),
+//                    new AIPlayer(fakeUser2, AIMode.NORMAL),
                     3
             );
             new DuelMenuController(duel);

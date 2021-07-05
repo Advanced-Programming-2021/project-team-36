@@ -13,6 +13,9 @@ import YuGiOh.utils.CustomPrinter;
 import YuGiOh.utils.Debugger;
 import YuGiOh.utils.RoutingException;
 import YuGiOh.view.DuelMenuView;
+import YuGiOh.view.gui.GuiReporter;
+import YuGiOh.view.gui.event.DuelOverEvent;
+import YuGiOh.view.gui.event.RoundOverEvent;
 import lombok.Getter;
 import YuGiOh.model.enums.MonsterState;
 
@@ -157,6 +160,7 @@ public class DuelMenuController extends BaseMenuController {
             try {
                 gameController.control();
             } catch (RoundOverExceptionEvent roundOverEvent) {
+                GuiReporter.getInstance().report(new RoundOverEvent(roundOverEvent));
                 try {
                     duel.goNextRound(roundOverEvent);
                 } catch (ModelException e) {
@@ -165,6 +169,6 @@ public class DuelMenuController extends BaseMenuController {
                 }
             }
         }
-        //        ProgramController.getInstance().navigateToMenu(MainMenuController.getInstance());
+        GuiReporter.getInstance().report(new DuelOverEvent());
     }
 }

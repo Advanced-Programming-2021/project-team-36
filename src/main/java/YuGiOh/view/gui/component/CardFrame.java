@@ -18,6 +18,7 @@ import javafx.beans.binding.BooleanBinding;
 import javafx.beans.binding.DoubleBinding;
 import javafx.beans.property.BooleanProperty;
 import javafx.beans.property.SimpleBooleanProperty;
+import javafx.beans.property.SimpleDoubleProperty;
 import javafx.geometry.Bounds;
 import javafx.scene.control.ContextMenu;
 import javafx.scene.control.MenuItem;
@@ -40,9 +41,15 @@ public class CardFrame extends DraggablePane {
     private final Image faceUpImage, faceDownImage;
     private final CardRotateTransition flipCardAnimation;
     private final JumpingAnimation jumpingAnimation;
+    private final GameField gameRoot;
 
     @Getter
     private final SimpleBooleanProperty forceImageFaceUp, forceFlipCardAnimation;
+    private final SimpleDoubleProperty widthCompressionProperty;
+
+    public void compressImage(double ratio) {
+        widthCompressionProperty.set(ratio);
+    }
 
     public Image getImage(){
         return imageView.getImage();
@@ -52,50 +59,16 @@ public class CardFrame extends DraggablePane {
         return imageView.getImage().equals(faceUpImage);
     }
 
-    public void bindImageWidth(DoubleBinding binding){
-        imageView.fitWidthProperty().unbind();
-        imageView.fitWidthProperty().bind(binding);
-    }
-    public void bindImageHeight(DoubleBinding binding){
-        imageView.fitHeightProperty().unbind();
-        imageView.fitHeightProperty().bind(binding);
-    }
-    public void setImageTranslateX(double value) {
-        imageView.setTranslateX(value);
-    }
-    public void changeActivationFlippingAnimation(boolean activate) {
-        if(activate)
-            flipCardAnimation.activate();
-        else
-            flipCardAnimation.deactivate();
-    }
-    public void changeActivationJumpingAnimation(boolean activate) {
-        if(activate)
-            jumpingAnimation.activate();
-        else
-            jumpingAnimation.deactivate();
-    }
-
-    private SimpleBooleanProperty currentPlayerCanSee() {
-        SimpleBooleanProperty ret = new SimpleBooleanProperty(false);
-        Game game = GameController.getInstance().getGame();
-        Runnable refresh = ()->{
-            CardAddress address = game.getCardAddress(card);
-            if(game.getCurrentPlayer().equals(address.getOwner())){
-                ret.set(!address.isInGraveYard() && !address.isInDeck());
-            } else {
-                ret.set(card.isFacedUp());
-            }
-        };
-        refresh.run();
-        game.phaseProperty().addListener((InvalidationListener) (o) -> refresh.run());
-        // todo add owner
-        return ret;
+    private BooleanBinding currentPlayerCanSee() {
+        return Bindings.when(ObservableBuilder.myTurnBinding(card))
+                .then(Bindings.and(ObservableBuilder.inGraveyardBinding(card).not(), ObservableBuilder.inDeckBinding(card).not()))
+                .otherwise(card.facedUpProperty());
     }
 
     CardFrame(GameField gameRoot, Card card, DoubleBinding widthProperty, DoubleBinding heightProperty){
         super();
 
+        this.gameRoot = gameRoot;
         this.card = card;
         this.faceDownImage = new Image(Utils.getAsset("Cards/hidden.png").toURI().toString());
         this.faceUpImage = Utils.getCardImage(card);
@@ -106,41 +79,51 @@ public class CardFrame extends DraggablePane {
         this.forceImageFaceUp = new SimpleBooleanProperty(false);
         this.forceFlipCardAnimation = new SimpleBooleanProperty(false);
 
-        BooleanBinding inHandObservable = ObservableBuilder.getInHandBinding(card);
+        BooleanBinding inHandBinding = ObservableBuilder.getInHandBinding(card);
 
-        SimpleBooleanProperty currentPlayerCanSee = currentPlayerCanSee();
-        DoubleBinding inHandCof = Bindings.when(inHandObservable).then(1.3).otherwise(1.0);
+        DoubleBinding inHandCof = Bindings.when(inHandBinding).then(1.3).otherwise(1.0);
         this.widthProperty = widthProperty.multiply(inHandCof);
         this.heightProperty = heightProperty.multiply(inHandCof);
 
         imageView.imageProperty().bind(Bindings.when(forceImageFaceUp).then(faceUpImage).otherwise(faceDownImage));
 
-        SimpleBooleanProperty flipCardActivation = new SimpleBooleanProperty(false);
-        flipCardActivation.bind(hoverProperty().or(this.forceFlipCardAnimation).or(currentPlayerCanSee));
-
-        flipCardAnimation = new CardRotateTransition(this, flipCardActivation, widthProperty);
+        flipCardAnimation = new CardRotateTransition(this, currentPlayerCanSee().or(forceFlipCardAnimation).or(hoverProperty()));
         flipCardAnimation.start();
 
-        SimpleBooleanProperty jumpingActivation = new SimpleBooleanProperty(false);
-        jumpingActivation.bind(hoverProperty().and(inHandObservable).and(ObservableBuilder.myTurnBinding(card)));
-        jumpingAnimation = new JumpingAnimation(this, jumpingActivation);
+        jumpingAnimation = new JumpingAnimation(this, hoverProperty().and(inHandBinding.and(ObservableBuilder.myTurnBinding(card))));
         jumpingAnimation.start();
 
-        bindImageHeight(this.heightProperty);
-        bindImageWidth(this.widthProperty);
-        minWidthProperty().bind(this.widthProperty);
-        minHeightProperty().bind(this.heightProperty);
+        this.widthCompressionProperty = new SimpleDoubleProperty(1);
+        imageView.fitWidthProperty().bind(this.widthProperty.multiply(widthCompressionProperty));
+        imageView.fitHeightProperty().bind(this.heightProperty);
+        imageView.translateXProperty().bind(this.widthProperty.multiply(widthCompressionProperty.negate().add(1).divide(2)));
 
-        if(card instanceof Monster)
+        if(card instanceof Monster) {
             rotateProperty().bind(Bindings.when(((Monster) card).isDefensive()).then(90).otherwise(0));
+        }
 
         effectProperty().bind(
                 Bindings.when(hoverProperty().or(isSelected))
                         .then((Effect) new DropShadow(28, Color.BLUE))
                         .otherwise((Effect) null)
         );
+        addEventListeners();
+    }
+
+    private void addEventListeners() {
         setOnMouseClicked(e->{
             GuiReporter.getInstance().report(new ClickOnCardEvent(this));
+
+
+            // todo remove this in production. just debug info
+            System.out.println("CARD: " + card);
+            System.out.println("card faced up: " + card.facedUpProperty().get());
+            System.out.println("image faced up: " + isFacedUp());
+            System.out.println("actual zone: " + GameController.getInstance().getGame().getCardZoneType(card));
+            System.out.println("force image face up : " + forceImageFaceUp.get());
+            System.out.println("force flip card animation: " + forceFlipCardAnimation.get());
+            if(card instanceof Monster)
+                System.out.println("monster state: " + ((Monster) card).getMonsterState());
         });
         setOnContextMenuRequested(e->{
             ContextMenu contextMenu = new ContextMenu();
@@ -191,6 +174,7 @@ public class CardFrame extends DraggablePane {
             contextMenu.setStyle("-fx-background-color: #006699;");
             contextMenu.show(this, e.getScreenX(), e.getScreenY());
         });
+        viewOrderProperty().bind(Bindings.when(hoverProperty()).then(-2).otherwise(-1));
     }
 
     public DoubleBinding getCenterXProperty() {

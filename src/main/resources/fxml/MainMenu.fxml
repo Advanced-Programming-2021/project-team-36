@@ -10,19 +10,19 @@
     <StackPane prefWidth="400" prefHeight="400" fx:id="mainPane" styleClass="main">
         <Label text="YuGiOh!!!" StackPane.alignment="TOP_CENTER" styleClass="title"/>
         <VBox alignment="CENTER" spacing="7">
-            <Button alignment="CENTER" defaultButton="true"
+            <Button alignment="CENTER" defaultButton="true" onMouseClicked="#startNewDuel"
                     mnemonicParsing="false" text="Start New Duel" styleClass="button"/>
-            <Button alignment="CENTER" defaultButton="true"
+            <Button alignment="CENTER" defaultButton="true" onMouseClicked="#startNewDuelWithAI"
                     mnemonicParsing="false" text="Start New Duel With AI" styleClass="button"/>
-            <Button alignment="CENTER" defaultButton="true"
+            <Button alignment="CENTER" defaultButton="true" onMouseClicked="#startAIVersusAIDuel"
                     mnemonicParsing="false" text="Start AI vs. AI Duel" styleClass="button"/>
             <Button alignment="CENTER" defaultButton="true" onMouseClicked="#loadProfileMenu"
                     mnemonicParsing="false" text="Profile Menu" styleClass="button"/>
-            <Button alignment="CENTER" defaultButton="true"
+            <Button alignment="CENTER" defaultButton="true" onMouseClicked="#loadScoreboardMenu"
                     mnemonicParsing="false" text="Scoreboard Menu" styleClass="button"/>
-            <Button alignment="CENTER" defaultButton="true"
+            <Button alignment="CENTER" defaultButton="true" onMouseClicked="#loadDeckMenu"
                     mnemonicParsing="false" text="Deck Menu" styleClass="button"/>
-            <Button alignment="CENTER" defaultButton="true"
+            <Button alignment="CENTER" defaultButton="true" onMouseClicked="#loadShopMenu"
                     mnemonicParsing="false" text="Shop Menu" styleClass="button"/>
             <Button alignment="CENTER" defaultButton="true" onMouseClicked="#logout"
                     mnemonicParsing="false" text="Logout" styleClass="button"/>

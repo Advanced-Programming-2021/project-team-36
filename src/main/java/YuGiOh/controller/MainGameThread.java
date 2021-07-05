@@ -4,6 +4,7 @@ import javafx.application.Platform;
 import lombok.Getter;
 
 import java.util.LinkedList;
+import java.util.Optional;
 import java.util.Queue;
 import java.util.concurrent.atomic.AtomicReference;
 
@@ -11,24 +12,46 @@ public class MainGameThread extends Thread {
     @Getter
     private static MainGameThread instance;
     private final Object lock = new Object();
+
     Queue<Task<?>> tasks = new LinkedList<>();
 
     private boolean runQueuedTasksMode = false;
+    private int numberOfLocks = 0;
 
     public void lockRunningThreadIfMain(){
-        if(Thread.currentThread() instanceof MainGameThread) {
-            synchronized (lock) {
-                try {
-                    lock.wait();
-                } catch (InterruptedException e) {
-                }
-            }
-        }
+//        if(Thread.currentThread() instanceof MainGameThread) {
+            numberOfLocks += 1;
+            if(numberOfLocks >= 2)
+                return;
+
+//            synchronized (lock) {
+//                try {
+//                    System.out.println("LOCKED");
+//                    for (StackTraceElement stackTraceElement : Thread.currentThread().getStackTrace()) {
+//                        System.out.println(stackTraceElement);
+//                    }
+//
+//                    lock.wait();
+//                } catch (InterruptedException e) {
+//                }
+//            }
+//        }
+
+        this.suspend();
     }
     public void unlockTheThreadIfMain(){
-        synchronized (lock) {
-            lock.notify();
-        }
+        numberOfLocks -= 1;
+        if(numberOfLocks > 0)
+            return;
+//        synchronized (lock) {
+//            System.out.println("UNLOCKED ");
+//            for (StackTraceElement stackTraceElement : Thread.currentThread().getStackTrace()) {
+//                System.out.println(stackTraceElement);
+//            }
+//            lock.notify();
+//        }
+
+        this.resume();
     }
 
     public MainGameThread(Runnable runnable){
@@ -64,6 +87,9 @@ public class MainGameThread extends Thread {
     }
 
     public synchronized void addTask(MainGameThread.Task<?> t){
+        // todo check it works or not. instead of putting in a list we just replace the last one
+        // tasks.add(t);
+        tasks.clear();
         tasks.add(t);
     }
 

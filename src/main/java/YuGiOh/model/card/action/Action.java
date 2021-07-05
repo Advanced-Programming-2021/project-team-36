@@ -1,5 +1,6 @@
 package YuGiOh.model.card.action;
 
+import YuGiOh.controller.GameController;
 import YuGiOh.controller.LogicException;
 import YuGiOh.model.card.event.Event;
 import YuGiOh.view.cardSelector.ResistToChooseCard;
@@ -26,9 +27,12 @@ public abstract class Action {
     }
 
     public void runEffect() throws ResistToChooseCard {
+        if (GuiReporter.getInstance() == null)
+            System.out.println("shit");
         GuiReporter.getInstance().report(new GameActionEvent(this));
         try {
             effect.run();
+            GameController.getInstance().checkBothLivesEndGame();
         } catch (LogicException | ValidateResult e){
             CustomPrinter.println(
                     "We cannot run effect of " + this.event.getDescription() + " because something had changed in chain!",
