@@ -6,8 +6,9 @@ import YuGiOh.controller.events.RoundOverExceptionEvent;
 import YuGiOh.controller.player.PlayerController;
 import YuGiOh.model.CardAddress;
 import YuGiOh.model.Player.Player;
-import YuGiOh.model.card.action.Action;
 import YuGiOh.model.card.action.Effect;
+import YuGiOh.model.card.action.SummonAction;
+import YuGiOh.model.card.action.ValidateResult;
 import YuGiOh.model.enums.*;
 import YuGiOh.utils.CustomPrinter;
 import YuGiOh.view.cardSelector.ResistToChooseCard;
@@ -69,7 +70,7 @@ public class Monster extends Card {
     }
 
     public void tryToSendToGraveYardOfMe() {
-        GameController.getInstance().getPlayerControllerByPlayer(this.getOwner()).moveCardToGraveYard(this);
+        GameController.getInstance().moveCardToGraveYard(this);
     }
 
     public void tryToSendToGraveYard(Monster monster) {
@@ -241,11 +242,11 @@ public class Monster extends Card {
         setAllowAttack(true);
     }
 
-    public void validateSpecialSummon() throws LogicException, ResistToChooseCard {
-        throw new LogicException("You can't special summon " + this.getName());
+    public void validateSpecialSummon() throws ValidateResult {
+        throw new ValidateResult("you can't special summon " + this.getName());
     }
 
-    public Action specialSummonAction() {
+    public SummonAction specialSummonAction() {
         return null;
     }
 
@@ -264,13 +265,6 @@ public class Monster extends Card {
     // todo not clean :))
     public String asEffect() {
         return String.format("%s (Monster - %s) : %s", getName(), getMonsterCardType(), getDescription());
-    }
-
-    @Override
-    public Card outOfBattle() {
-        super.outOfBattle();
-        setMonsterState(null);
-        return this;
     }
 
     @Override

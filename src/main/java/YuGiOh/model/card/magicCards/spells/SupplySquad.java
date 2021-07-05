@@ -2,11 +2,8 @@ package YuGiOh.model.card.magicCards.spells;
 
 import YuGiOh.controller.GameController;
 import YuGiOh.controller.LogicException;
-import YuGiOh.model.Game;
 import YuGiOh.model.card.Spell;
-import YuGiOh.model.card.action.Action;
 import YuGiOh.model.card.action.Effect;
-import YuGiOh.model.card.action.MagicActivation;
 import YuGiOh.model.enums.Color;
 import YuGiOh.model.enums.Icon;
 import YuGiOh.model.enums.Status;

@@ -1,7 +1,6 @@
-package YuGiOh.model.card.action;
+package YuGiOh.model.card.event;
 
 import YuGiOh.model.card.Card;
-import YuGiOh.model.card.Magic;
 import lombok.Getter;
 
 public class MagicActivation extends Event {

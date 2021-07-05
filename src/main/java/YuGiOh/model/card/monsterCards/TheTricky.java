@@ -3,11 +3,13 @@ package YuGiOh.model.card.monsterCards;
 import YuGiOh.controller.GameController;
 import YuGiOh.controller.LogicException;
 import YuGiOh.controller.player.PlayerController;
-import YuGiOh.model.card.action.Action;
-import YuGiOh.model.card.action.SummonEvent;
+import YuGiOh.model.card.action.SummonAction;
+import YuGiOh.model.card.action.ValidateResult;
+import YuGiOh.model.card.event.SummonEvent;
 import YuGiOh.model.enums.*;
 import YuGiOh.model.card.Monster;
 import YuGiOh.utils.CustomPrinter;
+import YuGiOh.view.cardSelector.SelectCondition;
 import YuGiOh.view.cardSelector.SelectConditions;
 
 public class TheTricky extends Monster {
@@ -17,29 +19,23 @@ public class TheTricky extends Monster {
     }
 
     @Override
-    public void validateSpecialSummon() throws LogicException {
+    public void validateSpecialSummon() throws ValidateResult {
         if (!getOwner().hasInHand(this))
-            throw new LogicException("you can only summon the tricky from your hand");
+            throw new ValidateResult("you can only summon the tricky from your hand");
     }
 
     @Override
-    public Action specialSummonAction() {
+    public SummonAction specialSummonAction() {
         PlayerController controller = GameController.getInstance().getPlayerControllerByPlayer(getOwner());
-        return new Action(
-                new SummonEvent(this, SummonType.SPECIAL),
-                () -> {
-                    controller.tributeMonster(1,
-                            SelectConditions.and(
-                                    SelectConditions.or(
-                                            SelectConditions.getOnPlayersBoard(getOwner()),
-                                            SelectConditions.getInPlayersHandCondition(getOwner())
-                                    ),
-                                    SelectConditions.getNotThisCard(this)
-                            )
-                    );
-                    controller.summon(this, 0, MonsterState.OFFENSIVE_OCCUPIED, true);
-                    CustomPrinter.println(String.format("<%s> special summoned <%s> successfully", getOwner().getUser().getUsername(), getName(), getMonsterState()), Color.Green);
-                }
+        SelectCondition condition = SelectConditions.and(
+                SelectConditions.or(
+                        SelectConditions.getOnPlayersBoard(getOwner()),
+                        SelectConditions.getInPlayersHandCondition(getOwner())
+                ),
+                SelectConditions.getNotThisCard(this)
+        );
+        return new SummonAction(
+                new SummonEvent(this.getOwner(), this, SummonType.SPECIAL, 1, condition)
         );
     }
 }
