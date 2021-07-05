@@ -42,3 +42,17 @@
 .main {
     -fx-background-color: radial-gradient(center 30% 30%,radius 100%, #00ffd9, #f3f5f3);
 }
+
+.user {
+    -fx-font-weight: bold;
+    -fx-font-size: 20px;
+    -fx-font-family: PacFont;
+    -fx-text-fill: radial-gradient(center 30% 30%,radius 100%, #8448f5, #2b9903);
+}
+
+.highlighted-user {
+    -fx-font-weight: bold;
+    -fx-font-size: 20px;
+    -fx-font-family: PacFont;
+    -fx-text-fill: radial-gradient(center 30% 30%,radius 100%, #ffc800, #059a5e);
+}

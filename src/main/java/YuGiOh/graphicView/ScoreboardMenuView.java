@@ -1,6 +1,7 @@
 package YuGiOh.graphicView;
 
 import YuGiOh.Main;
+import YuGiOh.graphicController.MainMenuController;
 import YuGiOh.model.User;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
@@ -61,7 +62,10 @@ public class ScoreboardMenuView extends BaseMenuView {
                 if (i > 0 && users.get(i - 1).getScore() > user.getScore())
                     rank = i + 1;
                 Label label = new Label(rank + ".  " + user.getNickname() + ":  " + user.getScore());
-                label.getStyleClass().add("textCss");
+                if (user == MainMenuController.getInstance().getUser())
+                    label.getStyleClass().add("highlighted-user");
+                else
+                    label.getStyleClass().add("user");
                 mainBox.getChildren().add(i + 1, label);
             }
         }
