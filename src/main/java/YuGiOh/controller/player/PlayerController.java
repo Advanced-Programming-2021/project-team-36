@@ -201,7 +201,7 @@ public abstract class PlayerController {
     public void activateMonsterEffect(Monster monster) throws LogicException, ResistToChooseCard {
         Game game = GameController.getInstance().getGame();
         MonsterActivationAction action = new MonsterActivationAction(
-                new MagicActivation(monster),
+                new MonsterActivation(monster),
                 monster.activateEffect()
         );
         try {

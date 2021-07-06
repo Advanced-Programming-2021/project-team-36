@@ -2,15 +2,15 @@ package YuGiOh.model.card.event;
 
 import YuGiOh.model.card.Card;
 import YuGiOh.model.card.Magic;
-import YuGiOh.model.card.Spell;
+import YuGiOh.model.card.Monster;
 import lombok.Getter;
 
-public class MagicActivation extends Event {
+public class MonsterActivation extends Event {
     @Getter
     private final Card card;
 
-    public MagicActivation(Magic magic){
-        this.card = magic;
+    public MonsterActivation(Monster monster){
+        this.card = monster;
     }
 
     @Override

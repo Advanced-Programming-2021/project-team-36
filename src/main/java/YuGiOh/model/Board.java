@@ -199,6 +199,7 @@ public class Board {
     public void moveCardToGraveYard(Card card) {
         removeCardIfHas(card);
         graveYard.add(card);
+        
     }
 
     public boolean isMonsterCardZoneFull() {
