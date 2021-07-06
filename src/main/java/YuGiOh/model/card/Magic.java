@@ -43,6 +43,11 @@ abstract public class Magic extends Card {
     abstract public boolean canActivateEffect();
 
     @Override
+    public void outOfBattle() {
+        setMagicState(null);
+    }
+
+    @Override
     public boolean hasEffect() {
         return true;
     }

@@ -238,6 +238,11 @@ public class Monster extends Card {
     }
 
     @Override
+    public void outOfBattle() {
+        setMonsterState(null);
+    }
+
+    @Override
     public final void startOfNewTurn() {
         setAllowAttack(true);
     }

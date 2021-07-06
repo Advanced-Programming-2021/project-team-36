@@ -7,6 +7,7 @@ import YuGiOh.model.Player.Player;
 import YuGiOh.model.card.Card;
 import YuGiOh.model.card.Magic;
 import YuGiOh.model.enums.ZoneType;
+import YuGiOh.utils.CustomPrinter;
 import YuGiOh.view.gui.component.CardFrame;
 import javafx.beans.InvalidationListener;
 import javafx.collections.ListChangeListener;
@@ -56,11 +57,13 @@ public class GameCardFrameManager {
         });
         if(invalid.get())
             return;
+        System.out.println("FROM CARD FRAME MANAGER: ");
         changes.forEach(((cardFrame, cardAddress) -> {
-            if(moveHandler != null)
+            if (moveHandler != null)
                 moveHandler.move(cardFrame, cardAddress);
             occupied.put(cardFrame, cardAddress);
         }));
+        System.out.println("FROM CARD FRAME MANAGER: ");
         occupied.forEach(((cardFrame, address) -> {
             if(address.getZone().equals(ZoneType.HAND))
                 moveHandler.move(cardFrame, address);

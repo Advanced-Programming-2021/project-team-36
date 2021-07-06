@@ -35,7 +35,7 @@ public class RingOfDefense extends Spell {
 
     @Override
     public boolean canActivateEffect() {
-        return !getChain().isEmpty() && getChain().peek().getEvent() instanceof MagicActivation &&
+        return getChain() != null && !getChain().isEmpty() && getChain().peek().getEvent() instanceof MagicActivation &&
                 ((MagicActivation) getChain().peek().getEvent()).getCard() instanceof MagicCylinder;
     }
 }

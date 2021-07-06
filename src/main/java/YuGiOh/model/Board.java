@@ -198,6 +198,7 @@ public class Board {
 
     public void moveCardToGraveYard(Card card) {
         removeCardIfHas(card);
+        card.outOfBattle();
         graveYard.add(card);
     }
 

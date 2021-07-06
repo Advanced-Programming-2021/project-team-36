@@ -50,6 +50,9 @@ public abstract class Card implements Comparable<Card>, Cloneable, Serializable 
         return this;
     }
 
+    public void outOfBattle() {
+    }
+
     public boolean isActivated() {
         return false;
     }

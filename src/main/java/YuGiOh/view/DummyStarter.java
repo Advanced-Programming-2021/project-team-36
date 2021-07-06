@@ -33,17 +33,17 @@ public class DummyStarter extends Application {
 
             Card allCards[] = YuGiOh.model.card.Utils.getAllCards();
             Random random = new Random();
-            int length = 1;
-            String some_cards1[] = new String[length];
-            String some_cards2[] = new String[length];
-            for (int i = 0; i < length; i ++) {
-                some_cards1[i] = "AxeRaider";//allCards[random.nextInt(allCards.length)].getName();
-                some_cards2[i] = "AxeRaider";//allCards[random.nextInt(allCards.length)].getName();
-            }
-            Cheat.buildSuperUserWithManyOfThisCards(fakeUser2, 40, some_cards1);
-            Cheat.buildSuperUserWithManyOfThisCards(abolfazl, 40, some_cards2);
-            //Cheat.buildSuperUserWithManyOfThisCards(fakeUser2, 40, "AxeRaider", "TheTricky", "MonsterReborn", "ManEaterBug");
-            //Cheat.buildSuperUserWithManyOfThisCards(abolfazl, 40, "AxeRaider", "TheTricky", "MonsterReborn", "ManEaterBug");
+//            int length = 1;
+//            String some_cards1[] = new String[length];
+//            String some_cards2[] = new String[length];
+//            for (int i = 0; i < length; i ++) {
+//                some_cards1[i] = "AxeRaider";//allCards[random.nextInt(allCards.length)].getName();
+//                some_cards2[i] = "AxeRaider";//allCards[random.nextInt(allCards.length)].getName();
+//            }
+//            Cheat.buildSuperUserWithManyOfThisCards(fakeUser2, 40, some_cards1);
+//            Cheat.buildSuperUserWithManyOfThisCards(abolfazl, 40, some_cards2);
+//            Cheat.buildSuperUserWithManyOfThisCards(fakeUser2, 40, "AxeRaider", "TheTricky", "MonsterReborn", "ManEaterBug");
+//            Cheat.buildSuperUserWithManyOfThisCards(abolfazl, 40, "AxeRaider", "TheTricky", "MonsterReborn", "ManEaterBug");
 //            Cheat.buildSuperUser(fakeUser2);
 
 //            new MainMenuController(abolfazl).startNewDuel(fakeUser2, 3);
