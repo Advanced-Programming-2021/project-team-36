@@ -2,7 +2,6 @@
     -fx-font-weight: bold;
     -fx-font-size: 20px;
     -fx-text-fill: #ffc800;
-    -fx-font-family: PacFont;
     -fx-text-fill: radial-gradient(center 30% 30%,radius 100%, #8448f5, #2b9903);
 }
 
@@ -18,7 +17,15 @@
     -fx-font-weight: bold;
     -fx-cursor: hand;
     -fx-text-fill: radial-gradient(center 30% 30%,radius 100%, #ffc800, #2b9903);
-    -fx-font-family: PacFont;
+}
+
+.disabled-button {
+    -fx-background-color: #a8a8a8;
+    -fx-text-fill: #383836;
+    -fx-background-radius: 200px;
+    -fx-font-size: 14px;
+    -fx-font-weight: bold;
+    -fx-cursor: hand;
 }
 
 .button:hover {

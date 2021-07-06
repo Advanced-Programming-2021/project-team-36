@@ -36,7 +36,7 @@ public class ShopMenuView extends BaseMenuView {
     @FXML
     private VBox buttonVBox, selectedCardVBox;
     @FXML
-    private Label cardNameLabel, cardPriceLabel, cardBalanceLabel;
+    private Label cardNameLabel, cardPriceLabel, cardBalanceLabel, creditBalanceLabel;
 
     public ShopMenuView() {
         instance = this;
@@ -71,7 +71,6 @@ public class ShopMenuView extends BaseMenuView {
         relocateNodeFromCenter(scrollPane, scene.getWidth() * 0.5, 0);
         scrollPane.setLayoutY(scene.getHeight() * 0.05);
         relocateNodeFromCenter(buttonVBox, scene.getWidth() * 0.5, scene.getHeight() * 0.90);
-        //rescale(scrollPane, 0.5, 0.5);
     }
 
     private void renderInitialSettings() {
@@ -93,9 +92,10 @@ public class ShopMenuView extends BaseMenuView {
         cardNameLabel.setText(card.getName());
         cardPriceLabel.setText("Price:  " + card.getPrice());
         cardBalanceLabel.setText("Balance:  " + user.getCardFrequency(card));
+        creditBalanceLabel.setText("Credit:  " + user.getBalance());
         if (selectedCard == null) {
             selectedCardVBox.setOpacity(1);
-            relocateNodeFromCenter(selectedCardVBox, 0, scene.getHeight() * 0.35);
+            relocateNodeFromCenter(selectedCardVBox, 0, scene.getHeight() * 0.325);
             relocateFromRight(selectedCardVBox, 20);
             rescale(scrollPane, 0.9, 0.9);
             relocateNodeFromCenter(scrollPane, 0, scene.getHeight() * 0.45);
@@ -103,14 +103,26 @@ public class ShopMenuView extends BaseMenuView {
         }
         buyButton.setOpacity(1);
         selectedCard = card;
+        disableBuyButton(user.getBalance() < selectedCard.getPrice());
+    }
+
+    private void disableBuyButton(boolean disable) {
+        buyButton.setDisable(disable);
+        if (disable)
+            buyButton.getStyleClass().add("disabled-button");
+        else if (buyButton.getStyleClass().contains("disabled-button"))
+            buyButton.getStyleClass().remove("disabled-button");
     }
 
     @FXML
     private void buyCard() {
         try {
-            if(user.getBalance() < selectedCard.getPrice())
-                throw new ModelException("not enough money");
+            if (user.getBalance() < selectedCard.getPrice())
+                throw new ModelException("You don't have enough money!");
             user.buy(selectedCard);
+            cardBalanceLabel.setText("Balance:  " + user.getCardFrequency(selectedCard));
+            creditBalanceLabel.setText("Credit:  " + user.getBalance());
+            disableBuyButton(user.getBalance() < selectedCard.getPrice());
             new Alert(Alert.AlertType.INFORMATION, "You successfully bought " + selectedCard.getName() + "!").showAndWait();
         } catch (Exception exception) {
             new Alert(Alert.AlertType.ERROR, exception.getMessage()).showAndWait();

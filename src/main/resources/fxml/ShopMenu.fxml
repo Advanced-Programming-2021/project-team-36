@@ -14,17 +14,18 @@
     <ScrollPane fx:id="scrollPane" maxHeight="500">
         <GridPane fx:id="gridPane" alignment="CENTER"/>
     </ScrollPane>
-    <VBox fx:id="selectedCardVBox" alignment="CENTER" spacing="10" opacity="0">
+    <VBox fx:id="selectedCardVBox" alignment="CENTER" spacing="7" opacity="0">
         <ImageView fx:id="cardImageView" fitWidth="200" preserveRatio="true"/>
         <Label fx:id="cardNameLabel" styleClass="card-info"/>
         <Label fx:id="cardPriceLabel" styleClass="card-info"/>
         <Label fx:id="cardBalanceLabel" styleClass="card-info"/>
+        <Label fx:id="creditBalanceLabel" styleClass="card-info"/>
     </VBox>
     <VBox fx:id="buttonVBox" alignment="CENTER" spacing="7">
         <Button alignment="CENTER" defaultButton="true" onMouseClicked="#buyCard" opacity="0"
-                mnemonicParsing="false" text="Buy" styleClass="button" fx:id="buyButton"/>
+                mnemonicParsing="false" text="Buy" styleClass="button,disabled-button" fx:id="buyButton"/>
         <Button alignment="CENTER" defaultButton="true" onMouseClicked="#exit"
-                mnemonicParsing="false" text="Back" styleClass="button" fx:id="backButton"/>
+                mnemonicParsing="false" text="Back" styleClass="button"/>
     </VBox>
 
     <padding>
