@@ -83,7 +83,7 @@ public class MainMenuView extends BaseMenuView {
 
     @FXML
     private void loadShopMenu() {
-        // TODO: Kasra
+        ShopMenuView.init(stage, MainMenuController.getInstance().getUser());
     }
 
     @FXML

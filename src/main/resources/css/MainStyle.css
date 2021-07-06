@@ -56,3 +56,11 @@
     -fx-font-family: PacFont;
     -fx-text-fill: radial-gradient(center 30% 30%,radius 100%, #ffc800, #059a5e);
 }
+
+.loginText {
+    -fx-font-weight: bold;
+    -fx-font-size: 12px;
+    -fx-text-fill: #ffc800;
+    -fx-font-family: PacFont;
+    -fx-text-fill: radial-gradient(center 30% 30%,radius 100%, #8448f5, #2b9903);
+}
