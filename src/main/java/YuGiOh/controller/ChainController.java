@@ -9,6 +9,8 @@ import YuGiOh.model.card.Spell;
 import YuGiOh.model.card.action.Action;
 import YuGiOh.model.card.event.MagicActivation;
 import YuGiOh.model.card.magicCards.spells.SpellAbsorption;
+import YuGiOh.model.enums.Color;
+import YuGiOh.utils.CustomPrinter;
 import YuGiOh.view.cardSelector.ResistToChooseCard;
 import lombok.Getter;
 
@@ -37,6 +39,7 @@ public class ChainController {
                 break;
             }
         }
+        CustomPrinter.println(chain.size(), Color.Blue);
         while (!chain.isEmpty()) {
             GameController.getInstance().getGame().changeTurnInChain();
 
