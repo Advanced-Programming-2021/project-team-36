@@ -1,8 +1,13 @@
 package YuGiOh.graphicView;
 
+import javafx.event.EventHandler;
 import javafx.scene.Node;
 import javafx.scene.Scene;
+import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.Pane;
+import javafx.scene.paint.Color;
+import javafx.scene.paint.Paint;
+import javafx.scene.shape.Polygon;
 import javafx.scene.transform.Scale;
 import javafx.stage.Stage;
 
@@ -36,5 +41,20 @@ public abstract class BaseMenuView {
 
     public static void rescale(Node node, double v1, double v2) {
         node.getTransforms().setAll(new Scale(v1, v2, 0, 0));
+    }
+
+    public static Node getTriangle(String direction, double size, Color color, EventHandler<? super MouseEvent> eventHandler) {
+        Polygon polygon = new Polygon();
+        if (direction.equalsIgnoreCase("left"))
+            polygon.getPoints().addAll(0.0, size / 2,
+                    size * Math.sqrt(3) / 2, 0.0,
+                    size * Math.sqrt(3) / 2, size);
+        else
+            polygon.getPoints().addAll(size * Math.sqrt(3) / 2, size / 2,
+                    0.0, 0.0,
+                    0.0, size);
+        polygon.setFill(color);
+        polygon.setOnMouseClicked(eventHandler);
+        return polygon;
     }
 }

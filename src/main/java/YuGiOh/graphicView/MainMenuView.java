@@ -58,36 +58,25 @@ public class MainMenuView extends BaseMenuView {
     private void loadProfileMenu() {
         ProfileMenuView.init(stage, MainMenuController.getInstance().getUser());
     }
-
     @FXML
     private void loadScoreboardMenu() {
         ScoreboardMenuView.init(stage);
     }
-
     @FXML
     private void loadDeckMenu() {
         DeckMenuView.init(stage, MainMenuController.getInstance().getUser());
     }
-
     @FXML
     private void loadShopMenu() {
         ShopMenuView.init(stage, MainMenuController.getInstance().getUser());
     }
-
     @FXML
     private void startNewDuel() {
-        //TODO: Shayan
+        NewGameView.init(stage, 0);
     }
-
     @FXML
     private void startNewDuelWithAI() {
-        // todo you have to get number of rounds before starting this
-        try {
-            MainMenuController.getInstance().startDuelWithAI(3, AIMode.NORMAL);
-            DuelMenuView.init(stage);
-        } catch (Exception exception) {
-            new Alert(Alert.AlertType.ERROR, exception.getMessage());
-        }
+        NewGameView.init(stage, 1);
     }
 
     public void logout() {

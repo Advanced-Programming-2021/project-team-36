@@ -1,0 +1,38 @@
+.text {
+    -fx-font-weight: bold;
+    -fx-font-size: 50px;
+    -fx-text-fill: radial-gradient(center 30% 30%, radius 100%, #8448f5, #2b9903);
+}
+
+.text-field {
+    -fx-font-weight: bold;
+    -fx-font-size: 50px;
+    -fx-background-radius: 10;
+    -fx-background-color: #010132;
+    -fx-text-fill: radial-gradient(center 30% 30%, radius 100%, #ffc800, #999703);
+}
+
+.background {
+    -fx-background-color: radial-gradient(center 30% 30%, radius 100%, #00ffd9, #f3f5f3);
+}
+
+.button {
+    -fx-background-color: #00000f;
+    -fx-background-radius: 10;
+    -fx-font-size: 14px;
+    -fx-font-weight: bold;
+    -fx-cursor: hand;
+    -fx-text-fill: radial-gradient(center 30% 30%, radius 100%, #ffc800, #2b9903);
+}
+
+.button:hover {
+    -fx-background-color: #010132;
+}
+
+.button:pressed {
+    -fx-translate-y: +2;
+}
+
+.debug {
+    -fx-background-color: #f8074c;
+}

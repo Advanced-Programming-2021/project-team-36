@@ -20,6 +20,7 @@ import YuGiOh.utils.RoutingException;
 import YuGiOh.graphicView.MainMenuView;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.control.Alert;
+import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.Pane;
 import javafx.stage.Stage;
 import lombok.Getter;
@@ -43,7 +44,10 @@ public class MainMenuController extends BaseMenuController {
         CustomPrinter.println(String.format("start new duel between %s and %s", duel.getFirstPlayer().getUser().getNickname(), duel.getSecondPlayer().getUser().getNickname()), Color.Default);
     }
 
-    public void startNewDuel(User secondUser, int round) throws LogicException, ModelException {
+    public void startNewDuel(String secondUsername, int round) throws LogicException, ModelException {
+        User secondUser = User.getUserByUsername(secondUsername);
+        if (secondUser == null)
+            throw new ModelException("The specified user does not exist!");
         startDuel(new Duel(
                 new HumanPlayer(user),
                 new HumanPlayer(secondUser),
@@ -57,10 +61,5 @@ public class MainMenuController extends BaseMenuController {
                 new AIPlayer(aiMode),
                 round
         ));
-    }
-
-    public void logout() {
-        LoginMenuView.getInstance().run();
-        CustomPrinter.println("user logged out successfully!", Color.Default);
     }
 }
