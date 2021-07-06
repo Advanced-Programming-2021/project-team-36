@@ -46,7 +46,7 @@ public class NewGameView extends BaseMenuView {
 
     public static void init(Stage primaryStage, int gameMode) {
         try {
-            VBox root = FXMLLoader.load(Main.class.getResource("/fxml/NewGameView.fxml"));
+            VBox root = FXMLLoader.load(Main.class.getResource("/fxml/NewGameMenu.fxml"));
             NewGameView.getInstance().start(primaryStage, root, gameMode);
         } catch (IOException ignored) {
         }
