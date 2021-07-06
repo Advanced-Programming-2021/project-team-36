@@ -60,21 +60,31 @@ public class ValidateTree {
             throw new ValidateResult("monster is not faced down in field");
     }
 
+    public static void checkNotRitual(Monster monster) throws ValidateResult {
+        if (monster.getMonsterCardType().equals(MonsterCardType.RITUAL))
+            throw new ValidateResult("ritual monsters can't normal summon");
+    }
+
     public static void checkSummon(Player player, Monster monster, SummonType summonType) throws ValidateResult {
         if (summonType.equals(SummonType.NORMAL)) {
             checkPhase(Phase.MAIN_PHASE1, Phase.MAIN_PHASE2);
             checkAlreadySummoned(player);
+            checkNotRitual(monster);
             checkContainInZone(player, monster, ZoneType.HAND);
             checkSpaceInZone(player, ZoneType.MONSTER);
         } else if (summonType.equals(SummonType.SPECIAL)) {
             checkPhase(Phase.MAIN_PHASE1, Phase.MAIN_PHASE2);
             checkOwnerOfCard(player, monster);
+            checkNotRitual(monster);
             monster.validateSpecialSummon();
         } else if (summonType.equals(SummonType.FLIP)) {
             checkPhase(Phase.MAIN_PHASE1, Phase.MAIN_PHASE2);
             checkAlreadySummoned(player);
             checkContainInZone(player, monster, ZoneType.MONSTER);
             checkMonsterState(monster, MonsterState.DEFENSIVE_HIDDEN);
+        } else {
+            checkPhase(Phase.MAIN_PHASE1, Phase.MAIN_PHASE2);
+            checkSpaceInZone(player, ZoneType.MONSTER);
         }
     }
 

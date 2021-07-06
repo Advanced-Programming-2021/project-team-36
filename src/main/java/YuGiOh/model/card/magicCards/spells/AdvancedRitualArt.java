@@ -31,26 +31,30 @@ public class AdvancedRitualArt extends Spell {
         return sumMonstersLevel;
     }
 
+    private Monster ritualMonster;
+    private Monster[] tributeMonsters;
+
+    private void preprocess() throws ResistToChooseCard {
+        PlayerController playerController = GameController.getInstance().getPlayerControllerByPlayer(this.getOwner());
+        ritualMonster = (Monster) playerController.chooseKCards(
+                "choose the ritual monster you want to ritual summon.",
+                1,
+                SelectConditions.getPlayerRitualMonsterFromHand(this.getOwner(), sumOwnerMonstersInHandAndInZone())
+        )[0];
+        tributeMonsters = playerController.chooseKSumLevelMonsters(
+                "choose a monsters from your hand or board for ritual summon. Sum of your selected cards hasn't reach the limit yet. You can select one of your selected card to deselect it",
+                ritualMonster.getLevel(),
+                SelectConditions.getPlayerMonsterFromMonsterZoneOrHand(this.getOwner(), ritualMonster)
+        );
+    }
+
     @Override
     protected Effect getEffect() {
-        assert canActivateEffect();
         return () -> {
             try {
-                PlayerController playerController = GameController.getInstance().getPlayerControllerByPlayer(this.getOwner());
-                Monster ritualMonster = (Monster) playerController.chooseKCards(
-                        "choose the ritual monster you want to ritual summon.",
-                        1,
-                        SelectConditions.getPlayerRitualMonsterFromHand(this.getOwner(), sumOwnerMonstersInHandAndInZone())
-                )[0];
-                Monster[] tributeMonsters = playerController.chooseKSumLevelMonsters(
-                        "choose a monsters from your hand or board for ritual summon. Sum of your selected cards hasn't reach the limit yet. You can select one of your selected card to deselect it",
-                        ritualMonster.getLevel(),
-                        SelectConditions.getPlayerMonsterFromMonsterZoneOrHand(this.getOwner(), ritualMonster)
-                );
-
+                preprocess();
                 for (Monster monster : tributeMonsters)
-                    monster.tryToSendToGraveYardOfMe();
-
+                    GameController.getInstance().moveCardToGraveYard(monster);
                 SummonAction action = new SummonAction(
                         new SummonEvent(this.getOwner(), ritualMonster, SummonType.RITUAL, 0, SelectConditions.noCondition)
                 );
@@ -74,6 +78,7 @@ public class AdvancedRitualArt extends Spell {
                     minimumMonsterRitualLevelOnHand = Math.min(minimumMonsterRitualLevelOnHand, monster.getLevel());
             }
         }
+
         return minimumMonsterRitualLevelOnHand <= sumOwnerMonstersInHandAndInZone() - minimumMonsterRitualLevelOnHand &&
                 !player.getBoard().isMonsterCardZoneFull();
     }
