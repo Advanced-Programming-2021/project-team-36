@@ -49,8 +49,13 @@ public class MainGameThread extends Thread {
                 try {
                     runnable.run();
                 } catch (Exception e){
-                    if(!(e instanceof GameExceptionEvent))
+                    if(!(e instanceof GameExceptionEvent)) {
                         e.printStackTrace();
+                    } else {
+                        System.out.println("this is safe: ");
+                        e.printStackTrace();
+                    }
+
                 }
                 return null;
             }
