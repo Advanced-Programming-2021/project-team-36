@@ -13,8 +13,6 @@ import lombok.Setter;
 public class DuelInfoBox extends BorderPane {
     private CardInfo cardInfo;
 
-    private GameField gameField;
-
     public void init(GameField gameField, Game game) {
         setBackground(new Background(new BackgroundImage(
                 new Image(Utils.getAsset("Texture/wood.png").toURI().toString()),

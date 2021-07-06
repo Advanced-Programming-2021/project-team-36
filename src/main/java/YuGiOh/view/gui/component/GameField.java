@@ -109,14 +109,6 @@ public class GameField extends Pane {
                 );
             }
         });
-        GuiReporter.getInstance().addEventHandler(RoundOverEvent.MY_TYPE, e->{
-            System.out.println("round was over");
-            // todo this is just a sample
-        });
-        GuiReporter.getInstance().addEventHandler(DuelOverEvent.MY_TYPE, e->{
-            System.out.println("duel was over");
-            // todo this is just a sample
-        });
         GuiReporter.getInstance().addGameEventHandler((GuiReporter.GameEventHandler<MonsterAttackEvent>) (event)->{
             DoubleBinding x = widthProperty().multiply(gameMapLocation.getLocationByCardAddress(cardFrameManager.getCardAddressByCard(event.getDefender())).xRatio);
             DoubleBinding y = heightProperty().multiply(gameMapLocation.getLocationByCardAddress(cardFrameManager.getCardAddressByCard(event.getDefender())).yRatio);

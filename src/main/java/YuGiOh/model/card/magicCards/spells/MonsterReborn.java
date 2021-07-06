@@ -7,6 +7,8 @@ import YuGiOh.model.card.Card;
 import YuGiOh.model.card.Monster;
 import YuGiOh.model.card.Spell;
 import YuGiOh.model.card.action.Effect;
+import YuGiOh.model.card.action.SummonAction;
+import YuGiOh.model.card.event.SummonEvent;
 import YuGiOh.model.enums.*;
 import YuGiOh.utils.CustomPrinter;
 import YuGiOh.view.cardSelector.SelectConditions;
@@ -29,7 +31,10 @@ public class MonsterReborn extends Spell {
                     1,
                     SelectConditions.getMonsterFromGraveYard()
             )[0];
-            playerController.summon(monster, 0, true);
+            SummonAction action = new SummonAction(
+                new SummonEvent(this.getOwner(), monster, SummonType.SPECIAL, 0, SelectConditions.noCondition)
+            );
+            action.runEffect();
             CustomPrinter.println(String.format("<%s>'s <%s> activated successfully", this.getOwner().getUser().getUsername(), this.getName()), Color.Yellow);
             CustomPrinter.println(this, Color.Gray);
         };

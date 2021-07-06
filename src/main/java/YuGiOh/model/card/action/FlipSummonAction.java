@@ -31,7 +31,7 @@ public class FlipSummonAction extends Action {
         };
     }
 
-    private void preprocess() throws ResistToChooseCard {
+    protected void preprocess() throws ResistToChooseCard {
         FlipSummonEvent event = (FlipSummonEvent) getEvent();
         PlayerController playerController = GameController.getInstance().getPlayerControllerByPlayer(event.getPlayer());
         boolean AttackingState = playerController.askRespondToQuestion("which position you want to summon?", "defending", "attacking");

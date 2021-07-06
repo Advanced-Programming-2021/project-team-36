@@ -1,5 +1,6 @@
 package YuGiOh.controller;
 
+import YuGiOh.controller.events.GameExceptionEvent;
 import javafx.application.Platform;
 import javafx.concurrent.Task;
 import javafx.scene.shape.Circle;
@@ -36,7 +37,12 @@ public class MainGameThread extends Thread {
     public MainGameThread(Runnable runnable){
         super(new Task<Void>(){
             @Override protected Void call() {
-                runnable.run();
+                try {
+                    runnable.run();
+                } catch (Exception e){
+                    if(!(e instanceof GameExceptionEvent))
+                        e.printStackTrace();
+                }
                 return null;
             }
 

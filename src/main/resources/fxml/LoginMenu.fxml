@@ -23,14 +23,14 @@
         <VBox alignment="CENTER" spacing="7">
             <HBox alignment="CENTER" spacing="8">
                 <VBox alignment="CENTER" spacing="8">
-                    <Label text="Username:" styleClass="textCss"/>
-                    <Label text=" Nickname:" styleClass="textCss"/>
-                    <Label text=" Password:" styleClass="textCss"/>
+                    <Label text="Username:" styleClass="loginText"/>
+                    <Label text=" Nickname:" styleClass="loginText"/>
+                    <Label text=" Password:" styleClass="loginText"/>
                 </VBox>
                 <VBox alignment="CENTER" spacing="5">
                     <TextField styleClass="text-field" promptText="username" fx:id="registerUsernameTextField" prefWidth="110"/>
                     <TextField styleClass="text-field" promptText="nickname" fx:id="registerNicknameTextField" prefWidth="110"/>
-                    <TextField styleClass="text-field" promptText="password" fx:id="registerPasswordTextField" prefWidth="110"/>
+                    <PasswordField styleClass="text-field" promptText="password" fx:id="registerPasswordTextField" prefWidth="110"/>
                 </VBox>
                 <padding><Insets bottom="40"/></padding>
             </HBox>
@@ -45,12 +45,12 @@
         <VBox alignment="CENTER" spacing="7">
             <HBox alignment="CENTER" spacing="8">
                 <VBox alignment="CENTER" spacing="8">
-                    <Label text="Username:" styleClass="textCss"/>
-                    <Label text=" Password:" styleClass="textCss"/>
+                    <Label text="Username:" styleClass="loginText"/>
+                    <Label text=" Password:" styleClass="loginText"/>
                 </VBox>
                 <VBox alignment="CENTER" spacing="5">
                     <TextField styleClass="text-field" promptText="username" fx:id="loginUsernameTextField" prefWidth="110"/>
-                    <TextField styleClass="text-field" promptText="password" fx:id="loginPasswordTextField" prefWidth="110"/>
+                    <PasswordField styleClass="text-field" promptText="password" fx:id="loginPasswordTextField" prefWidth="110"/>
                 </VBox>
                 <padding><Insets bottom="40"/></padding>
             </HBox>

@@ -78,7 +78,6 @@ public class DuelMenuView extends BaseMenuView {
             this.selector = new CardSelector(infoBox);
             thread.start();
             run();
-
         } catch (LogicException exception) {
             new Alert(Alert.AlertType.ERROR, exception.getMessage()).showAndWait();
             return;

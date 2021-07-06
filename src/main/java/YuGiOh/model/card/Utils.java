@@ -2,7 +2,10 @@ package YuGiOh.model.card;
 
 import YuGiOh.model.enums.*;
 import YuGiOh.utils.ClassFinder;
+import javafx.scene.image.Image;
+import javafx.scene.image.ImageView;
 
+import java.io.FileInputStream;
 import java.util.*;
 
 public class Utils {
@@ -146,6 +149,21 @@ public class Utils {
         for (int i = 0; i < elements.length; i++)
             formattedName += elements[i].substring(0, 1).toUpperCase() + elements[i].substring(1, elements[i].length());
         return formattedName;
+    }
+
+    public static Image getCardImageView(Card card) {
+        try {
+            if (card instanceof Monster)
+                return new Image(new FileInputStream(String.format("assets/Cards/Monsters/%s.jpg", card.getName())));
+            else
+                return new Image(new FileInputStream(String.format("assets/Cards/SpellTrap/%s.jpg", card.getName())));
+        } catch (Exception ignored) {
+            try {
+                return new Image(new FileInputStream("assets/Cards/CustomCard.jpg"));
+            } catch (Exception ignored2) {
+                return null;
+            }
+        }
     }
 
     static class cardLexicographicalOrder implements Comparator<Card> {

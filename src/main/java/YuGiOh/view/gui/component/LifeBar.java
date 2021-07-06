@@ -16,8 +16,8 @@ import javafx.scene.text.Text;
 public class LifeBar extends Pane {
     public LifeBar(Player player){
         Text text = new Text(player.getUser().getUsername());
-        text.setFont(Font.font(20));
-        text.wrappingWidthProperty().bind(widthProperty());
+        text.setFont(Font.font(25));
+        text.autosize();
         LpVisualizer lpVisualizer = new LpVisualizer(player.lifePointProperty());
         lpVisualizer.prefWidthProperty().bind(widthProperty().multiply(0.9));
         getChildren().add(new VBox(text, lpVisualizer));

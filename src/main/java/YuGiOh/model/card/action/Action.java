@@ -9,15 +9,16 @@ import YuGiOh.view.gui.event.GameActionEvent;
 import YuGiOh.model.enums.Color;
 import YuGiOh.utils.CustomPrinter;
 import lombok.Getter;
+import lombok.Setter;
+import lombok.extern.java.Log;
 
-public class Action {
+public abstract class Action {
     @Getter
-    protected Event event;
+    protected final Event event;
     protected Effect effect;
 
     public Action(Event event) {
         this.event = event;
-        this.effect = () -> {};
     }
 
     public Action(Event event, Effect effect){
@@ -32,7 +33,7 @@ public class Action {
         try {
             effect.run();
             GameController.getInstance().checkBothLivesEndGame();
-        } catch (LogicException e){
+        } catch (LogicException | ValidateResult e){
             CustomPrinter.println(
                     "We cannot run effect of " + this.event.getDescription() + " because something had changed in chain!",
                     Color.Red
@@ -40,6 +41,7 @@ public class Action {
         }
     }
 
-    public void validateEffect() throws ValidateResult {
-    }
+    protected abstract void preprocess() throws ResistToChooseCard;
+
+    public abstract void validateEffect() throws ValidateResult;
 }

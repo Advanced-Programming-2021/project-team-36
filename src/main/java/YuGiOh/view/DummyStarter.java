@@ -1,7 +1,14 @@
 package YuGiOh.view;
 
+import YuGiOh.controller.MainGameThread;
 import YuGiOh.controller.ProgramController;
 import YuGiOh.controller.menu.LoginMenuController;
+import YuGiOh.graphicController.DuelMenuController;
+import YuGiOh.graphicController.MainMenuController;
+import YuGiOh.graphicView.DuelMenuView;
+import YuGiOh.graphicView.MainMenuView;
+import YuGiOh.model.Duel;
+import YuGiOh.model.Player.HumanPlayer;
 import YuGiOh.model.User;
 import YuGiOh.model.card.Card;
 import YuGiOh.model.enums.AIMode;
@@ -39,20 +46,11 @@ public class DummyStarter extends Application {
             //Cheat.buildSuperUserWithManyOfThisCards(abolfazl, 40, "AxeRaider", "TheTricky", "MonsterReborn", "ManEaterBug");
 //            Cheat.buildSuperUser(fakeUser2);
 
-//            Duel duel = new Duel(
-//                    new HumanPlayer(abolfazl),
-//                    new HumanPlayer(fakeUser2),
-//                    3
-//            );
-//            new DuelMenuController(duel);
-//
-//            // todo how to set aggressive AI player now?
-//
-//            DuelMenuController.getInstance().getView().start(primaryStage);
-//
-//            new MainGameThread(()->{
-//                DuelMenuController.getInstance().control();
-//            }).start();
+//            new MainMenuController(abolfazl).startNewDuel(fakeUser2, 3);
+            new MainMenuController(abolfazl).startDuelWithAI(3, AIMode.AGGRESSIVE);
+            DuelMenuView.init(primaryStage);
+
+            primaryStage.setFullScreen(true);
         } catch (Exception e){
             e.printStackTrace();
         }

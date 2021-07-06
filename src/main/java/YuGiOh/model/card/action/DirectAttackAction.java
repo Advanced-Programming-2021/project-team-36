@@ -7,9 +7,11 @@ public class DirectAttackAction extends Action {
         super(event, effect);
     }
 
-    @Override
     public void validateEffect() throws ValidateResult {
         DirectAttackEvent event = (DirectAttackEvent) getEvent();
         ValidateTree.checkDirectAttack(event.getAttacker(), event.getPlayer());
+    }
+
+    public void preprocess() {
     }
 }

@@ -4,6 +4,8 @@ import YuGiOh.controller.GameController;
 import YuGiOh.controller.LogicException;
 import YuGiOh.controller.player.PlayerController;
 import YuGiOh.model.Player.Player;
+import YuGiOh.model.card.action.SummonAction;
+import YuGiOh.model.card.event.SummonEvent;
 import YuGiOh.model.enums.*;
 import YuGiOh.utils.CustomPrinter;
 import YuGiOh.view.cardSelector.SelectConditions;
@@ -49,13 +51,12 @@ public class AdvancedRitualArt extends Spell {
                 for (Monster monster : tributeMonsters)
                     monster.tryToSendToGraveYardOfMe();
 
-                try {
-                    playerController.summon(ritualMonster, 0, true);
-                    GameController.getInstance().moveCardToGraveYard(this);
-                    CustomPrinter.println(String.format("<%s> ritual summoned <%s> in <%s> position successfully", this.getOwner().getUser().getUsername(), ritualMonster.getName(), ritualMonster.getMonsterState()), Color.Yellow);
-                } catch (LogicException logicException) {
-                    CustomPrinter.println("this shouldn't happens", Color.Red);
-                }
+                SummonAction action = new SummonAction(
+                        new SummonEvent(this.getOwner(), ritualMonster, SummonType.RITUAL, 0, SelectConditions.noCondition)
+                );
+                action.runEffect();
+                GameController.getInstance().moveCardToGraveYard(this);
+                CustomPrinter.println(String.format("<%s> ritual summoned <%s> in <%s> position successfully", this.getOwner().getUser().getUsername(), ritualMonster.getName(), ritualMonster.getMonsterState()), Color.Yellow);
             } catch (ResistToChooseCard resistToChooseCard) {
                 CustomPrinter.println(this.getOwner().getUser().getUsername() + " cancelled ritual monster", Color.Green);
             }
