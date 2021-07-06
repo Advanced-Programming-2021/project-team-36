@@ -25,13 +25,22 @@ public class MainGameThread extends Thread {
         numberOfLocks += 1;
         if(numberOfLocks >= 2)
             return;
-        this.suspend();
+        if(Thread.currentThread() instanceof MainGameThread) {
+            synchronized (lock) {
+                try{
+                    lock.wait();
+                } catch (InterruptedException e){
+                }
+            }
+        }
     }
     public void unlockTheThreadIfMain(){
         numberOfLocks -= 1;
         if(numberOfLocks > 0)
             return;
-        this.resume();
+        synchronized (lock) {
+            lock.notify();
+        }
     }
 
     public MainGameThread(Runnable runnable){
