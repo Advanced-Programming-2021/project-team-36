@@ -10,20 +10,35 @@
 <?import java.net.URL?>
 <?import javafx.geometry.Insets?>
 <Pane xmlns="http://javafx.com/javafx" xmlns:fx="http://javafx.com/fxml" styleClass="background"
-      fx:controller="YuGiOh.graphicView.DeckMenuView" prefHeight="640.0" prefWidth="600.0">
-    <ListView fx:id="listView" maxHeight="500"/>
-
+      fx:controller="YuGiOh.graphicView.DeckMenuView" prefHeight="480.0" prefWidth="400.0">
+    <ScrollPane maxHeight="350" maxWidth="220" fx:id="scrollPane">
+        <ListView fx:id="listView" prefHeight="300" prefWidth="210" styleClass="deck-name"/>
+    </ScrollPane>
     <HBox fx:id="buttonHBox" alignment="CENTER" spacing="7">
-        <Button alignment="CENTER" defaultButton="true" onMouseClicked="#exit" opacity="0"
-                mnemonicParsing="false" text="Buy" styleClass="button" fx:id="buyButton"/>
-        <Button alignment="CENTER" defaultButton="true" onMouseClicked="#exit"
-                mnemonicParsing="false" text="Back" styleClass="button"/>
+        <VBox spacing="20" alignment="CENTER">
+            <HBox spacing="20" alignment="CENTER">
+                <Button alignment="CENTER" defaultButton="true" onMouseClicked="#createDeck"
+                        mnemonicParsing="false" text="Create Deck" styleClass="button"/>
+                <Button alignment="CENTER" defaultButton="true" onMouseClicked="#deleteDeck"
+                        mnemonicParsing="false" text="Delete Deck" styleClass="button"/>
+                <Button alignment="CENTER" defaultButton="true" onMouseClicked="#viewDeck"
+                        mnemonicParsing="false" text="View Deck" styleClass="button"/>
+            </HBox>
+            <HBox spacing="20" alignment="CENTER">
+                <Button alignment="CENTER" defaultButton="true" onMouseClicked="#setActiveDeck"
+                        mnemonicParsing="false" text="Set As Active" styleClass="button"/>
+                <Button alignment="CENTER" defaultButton="true" onMouseClicked="#exit"
+                        mnemonicParsing="false" text="Back" styleClass="button"/>
+                <Button alignment="CENTER" defaultButton="true" onMouseClicked="#showAllCards"
+                        mnemonicParsing="false" text="Show All Cards" styleClass="button"/>
+            </HBox>
+        </VBox>
     </HBox>
 
     <padding>
         <Insets bottom="10.0" left="10.0" right="10.0" top="30.0"/>
     </padding>
     <stylesheets>
-        <URL value="@../css/MainStyle.css"/>
+        <URL value="@../css/DeckMenu.css"/>
     </stylesheets>
 </Pane>

@@ -21,16 +21,13 @@ import javafx.stage.Stage;
 import java.io.IOException;
 
 public class DeckMenuView extends BaseMenuView {
-    private static final int rowSize = 5;
-    private static final double imageWidth = 70, imageHeight = imageWidth * 614.0 / 421.0;
     private static DeckMenuView instance;
-
     private Card selectedCard;
 
     @FXML
-    private ListView<Deck> listView;
+    private ScrollPane scrollPane;
     @FXML
-    private Button buyButton;
+    private ListView<String> listView;
     @FXML
     private HBox buttonHBox;
 
@@ -64,15 +61,72 @@ public class DeckMenuView extends BaseMenuView {
         renderInitialSettings();
         stage.setScene(scene);
         stage.show();
+        relocateNodeFromCenter(scrollPane, scene.getWidth() * 0.5, 0);
+        relocateFromUp(scrollPane, 30);
+        relocateNodeFromCenter(buttonHBox, scene.getWidth() * 0.5, 0);
+        relocateFromDown(buttonHBox, 30);
     }
 
     private void renderInitialSettings() {
-
+        listView.getItems().clear();
+        for (Deck deck : DeckMenuController.getInstance().getUser().getDecks())
+            listView.getItems().add(deck.getName());
+        listView.getSelectionModel().setSelectionMode(SelectionMode.SINGLE);
     }
 
-    private void selectCard(Card card) {
+    @FXML
+    private void viewDeck() {
+        if (listView.getSelectionModel().getSelectedItems().size() == 0) {
+            new Alert(Alert.AlertType.ERROR, "You have not selected any deck.").showAndWait();
+            return;
+        }
+        DeckView.init(stage, DeckMenuController.getInstance().deckParser(listView.getSelectionModel().getSelectedItem()));
     }
+    @FXML
+    private void deleteDeck() {
+        if (listView.getSelectionModel().getSelectedItems().size() == 0) {
+            new Alert(Alert.AlertType.ERROR, "You have not selected any deck.").showAndWait();
+            return;
+        }
+        Alert alert = new Alert(Alert.AlertType.CONFIRMATION, "Are you sure you want to delete this deck?",
+                ButtonType.YES, ButtonType.CANCEL);
+        alert.showAndWait();
+        if (!alert.getResult().getText().equalsIgnoreCase("Yes"))
+            return;
+        DeckMenuController.getInstance().deleteDeck(listView.getSelectionModel().getSelectedItem());
+        listView.getItems().remove(listView.getSelectionModel().getSelectedItem());
+    }
+    @FXML
+    private void createDeck() {
+        TextInputDialog textInputDialog = new TextInputDialog();
+        textInputDialog.getEditor().setPromptText("deck name");
+        textInputDialog.setTitle("Deck Creation");
+        textInputDialog.setHeaderText("Enter your desired deck name below:");
+        while (textInputDialog.getEditor().getText() == null ||
+                textInputDialog.getEditor().getText().equals(""))
+            textInputDialog.showAndWait();
+        try {
+            DeckMenuController.getInstance().createDeck(textInputDialog.getEditor().getText());
+            new Alert(Alert.AlertType.INFORMATION, "Deck created successfully!").showAndWait();
+            listView.getItems().add(textInputDialog.getEditor().getText());
+        } catch (Exception exception) {
+            new Alert(Alert.AlertType.ERROR, exception.getMessage()).showAndWait();
+        }
 
+    }
+    @FXML
+    private void setActiveDeck() {
+        if (listView.getSelectionModel().getSelectedItems().size() == 0) {
+            new Alert(Alert.AlertType.ERROR, "You have not selected any deck.").showAndWait();
+            return;
+        }
+        DeckMenuController.getInstance().setActiveDeck(listView.getSelectionModel().getSelectedItem());
+        new Alert(Alert.AlertType.INFORMATION, "Deck activated successfully!").showAndWait();
+    }
+    @FXML
+    private void showAllCards() {
+        ShowAllCardsView.init(stage);
+    }
     @FXML
     private void exit() {
         MainMenuView.getInstance().run();

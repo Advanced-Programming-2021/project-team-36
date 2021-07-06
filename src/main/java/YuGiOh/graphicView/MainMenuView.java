@@ -66,7 +66,7 @@ public class MainMenuView extends BaseMenuView {
 
     @FXML
     private void loadDeckMenu() {
-        // TODO: Kasra
+        DeckMenuView.init(stage, MainMenuController.getInstance().getUser());
     }
 
     @FXML
