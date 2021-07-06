@@ -18,7 +18,7 @@ public class ChainController {
     @Getter
     private final ChainController instance;
 
-    public ChainController(PlayerController starter, Action firstAction) {
+    public ChainController(Action firstAction) {
         instance = this;
         GameController.getInstance().getGame().setChain(new Stack<>());
         GameController.getInstance().getGame().getChain().push(firstAction);
@@ -28,7 +28,7 @@ public class ChainController {
         Stack<Action> chain = GameController.getInstance().getGame().getChain();
         while (true) {
             GameController.getInstance().getGame().changeTurnInChain();
-            PlayerController other = GameController.getInstance().getOpponentPlayerController();
+            PlayerController other = GameController.getInstance().getCurrentPlayerController();
             if(other.listOfAvailableActionsInResponse().size() <= 0 || !other.askRespondToChain())
                 break;
             try {
@@ -37,10 +37,13 @@ public class ChainController {
                 break;
             }
         }
-        while (!chain.isEmpty()) {
-            GameController.getInstance().getGame().changeTurnInChain();
 
+        GameController.getInstance().getGame().resetCurrentPlayerAfterChain();
+
+        System.out.println("size of chain is " + chain.size());
+        while (!chain.isEmpty()) {
             Action action = chain.pop();
+            System.out.println("trying to run effect of " + action.getEvent().getDescription());
             try {
                 action.runEffect();
                 // todo remove this
@@ -50,16 +53,16 @@ public class ChainController {
                             ((SpellAbsorption) card).onSpellResolve();
             } catch (Exception e) {
                 // todo inja game exception event ro nabayad befrestim bala?
-                if(!(e instanceof GameExceptionEvent))
+                if(!(e instanceof GameExceptionEvent)) {
                     e.printStackTrace();
+                } else {
+                    System.out.println("this is safe: ");
+                    e.printStackTrace();
+                }
             }
+            System.out.println("FINISHED RUNNING EFFECT");
         }
 
-        // todo remove this last part for production
-        Player beforePlayer = GameController.getInstance().getGame().getCurrentPlayer();
-        GameController.getInstance().getGame().resetCurrentPlayerAfterChain();
-        Player afterPlayer =  GameController.getInstance().getGame().getCurrentPlayer();
-        if(!beforePlayer.equals(afterPlayer))
-            throw new Error("chain error. this must never happen");
+        System.out.println("END OF CHAIN ");
     }
 }

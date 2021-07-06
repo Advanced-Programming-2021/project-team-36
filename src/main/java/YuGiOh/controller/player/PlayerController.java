@@ -126,9 +126,13 @@ public abstract class PlayerController {
         SetMagicAction action = new SetMagicAction(
                 new SetMagic(magic),
                 () -> {
+                    System.out.println("trying to remove from hand");
                     player.getBoard().removeFromHand(magic);
+                    System.out.println("end of remove from hand");
                     player.getBoard().addMagic(magic);
+                    System.out.println("add magic successfully to board");
                     magic.setMagicState(MagicState.HIDDEN);
+                    System.out.println("SET HIDDEN");
                     CustomPrinter.println(String.format("<%s> set magic <%s> successfully", player.getUser().getUsername(), magic.getName()), Color.Green);
                 }
         );
@@ -234,7 +238,7 @@ public abstract class PlayerController {
     }
 
     public void startChain(Action action) throws RoundOverExceptionEvent, ResistToChooseCard {
-        ChainController chainController = new ChainController(this, action);
+        ChainController chainController = new ChainController(action);
         chainController.control();
     }
 

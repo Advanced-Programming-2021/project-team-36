@@ -1,10 +1,11 @@
 package YuGiOh.model.card.action;
 
 import YuGiOh.model.card.event.Event;
+import YuGiOh.model.card.event.MagicActivation;
 import YuGiOh.model.card.event.SetMagic;
 
 public class SetMagicAction extends Action {
-    public SetMagicAction(Event event, Effect effect) {
+    public SetMagicAction(SetMagic event, Effect effect) {
         super(event, effect);
     }
 

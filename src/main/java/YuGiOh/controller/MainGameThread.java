@@ -48,14 +48,13 @@ public class MainGameThread extends Thread {
             @Override protected Void call() {
                 try {
                     runnable.run();
-                } catch (Exception e){
+                } catch (Throwable e){
                     if(!(e instanceof GameExceptionEvent)) {
                         e.printStackTrace();
                     } else {
                         System.out.println("this is safe: ");
                         e.printStackTrace();
                     }
-
                 }
                 return null;
             }

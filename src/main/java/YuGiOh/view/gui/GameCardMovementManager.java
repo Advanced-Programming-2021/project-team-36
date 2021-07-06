@@ -25,26 +25,27 @@ public class GameCardMovementManager {
     }
 
     private void animateCardMoving(CardFrame cardFrame, DoubleBinding x, DoubleBinding y, Duration animationDuration, boolean blocking) {
-        Runnable runnable = ()-> {
-            cardFrame.layoutXProperty().unbind();
-            cardFrame.layoutYProperty().unbind();
-            TranslateTransition tt = new TranslateTransition(animationDuration, cardFrame);
-            tt.setFromX(0);
-            tt.setFromY(0);
-            tt.toXProperty().bind(x.add(cardFrame.getCenterXProperty().negate()));
-            tt.toYProperty().bind(y.add(cardFrame.getCenterYProperty().negate()));
-            tt.setOnFinished(e -> {
-                cardFrame.moveByBindingCoordinates(x, y);
-                cardFrame.setTranslateX(0);
-                cardFrame.setTranslateY(0);
-                if(blocking)
-                    MainGameThread.getInstance().unlockTheThreadIfMain();
-            });
-            tt.play();
-        };
-        if(blocking)
-            MainGameThread.getInstance().onlyBlockRunningThreadThenDoInGui(runnable);
-        else
-            Platform.runLater(runnable);
+        cardFrame.moveByBindingCoordinates(x, y);
+//        Runnable runnable = ()-> {
+//            cardFrame.layoutXProperty().unbind();
+//            cardFrame.layoutYProperty().unbind();
+//            TranslateTransition tt = new TranslateTransition(animationDuration, cardFrame);
+//            tt.setFromX(0);
+//            tt.setFromY(0);
+//            tt.toXProperty().bind(x.add(cardFrame.getCenterXProperty().negate()));
+//            tt.toYProperty().bind(y.add(cardFrame.getCenterYProperty().negate()));
+//            tt.setOnFinished(e -> {
+//                cardFrame.moveByBindingCoordinates(x, y);
+//                cardFrame.setTranslateX(0);
+//                cardFrame.setTranslateY(0);
+//                if(blocking)
+//                    MainGameThread.getInstance().unlockTheThreadIfMain();
+//            });
+//            tt.play();
+//        };
+//        if(blocking)
+//            MainGameThread.getInstance().onlyBlockRunningThreadThenDoInGui(runnable);
+//        else
+//            Platform.runLater(runnable);
     }
 }
