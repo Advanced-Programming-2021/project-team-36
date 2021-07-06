@@ -1,11 +1,13 @@
 package YuGiOh.controller;
 
 import javafx.application.Platform;
+import javafx.concurrent.Task;
+import javafx.scene.shape.Circle;
 import lombok.Getter;
 
 import java.util.LinkedList;
-import java.util.Optional;
 import java.util.Queue;
+import java.util.concurrent.Callable;
 import java.util.concurrent.atomic.AtomicReference;
 
 public class MainGameThread extends Thread {
@@ -13,49 +15,45 @@ public class MainGameThread extends Thread {
     private static MainGameThread instance;
     private final Object lock = new Object();
 
-    Queue<Task<?>> tasks = new LinkedList<>();
+    Queue<Callable<?>> tasks = new LinkedList<>();
 
     private boolean runQueuedTasksMode = false;
     private int numberOfLocks = 0;
 
     public void lockRunningThreadIfMain(){
-//        if(Thread.currentThread() instanceof MainGameThread) {
-            numberOfLocks += 1;
-            if(numberOfLocks >= 2)
-                return;
-
-//            synchronized (lock) {
-//                try {
-//                    System.out.println("LOCKED");
-//                    for (StackTraceElement stackTraceElement : Thread.currentThread().getStackTrace()) {
-//                        System.out.println(stackTraceElement);
-//                    }
-//
-//                    lock.wait();
-//                } catch (InterruptedException e) {
-//                }
-//            }
-//        }
-
+        numberOfLocks += 1;
+        if(numberOfLocks >= 2)
+            return;
         this.suspend();
     }
     public void unlockTheThreadIfMain(){
         numberOfLocks -= 1;
         if(numberOfLocks > 0)
             return;
-//        synchronized (lock) {
-//            System.out.println("UNLOCKED ");
-//            for (StackTraceElement stackTraceElement : Thread.currentThread().getStackTrace()) {
-//                System.out.println(stackTraceElement);
-//            }
-//            lock.notify();
-//        }
-
         this.resume();
     }
 
     public MainGameThread(Runnable runnable){
-        super(runnable, "duel service thread");
+        super(new Task<Void>(){
+            @Override protected Void call() {
+                runnable.run();
+                return null;
+            }
+
+            @Override protected void succeeded() {
+                System.out.println("task finished successfully");
+            }
+
+            @Override protected void cancelled() {
+                super.cancelled();
+                System.out.println("task canceled");
+            }
+
+            @Override protected void failed() {
+                super.failed();
+                System.out.println("task failed");
+            }
+        }, "duel service thread");
         setDaemon(true);
         instance = this;
     }
@@ -65,11 +63,11 @@ public class MainGameThread extends Thread {
         lockRunningThreadIfMain();
     }
 
-    public <T> T blockUnblockRunningThreadAndDoInGui(MainGameThread.Task<T> task){
+    public <T> T blockUnblockRunningThreadAndDoInGui(Callable<T> task){
         AtomicReference<T> ret = new AtomicReference<T>();
         Platform.runLater(()->{
             try {
-                ret.set(task.run());
+                ret.set(task.call());
             } catch(Exception e){
                 e.printStackTrace();
             }
@@ -80,13 +78,13 @@ public class MainGameThread extends Thread {
     }
 
     public void blockUnblockRunningThreadAndDoInGui(Runnable r){
-        blockUnblockRunningThreadAndDoInGui((Task<Void>) ()->{
+        blockUnblockRunningThreadAndDoInGui((Callable<Void>) ()->{
             r.run();
             return null;
         });
     }
 
-    public synchronized void addTask(MainGameThread.Task<?> t){
+    public synchronized void addTask(Callable<?> t){
         // todo check it works or not. instead of putting in a list we just replace the last one
         // tasks.add(t);
         tasks.clear();
@@ -94,7 +92,7 @@ public class MainGameThread extends Thread {
     }
 
     public synchronized void addRunnable(Runnable runnable){
-        addTask((MainGameThread.Task<?>) ()->{
+        addTask((Callable<?>) ()->{
             runnable.run();
             return null;
         });
@@ -111,15 +109,14 @@ public class MainGameThread extends Thread {
                 Thread.sleep(10);
             } catch (InterruptedException ignored) {
             }
-            // it should be while game is not over
             if (!tasks.isEmpty()) {
-                MainGameThread.Task<?> r = tasks.poll();
-                r.run();
+                Callable<?> r = tasks.poll();
+                try {
+                    r.call();
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
             }
         }
-    }
-
-    public interface Task<T>{
-        T run();
     }
 }

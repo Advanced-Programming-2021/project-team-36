@@ -2,28 +2,23 @@ package YuGiOh.view.gui;
 
 import YuGiOh.controller.MainGameThread;
 import YuGiOh.view.gui.component.CardFrame;
+import YuGiOh.view.gui.component.GameField;
 import javafx.animation.TranslateTransition;
 import javafx.application.Platform;
 import javafx.beans.binding.DoubleBinding;
 import javafx.util.Duration;
 
 public class GameCardMovementManager {
-    private final GameCardFrameManager cardFrameManager;
-    private final DoubleBinding widthProperty, heightProperty, cardWidthProperty, cardHeightProperty;
-
-    public GameCardMovementManager(GameCardFrameManager cardFrameManager, DoubleBinding widthProperty, DoubleBinding heightProperty, DoubleBinding cardWidthProperty, DoubleBinding cardHeightProperty) {
-        this.cardFrameManager = cardFrameManager;
-        this.widthProperty = widthProperty;
-        this.heightProperty = heightProperty;
-        this.cardHeightProperty = cardHeightProperty;
-        this.cardWidthProperty = cardWidthProperty;
+    private final GameField gameField;
+    public GameCardMovementManager(GameField gameField) {
+        this.gameField = gameField;
     }
 
     public void animateCardMoving(CardFrame cardFrame, RatioLocation ratioLocation, Duration animationDuration, boolean blocking){
         animateCardMoving(
                 cardFrame,
-                widthProperty.multiply(ratioLocation.xRatio),
-                heightProperty.multiply(ratioLocation.yRatio),
+                gameField.widthProperty().multiply(ratioLocation.xRatio),
+                gameField.heightProperty().multiply(ratioLocation.yRatio),
                 animationDuration,
                 blocking
         );

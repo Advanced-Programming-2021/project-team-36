@@ -1,92 +1,117 @@
-package YuGiOh.view;
+package YuGiOh.graphicView;
 
+import YuGiOh.Main;
+import YuGiOh.controller.LogicException;
 import YuGiOh.controller.MainGameThread;
+import YuGiOh.graphicController.DuelMenuController;
+import YuGiOh.model.Duel;
 import YuGiOh.model.Game;
 import YuGiOh.model.card.Card;
 import YuGiOh.view.cardSelector.CardSelector;
 import YuGiOh.view.cardSelector.FinishSelectingCondition;
 import YuGiOh.view.cardSelector.ResistToChooseCard;
 import YuGiOh.view.cardSelector.SelectCondition;
-import YuGiOh.view.gui.*;
+import YuGiOh.view.gui.GameMapLocationIml;
 import YuGiOh.view.gui.component.*;
-import YuGiOh.view.gui.sound.GameMediaHandler;
-import javafx.application.Application;
-import javafx.beans.binding.Bindings;
+import javafx.fxml.FXML;
+import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
+import javafx.scene.control.Alert;
 import javafx.scene.input.KeyCode;
-import javafx.scene.layout.*;
+import javafx.scene.layout.Pane;
 import javafx.scene.paint.Color;
-import javafx.scene.text.Font;
 import javafx.scene.text.Text;
 import javafx.stage.Stage;
 import lombok.Getter;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.concurrent.Callable;
 import java.util.concurrent.atomic.AtomicBoolean;
 
-public class DuelMenuView extends Application {
-    private Stage stage;
-    private final double WIDTH = 1024, HEIGHT = 768;
-    private Scene scene;
-    private GameNavBar navBar;
-    private Text selectModeText;
-    private HBox root;
+public class DuelMenuView extends BaseMenuView {
+    private static DuelMenuView instance;
     private Game game;
+    @FXML
+    private GameNavBar navBar;
+    @FXML
+    private Text selectModeText;
+    @FXML
     private DuelInfoBox infoBox;
+    @FXML
     private GameField gameField;
 
     @Getter
     private CardSelector selector;
 
-    public void startNewGame(Game game) {
-        this.root = new HBox();
-        this.game = game;
-        StackPane stackPane = new StackPane(root);
-        scene = new Scene(stackPane, WIDTH, HEIGHT);
-        stackPane.setMinWidth(WIDTH);
-        stackPane.setMinHeight(HEIGHT);
-        this.gameField = new GameField(game, scene.widthProperty().multiply(0.8), scene.heightProperty().multiply(0.9), new GameMapLocationIml(game));
-        addNavBar();
-        addSelectModeToNavBar();
-        addMediaHandler();
-        addInfoBox();
-        root.getChildren().addAll(infoBox, new VBox(navBar, gameField));
-        selector = new CardSelector(infoBox);
+    public DuelMenuView() {
+        instance = this;
+    }
+
+    public static DuelMenuView getInstance() {
+        if (instance == null)
+            instance = new DuelMenuView();
+        return instance;
+    }
+
+    public static void init(Stage primaryStage) {
+        try {
+            Pane root = FXMLLoader.load(Main.class.getResource("/fxml/DuelMenu.fxml"));
+            DuelMenuView.getInstance().start(primaryStage, root);
+        } catch (IOException ignored) {
+        }
+    }
+
+    public void start(Stage primaryStage, Pane root) {
+        Duel duel = DuelMenuController.getInstance().getDuel();
+
+        this.stage = primaryStage;
+        this.root = root;
+        this.game = duel.getCurrentGame();
+        DuelMenuController.getInstance().setView(this);
+        try {
+            MainGameThread thread = DuelMenuController.getInstance().getNewGameThread();
+            this.gameField.init(game, new GameMapLocationIml(game));
+            this.infoBox.init(gameField, game);
+            this.selector = new CardSelector(infoBox);
+            thread.start();
+            run();
+
+        } catch (LogicException exception) {
+            new Alert(Alert.AlertType.ERROR, exception.getMessage()).showAndWait();
+            return;
+        }
+    }
+
+    public void run() {
+        renderScene();
         stage.setScene(scene);
         stage.show();
-        addPlayPauseController();
     }
 
-    private void addNavBar() {
-        navBar = new GameNavBar();
-        navBar.minHeightProperty().bind(scene.heightProperty().multiply(0.1));
-    }
-    private void addMediaHandler() {
-        GameMediaHandler mediaHandler = new GameMediaHandler(GuiReporter.getInstance());
-        // todo this is mute
-        mediaHandler.toggleMuteBackground();
-        Text muteText = new Text();
-        muteText.setFont(Font.font(25));
-        muteText.textProperty().bind(Bindings.when(mediaHandler.backgroundMuteProperty()).then("unmute").otherwise("mute"));
-        StackPane cover = new StackPane(muteText);
-        cover.setOnMouseClicked(e-> mediaHandler.toggleMuteBackground());
-        navBar.addItem(cover);
-    }
-    private void  addSelectModeToNavBar() {
-        selectModeText = new Text();
-        selectModeText.setFont(Font.font(30));
-        navBar.addItem(selectModeText);
-    }
-    private void addInfoBox() {
-        infoBox = new DuelInfoBox(game, root.widthProperty().multiply(0.2), root.heightProperty().multiply(1));
-        infoBox.setGameField(gameField);
+    private void renderScene() {
+        if (scene == null)
+            scene = new Scene(root);
+        this.gameField.prefHeightProperty().bind(root.heightProperty().multiply(0.9));
+        this.gameField.prefWidthProperty().bind(root.widthProperty().multiply(0.8));
+        this.infoBox.prefWidthProperty().bind(root.widthProperty().multiply(0.2));
+        this.infoBox.prefHeightProperty().bind(root.heightProperty().multiply(1));
+        this.navBar.prefHeightProperty().bind(root.heightProperty().multiply(0.1));
+        this.selectModeText.wrappingWidthProperty().bind(gameField.widthProperty().divide(3));
+
+        this.root.setMinWidth(400);
+        this.root.setMinHeight(400);
+        this.root.prefWidthProperty().bind(scene.widthProperty());
+        this.root.prefHeightProperty().bind(scene.heightProperty());
+
+        this.addPlayPauseController();
     }
 
-    @Override
-    public void start(Stage stage) {
-        this.stage = stage;
+    @FXML
+    private void muteBackground() {
+        System.out.println("muting :))");
     }
 
     public void addPlayPauseController(){
@@ -106,7 +131,7 @@ public class DuelMenuView extends Application {
     // all of this asking user must happen in Query Thread!
 
     public boolean askUser(String question, String yes, String no) {
-        return MainGameThread.getInstance().blockUnblockRunningThreadAndDoInGui((MainGameThread.Task<Boolean>) ()->
+        return MainGameThread.getInstance().blockUnblockRunningThreadAndDoInGui((Callable<Boolean>) ()->
                 new AlertBox().displayYesNoStandAlone(question, yes, no));
     }
 
@@ -134,7 +159,7 @@ public class DuelMenuView extends Application {
         ArrayList<CustomButton> buttons = new ArrayList<>();
         choices.forEach(s->buttons.add(new CustomButton(s, 17, ()->{})));
 
-        int ret = MainGameThread.getInstance().blockUnblockRunningThreadAndDoInGui((MainGameThread.Task<Integer>) ()->
+        int ret = MainGameThread.getInstance().blockUnblockRunningThreadAndDoInGui((Callable<Integer>) ()->
                 new AlertBox().displayChoicesStandAlone(question, buttons));
         if(ret == -1)
             throw new ResistToChooseCard();
@@ -152,7 +177,7 @@ public class DuelMenuView extends Application {
 
     public void announce(String message){
         MainGameThread.getInstance().blockUnblockRunningThreadAndDoInGui(()->
-            new AlertBox().displayMessageStandAlone(message)
+                new AlertBox().displayMessageStandAlone(message)
         );
     }
 

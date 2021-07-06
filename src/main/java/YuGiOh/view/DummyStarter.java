@@ -1,16 +1,7 @@
 package YuGiOh.view;
 
-import YuGiOh.controller.GameController;
-import YuGiOh.controller.MainGameThread;
 import YuGiOh.controller.ProgramController;
-import YuGiOh.controller.menu.DuelMenuController;
 import YuGiOh.controller.menu.LoginMenuController;
-import YuGiOh.controller.player.AggressiveAIPlayerController;
-import YuGiOh.controller.player.HumanPlayerController;
-import YuGiOh.model.Duel;
-import YuGiOh.model.Game;
-import YuGiOh.model.Player.AIPlayer;
-import YuGiOh.model.Player.HumanPlayer;
 import YuGiOh.model.User;
 import YuGiOh.model.card.Card;
 import YuGiOh.model.enums.AIMode;
@@ -48,22 +39,20 @@ public class DummyStarter extends Application {
             //Cheat.buildSuperUserWithManyOfThisCards(abolfazl, 40, "AxeRaider", "TheTricky", "MonsterReborn", "ManEaterBug");
 //            Cheat.buildSuperUser(fakeUser2);
 
-            Duel duel = new Duel(
-                    new HumanPlayer(abolfazl),
-                    new HumanPlayer(fakeUser2),
-//                    new AIPlayer(abolfazl, AIMode.AGGRESSIVE),
-//                    new AIPlayer(fakeUser2, AIMode.NORMAL),
-                    3
-            );
-            new DuelMenuController(duel);
-
-            // todo how to set aggressive AI player now?
-
-            DuelMenuController.getInstance().getGraphicView().start(primaryStage);
-
-            new MainGameThread(()->{
-                DuelMenuController.getInstance().control();
-            }).start();
+//            Duel duel = new Duel(
+//                    new HumanPlayer(abolfazl),
+//                    new HumanPlayer(fakeUser2),
+//                    3
+//            );
+//            new DuelMenuController(duel);
+//
+//            // todo how to set aggressive AI player now?
+//
+//            DuelMenuController.getInstance().getView().start(primaryStage);
+//
+//            new MainGameThread(()->{
+//                DuelMenuController.getInstance().control();
+//            }).start();
         } catch (Exception e){
             e.printStackTrace();
         }

@@ -1,8 +1,7 @@
 package YuGiOh.controller;
 
 import YuGiOh.controller.events.RoundOverExceptionEvent;
-import YuGiOh.controller.menu.DuelMenuController;
-import YuGiOh.controller.player.AIPlayerController;
+import YuGiOh.graphicController.DuelMenuController;
 import YuGiOh.controller.player.HumanPlayerController;
 import YuGiOh.controller.player.PlayerController;
 import YuGiOh.model.Player.Player;
@@ -19,8 +18,6 @@ import YuGiOh.model.Game;
 import YuGiOh.model.Player.AIPlayer;
 import YuGiOh.model.Player.HumanPlayer;
 import YuGiOh.model.enums.Phase;
-
-import java.lang.reflect.InvocationTargetException;
 
 public class GameController {
     @Getter
@@ -142,7 +139,7 @@ public class GameController {
             playerController1.refresh();
             playerController2.refresh();
         }
-        DuelMenuController.getInstance().getGraphicView().resetSelector();
+        DuelMenuController.getInstance().getView().resetSelector();
     }
 
     public void goNextPhaseAndNotify() {

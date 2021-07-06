@@ -14,8 +14,6 @@
                     mnemonicParsing="false" text="Start New Duel" styleClass="button"/>
             <Button alignment="CENTER" defaultButton="true" onMouseClicked="#startNewDuelWithAI"
                     mnemonicParsing="false" text="Start New Duel With AI" styleClass="button"/>
-            <Button alignment="CENTER" defaultButton="true" onMouseClicked="#startAIVersusAIDuel"
-                    mnemonicParsing="false" text="Start AI vs. AI Duel" styleClass="button"/>
             <Button alignment="CENTER" defaultButton="true" onMouseClicked="#loadProfileMenu"
                     mnemonicParsing="false" text="Profile Menu" styleClass="button"/>
             <Button alignment="CENTER" defaultButton="true" onMouseClicked="#loadScoreboardMenu"

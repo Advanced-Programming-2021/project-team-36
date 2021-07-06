@@ -1,27 +1,21 @@
 package YuGiOh.view.gui.component;
 
-import YuGiOh.controller.menu.DuelMenuController;
+import YuGiOh.graphicController.DuelMenuController;
 import YuGiOh.model.Game;
+import YuGiOh.model.Player.Player;
 import YuGiOh.view.gui.Utils;
 import javafx.application.Platform;
-import javafx.beans.binding.DoubleBinding;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.*;
 import lombok.Setter;
 
 public class DuelInfoBox extends BorderPane {
-    private final DoubleBinding widthProperty, heightProperty;
-    private final CardInfo cardInfo;
-    private final Game game;
+    private CardInfo cardInfo;
 
-    @Setter
     private GameField gameField;
 
-    public DuelInfoBox(Game game, DoubleBinding widthProperty, DoubleBinding heightProperty){
-        this.widthProperty = widthProperty;
-        this.heightProperty = heightProperty;
-        this.game = game;
+    public void init(GameField gameField, Game game) {
         setBackground(new Background(new BackgroundImage(
                 new Image(Utils.getAsset("Texture/wood.png").toURI().toString()),
                 BackgroundRepeat.REPEAT,
@@ -30,14 +24,9 @@ public class DuelInfoBox extends BorderPane {
                 BackgroundSize.DEFAULT
         )));
 
-        ImageView background = new ImageView(new Image(Utils.getAsset("Texture/wood.png").toURI().toString()));
-        background.fitWidthProperty().bind(widthProperty);
-        background.fitHeightProperty().bind(heightProperty);
-
-        minWidthProperty().bind(widthProperty);
-        minHeightProperty().bind(heightProperty);
-
-        cardInfo = new CardInfo(widthProperty, heightProperty.multiply(0.55));
+        cardInfo = new CardInfo();
+        cardInfo.prefWidthProperty().bind(widthProperty());
+        cardInfo.prefHeightProperty().bind(heightProperty().multiply(0.55));
 
         CustomButton nextPhaseButton = new CustomButton("next phase", 23, ()->
                 gameField.addRunnableToMainThread(()-> DuelMenuController.getInstance().goNextPhase())
@@ -51,9 +40,15 @@ public class DuelInfoBox extends BorderPane {
         insideBorderPane.setBottom(new VBox(nextPhaseButton, surrenderButton));
         insideBorderPane.setCenter(cardInfo);
 
-        setTop(new LifeBar(game.getSecondPlayer(), widthProperty));
+        setTop(getLifeBar(game.getSecondPlayer()));
         setCenter(insideBorderPane);
-        setBottom(new LifeBar(game.getFirstPlayer(), widthProperty));
+        setBottom(getLifeBar(game.getFirstPlayer()));
+    }
+
+    private LifeBar getLifeBar(Player player) {
+        LifeBar lifeBar = new LifeBar(player);
+        lifeBar.prefWidthProperty().bind(widthProperty());
+        return lifeBar;
     }
 
     public void addInfo(CardFrame cardFrame){

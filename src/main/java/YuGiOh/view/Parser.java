@@ -84,8 +84,8 @@ public class Parser {
             return LoginMenuController.class;
         if (menuName.equalsIgnoreCase("Main"))
             return MainMenuController.class;
-        if (menuName.equalsIgnoreCase("Duel"))
-            return DuelMenuController.class;
+//        if (menuName.equalsIgnoreCase("Duel"))
+//            return DuelMenuController.class;
         if (menuName.equalsIgnoreCase("Deck"))
             return DeckMenuController.class;
         if (menuName.equalsIgnoreCase("Scoreboard"))

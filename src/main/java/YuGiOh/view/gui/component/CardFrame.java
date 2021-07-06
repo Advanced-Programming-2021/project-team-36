@@ -1,9 +1,7 @@
 package YuGiOh.view.gui.component;
 
 import YuGiOh.controller.GameController;
-import YuGiOh.controller.menu.DuelMenuController;
-import YuGiOh.model.CardAddress;
-import YuGiOh.model.Game;
+import YuGiOh.graphicController.DuelMenuController;
 import YuGiOh.model.card.Card;
 import YuGiOh.model.card.Monster;
 import YuGiOh.model.enums.MonsterState;
@@ -12,13 +10,11 @@ import YuGiOh.view.gui.transition.CardRotateTransition;
 import YuGiOh.view.gui.transition.JumpingAnimation;
 import YuGiOh.view.gui.event.ClickOnCardEvent;
 import YuGiOh.view.gui.event.DropCardEvent;
-import javafx.beans.InvalidationListener;
 import javafx.beans.binding.Bindings;
 import javafx.beans.binding.BooleanBinding;
 import javafx.beans.binding.DoubleBinding;
 import javafx.beans.property.BooleanProperty;
 import javafx.beans.property.SimpleBooleanProperty;
-import javafx.beans.property.SimpleDoubleProperty;
 import javafx.geometry.Bounds;
 import javafx.scene.control.ContextMenu;
 import javafx.scene.control.MenuItem;
@@ -36,7 +32,6 @@ public class CardFrame extends DraggablePane {
     @Getter
     private final Card card;
 
-    private final DoubleBinding widthProperty, heightProperty;
     private final ImageView imageView;
     private final Image faceUpImage, faceDownImage;
     private final CardRotateTransition flipCardAnimation;
@@ -45,10 +40,14 @@ public class CardFrame extends DraggablePane {
 
     @Getter
     private final SimpleBooleanProperty forceImageFaceUp, forceFlipCardAnimation;
-    private final SimpleDoubleProperty widthCompressionProperty;
 
+    {
+        forceImageFaceUp = new SimpleBooleanProperty(false);
+        forceFlipCardAnimation = new SimpleBooleanProperty(false);
+        this.imageView = new ImageView();
+    }
     public void compressImage(double ratio) {
-        widthCompressionProperty.set(ratio);
+        imageView.setScaleX(ratio);
     }
 
     public Image getImage(){
@@ -65,27 +64,20 @@ public class CardFrame extends DraggablePane {
                 .otherwise(card.facedUpProperty());
     }
 
-    CardFrame(GameField gameRoot, Card card, DoubleBinding widthProperty, DoubleBinding heightProperty){
+    CardFrame(GameField gameRoot, Card card){
         super();
 
         this.gameRoot = gameRoot;
         this.card = card;
-        this.faceDownImage = new Image(Utils.getAsset("Cards/hidden.png").toURI().toString());
+        this.faceDownImage = Utils.getImage("Cards/Unknown.jpg");
         this.faceUpImage = Utils.getCardImage(card);
-        this.imageView = new ImageView();
+        imageView.imageProperty().bind(Bindings.when(forceImageFaceUp).then(faceUpImage).otherwise(faceDownImage));
 
         getChildren().add(imageView);
 
-        this.forceImageFaceUp = new SimpleBooleanProperty(false);
-        this.forceFlipCardAnimation = new SimpleBooleanProperty(false);
-
         BooleanBinding inHandBinding = ObservableBuilder.getInHandBinding(card);
-
-        DoubleBinding inHandCof = Bindings.when(inHandBinding).then(1.3).otherwise(1.0);
-        this.widthProperty = widthProperty.multiply(inHandCof);
-        this.heightProperty = heightProperty.multiply(inHandCof);
-
-        imageView.imageProperty().bind(Bindings.when(forceImageFaceUp).then(faceUpImage).otherwise(faceDownImage));
+        scaleXProperty().bind(Bindings.when(inHandBinding).then(1.3).otherwise(1.0));
+        scaleYProperty().bind(Bindings.when(inHandBinding).then(1.3).otherwise(1.0));
 
         flipCardAnimation = new CardRotateTransition(this, currentPlayerCanSee().or(forceFlipCardAnimation).or(hoverProperty()));
         flipCardAnimation.start();
@@ -93,10 +85,8 @@ public class CardFrame extends DraggablePane {
         jumpingAnimation = new JumpingAnimation(this, hoverProperty().and(inHandBinding.and(ObservableBuilder.myTurnBinding(card))));
         jumpingAnimation.start();
 
-        this.widthCompressionProperty = new SimpleDoubleProperty(1);
-        imageView.fitWidthProperty().bind(this.widthProperty.multiply(widthCompressionProperty));
-        imageView.fitHeightProperty().bind(this.heightProperty);
-        imageView.translateXProperty().bind(this.widthProperty.multiply(widthCompressionProperty.negate().add(1).divide(2)));
+        imageView.fitHeightProperty().bind(heightProperty());
+        imageView.fitWidthProperty().bind(widthProperty());
 
         if(card instanceof Monster) {
             rotateProperty().bind(Bindings.when(((Monster) card).isDefensive()).then(90).otherwise(0));
@@ -117,11 +107,13 @@ public class CardFrame extends DraggablePane {
 
             // todo remove this in production. just debug info
             System.out.println("CARD: " + card);
+            System.out.println("CARD FRAME: " + this);
             System.out.println("card faced up: " + card.facedUpProperty().get());
             System.out.println("image faced up: " + isFacedUp());
             System.out.println("actual zone: " + GameController.getInstance().getGame().getCardZoneType(card));
             System.out.println("force image face up : " + forceImageFaceUp.get());
             System.out.println("force flip card animation: " + forceFlipCardAnimation.get());
+            System.out.println(getWidth() + " " + getHeight() + " " + imageView.getFitWidth() + " " + imageView.getFitHeight());
             if(card instanceof Monster)
                 System.out.println("monster state: " + ((Monster) card).getMonsterState());
         });
@@ -178,15 +170,15 @@ public class CardFrame extends DraggablePane {
     }
 
     public DoubleBinding getCenterXProperty() {
-        return layoutXProperty().add(widthProperty.divide(2));
+        return layoutXProperty().add(widthProperty().divide(2));
     }
     public DoubleBinding getCenterYProperty() {
-        return layoutYProperty().add(heightProperty.divide(2));
+        return layoutYProperty().add(heightProperty().divide(2));
     }
 
     public void moveByBindingCoordinates(DoubleBinding x, DoubleBinding y){
-        layoutXProperty().bind(x.add(widthProperty.divide(2).negate()));
-        layoutYProperty().bind(y.add(heightProperty.divide(2).negate()));
+        layoutXProperty().bind(x.add(widthProperty().divide(2).negate()));
+        layoutYProperty().bind(y.add(heightProperty().divide(2).negate()));
         setTranslateX(0);
         setTranslateY(0);
     }

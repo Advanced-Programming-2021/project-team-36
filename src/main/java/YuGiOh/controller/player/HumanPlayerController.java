@@ -2,20 +2,16 @@ package YuGiOh.controller.player;
 
 import YuGiOh.controller.GameController;
 import YuGiOh.controller.MainGameThread;
-import YuGiOh.model.Game;
-import YuGiOh.model.enums.Phase;
-import YuGiOh.view.DuelMenuView;
+import YuGiOh.graphicView.DuelMenuView;
 import YuGiOh.view.cardSelector.FinishSelectingCondition;
 import YuGiOh.view.cardSelector.FinishSelectingConditions;
 import YuGiOh.view.cardSelector.ResistToChooseCard;
 import YuGiOh.view.cardSelector.SelectCondition;
-import YuGiOh.controller.menu.DuelMenuController;
+import YuGiOh.graphicController.DuelMenuController;
 import YuGiOh.model.Player.HumanPlayer;
 import YuGiOh.model.card.Card;
 import YuGiOh.model.card.Monster;
 import YuGiOh.model.card.action.Action;
-import YuGiOh.model.enums.Phase;
-import javafx.beans.property.ObjectProperty;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -96,6 +92,6 @@ public class HumanPlayerController extends PlayerController {
     }
 
     private DuelMenuView getView() {
-        return DuelMenuController.getInstance().getGraphicView();
+        return DuelMenuController.getInstance().getView();
     }
 }

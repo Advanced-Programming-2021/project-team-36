@@ -4,6 +4,7 @@ import YuGiOh.model.CardAddress;
 import YuGiOh.model.Game;
 import YuGiOh.model.Player.Player;
 import YuGiOh.model.enums.Phase;
+import YuGiOh.model.enums.ZoneType;
 
 public class GameMapLocationIml extends GameMapLocation {
     public GameMapLocationIml(Game game) {
@@ -42,13 +43,12 @@ public class GameMapLocationIml extends GameMapLocation {
     }
 
     @Override
+    public double getCardHeightRatio() {
+        return getCardWidthRatio() * 1.458432304;
+    }
+    @Override
     public double getCardWidthRatio() {
         return 0.1;
-    }
-
-    @Override
-    public double getCardHeightRatio() {
-        return 0.12;
     }
 
     @Override
@@ -56,6 +56,17 @@ public class GameMapLocationIml extends GameMapLocation {
         return new RatioLocation(0.001, 0.13 + 0.13 * phase.ordinal());
     }
 
+    @Override
+    public RatioLocation getZonePileOpenRatio(ZoneType zoneType, Player player) {
+        RatioLocation ret = getLocationByCardAddress(new CardAddress(zoneType, 1, player));
+        return new RatioLocation(ret.xRatio, ret.yRatio + (getPlayerUpDown(player) == 1 ? 0.4 : -0.4));
+    }
+
+    @Override
+    public RatioLocation getZonePileCloseRatio(ZoneType zoneType, Player player) {
+        RatioLocation ret = getLocationByCardAddress(new CardAddress(zoneType, 1, player));
+        return ret;
+    }
 
     private final RatioLocation[][] monsterLocation = new RatioLocation[][]{
             new RatioLocation[]{
