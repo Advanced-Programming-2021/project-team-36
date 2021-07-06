@@ -7,6 +7,7 @@ import YuGiOh.model.User;
 import YuGiOh.model.card.Card;
 import YuGiOh.model.card.Utils;
 import YuGiOh.model.deck.Deck;
+import YuGiOh.model.enums.Color;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
@@ -69,8 +70,12 @@ public class DeckMenuView extends BaseMenuView {
 
     private void renderInitialSettings() {
         listView.getItems().clear();
-        for (Deck deck : DeckMenuController.getInstance().getUser().getDecks())
-            listView.getItems().add(deck.getName());
+        for (Deck deck : DeckMenuController.getInstance().getUser().getDecks()) {
+            if (DeckMenuController.getInstance().getUser().getActiveDeck() == deck)
+                listView.getItems().add(0, "Active: " + deck.getName());
+            else
+                listView.getItems().add(deck.getName());
+        }
         listView.getSelectionModel().setSelectionMode(SelectionMode.SINGLE);
     }
 
@@ -80,7 +85,10 @@ public class DeckMenuView extends BaseMenuView {
             new Alert(Alert.AlertType.ERROR, "You have not selected any deck.").showAndWait();
             return;
         }
-        DeckView.init(stage, DeckMenuController.getInstance().deckParser(listView.getSelectionModel().getSelectedItem()));
+        String selectedDeck = listView.getSelectionModel().getSelectedItem();
+        if (selectedDeck.startsWith("Active: "))
+            selectedDeck = selectedDeck.substring(8);
+        DeckView.init(stage, DeckMenuController.getInstance().deckParser(selectedDeck));
     }
     @FXML
     private void deleteDeck() {
@@ -93,7 +101,10 @@ public class DeckMenuView extends BaseMenuView {
         alert.showAndWait();
         if (!alert.getResult().getText().equalsIgnoreCase("Yes"))
             return;
-        DeckMenuController.getInstance().deleteDeck(listView.getSelectionModel().getSelectedItem());
+        String selectedDeck = listView.getSelectionModel().getSelectedItem();
+        if (selectedDeck.startsWith("Active: "))
+            selectedDeck = selectedDeck.substring(8);
+        DeckMenuController.getInstance().deleteDeck(selectedDeck);
         listView.getItems().remove(listView.getSelectionModel().getSelectedItem());
     }
     @FXML
@@ -120,8 +131,22 @@ public class DeckMenuView extends BaseMenuView {
             new Alert(Alert.AlertType.ERROR, "You have not selected any deck.").showAndWait();
             return;
         }
-        DeckMenuController.getInstance().setActiveDeck(listView.getSelectionModel().getSelectedItem());
+        String activeDeck = null;
+        if (DeckMenuController.getInstance().getUser().getActiveDeck() != null)
+            activeDeck = DeckMenuController.getInstance().getUser().getActiveDeck().getName();
+        String selectedItem = listView.getSelectionModel().getSelectedItem();
+        if (selectedItem.startsWith("Active:")) {
+            new Alert(Alert.AlertType.ERROR, "The deck is already active.").showAndWait();
+            return;
+        }
+        DeckMenuController.getInstance().setActiveDeck(selectedItem);
         new Alert(Alert.AlertType.INFORMATION, "Deck activated successfully!").showAndWait();
+        listView.getItems().remove(selectedItem);
+        listView.getItems().add(0, "Active: " + selectedItem);
+        if (activeDeck != null) {
+            listView.getItems().remove("Active: " + activeDeck);
+            listView.getItems().add(1, activeDeck);
+        }
     }
     @FXML
     private void showAllCards() {

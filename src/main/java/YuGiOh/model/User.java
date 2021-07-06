@@ -146,6 +146,8 @@ public class User implements Serializable {
     }
 
     public void deleteDeck(Deck deck) {
+        if (activeDeck == deck)
+            activeDeck = null;
         decks.remove(deck);
     }
 
