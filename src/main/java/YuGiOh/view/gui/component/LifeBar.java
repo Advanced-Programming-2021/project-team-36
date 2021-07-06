@@ -13,22 +13,20 @@ import javafx.scene.shape.Rectangle;
 import javafx.scene.text.Font;
 import javafx.scene.text.Text;
 
-public class LifeBar extends StackPane {
-    public LifeBar(Player player, DoubleBinding widthProperty){
+public class LifeBar extends Pane {
+    public LifeBar(Player player){
         Text text = new Text(player.getUser().getUsername());
         text.setFont(Font.font(25));
-        text.wrappingWidthProperty().bind(widthProperty);
-        LpVisualizer lpVisualizer = new LpVisualizer(player.lifePointProperty(), widthProperty.multiply(0.9));
+        text.autosize();
+        LpVisualizer lpVisualizer = new LpVisualizer(player.lifePointProperty());
+        lpVisualizer.prefWidthProperty().bind(widthProperty().multiply(0.9));
         getChildren().add(new VBox(text, lpVisualizer));
     }
 }
 
 class LpVisualizer extends StackPane {
-    LpVisualizer(IntegerProperty lpValue, DoubleBinding widthProperty){
-        minWidthProperty().bind(widthProperty);
+    LpVisualizer(IntegerProperty lpValue){
         setMinHeight(30);
-        widthProperty = widthProperty().multiply(1);
-
         Pane outer = new Pane();
         outer.setBorder(new Border(new BorderStroke(Color.BLACK, BorderStrokeStyle.SOLID, new CornerRadii(10), new BorderWidths(1))));
         getChildren().add(outer);
@@ -37,8 +35,8 @@ class LpVisualizer extends StackPane {
         Rectangle inner = new Rectangle();
         inner.heightProperty().bind(heightProperty().multiply(0.6));
         inner.yProperty().bind(heightProperty().multiply(0.2));
-        inner.xProperty().bind(widthProperty.multiply(0.07));
-        DoubleBinding totalLifeLength = widthProperty.multiply(0.86);
+        inner.xProperty().bind(widthProperty().multiply(0.07));
+        DoubleBinding totalLifeLength = widthProperty().multiply(0.86);
         inner.widthProperty().bind(totalLifeLength.multiply(lpValue).divide(Constants.InitialLifePoint.val));
         ObjectProperty<Paint> interactivePaint = new SimpleObjectProperty<>();
         inner.fillProperty().bind(interactivePaint);
@@ -53,7 +51,7 @@ class LpVisualizer extends StackPane {
         Text text = new Text();
         text.textProperty().bind(lpValue.asString());
         text.yProperty().bind(heightProperty().multiply(0.7));
-        text.xProperty().bind(widthProperty.multiply(0.07).add(20));
+        text.xProperty().bind(widthProperty().multiply(0.07).add(20));
         text.setFill(Color.WHEAT);
         outer.getChildren().add(text);
     }

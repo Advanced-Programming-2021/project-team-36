@@ -1,9 +1,16 @@
 package YuGiOh.graphicView;
 
+
+import YuGiOh.model.Duel;
+import YuGiOh.model.ModelException;
+import YuGiOh.model.Player.AIPlayer;
+import YuGiOh.model.Player.HumanPlayer;
 import YuGiOh.model.User;
+import YuGiOh.model.enums.AIMode;
 import YuGiOh.utils.Cheat;
 import YuGiOh.utils.DatabaseHandler;
 import javafx.application.Application;
+import javafx.scene.control.Alert;
 import javafx.stage.Stage;
 
 public class KasraGraphicStuffBtwThisNameIsWayTooLongLOL extends Application {

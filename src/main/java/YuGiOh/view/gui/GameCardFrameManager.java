@@ -65,6 +65,12 @@ public class GameCardFrameManager {
             if(address.getZone().equals(ZoneType.HAND))
                 moveHandler.move(cardFrame, address);
         }));
+
+
+        System.out.println("FROM CARD FRAME MANAGER: ");
+        occupied.forEach(((cardFrame, address) -> {
+            System.out.println(cardFrame + "   " + cardFrame.getCard().getName() + "  " + address.getZone() + " " + address.getId());
+        }));
     }
 
     public CardAddress getCardAddressByCard(Card card){

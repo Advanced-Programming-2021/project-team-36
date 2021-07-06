@@ -4,11 +4,12 @@ import YuGiOh.controller.GameController;
 import YuGiOh.controller.LogicException;
 import YuGiOh.controller.MainGameThread;
 import YuGiOh.controller.events.RoundOverExceptionEvent;
-import YuGiOh.controller.menu.DuelMenuController;
+import YuGiOh.graphicController.DuelMenuController;
 import YuGiOh.controller.player.AIPlayerController;
 import YuGiOh.model.Board;
 import YuGiOh.model.CardAddress;
 import YuGiOh.model.Game;
+import YuGiOh.model.Player.Player;
 import YuGiOh.model.card.Card;
 import YuGiOh.model.card.Monster;
 import YuGiOh.model.card.event.DirectAttackEvent;
@@ -38,47 +39,30 @@ import java.util.*;
 import java.util.stream.Collectors;
 
 public class GameField extends Pane {
-    @Getter
-    private final DoubleBinding cardHeightProperty, cardWidthProperty, widthProperty, heightProperty;
-    private final Game game;
-    private final GameMapLocation gameMapLocation;
-    private final GameCardFrameManager cardFrameManager;
-    private final GameCardMovementManager movementManager;
-    private final PileOfCardManager[] deckPile, graveYardPile;
+    private Game game;
+    private GameMapLocation gameMapLocation;
+    private GameCardFrameManager cardFrameManager;
+    private GameCardMovementManager movementManager;
+    private PileOfCardManager[] deckPile, graveYardPile;
 
-    public GameField(Game game, DoubleBinding widthProperty, DoubleBinding heightProperty, GameMapLocation gameMapLocation){
-        this.widthProperty = widthProperty;
-        this.heightProperty = heightProperty;
-        this.cardWidthProperty = widthProperty.multiply(gameMapLocation.getCardWidthRatio());
-        this.cardHeightProperty = heightProperty.multiply(gameMapLocation.getCardHeightRatio());
-
+    public void init(Game game, GameMapLocation gameMapLocation){
         this.game = game;
         this.gameMapLocation = gameMapLocation;
         this.cardFrameManager = new GameCardFrameManager(game);
 
-        this.movementManager = new GameCardMovementManager(cardFrameManager, widthProperty, heightProperty, cardWidthProperty, cardHeightProperty);
-        this.deckPile = createPiles(ZoneType.DECK);
-        this.graveYardPile = createPiles(ZoneType.GRAVEYARD);
+        this.movementManager = new GameCardMovementManager(this);
+        this.deckPile = new PileOfCardManager[] {createPile(ZoneType.DECK, game.getFirstPlayer()), createPile(ZoneType.DECK, game.getSecondPlayer())};
+        this.graveYardPile = new PileOfCardManager[] {createPile(ZoneType.GRAVEYARD, game.getFirstPlayer()), createPile(ZoneType.GRAVEYARD, game.getSecondPlayer())};
 
+        // todo remove this and put somewhere else
         new GuiReporter(this);
 
         ImageView background = new ImageView(new Image(Utils.getAsset("Field/Normal.bmp").toURI().toString()));
 
-        minWidthProperty().bind(widthProperty);
-        minHeightProperty().bind(heightProperty);
-        background.fitWidthProperty().bind(widthProperty);
-        background.fitHeightProperty().bind(heightProperty);
+        background.fitWidthProperty().bind(widthProperty());
+        background.fitHeightProperty().bind(heightProperty());
         getChildren().add(background);
-        getChildren().add(new PhaseLamps(
-                widthProperty,
-                heightProperty,
-                Map.of(
-                        Phase.DRAW_PHASE, gameMapLocation.getPhaseLocation(Phase.DRAW_PHASE),
-                        Phase.MAIN_PHASE1, gameMapLocation.getPhaseLocation(Phase.MAIN_PHASE1),
-                        Phase.BATTLE_PHASE, gameMapLocation.getPhaseLocation(Phase.BATTLE_PHASE),
-                        Phase.MAIN_PHASE2, gameMapLocation.getPhaseLocation(Phase.MAIN_PHASE2)
-                )
-        ));
+        getChildren().add(new PhaseLamps(this, gameMapLocation, Phase.DRAW_PHASE, Phase.STANDBY_PHASE, Phase.MAIN_PHASE1, Phase.BATTLE_PHASE, Phase.MAIN_PHASE2));
         getChildren().addAll(deckPile);
         getChildren().addAll(graveYardPile);
 
@@ -100,37 +84,16 @@ public class GameField extends Pane {
         setEventListeners();
     }
 
-    private PileOfCardManager[] createPiles(ZoneType zoneType) {
-        RatioLocation[] ratioLocation = new RatioLocation[] {
-                gameMapLocation.getLocationByCardAddress(new CardAddress(zoneType, 1, game.getFirstPlayer())),
-                gameMapLocation.getLocationByCardAddress(new CardAddress(zoneType, 1, game.getSecondPlayer())),
-        };
-        return new PileOfCardManager[] {
-            new PileOfCardManager(
-                    cardFrameManager,
-                    zoneType,
-                    game.getFirstPlayer(),
-                    Direction.LEFT,
-                    widthProperty.multiply(ratioLocation[0].xRatio),
-                    heightProperty.multiply(ratioLocation[0].yRatio),
-                    widthProperty.multiply(ratioLocation[0].xRatio),
-                    heightProperty.multiply(ratioLocation[0].yRatio),
-                    widthProperty.multiply(ratioLocation[0].xRatio),
-                    heightProperty.multiply(ratioLocation[0].yRatio - 0.4)
-            ),
-            new PileOfCardManager(
-                    cardFrameManager,
-                    zoneType,
-                    game.getSecondPlayer(),
-                    Direction.RIGHT,
-                    widthProperty.multiply(ratioLocation[1].xRatio),
-                    heightProperty.multiply(ratioLocation[1].yRatio),
-                    widthProperty.multiply(ratioLocation[1].xRatio),
-                    heightProperty.multiply(ratioLocation[1].yRatio),
-                    widthProperty.multiply(ratioLocation[1].xRatio),
-                    heightProperty.multiply(ratioLocation[1].yRatio + 0.4)
-            )
-        };
+    private PileOfCardManager createPile(ZoneType zoneType, Player player) {
+        return new PileOfCardManager(
+                this,
+                cardFrameManager,
+                zoneType,
+                player,
+                gameMapLocation.getLocationByCardAddress(new CardAddress(zoneType, 1, player)),
+                gameMapLocation.getZonePileCloseRatio(zoneType, player),
+                gameMapLocation.getZonePileOpenRatio(zoneType, player)
+        );
     }
 
     private void setEventListeners(){
@@ -146,22 +109,14 @@ public class GameField extends Pane {
                 );
             }
         });
-        GuiReporter.getInstance().addEventHandler(RoundOverEvent.MY_TYPE, e->{
-            System.out.println("round was over");
-            // todo this is just a sample
-        });
-        GuiReporter.getInstance().addEventHandler(DuelOverEvent.MY_TYPE, e->{
-            System.out.println("duel was over");
-            // todo this is just a sample
-        });
         GuiReporter.getInstance().addGameEventHandler((GuiReporter.GameEventHandler<MonsterAttackEvent>) (event)->{
-            DoubleBinding x = widthProperty.multiply(gameMapLocation.getLocationByCardAddress(cardFrameManager.getCardAddressByCard(event.getDefender())).xRatio);
-            DoubleBinding y = heightProperty.multiply(gameMapLocation.getLocationByCardAddress(cardFrameManager.getCardAddressByCard(event.getDefender())).yRatio);
+            DoubleBinding x = widthProperty().multiply(gameMapLocation.getLocationByCardAddress(cardFrameManager.getCardAddressByCard(event.getDefender())).xRatio);
+            DoubleBinding y = heightProperty().multiply(gameMapLocation.getLocationByCardAddress(cardFrameManager.getCardAddressByCard(event.getDefender())).yRatio);
             AttackingSword.getOrCreateSwordForCard(cardFrameManager.getCardFrameByCard(event.getAttacker())).shoot(x, y);
         });
         GuiReporter.getInstance().addGameEventHandler((GuiReporter.GameEventHandler<DirectAttackEvent>) (event)->{
-            DoubleBinding x = widthProperty.multiply(gameMapLocation.getDirectPlayerLocation(event.getPlayer()).xRatio);
-            DoubleBinding y = heightProperty.multiply(gameMapLocation.getDirectPlayerLocation(event.getPlayer()).yRatio);
+            DoubleBinding x = widthProperty().multiply(gameMapLocation.getDirectPlayerLocation(event.getPlayer()).xRatio);
+            DoubleBinding y = heightProperty().multiply(gameMapLocation.getDirectPlayerLocation(event.getPlayer()).yRatio);
             AttackingSword.getOrCreateSwordForCard(cardFrameManager.getCardFrameByCard(event.getAttacker())).shoot(x, y);
         });
         GuiReporter.getInstance().addGameEventHandler((GuiReporter.GameEventHandler<MagicActivation>) (event)->{
@@ -227,12 +182,15 @@ public class GameField extends Pane {
         board.getAllCards().forEach(card->{
             CardAddress address = board.getCardAddress(card);
             RatioLocation location = gameMapLocation.getLocationByCardAddress(address);
-            CardFrame cardFrame = new CardFrame(this, card, cardWidthProperty, cardHeightProperty);
+            CardFrame cardFrame = new CardFrame(card);
+            cardFrame.setGameField(this);
+            cardFrame.prefHeightProperty().bind(heightProperty().multiply(gameMapLocation.getCardHeightRatio()));
+            cardFrame.prefWidthProperty().bind(widthProperty().multiply(gameMapLocation.getCardWidthRatio()));
             if(card instanceof Monster)
                 AttackingSword.getOrCreateSwordForCard(cardFrame);
             cardFrame.moveByBindingCoordinates(
-                    widthProperty.multiply(location.xRatio),
-                    heightProperty.multiply(location.yRatio)
+                    widthProperty().multiply(location.xRatio),
+                    heightProperty().multiply(location.yRatio)
             );
             Platform.runLater(()-> getChildren().add(cardFrame));
             cardFrameManager.put(cardFrame, address);

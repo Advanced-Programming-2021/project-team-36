@@ -163,10 +163,10 @@ public abstract class PlayerController {
     }
 
 
-    public void attack(Card attacker, Card defender) throws LogicException, RoundOverExceptionEvent, ResistToChooseCard {
+    public void attack(Monster attacker, Monster defender) throws LogicException, RoundOverExceptionEvent, ResistToChooseCard {
         MonsterAttackAction action = new MonsterAttackAction(
                 new MonsterAttackEvent(attacker, defender),
-                ((Monster) defender).onBeingAttackedByMonster((Monster) attacker)
+                (defender).onBeingAttackedByMonster(attacker)
         );
         try {
             action.validateEffect();
@@ -178,20 +178,19 @@ public abstract class PlayerController {
         }
     }
 
-    public void directAttack(Card card) throws RoundOverExceptionEvent, LogicException, ResistToChooseCard {
+    public void directAttack(Monster monster) throws RoundOverExceptionEvent, LogicException, ResistToChooseCard {
         Game game = GameController.getInstance().getGame();
         DirectAttackAction action = new DirectAttackAction(
-                new DirectAttackEvent(card, game.getOtherPlayer(player)),
+                new DirectAttackEvent(monster, game.getOtherPlayer(player)),
                 () -> {
-                    Monster attacker = (Monster) card;
                     Player defender = game.getOtherPlayer(player);
-                    GameController.getInstance().decreaseLifePoint(defender, attacker.getAttackDamage(), true);
-                    attacker.setAllowAttack(false);
+                    GameController.getInstance().decreaseLifePoint(defender, monster.getAttackDamage(), true);
+                    monster.setAllowAttack(false);
                 }
         );
         try {
             action.validateEffect();
-            CustomPrinter.println(String.format("<%s> declares an direct attack with <%s>", getPlayer().getUser().getUsername(), card.getName()), Color.Blue);
+            CustomPrinter.println(String.format("<%s> declares an direct attack with <%s>", getPlayer().getUser().getUsername(), monster.getName()), Color.Blue);
             startChain(action);
             GameController.getInstance().checkBothLivesEndGame();
         } catch (ValidateResult result) {

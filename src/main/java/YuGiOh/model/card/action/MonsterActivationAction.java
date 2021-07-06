@@ -16,13 +16,12 @@ public class MonsterActivationAction extends Action {
     public void validateEffect() throws ValidateResult {
         MagicActivation event = (MagicActivation) getEvent();
         ValidateTree.checkActivateMonster((Monster) event.getCard());
-        Spell spell = (Spell) event.getCard();
-    //    spell.validateEffect();
+        // todo activation check
     }
 
     protected void preprocess() {
-        MagicActivation event = (MagicActivation) getEvent();
-        Spell spell = (Spell) event.getCard();
+//        MagicActivation event = (MagicActivation) getEvent();
+//        Spell spell = (Spell) event.getCard();
     //    spell.preprocessForEffect();
     };
 }

@@ -2,8 +2,6 @@ package YuGiOh.view;
 
 import YuGiOh.controller.GameController;
 import YuGiOh.controller.LogicException;
-import YuGiOh.controller.menu.DeckMenuController;
-import YuGiOh.controller.menu.DuelMenuController;
 import YuGiOh.controller.menu.HalfTimeMenuController;
 import YuGiOh.model.Game;
 import YuGiOh.model.ModelException;

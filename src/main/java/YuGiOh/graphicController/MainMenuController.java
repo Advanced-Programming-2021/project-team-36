@@ -1,9 +1,11 @@
 package YuGiOh.graphicController;
 
 import YuGiOh.Main;
+import YuGiOh.controller.LogicException;
 import YuGiOh.controller.menu.DeckMenuController;
 import YuGiOh.controller.menu.ScoreboardMenuController;
 import YuGiOh.controller.menu.ShopMenuController;
+import YuGiOh.graphicView.DuelMenuView;
 import YuGiOh.graphicView.LoginMenuView;
 import YuGiOh.model.Duel;
 import YuGiOh.model.Game;
@@ -17,6 +19,7 @@ import YuGiOh.utils.CustomPrinter;
 import YuGiOh.utils.RoutingException;
 import YuGiOh.graphicView.MainMenuView;
 import javafx.fxml.FXMLLoader;
+import javafx.scene.control.Alert;
 import javafx.scene.layout.Pane;
 import javafx.stage.Stage;
 import lombok.Getter;
@@ -34,40 +37,26 @@ public class MainMenuController extends BaseMenuController {
         instance = this;
     }
 
-    public void startNewDuel(User secondUser, int round) throws RoutingException, ModelException {
-        Duel duel = new Duel(
+    private void startDuel(Duel duel) throws LogicException {
+        new DuelMenuController(duel);
+        DuelMenuController.getInstance().getNewGameThread().start();
+        CustomPrinter.println(String.format("start new duel between %s and %s", duel.getFirstPlayer().getUser().getNickname(), duel.getSecondPlayer().getUser().getNickname()), Color.Default);
+    }
+
+    public void startNewDuel(User secondUser, int round) throws LogicException, ModelException {
+        startDuel(new Duel(
                 new HumanPlayer(user),
                 new HumanPlayer(secondUser),
                 round
-        );
-        CustomPrinter.println(String.format("start new duel between %s and %s", duel.getFirstPlayer().getUser().getNickname(), duel.getSecondPlayer().getUser().getNickname()), Color.Default);
-        /*ProgramController.getInstance().navigateToMenu(
-            new DuelMenuController(game)
-        );*/
+        ));
     }
 
-    public void startDuelWithAI(int round, AIMode aiMode) throws RoutingException, ModelException {
-        Duel duel = new Duel(
+    public void startDuelWithAI(int round, AIMode aiMode) throws LogicException, ModelException {
+        startDuel(new Duel(
                 new HumanPlayer(user),
                 new AIPlayer(aiMode),
                 round
-        );
-        CustomPrinter.println(String.format("start new duel between %s and %s", duel.getFirstPlayer().getUser().getNickname(), duel.getSecondPlayer().getUser().getNickname()), Color.Default);
-        /*ProgramController.getInstance().navigateToMenu(
-                new DuelMenuController(game)
-        );*/
-    }
-
-    public void startDuelAiWithAI(int round, AIMode aiMode1, AIMode aiMode2) throws ModelException {
-        Duel duel = new Duel(
-                new AIPlayer(aiMode1),
-                new AIPlayer(aiMode2),
-                round
-        );
-        CustomPrinter.println(String.format("start new duel between  and %s", duel.getFirstPlayer().getUser().getNickname(), duel.getSecondPlayer().getUser().getNickname()), Color.Default);
-        /*ProgramController.getInstance().navigateToMenu(
-                new DuelMenuController(game)
-        );*/
+        ));
     }
 
     public void logout() {

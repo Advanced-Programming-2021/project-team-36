@@ -19,8 +19,8 @@ import javafx.util.Duration;
 import java.util.HashMap;
 
 public class AttackingSword extends ImageView {
-    private CardFrame cardFrame;
-    private static HashMap<CardFrame, AttackingSword> cardToSword = new HashMap<>();
+    private final CardFrame cardFrame;
+    private static final HashMap<CardFrame, AttackingSword> cardToSword = new HashMap<>();
     private final SimpleBooleanProperty extraVisibility;
 
     public static AttackingSword getOrCreateSwordForCard(CardFrame cardFrame) {

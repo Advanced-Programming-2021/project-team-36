@@ -13,11 +13,8 @@ public class CardInfo extends StackPane {
     private SimpleObjectProperty<CardFrame> cardFrameProperty;
     private ImageView imageView;
     private Text text;
-    private final DoubleBinding widthProperty, heightProperty;
 
-    public CardInfo(DoubleBinding widthProperty, DoubleBinding heightProperty) {
-        this.widthProperty = widthProperty;
-        this.heightProperty = heightProperty;
+    public CardInfo() {
         cardFrameProperty = new SimpleObjectProperty<>(null);
     }
 
@@ -28,10 +25,10 @@ public class CardInfo extends StackPane {
         } else {
             cardFrameProperty.set(cardFrame);
             imageView = new ImageView(cardFrame.getImage());
-            imageView.fitWidthProperty().bind(widthProperty);
-            imageView.fitHeightProperty().bind(heightProperty.multiply(0.8));
+            imageView.fitWidthProperty().bind(widthProperty());
+            imageView.setPreserveRatio(true);
             text = new Text(cardFrame.getCard().getDescription());
-            text.wrappingWidthProperty().bind(widthProperty.multiply(0.9));
+            text.wrappingWidthProperty().bind(widthProperty().multiply(0.9));
             StackPane innerTextPane = new StackPane(text);
             StackPane outerTextPane = new StackPane(innerTextPane);
             outerTextPane.setBackground(
@@ -39,10 +36,11 @@ public class CardInfo extends StackPane {
                             new BackgroundFill(
                                     Color.WHEAT,
                                     new CornerRadii(0, 0, 0.2, 0.2, true),
-                                    Insets.EMPTY)
+                                    Insets.EMPTY
+                            )
                     )
             );
-            outerTextPane.minHeightProperty().bind(innerTextPane.heightProperty().add(10));
+            outerTextPane.setPadding(new Insets(0, 0, 20, 0));
             getChildren().addAll(new VBox(imageView, outerTextPane));
         }
     }

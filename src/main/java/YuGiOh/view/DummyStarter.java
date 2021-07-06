@@ -1,15 +1,13 @@
 package YuGiOh.view;
 
-import YuGiOh.controller.GameController;
 import YuGiOh.controller.MainGameThread;
 import YuGiOh.controller.ProgramController;
-import YuGiOh.controller.menu.DuelMenuController;
 import YuGiOh.controller.menu.LoginMenuController;
-import YuGiOh.controller.player.AggressiveAIPlayerController;
-import YuGiOh.controller.player.HumanPlayerController;
+import YuGiOh.graphicController.DuelMenuController;
+import YuGiOh.graphicController.MainMenuController;
+import YuGiOh.graphicView.DuelMenuView;
+import YuGiOh.graphicView.MainMenuView;
 import YuGiOh.model.Duel;
-import YuGiOh.model.Game;
-import YuGiOh.model.Player.AIPlayer;
 import YuGiOh.model.Player.HumanPlayer;
 import YuGiOh.model.User;
 import YuGiOh.model.card.Card;
@@ -48,23 +46,11 @@ public class DummyStarter extends Application {
             //Cheat.buildSuperUserWithManyOfThisCards(abolfazl, 40, "AxeRaider", "TheTricky", "MonsterReborn", "ManEaterBug");
 //            Cheat.buildSuperUser(fakeUser2);
 
-            Duel duel = new Duel(
-//                    new HumanPlayer(abolfazl),
-                    new HumanPlayer(abolfazl),
-                    new HumanPlayer(fakeUser2),
-//                    new AIPlayer(abolfazl, AIMode.AGGRESSIVE),
-//                    new AIPlayer(fakeUser2, AIMode.NORMAL),
-                    3
-            );
-            new DuelMenuController(duel);
+//            new MainMenuController(abolfazl).startNewDuel(fakeUser2, 3);
+            new MainMenuController(abolfazl).startDuelWithAI(3, AIMode.AGGRESSIVE);
+            DuelMenuView.init(primaryStage);
 
-            // todo how to set aggressive AI player now?
-
-            DuelMenuController.getInstance().getGraphicView().start(primaryStage);
-
-            new MainGameThread(()->{
-                DuelMenuController.getInstance().control();
-            }).start();
+            primaryStage.setFullScreen(true);
         } catch (Exception e){
             e.printStackTrace();
         }

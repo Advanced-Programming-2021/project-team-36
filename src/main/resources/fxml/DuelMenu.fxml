@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import java.lang.*?>
+<?import java.util.*?>
+<?import javafx.scene.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+
+<?import YuGiOh.view.gui.component.GameField?>
+<?import YuGiOh.view.gui.component.DuelInfoBox?>
+<?import YuGiOh.view.gui.component.GameNavBar?>
+<?import javafx.scene.text.Text?>
+<?import YuGiOh.view.gui.component.PhaseLamps?>
+<Pane xmlns="http://javafx.com/javafx"
+      xmlns:fx="http://javafx.com/fxml"
+      fx:controller="YuGiOh.graphicView.DuelMenuView">
+    <HBox>
+        <DuelInfoBox fx:id="infoBox"/>
+        <VBox>
+            <GameNavBar fx:id="navBar">
+                <Text fx:id="selectModeText" />
+            </GameNavBar>
+            <GameField fx:id="gameField" />
+        </VBox>
+    </HBox>
+</Pane>

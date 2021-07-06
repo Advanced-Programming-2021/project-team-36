@@ -1,6 +1,7 @@
 package YuGiOh.controller.menu;
 
 import YuGiOh.controller.ProgramController;
+import YuGiOh.graphicController.DuelMenuController;
 import YuGiOh.model.Duel;
 import YuGiOh.model.Game;
 import YuGiOh.model.ModelException;
@@ -32,33 +33,33 @@ public class MainMenuController extends BaseMenuController {
                 round
         );
         CustomPrinter.println(String.format("start new duel between %s and %s", duel.getFirstPlayer().getUser().getNickname(), duel.getSecondPlayer().getUser().getNickname()), Color.Default);
-        ProgramController.getInstance().navigateToMenu(
-            new DuelMenuController(duel)
-        );
+//        ProgramController.getInstance().navigateToMenu(
+//            new DuelMenuController(duel)
+//        );
     }
 
     public void startDuelWithAI(int round, AIMode aiMode) throws RoutingException, ModelException {
-        Duel duel = new Duel(
-                new HumanPlayer(user),
-                new AIPlayer(aiMode),
-                round
-        );
-        CustomPrinter.println(String.format("start new duel between %s and %s", duel.getFirstPlayer().getUser().getNickname(), duel.getSecondPlayer().getUser().getNickname()), Color.Default);
-        ProgramController.getInstance().navigateToMenu(
-                new DuelMenuController(duel)
-        );
+//        Duel duel = new Duel(
+//                new HumanPlayer(user),
+//                new AIPlayer(aiMode),
+//                round
+//        );
+//        CustomPrinter.println(String.format("start new duel between %s and %s", duel.getFirstPlayer().getUser().getNickname(), duel.getSecondPlayer().getUser().getNickname()), Color.Default);
+//        ProgramController.getInstance().navigateToMenu(
+//                new DuelMenuController(duel)
+//        );
     }
 
     public void startDuelAIWithAI(int round, AIMode aiMode1, AIMode aiMode2) throws ModelException {
-        Duel duel = new Duel(
-                new AIPlayer(aiMode1),
-                new AIPlayer(aiMode2),
-                round
-        );
-        CustomPrinter.println(String.format("start new duel between  and %s", duel.getFirstPlayer().getUser().getNickname(), duel.getSecondPlayer().getUser().getNickname()), Color.Default);
-        ProgramController.getInstance().navigateToMenu(
-                new DuelMenuController(duel)
-        );
+//        Duel duel = new Duel(
+//                new AIPlayer(aiMode1),
+//                new AIPlayer(aiMode2),
+//                round
+//        );
+//        CustomPrinter.println(String.format("start new duel between  and %s", duel.getFirstPlayer().getUser().getNickname(), duel.getSecondPlayer().getUser().getNickname()), Color.Default);
+//        ProgramController.getInstance().navigateToMenu(
+//                new DuelMenuController(duel)
+//        );
     }
 
     public void increaseBalance(int extra) {

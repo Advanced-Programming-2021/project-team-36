@@ -6,6 +6,8 @@ import javafx.beans.binding.DoubleBinding;
 import javafx.beans.property.SimpleBooleanProperty;
 import javafx.util.Duration;
 
+import java.util.Random;
+
 public class CardRotateTransition extends ReversibleTransition {
     private final CardFrame cardFrame;
 
