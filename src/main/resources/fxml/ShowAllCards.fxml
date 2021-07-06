@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import java.lang.*?>
+<?import java.util.*?>
+<?import javafx.scene.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+
+<?import javafx.scene.image.ImageView?>
+<?import java.net.URL?>
+<?import javafx.geometry.Insets?>
+<Pane xmlns="http://javafx.com/javafx" xmlns:fx="http://javafx.com/fxml" styleClass="background"
+      fx:controller="YuGiOh.graphicView.ShowAllCardsView" prefHeight="640.0" prefWidth="600.0">
+    <VBox alignment="CENTER" spacing="20" fx:id="vBox">
+        <Label StackPane.alignment="TOP_CENTER" text="Your Cards:" styleClass="title"/>
+        <ScrollPane fx:id="scrollPane" maxHeight="500" StackPane.alignment="CENTER">
+            <GridPane fx:id="gridPane" alignment="CENTER"/>
+        </ScrollPane>
+        <Button alignment="CENTER" defaultButton="true" onMouseClicked="#exit"
+                mnemonicParsing="false" text="Back" styleClass="button"/>
+    </VBox>
+    <stylesheets>
+        <URL value="@../css/DeckMenu.css"/>
+    </stylesheets>
+</Pane>

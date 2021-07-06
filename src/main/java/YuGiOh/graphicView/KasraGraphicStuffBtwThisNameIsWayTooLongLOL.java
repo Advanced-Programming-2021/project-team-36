@@ -21,7 +21,7 @@ public class KasraGraphicStuffBtwThisNameIsWayTooLongLOL extends Application {
         new User("19", "1398d", "w8");
         new User("19831", "Adakd", "w8");
         User shayan  = new User("shayan", "shayan.p", "1234");
-        //Cheat.buildSuperUser(shayan);
+        Cheat.buildSuperUser(shayan);
         MainMenuView.init(primaryStage, shayan);
         //ScoreboardMenuView.init(primaryStage);
     }

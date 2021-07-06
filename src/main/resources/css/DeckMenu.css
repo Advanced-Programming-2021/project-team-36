@@ -1,0 +1,55 @@
+.button {
+    -fx-background-color: #00000f;
+    -fx-text-fill: #ffc800;
+    -fx-background-radius: 10;
+    -fx-font-size: 14px;
+    -fx-font-weight: bold;
+    -fx-cursor: hand;
+    -fx-text-fill: radial-gradient(center 30% 30%,radius 100%, #ffc800, #2b9903);
+    -fx-font-family: PacFont;
+}
+
+.button:hover {
+    -fx-background-color: #010132;
+}
+.button:pressed {
+    -fx-translate-y: +2;
+}
+
+.title {
+    -fx-font-weight: bold;
+    -fx-font-size: 24px;
+    -fx-text-fill: #ffc800;
+    -fx-font-family: PacFont;
+}
+
+.text-field {
+    -fx-font-weight: bold;
+    -fx-font-size: 10px;
+    -fx-text-fill: #ffc800;
+    -fx-background-color: #010132;
+    -fx-text-fill: radial-gradient(center 30% 30%,radius 100%, #ffc800, #999703);
+}
+
+.deck-name {
+    -fx-font-weight: bold;
+    -fx-font-size: 20px;
+    -fx-alignment: center;
+    -fx-text-fill: radial-gradient(center 30% 30%,radius 100%, #8448f5, #2b9903);
+}
+
+.background {
+    -fx-background-color: radial-gradient(center 30% 30%,radius 100%, #00ffd9, #f3f5f3);
+}
+
+.deck {
+    -fx-font-weight: bold;
+    -fx-font-size: 20px;
+    -fx-text-fill: #ffc800;
+    -fx-font-family: PacFont;
+    -fx-text-fill: radial-gradient(center 30% 30%,radius 100%, #8448f5, #2b9903);
+}
+
+.debug {
+    -fx-background-color: #f8074c;
+}

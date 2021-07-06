@@ -16,6 +16,7 @@ import java.util.Arrays;
 public class DeckMenuController extends BaseMenuController {
     @Getter
     public static DeckMenuController instance;
+    @Getter
     private final User user;
 
     public DeckMenuController(User user){
@@ -25,19 +26,16 @@ public class DeckMenuController extends BaseMenuController {
 
     public void createDeck(String deckName) throws LogicException {
         if (user.getDeckByName(deckName) != null)
-            throw new LogicException(String.format("deck with name %s already exists", deckName));
+            throw new LogicException(String.format("Deck with name %s already exists", deckName));
         user.addDeck(new Deck(deckName));
-        CustomPrinter.println("deck created successfully!", Color.Default);
     }
 
-    public void deleteDeck(Deck deck) {
-        user.deleteDeck(deck);
-        CustomPrinter.println("deck deleted successfully", Color.Default);
+    public void deleteDeck(String deckName) {
+        user.deleteDeck(user.getDeckByName(deckName));
     }
 
-    public void setActiveDeck(Deck deck) {
-        user.setActiveDeck(deck);
-        CustomPrinter.println("deck activated successfully", Color.Default);
+    public void setActiveDeck(String deckName) {
+        user.setActiveDeck(user.getDeckByName(deckName));
     }
 
     public void addCardToDeck(Card card, Deck deck, boolean force, boolean side) throws LogicException{
@@ -54,44 +52,9 @@ public class DeckMenuController extends BaseMenuController {
                 throw new LogicException("side deck is full");
             deck.getSideDeck().addCard(card);
         }
-        CustomPrinter.println("card added to deck successfully", Color.Default);
     }
 
-    public void removeCardFromDeck(Card card, Deck deck, boolean side) throws LogicException {
-        if (!side) {
-            if (deck.getMainDeck().getCardFrequency(card) == 0)
-                throw new LogicException(String.format("card with name %s does not exists in main deck", card.getName()));
-            deck.getMainDeck().removeCard(card);
-        } else {
-            if (deck.getSideDeck().getCardFrequency(card) == 0)
-                throw new LogicException(String.format("card with name %s does not exists in side deck", card.getName()));
-            deck.getSideDeck().removeCard(card);
-        }
-        CustomPrinter.println("card removed from deck successfully", Color.Default);
-    }
-
-    public void showDeck(Deck deck, boolean side) {
-        CustomPrinter.println(deck.info(side), Color.Default);
-    }
-
-    public void showAllDecks() {
-        CustomPrinter.println("Decks:", Color.Default);
-        CustomPrinter.println("Active deck:", Color.Default);
-        Deck activeDeck = user.getActiveDeck();
-        if (activeDeck != null)
-            CustomPrinter.println(activeDeck, Color.Default);
-        CustomPrinter.println("Other decks:", Color.Default);
-        Arrays.stream(user.getDecks().toArray()).sorted().filter(e -> e != activeDeck).forEach(o -> CustomPrinter.println(o, Color.Default));
-    }
-
-    public void showAllCards() {
-        Arrays.stream(user.getCards().toArray()).sorted().forEach(o -> CustomPrinter.println(o, Color.Default));
-    }
-
-    public Deck deckParser(String deckName) throws ParserException {
-        Deck deck = user.getDeckByName(deckName);
-        if (deck == null)
-            throw new ParserException(String.format("deck with name %s does not exists", deckName));
-        return deck;
+    public Deck deckParser(String deckName) {
+        return user.getDeckByName(deckName);
     }
 }
