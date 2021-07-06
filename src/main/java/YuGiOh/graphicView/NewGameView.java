@@ -63,6 +63,7 @@ public class NewGameView extends BaseMenuView {
     public void run() {
         renderInitialSettings();
         stage.setScene(scene);
+        stage.setResizable(true);
         stage.show();
     }
 

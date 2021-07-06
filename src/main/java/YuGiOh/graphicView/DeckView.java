@@ -62,13 +62,14 @@ public class DeckView extends BaseMenuView {
         this.stage = primaryStage;
         this.root = root;
         this.deck = deck;
-        scene = new Scene(root);
+        scene.setRoot(root);
         run();
     }
 
     public void run() {
         renderInitialSettings();
         stage.setScene(scene);
+        stage.setResizable(false);
         stage.show();
     }
 

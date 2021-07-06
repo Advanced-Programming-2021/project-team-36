@@ -3,10 +3,16 @@ package YuGiOh.model;
 import YuGiOh.model.deck.Deck;
 import YuGiOh.model.enums.Constants;
 import YuGiOh.model.card.Card;
+import javafx.scene.image.Image;
+import lombok.Getter;
+import lombok.Setter;
 
+import java.io.FileInputStream;
+import java.io.IOException;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Comparator;
+import java.util.Random;
 
 public class User implements Serializable {
     private static final ArrayList<User> users = new ArrayList<>();
@@ -19,6 +25,8 @@ public class User implements Serializable {
     private final ArrayList<Card> cards;
     private final ArrayList<Deck> decks;
     private Deck activeDeck;
+    @Getter
+    private Image profilePicture;
 
     public User(String username, String nickname, String password) {
         this.username = username;
@@ -29,6 +37,12 @@ public class User implements Serializable {
         this.cards = new ArrayList<>();
         this.decks = new ArrayList<>();
         this.activeDeck = null;
+        try {
+            this.profilePicture = new Image(new FileInputStream(randomProfilePhotoURL()));
+        } catch (IOException ignored) {
+            System.out.println("shit");
+            ignored.printStackTrace();
+        }
         this.save();
     }
 
@@ -153,5 +167,12 @@ public class User implements Serializable {
 
     public boolean authenticate(String password) {
         return this.password.equals(password);
+    }
+
+    private String randomProfilePhotoURL() {
+        final int numberOfPhotos = 38;
+        Random random = new Random();
+        int photoNumber = random.nextInt(numberOfPhotos);
+        return "assets/Characters/Chara001.dds" + photoNumber + ".png";
     }
 }

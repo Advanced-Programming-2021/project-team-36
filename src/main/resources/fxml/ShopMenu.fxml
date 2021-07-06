@@ -9,7 +9,7 @@
 <?import javafx.scene.image.ImageView?>
 <?import java.net.URL?>
 <?import javafx.geometry.Insets?>
-<Pane xmlns="http://javafx.com/javafx" xmlns:fx="http://javafx.com/fxml" styleClass="background"
+<Pane xmlns="http://javafx.com/javafx" xmlns:fx="http://javafx.com/fxml" styleClass="debug"
       fx:controller="YuGiOh.graphicView.ShopMenuView" prefHeight="640.0" prefWidth="600.0">
     <ScrollPane fx:id="scrollPane" maxHeight="500">
         <GridPane fx:id="gridPane" alignment="CENTER"/>

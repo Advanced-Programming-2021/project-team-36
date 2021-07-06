@@ -51,7 +51,7 @@ public class ShowAllCardsView extends BaseMenuView {
     public void start(Stage primaryStage, Pane root) {
         this.stage = primaryStage;
         this.root = root;
-        scene = new Scene(root);
+        scene.setRoot(root);
         run();
     }
 
@@ -59,6 +59,7 @@ public class ShowAllCardsView extends BaseMenuView {
         renderInitialSettings();
         stage.setScene(scene);
         stage.show();
+        stage.setResizable(false);
         relocateNodeFromCenter(vBox, scene.getWidth() * 0.5, scene.getHeight() * 0.5);
     }
 

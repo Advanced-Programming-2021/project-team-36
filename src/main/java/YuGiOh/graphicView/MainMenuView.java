@@ -6,6 +6,8 @@ import YuGiOh.graphicController.MainMenuController;
 import YuGiOh.model.Duel;
 import YuGiOh.model.User;
 import YuGiOh.model.enums.AIMode;
+import javafx.beans.value.ChangeListener;
+import javafx.beans.value.ObservableValue;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
@@ -33,6 +35,7 @@ public class MainMenuView extends BaseMenuView {
             Pane root = FXMLLoader.load(Main.class.getResource("/fxml/MainMenu.fxml"));
             MainMenuView.getInstance().start(primaryStage, root, user);
         } catch (IOException ignored) {
+            ignored.printStackTrace();
         }
     }
 
@@ -40,20 +43,15 @@ public class MainMenuView extends BaseMenuView {
         this.stage = primaryStage;
         this.root = root;
         new MainMenuController(user);
+        scene.setRoot(root);
         run();
     }
 
     public void run() {
-        renderScene();
         stage.setScene(scene);
+        stage.setResizable(true);
         stage.show();
     }
-
-    private void renderScene() {
-        if (scene == null)
-            scene = new Scene(root);
-    }
-
     @FXML
     private void loadProfileMenu() {
         ProfileMenuView.init(stage, MainMenuController.getInstance().getUser());
