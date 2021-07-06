@@ -46,13 +46,14 @@ public class DeckMenuView extends BaseMenuView {
         this.stage = primaryStage;
         this.root = root;
         new DeckMenuController(user);
-        scene = new Scene(root);
+        scene.setRoot(root);
         run();
     }
 
     public void run() {
         renderInitialSettings();
         stage.setScene(scene);
+        stage.setResizable(false);
         stage.show();
         relocateNodeFromCenter(scrollPane, scene.getWidth() * 0.5, 0);
         relocateFromUp(scrollPane, 30);

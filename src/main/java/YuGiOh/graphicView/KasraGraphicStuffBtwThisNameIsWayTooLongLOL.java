@@ -17,7 +17,7 @@ public class KasraGraphicStuffBtwThisNameIsWayTooLongLOL extends Application {
 
     @Override
     public void start(Stage primaryStage) {
-        primaryStage.setResizable(false);
+        //primaryStage.setResizable(false);
         primaryStage.setTitle("YuGiOh!");
         DatabaseHandler.importFromDatabase();
 

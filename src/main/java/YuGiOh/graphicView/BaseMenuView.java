@@ -1,5 +1,7 @@
 package YuGiOh.graphicView;
 
+import javafx.beans.value.ChangeListener;
+import javafx.beans.value.ObservableValue;
 import javafx.event.EventHandler;
 import javafx.scene.Node;
 import javafx.scene.Scene;
@@ -15,6 +17,22 @@ public abstract class BaseMenuView {
     protected Stage stage;
     protected Scene scene;
     protected Pane root;
+
+    {
+        scene = new Scene(new Pane());
+        scene.widthProperty().addListener(new ChangeListener<Number>() {
+            @Override public void changed(ObservableValue<? extends Number> observableValue, Number oldSceneWidth, Number newSceneWidth) {
+                if (oldSceneWidth.doubleValue() > 0)
+                    root.getTransforms().setAll(new Scale(newSceneWidth.doubleValue() / root.getPrefWidth(), scene.getHeight() / root.getPrefHeight(), 0, 0));
+            }
+        });
+        scene.heightProperty().addListener(new ChangeListener<Number>() {
+            @Override public void changed(ObservableValue<? extends Number> observableValue, Number oldSceneHeight, Number newSceneHeight) {
+                if (oldSceneHeight.doubleValue() > 0)
+                    root.getTransforms().setAll(new Scale(scene.getWidth() / root.getPrefWidth(), newSceneHeight.doubleValue() / root.getPrefHeight(), 0, 0));
+            }
+        });
+    }
 
     public abstract void run();
 

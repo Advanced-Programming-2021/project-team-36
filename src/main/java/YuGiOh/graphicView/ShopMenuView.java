@@ -60,7 +60,7 @@ public class ShopMenuView extends BaseMenuView {
         this.stage = primaryStage;
         this.root = root;
         this.user = user;
-        scene = new Scene(root);
+        scene.setRoot(root);
         run();
     }
 
@@ -68,6 +68,7 @@ public class ShopMenuView extends BaseMenuView {
         renderInitialSettings();
         stage.setScene(scene);
         stage.show();
+        stage.setResizable(false);
         relocateNodeFromCenter(scrollPane, scene.getWidth() * 0.5, 0);
         scrollPane.setLayoutY(scene.getHeight() * 0.05);
         relocateNodeFromCenter(buttonVBox, scene.getWidth() * 0.5, scene.getHeight() * 0.90);

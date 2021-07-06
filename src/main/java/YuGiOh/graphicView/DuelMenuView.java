@@ -91,8 +91,7 @@ public class DuelMenuView extends BaseMenuView {
     }
 
     private void renderScene() {
-        if (scene == null)
-            scene = new Scene(root);
+        scene = new Scene(root);
         this.gameField.prefHeightProperty().bind(root.heightProperty().multiply(0.9));
         this.gameField.prefWidthProperty().bind(root.widthProperty().multiply(0.8));
         this.infoBox.prefWidthProperty().bind(root.widthProperty().multiply(0.2));

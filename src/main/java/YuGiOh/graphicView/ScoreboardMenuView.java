@@ -42,6 +42,7 @@ public class ScoreboardMenuView extends BaseMenuView {
     public void start(Stage primaryStage, Pane root) {
         this.stage = primaryStage;
         this.root = root;
+        scene.setRoot(root);
         run();
     }
 
@@ -49,25 +50,23 @@ public class ScoreboardMenuView extends BaseMenuView {
         renderScene();
         stage.setScene(scene);
         stage.show();
+        stage.setResizable(false);
         relocateNodeFromCenter(mainBox, root.getWidth() / 2, root.getHeight() * 0.4);
     }
 
     private void renderScene() {
-        if (scene == null) {
-            scene = new Scene(root);
-            ArrayList<User> users = User.retrieveUsersBasedOnScore();
-            int rank = 1;
-            for (int i = 0; i < users.size(); i++) {
-                User user = users.get(i);
-                if (i > 0 && users.get(i - 1).getScore() > user.getScore())
-                    rank = i + 1;
-                Label label = new Label(rank + ".  " + user.getNickname() + ":  " + user.getScore());
-                if (user == MainMenuController.getInstance().getUser())
-                    label.getStyleClass().add("highlighted-user");
-                else
-                    label.getStyleClass().add("user");
-                mainBox.getChildren().add(i + 1, label);
-            }
+        ArrayList<User> users = User.retrieveUsersBasedOnScore();
+        int rank = 1;
+        for (int i = 0; i < users.size(); i++) {
+            User user = users.get(i);
+            if (i > 0 && users.get(i - 1).getScore() > user.getScore())
+                rank = i + 1;
+            Label label = new Label(rank + ".  " + user.getNickname() + ":  " + user.getScore());
+            if (user == MainMenuController.getInstance().getUser())
+                label.getStyleClass().add("highlighted-user");
+            else
+                label.getStyleClass().add("user");
+            mainBox.getChildren().add(i + 1, label);
         }
     }
 

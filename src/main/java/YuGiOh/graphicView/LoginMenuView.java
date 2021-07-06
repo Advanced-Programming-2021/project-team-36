@@ -50,19 +50,15 @@ public class LoginMenuView extends BaseMenuView {
         this.root = root;
         this.stage = primaryStage;
         new LoginMenuController();
+        scene.setRoot(root);
         run();
     }
 
     public void run() {
-        renderScene();
-        stage.setScene(scene);
-        stage.show();
-    }
-
-    public void renderScene() {
         mainPane.toFront();
-        if (scene == null)
-            scene = new Scene(root);
+        stage.setScene(scene);
+        stage.setResizable(true);
+        stage.show();
     }
 
     public void register() {
