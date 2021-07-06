@@ -70,15 +70,15 @@ public class GameField extends Pane {
         createCards(game.getSecondPlayer().getBoard());
 
         this.cardFrameManager.setMoveHandler((cardFrame, to)->{
-//            for(int i = 0; i < 2; i++) {
-//                graveYardPile[i].close();
-//                deckPile[i].close();
-//            }
+            for(int i = 0; i < 2; i++) {
+                graveYardPile[i].close();
+                deckPile[i].close();
+            }
             moveCardByAddress(to, cardFrame);
-//            for(int i = 0; i < 2; i++) {
-//                graveYardPile[i].close();
-//                deckPile[i].close();
-//            }
+            for(int i = 0; i < 2; i++) {
+                graveYardPile[i].close();
+                deckPile[i].close();
+            }
         });
         background.toBack();
         setEventListeners();
