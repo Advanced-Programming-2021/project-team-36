@@ -182,7 +182,8 @@ public class GameField extends Pane {
         board.getAllCards().forEach(card->{
             CardAddress address = board.getCardAddress(card);
             RatioLocation location = gameMapLocation.getLocationByCardAddress(address);
-            CardFrame cardFrame = new CardFrame(this, card);
+            CardFrame cardFrame = new CardFrame(card);
+            cardFrame.setGameField(this);
             cardFrame.prefHeightProperty().bind(heightProperty().multiply(gameMapLocation.getCardHeightRatio()));
             cardFrame.prefWidthProperty().bind(widthProperty().multiply(gameMapLocation.getCardWidthRatio()));
             if(card instanceof Monster)

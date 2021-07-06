@@ -28,7 +28,8 @@ import lombok.Getter;
 import java.util.ArrayList;
 
 public class CardFrame extends DraggablePane {
-    private final BooleanProperty isSelected = new SimpleBooleanProperty();
+    @Getter
+    private final BooleanProperty isSelected, flipCardActivation, jumpingCardActivation;
     @Getter
     private final Card card;
 
@@ -36,7 +37,7 @@ public class CardFrame extends DraggablePane {
     private final Image faceUpImage, faceDownImage;
     private final CardRotateTransition flipCardAnimation;
     private final JumpingAnimation jumpingAnimation;
-    private final GameField gameRoot;
+    private GameField gameField;
 
     @Getter
     private final SimpleBooleanProperty forceImageFaceUp, forceFlipCardAnimation;
@@ -44,8 +45,16 @@ public class CardFrame extends DraggablePane {
     {
         forceImageFaceUp = new SimpleBooleanProperty(false);
         forceFlipCardAnimation = new SimpleBooleanProperty(false);
+        isSelected = new SimpleBooleanProperty();
         this.imageView = new ImageView();
+        flipCardActivation = new SimpleBooleanProperty(false);
+        jumpingCardActivation = new SimpleBooleanProperty(false);
+        flipCardAnimation = new CardRotateTransition(this, Bindings.when(flipCardActivation).then(true).otherwise(false));
+        flipCardAnimation.start();
+        jumpingAnimation = new JumpingAnimation(this, Bindings.when(jumpingCardActivation).then(true).otherwise(false));
+        jumpingAnimation.start();
     }
+
     public void compressImage(double ratio) {
         imageView.setScaleX(ratio);
     }
@@ -64,39 +73,36 @@ public class CardFrame extends DraggablePane {
                 .otherwise(card.facedUpProperty());
     }
 
-    CardFrame(GameField gameRoot, Card card){
+    CardFrame(Card card){
         super();
 
-        this.gameRoot = gameRoot;
         this.card = card;
         this.faceDownImage = Utils.getImage("Cards/Unknown.jpg");
         this.faceUpImage = Utils.getCardImage(card);
         imageView.imageProperty().bind(Bindings.when(forceImageFaceUp).then(faceUpImage).otherwise(faceDownImage));
-
-        getChildren().add(imageView);
-
-        BooleanBinding inHandBinding = ObservableBuilder.getInHandBinding(card);
-        scaleXProperty().bind(Bindings.when(inHandBinding).then(1.3).otherwise(1.0));
-        scaleYProperty().bind(Bindings.when(inHandBinding).then(1.3).otherwise(1.0));
-
-        flipCardAnimation = new CardRotateTransition(this, currentPlayerCanSee().or(forceFlipCardAnimation).or(hoverProperty()));
-        flipCardAnimation.start();
-
-        jumpingAnimation = new JumpingAnimation(this, hoverProperty().and(inHandBinding.and(ObservableBuilder.myTurnBinding(card))));
-        jumpingAnimation.start();
-
         imageView.fitHeightProperty().bind(heightProperty());
         imageView.fitWidthProperty().bind(widthProperty());
-
-        if(card instanceof Monster) {
-            rotateProperty().bind(Bindings.when(((Monster) card).isDefensive()).then(90).otherwise(0));
-        }
-
         effectProperty().bind(
                 Bindings.when(hoverProperty().or(isSelected))
                         .then((Effect) new DropShadow(28, Color.BLUE))
                         .otherwise((Effect) null)
         );
+        getChildren().add(imageView);
+    }
+
+    public void setGameField(GameField gameField) {
+        this.gameField = gameField;
+
+        BooleanBinding inHandBinding = ObservableBuilder.getInHandBinding(card);
+        scaleXProperty().bind(Bindings.when(inHandBinding).then(1.3).otherwise(1.0));
+        scaleYProperty().bind(Bindings.when(inHandBinding).then(1.3).otherwise(1.0));
+
+        flipCardActivation.bind(currentPlayerCanSee().or(forceFlipCardAnimation).or(hoverProperty()));
+        jumpingCardActivation.bind(hoverProperty().and(inHandBinding.and(ObservableBuilder.myTurnBinding(card))));
+
+        if(card instanceof Monster) {
+            rotateProperty().bind(Bindings.when(((Monster) card).isDefensive()).then(90).otherwise(0));
+        }
         addEventListeners();
     }
 
@@ -121,15 +127,15 @@ public class CardFrame extends DraggablePane {
             ContextMenu contextMenu = new ContextMenu();
             int buttonFontSize = 15;
             contextMenu.getItems().addAll(
-                    new MenuItem("", new CustomButton("summon", buttonFontSize, ()-> gameRoot.addRunnableToMainThreadForCard(
+                    new MenuItem("", new CustomButton("summon", buttonFontSize, ()-> gameField.addRunnableToMainThreadForCard(
                             card,
                             ()-> DuelMenuController.getInstance().summonCard(card)
                     ))),
-                    new MenuItem("", new CustomButton("special summon", buttonFontSize, ()-> gameRoot.addRunnableToMainThreadForCard(
+                    new MenuItem("", new CustomButton("special summon", buttonFontSize, ()-> gameField.addRunnableToMainThreadForCard(
                             card,
                             ()-> DuelMenuController.getInstance().specialSummon(card)
                     ))),
-                    new MenuItem("", new CustomButton("set", buttonFontSize, ()-> gameRoot.addRunnableToMainThreadForCard(
+                    new MenuItem("", new CustomButton("set", buttonFontSize, ()-> gameField.addRunnableToMainThreadForCard(
                             card,
                             ()-> DuelMenuController.getInstance().setCard(card)
                     ))),
@@ -137,25 +143,25 @@ public class CardFrame extends DraggablePane {
                         ArrayList<CustomButton> buttons = new ArrayList<>();
                         for(MonsterState state : new MonsterState[]{MonsterState.DEFENSIVE_HIDDEN, MonsterState.DEFENSIVE_OCCUPIED, MonsterState.OFFENSIVE_OCCUPIED}){
                             buttons.add(new CustomButton(state.getName(), buttonFontSize, ()->{
-                                gameRoot.addRunnableToMainThreadForCard(
+                                gameField.addRunnableToMainThreadForCard(
                                         card,
                                         ()->DuelMenuController.getInstance().changeCardPosition(card, state)
                                 );
                             }));
                         }
-                        new AlertBox().display(gameRoot, "choose state", buttons);
+                        new AlertBox().display(gameField, "choose state", buttons);
                     })),
-                    new MenuItem("", new CustomButton("flip summon", buttonFontSize, ()->gameRoot.addRunnableToMainThreadForCard(
+                    new MenuItem("", new CustomButton("flip summon", buttonFontSize, ()->gameField.addRunnableToMainThreadForCard(
                             card,
                             ()-> DuelMenuController.getInstance().flipSummon(card)
                     ))),
                     new MenuItem("", new CustomButton("activate effect", buttonFontSize, ()->{
-                        gameRoot.addRunnableToMainThreadForCard(
+                        gameField.addRunnableToMainThreadForCard(
                                 card,
                                 ()-> DuelMenuController.getInstance().activateEffect(card)
                         );
                     })),
-                    new MenuItem("", new CustomButton("direct attack", buttonFontSize, ()->gameRoot.addRunnableToMainThreadForCard(
+                    new MenuItem("", new CustomButton("direct attack", buttonFontSize, ()->gameField.addRunnableToMainThreadForCard(
                             card,
                             ()-> DuelMenuController.getInstance().directAttack(card)
                     )))
