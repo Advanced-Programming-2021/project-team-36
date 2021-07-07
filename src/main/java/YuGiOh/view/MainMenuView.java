@@ -93,7 +93,7 @@ public class MainMenuView extends BaseMenuView {
     }
 
     @FXML
-    private void loadCardFactoryMenu(MouseEvent mouseEvent) {
+    private void loadCardFactoryMenu() {
         CardFactoryMenuView.init(stage, MainMenuController.getInstance().getUser());
     }
 

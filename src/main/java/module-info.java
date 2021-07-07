@@ -5,7 +5,6 @@ open module YuGiOh {
     requires static lombok;
     requires commons.cli;
     requires javafx.media;
-    //requires com.google.gson;
     requires gson;
 
     exports YuGiOh;

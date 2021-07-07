@@ -1,11 +1,9 @@
 package YuGiOh.archive.view.gui.component;
 
-import YuGiOh.controller.GameController;
 import YuGiOh.controller.LogicException;
 import YuGiOh.controller.events.RoundOverExceptionEvent;
 import YuGiOh.controller.menus.DuelMenuController;
 import YuGiOh.model.card.Card;
-import YuGiOh.model.card.Magic;
 import YuGiOh.model.card.Monster;
 import YuGiOh.model.enums.MonsterState;
 import YuGiOh.archive.view.cardSelector.ResistToChooseCard;
@@ -20,6 +18,7 @@ import javafx.beans.binding.DoubleBinding;
 import javafx.beans.property.BooleanProperty;
 import javafx.beans.property.SimpleBooleanProperty;
 import javafx.geometry.Bounds;
+import javafx.scene.ImageCursor;
 import javafx.scene.control.ContextMenu;
 import javafx.scene.control.MenuItem;
 import javafx.scene.effect.DropShadow;
@@ -106,6 +105,9 @@ public class CardFrame extends DraggablePane {
             rotateProperty().bind(Bindings.when(((Monster) card).isDefensive()).then(90).otherwise(0));
         }
         addEventListeners();
+
+        ImageCursor imageCursor = new ImageCursor(Utils.getImage("Cursor/ax.png"));
+        setCursor(imageCursor);
     }
 
 
@@ -129,22 +131,6 @@ public class CardFrame extends DraggablePane {
     private void addEventListeners() {
         setOnMouseClicked(e -> {
             GuiReporter.getInstance().report(new ClickOnCardEvent(this));
-
-
-            // todo remove this in production. just debug info
-            System.out.println("CARD: " + card);
-            System.out.println("CARD FRAME: " + this);
-            System.out.println("card faced up: " + card.facedUpProperty().get());
-            System.out.println("image faced up: " + isFacedUp());
-            System.out.println("actual zone: " + GameController.getInstance().getGame().getCardZoneType(card));
-            System.out.println("force image face up : " + forceImageFaceUp.get());
-            System.out.println("force flip card animation: " + forceFlipCardAnimation.get());
-            System.out.println("faced up property: " + getCard().facedUpProperty().get());
-            System.out.println(getWidth() + " " + getHeight() + " " + imageView.getFitWidth() + " " + imageView.getFitHeight());
-            if (card instanceof Monster)
-                System.out.println("monster state: " + ((Monster) card).getMonsterState());
-            if(card instanceof Magic)
-                System.out.println("magic state: " + ((Magic) card).getState());
         });
         setOnContextMenuRequested(e -> {
             ContextMenu contextMenu = new ContextMenu();

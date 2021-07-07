@@ -29,6 +29,9 @@ public class Duel {
     @Getter
     private boolean finished;
 
+    @Getter
+    private String lastGameState;
+
     private final List<Integer> firstPlayerScores = new ArrayList<>();
     private final List<Integer> secondPlayerScores = new ArrayList<>();
 
@@ -73,7 +76,8 @@ public class Duel {
     public void goNextRound(RoundOverExceptionEvent event) throws ModelException {
         if (!finished) {
             if (event.gameResult.equals(GameResult.DRAW)) {
-                CustomPrinter.println(String.format("game is a draw and the score is %d-%d", totalScore(getFirstPlayer()), totalScore(getSecondPlayer())), Color.Blue);
+                lastGameState = String.format("game is a draw and the score is %d-%d", totalScore(getFirstPlayer()), totalScore(getSecondPlayer()));
+                CustomPrinter.println(lastGameState, Color.Blue);
                 addFirstPlayerLastRoundScore(0);
                 addSecondPlayerLastRoundScore(0);
             } else {
@@ -84,7 +88,8 @@ public class Duel {
                     addFirstPlayerLastRoundScore(0);
                     addSecondPlayerLastRoundScore(event.winnersLP);
                 }
-                CustomPrinter.println(String.format("%s won the game and the score is: %d-%d", event.winner.getUser().getUsername(), totalScore(getFirstPlayer()), totalScore(getSecondPlayer())), Color.Blue);
+                lastGameState = String.format("%s won the game and the score is: %d-%d", event.winner.getUser().getUsername(), totalScore(getFirstPlayer()), totalScore(getSecondPlayer()));
+                CustomPrinter.println(lastGameState, Color.Blue);
             }
             if (totalScore(getFirstPlayer()) > getRounds() / 2) {
                 endDuel(getFirstPlayer(), getSecondPlayer(), getRounds(), getMaxLP(getFirstPlayer()), totalScore(getFirstPlayer()), totalScore(getSecondPlayer()));
@@ -104,6 +109,7 @@ public class Duel {
         winner.getUser().increaseBalance(rounds * (1000 + maxWinnerLP));
         looser.getUser().increaseBalance(rounds * 100);
         finished = true;
-        CustomPrinter.println(String.format("%s won the whole match with score: %d-%d", winner.getUser().getUsername(), firstPlayerScore, secondPlayerScore), Color.Blue);
+        lastGameState = String.format("%s won the whole match with score: %d-%d", winner.getUser().getUsername(), firstPlayerScore, secondPlayerScore);
+        CustomPrinter.println(lastGameState, Color.Blue);
     }
 }

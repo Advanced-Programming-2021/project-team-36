@@ -41,9 +41,7 @@ public class GameCardFrameManager {
     }
 
     public synchronized void refresh() {
-        System.out.println("TRYING TO REFRESH " + game.getAllCards().size() + " <-> " + occupied.size());
         if (game.getAllCards().size() != occupied.size()) {
-            System.out.println(game.getAllCards().size() + " <-> " + occupied.size());
             return;
         }
         Map<CardFrame, CardAddress> changes = new HashMap<>();

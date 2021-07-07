@@ -1,4 +1,4 @@
-package YuGiOh.archive.menu;
+package YuGiOh.controller.menus;
 
 import YuGiOh.controller.LogicException;
 import YuGiOh.controller.events.PlayerReadyExceptionEvent;
@@ -7,7 +7,6 @@ import YuGiOh.model.Player.Player;
 import YuGiOh.model.card.Card;
 import YuGiOh.model.enums.Color;
 import YuGiOh.utils.CustomPrinter;
-import YuGiOh.archive.view.HalfTimeMenuView;
 import lombok.Getter;
 
 

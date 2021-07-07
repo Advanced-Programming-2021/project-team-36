@@ -1,7 +1,7 @@
 package YuGiOh.utils;
 
 import YuGiOh.model.User;
-import com.google.gson.*;
+import com.google.gson.Gson;
 import YuGiOh.model.card.Utils;
 import YuGiOh.model.enums.Color;
 
@@ -33,13 +33,14 @@ public class DatabaseHandler {
                     "database/" + fileName + ".json"));
             for (User user : User.retrieveUsersBasedOnScore()) {
                 objectOutputStream.writeObject(user);
-                bufferedWriter.write(jsonFormatter(new Gson().toJson(user)));
+                //bufferedWriter.write(jsonFormatter(new Gson().toJson(user)));
             }
             objectOutputStream.flush();
             objectOutputStream.close();
             bufferedWriter.flush();
             bufferedWriter.close();
         } catch (IOException exception) {
+            exception.printStackTrace();
             CustomPrinter.println("failed to save to database", Color.Default);
         }
     }
@@ -56,6 +57,7 @@ public class DatabaseHandler {
                     assert object instanceof User;
                     if (object instanceof User) {
                         User user = (User)object;
+                        System.out.println("loading: " + user.getUsername());
                         user.save();
                     }
                 }
