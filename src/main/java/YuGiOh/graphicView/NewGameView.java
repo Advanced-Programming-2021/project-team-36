@@ -2,6 +2,7 @@ package YuGiOh.graphicView;
 
 import YuGiOh.Main;
 import YuGiOh.controller.LogicException;
+import YuGiOh.graphicController.DuelMenuController;
 import YuGiOh.graphicController.MainMenuController;
 import YuGiOh.model.Animation;
 import YuGiOh.model.ModelException;
@@ -142,8 +143,9 @@ public class NewGameView extends BaseMenuView {
                         if (gameMode == 0) {
                             String secondPlayerUsername = secondPlayerUsernameTextField.getText();
                             MainMenuController.getInstance().startNewDuel(userGoesFirst, secondPlayerUsername, numberOfRounds);
-                        } else
+                        } else {
                             MainMenuController.getInstance().startDuelWithAI(userGoesFirst, 3, AIMode.NORMAL);
+                        }
                         DuelMenuView.init(stage);
                     } catch (InterruptedException | ModelException | LogicException ignored) {
                     }

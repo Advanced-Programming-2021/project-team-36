@@ -39,8 +39,7 @@ public class MainMenuController extends BaseMenuController {
     }
 
     private void startDuel(Duel duel) throws LogicException {
-        new DuelMenuController(duel);
-        DuelMenuController.getInstance().getNewGameThread().start();
+        new DuelMenuController(duel).getNewGameThread();
         CustomPrinter.println(String.format("start new duel between %s and %s", duel.getFirstPlayer().getUser().getNickname(), duel.getSecondPlayer().getUser().getNickname()), Color.Default);
     }
 
