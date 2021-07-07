@@ -106,42 +106,42 @@ public class AIPlayerController extends PlayerController {
 
     protected void noErrorSummonCard(Monster monster) {
         try {
-            normalSummon(monster);
+            normalSummon(monster, false);
         } catch (ResistToChooseCard | LogicException ignored) {
         }
     }
 
     protected void noErrorSpecialSummonCard(Monster monster) {
         try {
-            specialSummon(monster);
+            specialSummon(monster, false);
         } catch (ResistToChooseCard | LogicException ignored) {
         }
     }
 
     protected void noErrorFlipSummon(Monster monster) {
         try {
-            flipSummon(monster);
+            flipSummon(monster, false);
         } catch (LogicException | ResistToChooseCard ignored) {
         }
     }
 
     protected void noErrorChangeMonsterPosition(Monster monster, MonsterState monsterState) {
         try {
-            changeMonsterPosition(monster, monsterState);
+            changeMonsterPosition(monster, monsterState, false);
         } catch (LogicException ignored) {
         }
     }
 
     protected void noErrorSetMonster(Monster monster) {
         try {
-            setMonster(monster);
+            setMonster(monster, false);
         } catch (LogicException | ResistToChooseCard ignored) {
         }
     }
 
     protected void noErrorSetMagic(Magic magic) {
         try {
-            setMagic(magic);
+            setMagic(magic, false);
         } catch (LogicException | ResistToChooseCard ignored) {
         }
     }
@@ -152,7 +152,7 @@ public class AIPlayerController extends PlayerController {
             return;
         }
         try {
-            activateSpellEffect(spell);
+            activateSpellEffect(spell, false);
         } catch (LogicException | ResistToChooseCard ignored) {
         }
     }
@@ -160,7 +160,7 @@ public class AIPlayerController extends PlayerController {
     protected void noErrorRitualSummon(Spell spell) {
         while (true) {
             try {
-                activateSpellEffect(spell);
+                activateSpellEffect(spell, false);
             } catch (LogicException | ResistToChooseCard logicException) {
                 break;
             }
@@ -176,14 +176,14 @@ public class AIPlayerController extends PlayerController {
 
     protected void noErrorDirectAttack(Monster monster) {
         try {
-            directAttack(monster);
+            directAttack(monster, false);
         } catch (LogicException | ResistToChooseCard ignored) {
         }
     }
 
     protected void noErrorMonsterActivateEffect(Monster monster) {
         try {
-            activateMonsterEffect(monster);
+            activateMonsterEffect(monster, false);
         } catch (LogicException | ResistToChooseCard ignored) {
         }
     }

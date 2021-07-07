@@ -39,7 +39,6 @@ public class ChainController {
                 break;
             }
         }
-        CustomPrinter.println(chain.size(), Color.Blue);
         while (!chain.isEmpty()) {
             GameController.getInstance().getGame().changeTurnInChain();
 

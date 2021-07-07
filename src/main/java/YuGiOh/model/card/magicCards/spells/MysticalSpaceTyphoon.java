@@ -2,6 +2,7 @@ package YuGiOh.model.card.magicCards.spells;
 
 import YuGiOh.controller.GameController;
 import YuGiOh.controller.player.PlayerController;
+import YuGiOh.model.card.Card;
 import YuGiOh.model.card.Magic;
 import YuGiOh.model.card.Spell;
 import YuGiOh.model.card.action.Effect;
@@ -24,8 +25,7 @@ public class MysticalSpaceTyphoon extends Spell {
             PlayerController playerController = gameController.getPlayerControllerByPlayer(this.getOwner());
             Magic magic = (Magic) playerController.chooseKCards("Destroy one spell or trap on field",
                     1,
-                    SelectConditions.getMagicFromField())[0];
-            PlayerController controller = GameController.getInstance().getPlayerControllerByPlayer(magic.getOwner());
+                    SelectConditions.getMagicFromField(this))[0];
             gameController.moveCardToGraveYard(magic);
             CustomPrinter.println(String.format("<%s>'s <%s> activated successfully", this.getOwner().getUser().getUsername(), this.getName()), Color.Yellow);
             CustomPrinter.println(this, Color.Gray);
@@ -34,6 +34,9 @@ public class MysticalSpaceTyphoon extends Spell {
 
     @Override
     public boolean canActivateEffect() {
-        return true;
+        for (Card card : GameController.getInstance().getGame().getAllCardsOnBoard())
+            if (card instanceof Magic && card != this)
+                return true;
+        return false;
     }
 }

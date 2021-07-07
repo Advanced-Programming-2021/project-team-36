@@ -74,55 +74,61 @@ public abstract class PlayerController {
         CustomPrinter.println(String.format("new card added to the hand : <%s>", card.getName()), Color.Blue);
     }
 
-    public void normalSummon(Monster monster) throws LogicException, ResistToChooseCard {
+    public void normalSummon(Monster monster, boolean onlyCheckPossibility) throws LogicException, ResistToChooseCard {
         SummonAction action = new SummonAction(
                 new SummonEvent(player, monster, SummonType.NORMAL)
         );
         try {
             action.validateEffect();
-            startChain(action);
+            if (!onlyCheckPossibility)
+                startChain(action);
         } catch (ValidateResult result) {
             throw new LogicException(result.getMessage());
         }
     }
 
-    public void specialSummon(Monster monster) throws LogicException, ResistToChooseCard {
+    public void specialSummon(Monster monster, boolean onlyCheckPossibility) throws LogicException, ResistToChooseCard {
         SummonAction action = monster.specialSummonAction();
         try {
             action.validateEffect();
-            startChain(monster.specialSummonAction());
+            monster.validateSpecialSummon();
+            if (!onlyCheckPossibility)
+                startChain(monster.specialSummonAction());
         } catch (ValidateResult result) {
             throw new LogicException(result.getMessage());
         } catch (NullPointerException ignored) {
+            throw new LogicException("you can't special summon this monster");
         }
     }
 
-    public void setMonster(Monster monster) throws LogicException, ResistToChooseCard {
+    public void setMonster(Monster monster, boolean onlyCheckPossibility) throws LogicException, ResistToChooseCard {
         SetMonsterAction action = new SetMonsterAction(
                 new SetMonster(player, monster)
         );
         try {
             action.validateEffect();
-            startChain(action);
+            if (!onlyCheckPossibility)
+                startChain(action);
         } catch (ValidateResult result) {
             throw new LogicException(result.getMessage());
         }
     }
 
 
-    public void flipSummon(Monster monster) throws LogicException, ResistToChooseCard {
+    public void flipSummon(Monster monster, boolean onlyCheckPossibility) throws LogicException, ResistToChooseCard {
         FlipSummonAction action = new FlipSummonAction(
                 new FlipSummonEvent(player, monster)
         );
         try {
             action.validateEffect();
-            startChain(action);
+            if (!onlyCheckPossibility)
+                startChain(action);
         } catch (ValidateResult result) {
             throw new LogicException(result.getMessage());
         }
     }
 
-    public void setMagic(Magic magic) throws LogicException, ResistToChooseCard {
+    public void setMagic(Magic magic, boolean onlyCheckPossibility) throws LogicException, ResistToChooseCard {
         SetMagicAction action = new SetMagicAction(
                 new SetMagic(magic),
                 () -> {
@@ -134,7 +140,8 @@ public abstract class PlayerController {
         );
         try {
             action.validateEffect();
-            startChain(action);
+            if (!onlyCheckPossibility)
+                startChain(action);
         } catch (ValidateResult result) {
             throw new LogicException(result.getMessage());
         }
@@ -146,7 +153,7 @@ public abstract class PlayerController {
         throw new RoundOverExceptionEvent(GameResult.NOT_DRAW, game.getCurrentPlayer(), game.getOpponentPlayer(), game.getOpponentPlayer().getLifePoint());
     }
 
-    public void changeMonsterPosition(Monster monster, MonsterState monsterState) throws LogicException {
+    public void changeMonsterPosition(Monster monster, MonsterState monsterState, boolean onlyCheckPossibility) throws LogicException {
         Game game = GameController.getInstance().getGame();
         if (!GameController.getInstance().getCurrentPlayerController().getPlayer().getBoard().getMonsterCardZone().containsValue(monster))
             throw new LogicException("you can't change this card position");
@@ -158,8 +165,10 @@ public abstract class PlayerController {
             throw new LogicException("it's pointless to hide your card");
         if (monster.getMonsterState().equals(MonsterState.DEFENSIVE_HIDDEN))
             throw new LogicException("you should flip summon it");
-        monster.setMonsterState(monsterState);
-        CustomPrinter.println(String.format("<%s>'s <%s>'s position changed to %s", getPlayer().getUser().getUsername(), monster.getName(), monsterState), Color.Green);
+        if (!onlyCheckPossibility) {
+            monster.setMonsterState(monsterState);
+            CustomPrinter.println(String.format("<%s>'s <%s>'s position changed to %s", getPlayer().getUser().getUsername(), monster.getName(), monsterState), Color.Green);
+        }
     }
 
 
@@ -178,7 +187,7 @@ public abstract class PlayerController {
         }
     }
 
-    public void directAttack(Monster monster) throws RoundOverExceptionEvent, LogicException, ResistToChooseCard {
+    public void directAttack(Monster monster, boolean onlyCheckPossibility) throws RoundOverExceptionEvent, LogicException, ResistToChooseCard {
         Game game = GameController.getInstance().getGame();
         DirectAttackAction action = new DirectAttackAction(
                 new DirectAttackEvent(monster, game.getOtherPlayer(player)),
@@ -190,15 +199,17 @@ public abstract class PlayerController {
         );
         try {
             action.validateEffect();
-            CustomPrinter.println(String.format("<%s> declares an direct attack with <%s>", getPlayer().getUser().getUsername(), monster.getName()), Color.Blue);
-            startChain(action);
-            GameController.getInstance().checkBothLivesEndGame();
+            if (!onlyCheckPossibility) {
+                CustomPrinter.println(String.format("<%s> declares an direct attack with <%s>", getPlayer().getUser().getUsername(), monster.getName()), Color.Blue);
+                startChain(action);
+                GameController.getInstance().checkBothLivesEndGame();
+            }
         } catch (ValidateResult result) {
             throw new LogicException(result.getMessage());
         }
     }
 
-    public void activateMonsterEffect(Monster monster) throws LogicException, ResistToChooseCard {
+    public void activateMonsterEffect(Monster monster, boolean onlyCheckPossibility) throws LogicException, ResistToChooseCard {
         Game game = GameController.getInstance().getGame();
         MonsterActivationAction action = new MonsterActivationAction(
                 new MonsterActivation(monster),
@@ -206,14 +217,16 @@ public abstract class PlayerController {
         );
         try {
             action.validateEffect();
-            CustomPrinter.println(String.format("<%s> wants to activate the effect of <%s>", player.getUser().getUsername(), monster.getName()), Color.Blue);
-            startChain(action);
+            if (!onlyCheckPossibility) {
+                CustomPrinter.println(String.format("<%s> wants to activate the effect of <%s>", player.getUser().getUsername(), monster.getName()), Color.Blue);
+                startChain(action);
+            }
         } catch (ValidateResult result) {
             throw new LogicException(result.getMessage());
         }
     }
 
-    public void activateSpellEffect(Spell spell) throws LogicException, ResistToChooseCard {
+    public void activateSpellEffect(Spell spell, boolean onlyCheckPossibility) throws LogicException, ResistToChooseCard {
         MagicActivationAction action = new MagicActivationAction(
                 new MagicActivation(spell),
                 () -> {
@@ -226,8 +239,10 @@ public abstract class PlayerController {
         );
         try {
             action.validateEffect();
-            CustomPrinter.println(String.format("<%s> wants to activate the effect of <%s>", player.getUser().getUsername(), spell.getName()), Color.Blue);
-            startChain(action);
+            if (!onlyCheckPossibility) {
+                CustomPrinter.println(String.format("<%s> wants to activate the effect of <%s>", player.getUser().getUsername(), spell.getName()), Color.Blue);
+                startChain(action);
+            }
         } catch (ValidateResult result) {
             throw new LogicException(result.getMessage());
         }
