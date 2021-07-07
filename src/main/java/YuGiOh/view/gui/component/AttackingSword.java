@@ -35,9 +35,9 @@ public class AttackingSword extends ImageView {
         super();
         this.cardFrame = cardFrame;
         this.extraVisibility = new SimpleBooleanProperty(false);
-        fitWidthProperty().bind(cardFrame.widthProperty().multiply(0.4));
-        fitHeightProperty().bind(cardFrame.heightProperty().multiply(0.3));
-        setImage(Utils.getImage("Icon/sword.bmp"));
+        fitWidthProperty().bind(cardFrame.widthProperty().multiply(0.7));
+        fitHeightProperty().bind(cardFrame.heightProperty().multiply(0.6));
+        setImage(Utils.getImage("Icon/attacksword.png"));
         setActivationConditions();
         setViewOrder(-1);
     }

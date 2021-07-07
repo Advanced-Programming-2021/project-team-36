@@ -47,7 +47,7 @@ public class DummyStarter extends Application {
 //            Cheat.buildSuperUser(fakeUser2);
 
 //            new MainMenuController(abolfazl).startNewDuel(fakeUser2, 3);
-            new MainMenuController(abolfazl).startDuelWithAI(3, AIMode.AGGRESSIVE);
+            new MainMenuController(abolfazl).startDuelWithAI(true, 3, AIMode.AGGRESSIVE);
             DuelMenuView.init(primaryStage);
 
             primaryStage.setFullScreen(true);
