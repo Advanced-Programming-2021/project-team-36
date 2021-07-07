@@ -151,8 +151,6 @@ public class NewGameView extends BaseMenuView {
 
     @FXML
     private void startGame() {
-        for (User user : User.retrieveUsersBasedOnScore())
-            System.out.println(user.getUsername());
         try {
             if (gameMode == 0) {
                 String secondPlayerUsername = secondPlayerUsernameTextField.getText();
