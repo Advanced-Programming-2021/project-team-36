@@ -40,7 +40,7 @@ public abstract class PlayerController {
 
     abstract public boolean askRespondToQuestion(String question, String yes, String no);
 
-    abstract public void doRespondToChain() throws ResistToChooseCard; // todo check if this action is invalid for chain
+    abstract public void doRespondToChain() throws ResistToChooseCard;
 
     abstract public Card[] chooseKCards(String message, int numberOfCards, SelectCondition condition) throws ResistToChooseCard;
 

@@ -66,7 +66,6 @@ public class GameController {
         CustomPrinter.println(String.format("<%s>'s life point increased by <%d> and it is <%d> now", player.getUser().getUsername(), amount, player.getLifePoint()), Color.Yellow);
     }
 
-    // todo in baraye cheat e? momken nist bug bokhorim saresh?
     public void decreaseLifePoint(Player player, int amount, boolean checkEndGame) {
         player.decreaseLifePoint(amount);
         CustomPrinter.println(String.format("<%s>'s life point decreased by <%d> and it is <%d> now", player.getUser().getUsername(), amount, player.getLifePoint()), Color.Yellow);

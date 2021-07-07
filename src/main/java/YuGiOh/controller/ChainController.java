@@ -43,7 +43,7 @@ public class ChainController {
             Action action = chain.pop();
             try {
                 action.runEffect();
-                // todo remove this
+                // magic absorption
                 if (action.getEvent() instanceof MagicActivation && ((MagicActivation) action.getEvent()).getMagic() instanceof Spell)
                     for (Card card : GameController.getInstance().getGame().getAllCardsOnBoard())
                         if (card instanceof SpellAbsorption && card.isFacedUp())

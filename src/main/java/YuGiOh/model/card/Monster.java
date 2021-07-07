@@ -39,7 +39,6 @@ public class Monster extends Card {
     @Getter @Setter
     protected int level;
     protected SimpleBooleanProperty allowAttack = new SimpleBooleanProperty(true);
-    // todo allowAttack should be a function that gets monster and tells whether you can attack it or not
 
     public Monster(String name, String description, int price, int attackDamage, int defenseRate, MonsterAttribute attribute, MonsterType monsterType, MonsterCardType monsterCardType, int level) {
         super(name, description, price);
@@ -289,7 +288,6 @@ public class Monster extends Card {
         return allowAttack;
     }
 
-    // todo not clean :))
     public String asEffect() {
         return String.format("%s (Monster - %s) : %s", getName(), getMonsterCardType(), getDescription());
     }

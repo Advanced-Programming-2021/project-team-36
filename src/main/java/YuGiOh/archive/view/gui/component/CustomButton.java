@@ -1,6 +1,7 @@
 package YuGiOh.archive.view.gui.component;
 
 import javafx.beans.binding.Bindings;
+import javafx.beans.property.SimpleStringProperty;
 import javafx.geometry.Insets;
 import javafx.scene.control.Button;
 import javafx.scene.effect.BoxBlur;

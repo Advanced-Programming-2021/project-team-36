@@ -51,7 +51,6 @@ public class GameField extends Pane {
 
         this.movementManager = new GameCardMovementManager(this);
 
-        // todo remove this and put somewhere else
         new GuiReporter(this);
 
         this.background = new ImageView(new Image(Utils.getAsset("Field/Normal.bmp").toURI().toString()));
@@ -119,26 +118,6 @@ public class GameField extends Pane {
             DoubleBinding x = widthProperty().multiply(gameMapLocation.getDirectPlayerLocation(event.getPlayer()).xRatio);
             DoubleBinding y = heightProperty().multiply(gameMapLocation.getDirectPlayerLocation(event.getPlayer()).yRatio);
             AttackingSword.getOrCreateSwordForCard(cardFrameManager.getCardFrameByCard(event.getAttacker())).shoot(x, y);
-        });
-
-        // todo remove this
-        GuiReporter.getInstance().addGameEventHandler((GuiReporter.GameEventHandler<MagicActivation>) (event)->{
-            Platform.runLater(()-> {
-                Card card = event.getMagic();
-                Text text = new Text(card.getName() + " activated!");
-                text.setFont(Font.font(50));
-                text.setFill(Color.RED);
-                text.layoutXProperty().bind(widthProperty().multiply(0.3));
-                text.layoutYProperty().bind(heightProperty().multiply(0.4));
-                getChildren().add(text);
-                new Thread(() -> {
-                    try {
-                        Thread.sleep(1000);
-                    } catch (InterruptedException ignored) {
-                    }
-                    Platform.runLater(() -> getChildren().remove(text));
-                }).start();
-            });
         });
 
         for (Board board : Arrays.asList(game.getFirstPlayer().getBoard(), game.getSecondPlayer().getBoard())) {
