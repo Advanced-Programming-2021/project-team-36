@@ -52,8 +52,6 @@ public class AlertBox {
         return ret.get();
     }
 
-    // todo check what happens if user close the page
-
     public boolean displayYesNoStandAlone(String question, String yes, String no){
         ArrayList<CustomButton> buttons = new ArrayList<>();
         buttons.add(new CustomButton(yes, 20, ()->{}));

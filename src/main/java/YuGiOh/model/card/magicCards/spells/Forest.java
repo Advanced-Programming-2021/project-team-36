@@ -27,7 +27,6 @@ public class Forest extends Spell {
         return affectionOnAttackingMonster(monster);
     }
 
-    // todo in chie? chera toye activation hichi active nakardim?
     @Override
     protected Effect getEffect() {
         return () -> {

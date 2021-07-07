@@ -16,18 +16,21 @@ import YuGiOh.view.gui.GuiReporter;
 import YuGiOh.view.gui.component.*;
 import YuGiOh.view.gui.event.RoundOverEvent;
 import javafx.application.Platform;
+import javafx.beans.binding.Bindings;
+import javafx.beans.property.SimpleBooleanProperty;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
 import javafx.scene.control.Alert;
+import javafx.scene.control.Button;
 import javafx.scene.input.KeyCode;
 import javafx.scene.layout.Pane;
+import javafx.scene.layout.StackPane;
 import javafx.scene.paint.Color;
 import javafx.scene.text.Font;
 import javafx.scene.text.Text;
 import javafx.stage.Stage;
 import lombok.Getter;
-import lombok.experimental.UtilityClass;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -93,9 +96,6 @@ public class DuelMenuView extends BaseMenuView {
         renderScene();
         stage.setScene(scene);
         stage.show();
-        // todo this will cause problem for other views
-        stage.setResizable(true);
-        stage.setFullScreen(true);
     }
 
     private void renderScene() {
@@ -119,17 +119,16 @@ public class DuelMenuView extends BaseMenuView {
     }
 
     public void addPlayPauseController(){
-        // todo remove this for production
-        AtomicBoolean stopped = new AtomicBoolean(false);
-        scene.setOnKeyPressed(e->{
-            if(e.getCode() == KeyCode.P){
-                stopped.set(!stopped.get());
-                if(stopped.get())
-                    MainGameThread.getInstance().suspend();
-                else
-                    MainGameThread.getInstance().resume();
-            }
+        SimpleBooleanProperty stopped = new SimpleBooleanProperty(false);
+        Button button = new CustomButton("", 23, ()-> {
+            stopped.set(!stopped.get());
+            if (stopped.get())
+                MainGameThread.getInstance().suspend();
+            else
+                MainGameThread.getInstance().resume();
         });
+        button.textProperty().bind(Bindings.when(stopped).then("play").otherwise("pause"));
+        this.navBar.getChildren().add(button);
     }
 
     // all of this asking user must happen in Query Thread!
