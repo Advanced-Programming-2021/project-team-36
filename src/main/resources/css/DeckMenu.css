@@ -36,6 +36,7 @@
     -fx-font-weight: bold;
     -fx-font-size: 20px;
     -fx-alignment: center;
+    -fx-background-color: #320127;
     -fx-text-fill: radial-gradient(center 30% 30%, radius 100%, #8448f5, #2b9903);
 }
 
@@ -47,6 +48,8 @@
     -fx-font-family: "Poor Richard";
     -fx-font-weight: bold;
     -fx-font-size: 20px;
+    -fx-background-radius: 10;
+    -fx-background-color: #320127;
     -fx-text-fill: radial-gradient(center 30% 30%, radius 100%, #8448f5, #2b9903);
 }
 

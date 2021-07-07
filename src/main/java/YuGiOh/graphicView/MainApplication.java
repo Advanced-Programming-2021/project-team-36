@@ -41,7 +41,7 @@ public class MainApplication extends Application {
         } catch (Exception e) {
             e.printStackTrace();
         }*/
-        Cheat.buildSuperUserWithManyOfThisCards(shayan, 20, "BlackPendant", "AxeRaider");
+        //Cheat.buildSuperUserWithManyOfThisCards(shayan, 20, "BlackPendant", "AxeRaider");
         MainMenuView.init(primaryStage, shayan);
     }
 }
