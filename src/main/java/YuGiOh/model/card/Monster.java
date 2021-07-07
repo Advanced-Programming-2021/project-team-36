@@ -11,7 +11,7 @@ import YuGiOh.model.card.action.SummonAction;
 import YuGiOh.model.card.action.ValidateResult;
 import YuGiOh.model.enums.*;
 import YuGiOh.utils.CustomPrinter;
-import YuGiOh.view.cardSelector.ResistToChooseCard;
+import YuGiOh.archive.view.cardSelector.ResistToChooseCard;
 import javafx.beans.binding.Bindings;
 import javafx.beans.binding.BooleanBinding;
 import javafx.beans.property.BooleanProperty;

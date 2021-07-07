@@ -3,7 +3,7 @@ package YuGiOh.utils;
 import YuGiOh.model.enums.Color;
 import lombok.Getter;
 import lombok.Setter;
-import YuGiOh.view.CommandLine.InvalidCommandException;
+import YuGiOh.archive.view.CommandLine.InvalidCommandException;
 
 import java.io.*;
 

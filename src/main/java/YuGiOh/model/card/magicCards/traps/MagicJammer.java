@@ -2,7 +2,6 @@ package YuGiOh.model.card.magicCards.traps;
 
 import YuGiOh.controller.GameController;
 import YuGiOh.controller.player.PlayerController;
-import YuGiOh.model.Game;
 import YuGiOh.model.card.Card;
 import YuGiOh.model.card.Trap;
 import YuGiOh.model.card.action.Action;
@@ -12,7 +11,7 @@ import YuGiOh.model.enums.Icon;
 import YuGiOh.model.enums.Status;
 import YuGiOh.model.enums.Color;
 import YuGiOh.utils.CustomPrinter;
-import YuGiOh.view.cardSelector.SelectConditions;
+import YuGiOh.archive.view.cardSelector.SelectConditions;
 
 public class MagicJammer extends Trap {
     public MagicJammer(String name, String description, int price, Icon icon, Status status) {

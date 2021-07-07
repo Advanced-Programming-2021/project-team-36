@@ -1,4 +1,4 @@
-import YuGiOh.graphicController.DuelMenuController;
+import YuGiOh.controller.menus.DuelMenuController;
 import YuGiOh.model.Duel;
 import YuGiOh.model.ModelException;
 import YuGiOh.model.Player.AIPlayer;

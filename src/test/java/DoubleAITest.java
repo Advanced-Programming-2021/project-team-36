@@ -1,8 +1,6 @@
-import YuGiOh.controller.LogicException;
-import YuGiOh.controller.MainGameThread;
 import YuGiOh.controller.ProgramController;
-import YuGiOh.graphicController.DuelMenuController;
-import YuGiOh.controller.menu.MainMenuController;
+import YuGiOh.controller.menus.DuelMenuController;
+import YuGiOh.archive.menu.MainMenuController;
 import YuGiOh.model.Duel;
 import YuGiOh.model.ModelException;
 import YuGiOh.model.Player.AIPlayer;

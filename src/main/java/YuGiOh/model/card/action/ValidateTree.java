@@ -1,7 +1,6 @@
 package YuGiOh.model.card.action;
 
 import YuGiOh.controller.GameController;
-import YuGiOh.controller.LogicException;
 import YuGiOh.model.Game;
 import YuGiOh.model.Player.Player;
 import YuGiOh.model.card.Card;
@@ -9,11 +8,8 @@ import YuGiOh.model.card.Magic;
 import YuGiOh.model.card.Monster;
 import YuGiOh.model.card.Spell;
 import YuGiOh.model.enums.*;
-import YuGiOh.view.cardSelector.SelectCondition;
+import YuGiOh.archive.view.cardSelector.SelectCondition;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
 import java.util.Optional;
 
 public class ValidateTree {

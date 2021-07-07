@@ -1,16 +1,14 @@
 package YuGiOh.model.card.monsterCards;
 
 import YuGiOh.controller.GameController;
-import YuGiOh.controller.LogicException;
 import YuGiOh.controller.player.PlayerController;
 import YuGiOh.model.card.action.SummonAction;
 import YuGiOh.model.card.action.ValidateResult;
 import YuGiOh.model.card.event.SummonEvent;
 import YuGiOh.model.enums.*;
 import YuGiOh.model.card.Monster;
-import YuGiOh.utils.CustomPrinter;
-import YuGiOh.view.cardSelector.SelectCondition;
-import YuGiOh.view.cardSelector.SelectConditions;
+import YuGiOh.archive.view.cardSelector.SelectCondition;
+import YuGiOh.archive.view.cardSelector.SelectConditions;
 
 public class TheTricky extends Monster {
 

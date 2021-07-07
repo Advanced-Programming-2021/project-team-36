@@ -1,5 +1,4 @@
-import YuGiOh.controller.ProgramController;
-import YuGiOh.controller.menu.MainMenuController;
+import YuGiOh.archive.menu.MainMenuController;
 import YuGiOh.model.enums.AIMode;
 import org.junit.Test;
 import utils.IntegrationTestBase;

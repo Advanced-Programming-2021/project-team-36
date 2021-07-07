@@ -5,8 +5,8 @@ import YuGiOh.controller.player.PlayerController;
 import YuGiOh.model.enums.*;
 import YuGiOh.utils.CustomPrinter;
 import YuGiOh.model.card.action.Effect;
-import YuGiOh.view.cardSelector.SelectConditions;
-import YuGiOh.view.cardSelector.ResistToChooseCard;
+import YuGiOh.archive.view.cardSelector.SelectConditions;
+import YuGiOh.archive.view.cardSelector.ResistToChooseCard;
 import YuGiOh.model.card.Monster;
 
 public class ManEaterBug extends Monster {

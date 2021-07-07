@@ -3,7 +3,6 @@ package YuGiOh.model.card.action;
 import YuGiOh.controller.GameController;
 import YuGiOh.controller.player.PlayerController;
 import YuGiOh.model.Player.Player;
-import YuGiOh.model.card.Card;
 import YuGiOh.model.card.Monster;
 import YuGiOh.model.card.event.FlipSummonEvent;
 import YuGiOh.model.card.event.SummonEvent;
@@ -11,9 +10,7 @@ import YuGiOh.model.enums.Color;
 import YuGiOh.model.enums.MonsterState;
 import YuGiOh.model.enums.SummonType;
 import YuGiOh.utils.CustomPrinter;
-import YuGiOh.view.cardSelector.ResistToChooseCard;
-
-import java.util.Arrays;
+import YuGiOh.archive.view.cardSelector.ResistToChooseCard;
 
 public class FlipSummonAction extends Action {
     public FlipSummonAction(FlipSummonEvent event) {

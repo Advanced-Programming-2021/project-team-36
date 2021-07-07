@@ -7,15 +7,12 @@ import YuGiOh.model.card.Card;
 import YuGiOh.model.card.Magic;
 import YuGiOh.model.card.Spell;
 import YuGiOh.model.card.action.Effect;
-import YuGiOh.model.card.action.ValidateResult;
 import YuGiOh.model.enums.Color;
 import YuGiOh.model.enums.Icon;
 import YuGiOh.model.enums.Status;
 import YuGiOh.utils.CustomPrinter;
-import YuGiOh.view.cardSelector.ResistToChooseCard;
-import YuGiOh.view.cardSelector.SelectConditions;
-
-import java.util.Arrays;
+import YuGiOh.archive.view.cardSelector.ResistToChooseCard;
+import YuGiOh.archive.view.cardSelector.SelectConditions;
 
 public class TwinTwisters extends Spell {
 

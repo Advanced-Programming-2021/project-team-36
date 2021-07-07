@@ -7,7 +7,7 @@
 <?import java.net.URL?>
 <?import javafx.scene.image.ImageView?>
 <Pane prefWidth="400" prefHeight="480" xmlns:fx="http://javafx.com/fxml"
-      fx:controller="YuGiOh.graphicView.ProfileMenuView" styleClass="main">
+      fx:controller="YuGiOh.view.ProfileMenuView" styleClass="main">
     <ImageView fx:id="backgroundImageView" fitWidth="400" fitHeight="480"/>
     <VBox fx:id="mainPane" alignment="CENTER" spacing="13">
         <ImageView fx:id="profilePicture" preserveRatio="true" fitHeight="220"/>
