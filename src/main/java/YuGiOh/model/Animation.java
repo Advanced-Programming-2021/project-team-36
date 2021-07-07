@@ -14,7 +14,7 @@ public class Animation {
     public Animation(String ...images) {
         try {
             for (int i = 0; i < images.length; i ++)
-                this.images.add(new Image(new FileInputStream("src/main/resources/png/" + images[i] + ".png")));
+                this.images.add(new Image(new FileInputStream(images[i])));
         } catch (IOException ignored) {
         }
     }
@@ -24,8 +24,10 @@ public class Animation {
     }
 
     public Image getImage() {
-        Image image = images.get(currentImageId / fpr);
-        currentImageId = (currentImageId + 1) % (images.size() * fpr);
-        return image;
+        return images.get(((currentImageId++) % (images.size() * fpr)) / fpr);
+    }
+
+    public int getCurrentImageId() {
+        return currentImageId;
     }
 }

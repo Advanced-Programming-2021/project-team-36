@@ -6,6 +6,11 @@
 <?import javafx.scene.image.ImageView?>
 <Pane prefHeight="480.0" prefWidth="400.0" xmlns="http://javafx.com/javafx" xmlns:fx="http://javafx.com/fxml"
       fx:controller="YuGiOh.graphicView.NewGameView">
+    <VBox fx:id="coinTossVBox" prefHeight="480" prefWidth="400" alignment="CENTER" spacing="40">
+        <Label textAlignment="CENTER" text="  You are star, opponent is heart  " styleClass="reddish-text-small"/>
+        <Label textAlignment="CENTER" text="  Let's see who will be first  " styleClass="reddish-text-small"/>
+        <ImageView fx:id="animatedCoin" preserveRatio="true" fitHeight="130"/>
+    </VBox>
     <ImageView fx:id="backgroundImageView" fitWidth="400" fitHeight="480"/>
     <VBox prefHeight="480.0" prefWidth="400.0" alignment="CENTER" spacing="20">
         <VBox alignment="CENTER" spacing="40" fx:id="vBox">
