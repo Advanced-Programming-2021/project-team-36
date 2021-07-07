@@ -34,7 +34,7 @@
         <TextField styleClass="text-field" promptText="old password" fx:id="oldPasswordTextField" maxWidth="140"/>
         <TextField styleClass="text-field" promptText="new password" fx:id="newPasswordTextField" maxWidth="140"/>
         <Button alignment="CENTER" defaultButton="true" onMouseClicked="#changePassword"
-                mnemonicParsing="false" text="Update Nickname" styleClass="button"/>
+                mnemonicParsing="false" text="Update Password" styleClass="button"/>
         <Button alignment="CENTER" defaultButton="true" onMouseClicked="#back"
                 mnemonicParsing="false" text="Back" styleClass="button"/>
     </VBox>
