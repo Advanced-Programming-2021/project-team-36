@@ -66,6 +66,12 @@ public class Utils {
         inventedCards.put(card.getName(), card);
     }
 
+    public static void removeCardFromInvented(Card card) throws LogicException {
+        String name = correctIgnoreCase(card.getName());
+        if(name == null)
+            throw new LogicException("no such card!");
+        inventedCards.remove(name);
+    }
     public static boolean checkCardExistInDatabase(String name) {
         if(name == null)
             return false;
