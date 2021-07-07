@@ -1,7 +1,5 @@
 .idea/
 target/
-database/database.dat
-database/database.json
 pom.xml.tag
 pom.xml.releaseBackup
 pom.xml.versionsBackup
