@@ -1,20 +1,25 @@
 package YuGiOh.graphicController;
 
 import YuGiOh.controller.LogicException;
+import YuGiOh.model.User;
 import YuGiOh.model.card.Card;
 import YuGiOh.model.card.Monster;
 import YuGiOh.model.card.Utils;
 import YuGiOh.model.enums.MonsterAttribute;
 import YuGiOh.model.enums.MonsterCardType;
 import YuGiOh.model.enums.MonsterType;
+import lombok.Getter;
 
 import java.util.List;
 
 public class FactoryMenuController extends BaseMenuController {
-    private FactoryMenuController instance;
+    @Getter
+    private static FactoryMenuController instance;
     private Monster selectedMonster = null;
+    private User user;
 
-    public FactoryMenuController() {
+    public FactoryMenuController(User user) {
+        this.user = user;
         instance = this;
     }
 
@@ -65,13 +70,26 @@ public class FactoryMenuController extends BaseMenuController {
         checkCardIsSelected();
         selectedMonster.setMonsterCardType(cardType);
     }
+    public void setDescription(String description) throws LogicException {
+        checkCardIsSelected();
+        selectedMonster.setDescription(description);
+    }
+
+    public void setCardName(String name) throws LogicException {
+        checkCardIsSelected();
+        selectedMonster.setName(name);
+    }
 
     public List<Card> getInventedCards() {
         return Utils.getInventedCards();
     }
     public void submitThisMonster() throws LogicException {
         checkCardIsSelected();
+        if (user.getBalance() < getPrice())
+            throw new LogicException("You don't have enough money!");
+        selectedMonster.setPrice(getPrice());
         Utils.addCardToInvented(selectedMonster.clone());
+        user.increaseBalance(-selectedMonster.getPrice() / 10);
     }
     public void discardThisMonster() throws LogicException {
         checkCardIsSelected();
@@ -92,17 +110,7 @@ public class FactoryMenuController extends BaseMenuController {
         if(selectedMonster.getMonsterCardType().equals(MonsterCardType.RITUAL))
             w = 2;
         double A = selectedMonster.getPrice();
-        double B =
-                + 1.52471426e+03 * x
-                -4.42142022e+00 * y
-                -2.14990595e+00 * z
-                +1.87980583e+02 * x * x
-                -1.15270277e+00 * x * y
-                -4.53481107e-01 * x * z
-                + 2.52208740e-03 * y * y
-                + 2.07575957e-03 * y * z
-                + 5.27207140e-04 * z * z;
-        double ret = Math.max(Math.max(A * 0.75, B * 0.75), A/2 + B/2 + 150 * w * w * w);
-        return ((int)(ret / 100) * 100);
+        double ret = A + w * 3000 + x * 100 + y + z;
+        return (int)ret;
     }
 }
