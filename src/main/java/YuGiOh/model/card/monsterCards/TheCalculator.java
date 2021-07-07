@@ -13,6 +13,8 @@ public class TheCalculator extends Monster {
 
     @Override
     public int getAttackDamageOnCard() {
+        if(getOwner() == null)
+            return attackDamage;
         int sum = 0;
         for (Card card : this.getOwner().getBoard().getAllCardsOnBoard()) {
             if (card instanceof Monster && card.isFacedUp() && card.getOwner().equals(this.getOwner())) {

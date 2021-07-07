@@ -49,35 +49,35 @@ public class Scanner extends Monster {
 
     @Override
     public int getAttackDamageOnCard(){
-        if(copiedMonster != null && lastTurnActivated == GameController.getInstance().getGame().getTurn())
+        if(getOwner() != null && copiedMonster != null && lastTurnActivated == GameController.getInstance().getGame().getTurn())
             return copiedMonster.getAttackDamageOnCard();
         return attackDamage;
     }
 
     @Override
     public int getDefenseRateOnCard(){
-        if(copiedMonster != null && lastTurnActivated == GameController.getInstance().getGame().getTurn())
+        if(getOwner() != null && copiedMonster != null && lastTurnActivated == GameController.getInstance().getGame().getTurn())
             return copiedMonster.getDefenseRateOnCard();
         return defenseRate;
     }
 
     @Override
     public MonsterAttribute getAttribute(){
-        if(copiedMonster != null && lastTurnActivated == GameController.getInstance().getGame().getTurn())
+        if(getOwner() != null && copiedMonster != null && lastTurnActivated == GameController.getInstance().getGame().getTurn())
             return copiedMonster.getAttribute();
         return attribute;
     }
 
     @Override
     public String getName(){
-        if(copiedMonster != null && lastTurnActivated == GameController.getInstance().getGame().getTurn())
+        if(getOwner() != null && copiedMonster != null && lastTurnActivated == GameController.getInstance().getGame().getTurn())
             return copiedMonster.getName();
         return name;
     }
 
     @Override
     public int getLevel(){
-        if(copiedMonster != null && lastTurnActivated == GameController.getInstance().getGame().getTurn())
+        if(getOwner() != null && copiedMonster != null && lastTurnActivated == GameController.getInstance().getGame().getTurn())
             return copiedMonster.getLevel();
         return level;
     }

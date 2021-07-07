@@ -7,6 +7,7 @@ import javafx.beans.property.IntegerProperty;
 import javafx.beans.property.ObjectProperty;
 import javafx.beans.property.SimpleObjectProperty;
 import javafx.geometry.Insets;
+import javafx.scene.image.ImageView;
 import javafx.scene.layout.*;
 import javafx.scene.paint.*;
 import javafx.scene.shape.Rectangle;
@@ -15,16 +16,21 @@ import javafx.scene.text.Text;
 
 public class LifeBar extends Pane {
     public LifeBar(Player player){
+        ImageView imageView = new ImageView(player.getUser().getProfilePicture());
         Text text = new Text(player.getUser().getUsername());
         text.setFont(Font.font(25));
         text.autosize();
+        imageView.setPreserveRatio(true);
+        imageView.fitWidthProperty().bind(widthProperty().multiply(0.5));
         LpVisualizer lpVisualizer = new LpVisualizer(player.lifePointProperty());
-        lpVisualizer.prefWidthProperty().bind(widthProperty().multiply(0.9));
-        getChildren().add(new VBox(text, lpVisualizer));
+        lpVisualizer.prefWidthProperty().bind(widthProperty().multiply(0.4));
+        VBox vBox = new VBox(lpVisualizer, imageView, text);
+        vBox.prefWidthProperty().bind(widthProperty());
+        getChildren().add(vBox);
     }
 }
 
-class LpVisualizer extends StackPane {
+class LpVisualizer extends Pane {
     LpVisualizer(IntegerProperty lpValue){
         setMinHeight(30);
         Pane outer = new Pane();
@@ -42,10 +48,6 @@ class LpVisualizer extends StackPane {
         inner.fillProperty().bind(interactivePaint);
         interactivePaint.set(new LinearGradient(0, 0, 1, 0, true, CycleMethod.NO_CYCLE,
                 new Stop(0, Color.RED), new Stop(1, Color.BLUE)));
-//        lpValue.addListener(e->{
-            // todo we can change color from here
-//        });
-
         outer.getChildren().add(inner);
 
         Text text = new Text();

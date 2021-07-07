@@ -23,28 +23,17 @@ public class DuelInfoBox extends BorderPane {
         )));
 
         cardInfo = new CardInfo();
-        cardInfo.prefWidthProperty().bind(widthProperty());
-        cardInfo.prefHeightProperty().bind(heightProperty().multiply(0.55));
-
-        CustomButton nextPhaseButton = new CustomButton("next phase", 23, ()->
-                gameField.addRunnableToMainThread(()-> DuelMenuController.getInstance().goNextPhase())
-        );
-        CustomButton surrenderButton = new CustomButton("surrender", 23, ()->
-                gameField.addRunnableToMainThread(()-> DuelMenuController.getInstance().surrender())
-        );
-
-        BorderPane insideBorderPane = new BorderPane();
-
-        insideBorderPane.setBottom(new VBox(nextPhaseButton, surrenderButton));
-        insideBorderPane.setCenter(cardInfo);
+        cardInfo.prefWidthProperty().bind(widthProperty().multiply(1));
+        cardInfo.prefHeightProperty().bind(heightProperty().multiply(0.6));
 
         setTop(getLifeBar(game.getSecondPlayer()));
-        setCenter(insideBorderPane);
         setBottom(getLifeBar(game.getFirstPlayer()));
+        setCenter(cardInfo);
     }
 
     private LifeBar getLifeBar(Player player) {
         LifeBar lifeBar = new LifeBar(player);
+        lifeBar.minWidthProperty().bind(widthProperty().multiply(0.9));
         lifeBar.prefWidthProperty().bind(widthProperty());
         return lifeBar;
     }
