@@ -1,6 +1,7 @@
 package YuGiOh.view;
 
 import YuGiOh.Main;
+import YuGiOh.archive.view.gui.Utils;
 import YuGiOh.controller.MainGameThread;
 import YuGiOh.controller.menus.*;
 import YuGiOh.model.Duel;
@@ -19,12 +20,10 @@ import javafx.beans.binding.Bindings;
 import javafx.beans.property.SimpleBooleanProperty;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
+import javafx.scene.ImageCursor;
 import javafx.scene.Scene;
-import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
-import javafx.scene.input.KeyCode;
 import javafx.scene.layout.Pane;
-import javafx.scene.layout.StackPane;
 import javafx.scene.paint.Color;
 import javafx.scene.text.Font;
 import javafx.scene.text.Text;
@@ -115,6 +114,7 @@ public class DuelMenuView extends BaseMenuView {
         this.navBar.getChildren().add(new CustomButton("surrender", 23, ()-> gameField.addRunnableToMainThread(()-> DuelMenuController.getInstance().surrender())));
         this.navBar.getChildren().add(new CustomButton("next phase", 23, ()-> gameField.addRunnableToMainThread(()-> DuelMenuController.getInstance().goNextPhase())));
         this.addPlayPauseController();
+        scene.setCursor(new ImageCursor(Utils.getImage("Cursor/pen.png")));
     }
 
     public void addPlayPauseController(){
