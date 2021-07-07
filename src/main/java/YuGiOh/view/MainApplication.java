@@ -17,13 +17,13 @@ public class MainApplication extends Application {
         DatabaseHandler.importFromDatabase();
         new MediaPlayerController();
 
-        LoginMenuView.init(primaryStage);
-        /*new User("ad", "Ad", "w8");
+        //LoginMenuView.init(primaryStage);
+        new User("ad", "Ad", "w8");
         new User("ad183", "nclad", "w8");
         new User("19", "1398d", "w8");
         new User("19831", "Adakd", "w8");
         User shayan  = new User("shayan", "shayan.p", "1234");
-        Cheat.buildSuperUser(shayan);*/
-        //MainMenuView.init(primaryStage, shayan);
+        Cheat.buildSuperUser(shayan);
+        MainMenuView.init(primaryStage, shayan);
     }
 }

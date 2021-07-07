@@ -2,7 +2,6 @@ package YuGiOh.controller.menus;
 
 import YuGiOh.model.ModelException;
 import YuGiOh.model.User;
-import YuGiOh.utils.Cheat;
 import lombok.Getter;
 
 public class LoginMenuController extends BaseMenuController {
@@ -30,12 +29,5 @@ public class LoginMenuController extends BaseMenuController {
             throw new ModelException("Username and password didn’t match!");
         new MainMenuController(user);
         return user;
-    }
-
-    public void cheatLogin(String username, String nickname, String password) throws ModelException {
-        // TODO: Do we need this?
-        createUser(username, nickname, password);
-        User user = User.getUserByUsername(username);
-        Cheat.buildSuperUser(user);
     }
 }

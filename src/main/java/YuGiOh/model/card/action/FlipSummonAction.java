@@ -23,7 +23,7 @@ public class FlipSummonAction extends Action {
             monster.setMonsterState(event.getMonsterState());
             if (!event.getSummonType().equals(SummonType.SPECIAL))
                 gameController.setSummoned(monster.getOwner());
-            monster.changeFromHiddenToOccupiedIfCanEffect(); // todo : this should be an action
+            monster.changeFromHiddenToOccupiedIfCanEffect();
             CustomPrinter.println(String.format("%s has flip summoned %s successfully.", player.getUser().getUsername(), monster.getName()), Color.Green);
         };
     }
@@ -33,13 +33,11 @@ public class FlipSummonAction extends Action {
         PlayerController playerController = GameController.getInstance().getPlayerControllerByPlayer(event.getPlayer());
         boolean AttackingState = playerController.askRespondToQuestion("which position you want to summon?", "defending", "attacking");
         event.setMonsterState((AttackingState ? MonsterState.DEFENSIVE_OCCUPIED : MonsterState.OFFENSIVE_OCCUPIED));
-        // todo : after making changeFromHiddenToOccupiedIfCanEffect an action, this should preprocess to
     }
 
     @Override
     public void validateEffect() throws ValidateResult {
         SummonEvent event = (SummonEvent) getEvent();
         ValidateTree.checkSummon(event.getPlayer(), event.getMonster(), event.getSummonType());
-        // todo : after making changeFromHiddenToOccupiedIfCanEffect an action, this should preprocess to
     }
 }

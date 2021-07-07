@@ -214,7 +214,6 @@ public class Monster extends Card {
 
     @Override
     public BooleanBinding facedUpProperty() {
-        // todo if it is not in the middle of the game, we get runtime error because monsterState is null
         return Bindings.when(
                 monsterStateProperty.isEqualTo(MonsterState.OFFENSIVE_OCCUPIED).or(monsterStateProperty.isEqualTo(MonsterState.DEFENSIVE_OCCUPIED)))
                 .then(true).otherwise(false);

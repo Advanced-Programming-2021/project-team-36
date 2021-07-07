@@ -131,7 +131,6 @@ public class CardFrame extends DraggablePane {
             GuiReporter.getInstance().report(new ClickOnCardEvent(this));
 
 
-            // todo remove this in production. just debug info
             System.out.println("CARD: " + card);
             System.out.println("CARD FRAME: " + this);
             System.out.println("card faced up: " + card.facedUpProperty().get());
