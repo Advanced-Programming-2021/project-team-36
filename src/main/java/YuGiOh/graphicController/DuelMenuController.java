@@ -4,6 +4,7 @@ import YuGiOh.controller.*;
 import YuGiOh.controller.events.RoundOverExceptionEvent;
 import YuGiOh.graphicView.DuelMenuView;
 import YuGiOh.model.Duel;
+import YuGiOh.model.ModelException;
 import YuGiOh.model.card.*;
 import YuGiOh.view.cardSelector.ResistToChooseCard;
 import YuGiOh.model.CardAddress;
@@ -23,7 +24,7 @@ public class DuelMenuController extends BaseMenuController {
     @Getter
     private final Duel duel;
     private GameController gameController;
-
+    private MainGameThread mainGameThread;
 
     @Setter @Getter
     private DuelMenuView view;
@@ -123,15 +124,23 @@ public class DuelMenuController extends BaseMenuController {
         if(duel.isFinished())
             throw new LogicException("duel has ended!");
         this.gameController = new GameController(duel.getCurrentGame());
-        return new MainGameThread(()->{
+        return mainGameThread = new MainGameThread(()->{
             try {
                 gameController.control();
             } catch (RoundOverExceptionEvent roundOverEvent) {
+                try {
+                    duel.goNextRound(roundOverEvent);
+                    getNewGameThread();
+                } catch (ModelException | LogicException e) {
+                }
                 GuiReporter.getInstance().report(new RoundOverEvent(roundOverEvent));
             }
         });
     }
 
+    public void runNewGameThread() {
+        mainGameThread.start();
+    }
     public void control() {
         while (!duel.isFinished()) {
             this.gameController = new GameController(duel.getCurrentGame());

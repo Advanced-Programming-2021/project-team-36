@@ -12,7 +12,9 @@ import YuGiOh.view.cardSelector.FinishSelectingCondition;
 import YuGiOh.view.cardSelector.ResistToChooseCard;
 import YuGiOh.view.cardSelector.SelectCondition;
 import YuGiOh.view.gui.GameMapLocationIml;
+import YuGiOh.view.gui.GuiReporter;
 import YuGiOh.view.gui.component.*;
+import YuGiOh.view.gui.event.RoundOverEvent;
 import javafx.application.Platform;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
@@ -74,17 +76,17 @@ public class DuelMenuView extends BaseMenuView {
         this.root = root;
         this.game = duel.getCurrentGame();
         DuelMenuController.getInstance().setView(this);
-        try {
-            MainGameThread thread = DuelMenuController.getInstance().getNewGameThread();
-            this.gameField.init(game, new GameMapLocationIml(game));
-            this.infoBox.init(gameField, game);
-            this.selector = new CardSelector(infoBox);
-            thread.start();
-            run();
-        } catch (LogicException exception) {
-            new Alert(Alert.AlertType.ERROR, exception.getMessage()).showAndWait();
-            return;
-        }
+        this.gameField.init(game, new GameMapLocationIml(game));
+        this.infoBox.init(gameField, game);
+        this.selector = new CardSelector(infoBox);
+        DuelMenuController.getInstance().runNewGameThread();
+        run();
+        GuiReporter.getInstance().addEventHandler(RoundOverEvent.MY_TYPE, e->{
+            if(DuelMenuController.getInstance().getDuel().isFinished())
+                Platform.runLater(()->MainMenuView.getInstance().run());
+            else
+                Platform.runLater(()->DuelMenuView.init(primaryStage));
+        });
     }
 
     public void run() {

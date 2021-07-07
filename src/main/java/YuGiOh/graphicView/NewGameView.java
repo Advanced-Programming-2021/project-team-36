@@ -2,6 +2,7 @@ package YuGiOh.graphicView;
 
 import YuGiOh.Main;
 import YuGiOh.controller.LogicException;
+import YuGiOh.graphicController.DuelMenuController;
 import YuGiOh.graphicController.MainMenuController;
 import YuGiOh.graphicController.MediaPlayerController;
 import YuGiOh.model.Animation;

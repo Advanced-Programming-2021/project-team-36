@@ -46,7 +46,10 @@ public class MainGameThread extends Thread {
                 try {
                     r.run();
                 } catch (Exception e) {
-                    e.printStackTrace();
+                    if(e instanceof GameExceptionEvent)
+                        throw e;
+                    else
+                        e.printStackTrace();
                 }
             }
         }
