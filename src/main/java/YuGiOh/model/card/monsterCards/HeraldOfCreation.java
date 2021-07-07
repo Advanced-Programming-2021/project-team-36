@@ -24,10 +24,7 @@ public class HeraldOfCreation extends Monster {
     }
 
     @Override
-    public Effect activateEffect() throws LogicException {
-        if (lastTurnActivated == GameController.instance.getGame().getTurn())
-            throw new LogicException("you can only activate this once in a turn");
-
+    public Effect activateEffect() {
         return () -> {
             PlayerController controller = GameController.getInstance().getPlayerControllerByPlayer(this.getOwner());
             Card discarded;

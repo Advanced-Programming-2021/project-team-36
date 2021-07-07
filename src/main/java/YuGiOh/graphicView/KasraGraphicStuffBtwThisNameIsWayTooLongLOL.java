@@ -17,12 +17,11 @@ public class KasraGraphicStuffBtwThisNameIsWayTooLongLOL extends Application {
 
     @Override
     public void start(Stage primaryStage) {
-        primaryStage.setResizable(false);
+        //primaryStage.setResizable(false);
         primaryStage.setTitle("YuGiOh!");
         DatabaseHandler.importFromDatabase();
 
         //LoginMenuView.init(primaryStage);
-        //ProfileMenuView.init(primaryStage, new User("abi", "badi", "c"));
         new User("ad", "Ad", "w8");
         new User("ad183", "nclad", "w8");
         new User("19", "1398d", "w8");
@@ -31,6 +30,5 @@ public class KasraGraphicStuffBtwThisNameIsWayTooLongLOL extends Application {
         Cheat.buildSuperUser(shayan);
         Cheat.buildSuperUserWithManyOfThisCards(shayan, 20, "NegateAttack", "BlackPendant", "AxeRaider");
         MainMenuView.init(primaryStage, shayan);
-        //ScoreboardMenuView.init(primaryStage);
     }
 }

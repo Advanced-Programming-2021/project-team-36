@@ -1,26 +1,9 @@
-.text {
-    -fx-font-weight: bold;
-    -fx-font-size: 50px;
-    -fx-text-fill: radial-gradient(center 30% 30%, radius 100%, #8448f5, #2b9903);
-}
-
-.text-field {
-    -fx-font-weight: bold;
-    -fx-font-size: 50px;
-    -fx-background-radius: 10;
-    -fx-background-color: #010132;
-    -fx-text-fill: radial-gradient(center 30% 30%, radius 100%, #ffc800, #999703);
-}
-
-.background {
-    -fx-background-color: radial-gradient(center 30% 30%, radius 100%, #00ffd9, #f3f5f3);
-}
-
 .button {
     -fx-background-color: #00000f;
     -fx-background-radius: 10;
-    -fx-font-size: 14px;
+    -fx-font-size: 16px;
     -fx-font-weight: bold;
+    -fx-font-family: "Poor Richard";
     -fx-cursor: hand;
     -fx-text-fill: radial-gradient(center 30% 30%, radius 100%, #ffc800, #2b9903);
 }
@@ -31,6 +14,45 @@
 
 .button:pressed {
     -fx-translate-y: +2;
+}
+
+.title {
+    -fx-font-family: "Poor Richard";
+    -fx-font-weight: bold;
+    -fx-font-size: 24px;
+    -fx-text-fill: #ffc800;
+}
+
+.text-field {
+    -fx-font-family: "Poor Richard";
+    -fx-font-weight: bold;
+    -fx-font-size: 17px;
+    -fx-background-color: #00000f;
+    -fx-background-radius: 10;
+    -fx-text-fill: radial-gradient(center 30% 30%, radius 100%, #ffc800, #999703);
+}
+
+.textCss {
+    -fx-font-family: "Poor Richard";
+    -fx-font-weight: bold;
+    -fx-font-size: 20px;
+    -fx-text-fill: radial-gradient(center 30% 30%, radius 100%, #8448f5, #2b9903);
+}
+.reddish-text {
+    -fx-font-family: "Poor Richard";
+    -fx-background-radius: 10;
+    -fx-font-size: 60px;
+    -fx-font-weight: bold;
+    -fx-text-fill: radial-gradient(center 30% 30%, radius 100%, #16322d, #043e7d);;
+}
+
+.reddish-text-small {
+    -fx-font-family: "Poor Richard";
+    -fx-background-color: black;
+    -fx-background-radius: 10;
+    -fx-font-size: 20px;
+    -fx-font-weight: bold;
+    -fx-text-fill: radial-gradient(center 30% 30%, radius 100%, #2e685c, #034b99);;
 }
 
 .debug {

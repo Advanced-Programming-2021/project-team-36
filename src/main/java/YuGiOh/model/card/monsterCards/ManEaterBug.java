@@ -14,12 +14,6 @@ public class ManEaterBug extends Monster {
         super(name, description, price, attackDamage, defenseRate, attribute, monsterType, monsterCardType, level);
     }
 
-
-    @Override
-    public void preprocessForEffect() {
-
-    }
-
     @Override
     public Effect changeFromHiddenToOccupiedIfCanEffect(){
         return () -> {

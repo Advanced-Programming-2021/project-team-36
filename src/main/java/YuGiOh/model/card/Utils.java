@@ -30,9 +30,7 @@ public class Utils {
     public static Card getCard(String name) {
         if(name == null)
             return null;
-        name = correctIgnoreCase(name);
-        if(name == null)
-            return null;
+        name = correctIgnoreCase(name.replaceAll("\\s+", ""));
         if (!cardsData.containsKey(name))
             return null;
         if (cardsData.get(name).equals("Monster"))

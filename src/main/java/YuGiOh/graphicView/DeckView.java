@@ -12,23 +12,32 @@ import javafx.fxml.FXMLLoader;
 import javafx.scene.Node;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
+import javafx.scene.effect.DropShadow;
+import javafx.scene.effect.Shadow;
+import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Pane;
 import javafx.scene.layout.VBox;
+import javafx.scene.paint.Color;
 import javafx.stage.Stage;
 
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.io.IOException;
 
 public class DeckView extends BaseMenuView {
-    private static final double imageWidth = 90, imageHeight = imageWidth * 614.0 / 421.0;
+    private static final double imageWidth = 90, imageHeight = imageWidth * 614.0 / 421.0, HGAP = 1.8;
+    private static final String backgroundImageAddress = "assets/Backgrounds/GUI_T_TowerBg2.dds.png";
 
     private static DeckView instance;
     private Deck deck;
     private Card selectedMainCard, selectedSideCard;
     private ImageView selectedImageView;
 
+    @FXML
+    private ImageView backgroundImageView;
     @FXML
     private ScrollPane mainScrollPane, sideScrollPane;
     @FXML
@@ -52,23 +61,29 @@ public class DeckView extends BaseMenuView {
 
     public static void init(Stage primaryStage, Deck deck) {
         try {
-            VBox root = FXMLLoader.load(Main.class.getResource("/fxml/DeckView.fxml"));
+            Pane root = FXMLLoader.load(Main.class.getResource("/fxml/DeckView.fxml"));
             DeckView.getInstance().start(primaryStage, root, deck);
         } catch (IOException ignored) {
         }
     }
 
-    public void start(Stage primaryStage, VBox root, Deck deck) {
+    public void start(Stage primaryStage, Pane root, Deck deck) {
         this.stage = primaryStage;
         this.root = root;
         this.deck = deck;
-        scene = new Scene(root);
+        scene.setRoot(root);
+        try {
+            backgroundImageView.setImage(new Image(new FileInputStream(backgroundImageAddress)));
+            backgroundImageView.toBack();
+        } catch (FileNotFoundException ignored) {
+        }
         run();
     }
 
     public void run() {
         renderInitialSettings();
         stage.setScene(scene);
+        stage.setResizable(false);
         stage.show();
     }
 
@@ -77,6 +92,8 @@ public class DeckView extends BaseMenuView {
         deckLabel.setText(deck.getName());
         renderDeck(deck.getMainDeck(), mainGridPane, mainScrollPane);
         renderDeck(deck.getSideDeck(), sideGridPane, sideScrollPane);
+        mainGridPane.setHgap(HGAP);
+        sideGridPane.setHgap(HGAP);
     }
 
     private void renderDeck(BaseDeck deck, GridPane gridPane, ScrollPane scrollPane) {
@@ -94,6 +111,12 @@ public class DeckView extends BaseMenuView {
         imageView.setFitHeight(imageHeight);
         gridPane.add(imageView, i, 0);
         imageView.setOnMouseClicked(mouseEvent -> {
+            if (selectedImageView != null) {
+                selectedImageView.setEffect(null);
+                selectedImageView.setTranslateY(-4);
+            }
+            imageView.setTranslateY(4);
+            imageView.setEffect(new DropShadow(50, Color.rgb(5, 109, 225)));
             selectedSideCard = selectedMainCard = null;
             selectedImageView = imageView;
             sideHBox.getChildren().remove(removeButton);

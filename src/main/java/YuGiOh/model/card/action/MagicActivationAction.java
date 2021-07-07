@@ -10,21 +10,12 @@ public class MagicActivationAction extends Action {
         super(event, effect);
     }
 
-    public MagicActivationAction(MagicActivation event) {
-        super(event);
-    }
-
     public void validateEffect() throws ValidateResult {
         MagicActivation event = (MagicActivation) getEvent();
         if(event.getMagic() instanceof Spell)
             ValidateTree.checkActivateMagic((Spell) event.getMagic());
-//        Spell spell = (Spell) event.getMagic();
-    //    spell.validateEffect();
     }
 
     protected void preprocess() {
-        MagicActivation event = (MagicActivation) getEvent();
-//        Spell spell = (Spell) event.getMagic();
-    //    spell.preprocessForEffect();
-    };
+    }
 }

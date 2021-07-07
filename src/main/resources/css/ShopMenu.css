@@ -1,8 +1,10 @@
 .card-info {
     -fx-font-weight: bold;
     -fx-font-size: 20px;
-    -fx-text-fill: #ffc800;
+    -fx-font-family: "Poor Richard";
     -fx-text-fill: radial-gradient(center 30% 30%,radius 100%, #8448f5, #2b9903);
+    -fx-background-color: radial-gradient(center 30% 30%,radius 100%, #1e0232, #5e0303);
+    -fx-background-radius: 10;
 }
 
 .background {
@@ -10,8 +12,8 @@
 }
 
 .button {
+    -fx-font-family: "Poor Richard";
     -fx-background-color: #00000f;
-    -fx-text-fill: #ffc800;
     -fx-background-radius: 10;
     -fx-font-size: 14px;
     -fx-font-weight: bold;
@@ -37,4 +39,34 @@
 
 .debug {
     -fx-background-color: #f8074c;
+}
+
+.scroll-pane {
+    -fx-background-color: black;
+}
+
+.scroll-bar:horizontal, .scroll-bar:vertical{
+    -fx-background-color:transparent;
+}
+
+.increment-button, .decrement-button {
+    -fx-background-color: transparent;
+    -fx-border-color: transparent;
+}
+
+.scroll-pane > .corner {
+    -fx-background-color: black;
+}
+
+.scroll-bar:horizontal .track,
+.scroll-bar:vertical .track{
+    -fx-background-color: transparent;
+    -fx-border-color: transparent;
+    -fx-background-radius: 0em;
+}
+
+.scroll-bar:horizontal .thumb,
+.scroll-bar:vertical .thumb {
+    -fx-background-color: #380101;
+    -fx-background-radius: 5em;
 }

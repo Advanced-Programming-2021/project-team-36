@@ -98,8 +98,8 @@ public class SelectConditions {
         return (Card card) -> !card.equals(notAllowed) && player.hasInHand(card);
     }
 
-    public static SelectCondition getMagicFromField() {
-        return (card) -> card instanceof Magic && getGame().getAllCardsOnBoard().contains(card);
+    public static SelectCondition getMagicFromField(Magic notAllowed) {
+        return (card) -> card instanceof Magic && getGame().getAllCardsOnBoard().contains(card) && card != notAllowed;
     }
 
     public static SelectCondition getMonsterFromGraveYard() {

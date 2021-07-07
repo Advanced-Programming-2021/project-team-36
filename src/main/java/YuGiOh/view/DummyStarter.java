@@ -40,10 +40,10 @@ public class DummyStarter extends Application {
                 some_cards1[i] = "AxeRaider";//allCards[random.nextInt(allCards.length)].getName();
                 some_cards2[i] = "AxeRaider";//allCards[random.nextInt(allCards.length)].getName();
             }
-            Cheat.buildSuperUserWithManyOfThisCards(fakeUser2, 40, some_cards1);
-            Cheat.buildSuperUserWithManyOfThisCards(abolfazl, 40, some_cards2);
-            //Cheat.buildSuperUserWithManyOfThisCards(fakeUser2, 40, "AxeRaider", "TheTricky", "MonsterReborn", "ManEaterBug");
-            //Cheat.buildSuperUserWithManyOfThisCards(abolfazl, 40, "AxeRaider", "TheTricky", "MonsterReborn", "ManEaterBug");
+//            Cheat.buildSuperUserWithManyOfThisCards(fakeUser2, 40, some_cards1);
+//            Cheat.buildSuperUserWithManyOfThisCards(abolfazl, 40, some_cards2);
+//            Cheat.buildSuperUserWithManyOfThisCards(fakeUser2, 40, "AxeRaider", "TheTricky", "MonsterReborn", "ManEaterBug");
+//            Cheat.buildSuperUserWithManyOfThisCards(abolfazl, 40, "MagicJammer", "CrabTurtle", "SkullGuardian");
 //            Cheat.buildSuperUser(fakeUser2);
 
 //            new MainMenuController(abolfazl).startNewDuel(fakeUser2, 3);

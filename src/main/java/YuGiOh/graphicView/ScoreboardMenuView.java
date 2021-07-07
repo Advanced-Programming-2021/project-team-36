@@ -8,16 +8,23 @@ import javafx.fxml.FXMLLoader;
 import javafx.scene.Node;
 import javafx.scene.Scene;
 import javafx.scene.control.Label;
+import javafx.scene.image.Image;
+import javafx.scene.image.ImageView;
 import javafx.scene.layout.Pane;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.ArrayList;
 
 public class ScoreboardMenuView extends BaseMenuView {
+    private static final String backgroundImageAddress = "assets/Backgrounds/GUI_T_TowerBg4.dds.png";
     private static ScoreboardMenuView instance;
 
+    @FXML
+    private ImageView backgroundImageView;
     @FXML
     private VBox mainBox;
 
@@ -42,6 +49,12 @@ public class ScoreboardMenuView extends BaseMenuView {
     public void start(Stage primaryStage, Pane root) {
         this.stage = primaryStage;
         this.root = root;
+        scene.setRoot(root);
+        try {
+            backgroundImageView.setImage(new Image(new FileInputStream(backgroundImageAddress)));
+            backgroundImageView.toBack();
+        } catch (FileNotFoundException ignored) {
+        }
         run();
     }
 
@@ -49,25 +62,24 @@ public class ScoreboardMenuView extends BaseMenuView {
         renderScene();
         stage.setScene(scene);
         stage.show();
-        relocateNodeFromCenter(mainBox, root.getWidth() / 2, root.getHeight() * 0.4);
+        stage.setResizable(false);
+        relocateNodeFromCenter(mainBox.getParent(), root.getWidth() / 2, root.getHeight() * 0.4);
     }
 
     private void renderScene() {
-        if (scene == null) {
-            scene = new Scene(root);
-            ArrayList<User> users = User.retrieveUsersBasedOnScore();
-            int rank = 1;
-            for (int i = 0; i < users.size(); i++) {
-                User user = users.get(i);
-                if (i > 0 && users.get(i - 1).getScore() > user.getScore())
-                    rank = i + 1;
-                Label label = new Label(rank + ".  " + user.getNickname() + ":  " + user.getScore());
-                if (user == MainMenuController.getInstance().getUser())
-                    label.getStyleClass().add("highlighted-user");
-                else
-                    label.getStyleClass().add("user");
-                mainBox.getChildren().add(i + 1, label);
-            }
+        ArrayList<User> users = User.retrieveUsersBasedOnScore();
+        int rank = 1;
+        for (int i = 0; i < users.size(); i++) {
+            User user = users.get(i);
+            if (i > 0 && users.get(i - 1).getScore() > user.getScore())
+                rank = i + 1;
+            Label label = new Label(rank + ".  " + user.getNickname() + ":  " + user.getScore());
+            if (user == MainMenuController.getInstance().getUser())
+                label.getStyleClass().add("highlighted-user");
+            else
+                label.getStyleClass().add("user");
+            label.setText("  " + label.getText() + "  ");
+            mainBox.getChildren().add(i, label);
         }
     }
 

@@ -41,39 +41,39 @@ public class DuelMenuController extends BaseMenuController {
         gameController.goNextPhaseAndNotify();
     }
 
-    public void summonCard(Card card) throws LogicException, ResistToChooseCard {
+    public void summonCard(Card card, boolean onlyCheckPossibility) throws LogicException, ResistToChooseCard {
         if (card instanceof Magic)
             throw new LogicException("this card is magic and you can't summon it");
-        gameController.getCurrentPlayerController().normalSummon((Monster) card);
+        gameController.getCurrentPlayerController().normalSummon((Monster) card, onlyCheckPossibility);
         view.resetSelector();
     }
 
-    public void specialSummon(Card card) throws LogicException, ResistToChooseCard {
+    public void specialSummon(Card card, boolean onlyCheckPossibility) throws LogicException, ResistToChooseCard {
         if (card instanceof Magic)
             throw new LogicException("this card is magic and you can't special summon it");
-        gameController.getCurrentPlayerController().specialSummon((Monster) card);
+        gameController.getCurrentPlayerController().specialSummon((Monster) card, onlyCheckPossibility);
         view.resetSelector();
     }
 
-    public void setCard(Card card) throws LogicException, ResistToChooseCard {
+    public void setCard(Card card, boolean onlyCheckPossibility) throws LogicException, ResistToChooseCard {
         if (card instanceof Monster)
-            gameController.getCurrentPlayerController().setMonster((Monster) card);
+            gameController.getCurrentPlayerController().setMonster((Monster) card, onlyCheckPossibility);
         else
-            gameController.getCurrentPlayerController().setMagic((Magic) card);
+            gameController.getCurrentPlayerController().setMagic((Magic) card, onlyCheckPossibility);
         view.resetSelector();
     }
 
-    public void changeCardPosition(Card card, MonsterState monsterState) throws LogicException {
+    public void changeCardPosition(Card card, MonsterState monsterState, boolean onlyCheckPossibility) throws LogicException {
         if (!(card instanceof Monster))
             throw new LogicException("you can only change position of a monster card");
-        gameController.getCurrentPlayerController().changeMonsterPosition((Monster) card, monsterState);
+        gameController.getCurrentPlayerController().changeMonsterPosition((Monster) card, monsterState, onlyCheckPossibility);
         view.resetSelector();
     }
 
-    public void flipSummon(Card card) throws LogicException, ResistToChooseCard {
+    public void flipSummon(Card card, boolean onlyCheckPossibility) throws LogicException, ResistToChooseCard {
         if (!(card instanceof Monster))
             throw new LogicException("you can only flip summon a monster card");
-        gameController.getCurrentPlayerController().flipSummon((Monster) card);
+        gameController.getCurrentPlayerController().flipSummon((Monster) card, onlyCheckPossibility);
         view.resetSelector();
     }
 
@@ -88,29 +88,21 @@ public class DuelMenuController extends BaseMenuController {
         gameController.getCurrentPlayerController().attack((Monster) card, opponentMonster);
     }
 
-    public void directAttack(Card card) throws LogicException, RoundOverExceptionEvent, ResistToChooseCard {
+    public void directAttack(Card card, boolean onlyCheckPossibility) throws LogicException, RoundOverExceptionEvent, ResistToChooseCard {
         if(!(card instanceof Monster))
             throw new LogicException("only a monster can attack");
-        gameController.getCurrentPlayerController().directAttack((Monster) card);
+        gameController.getCurrentPlayerController().directAttack((Monster) card, onlyCheckPossibility);
     }
 
-    public void activateEffect(Card card) throws LogicException, RoundOverExceptionEvent, ResistToChooseCard {
+    public void activateEffect(Card card, boolean onlyCheckPossibility) throws LogicException, RoundOverExceptionEvent, ResistToChooseCard {
         if (!card.hasEffect())
             throw new LogicException("activate effect is only for spell cards and monsters that have effect");
         if (card instanceof Trap)
             throw new LogicException("trap's can't be activated");
         if (card instanceof Monster)
-            gameController.getCurrentPlayerController().activateMonsterEffect((Monster) card);
+            gameController.getCurrentPlayerController().activateMonsterEffect((Monster) card, onlyCheckPossibility);
         if (card instanceof Spell)
-            gameController.getCurrentPlayerController().activateSpellEffect((Spell) card);
-    }
-
-    public void showGraveYard() {
-        List<Card> graveYard = duel.getCurrentGame().getCurrentPlayer().getBoard().getGraveYard();
-        if (graveYard.isEmpty())
-            CustomPrinter.println("graveyard empty", Color.Default);
-        for (int i = 0; i < graveYard.size(); i++)
-            CustomPrinter.println((i + 1) + ". " + graveYard.get(i).toString(), Color.Default);
+            gameController.getCurrentPlayerController().activateSpellEffect((Spell) card, onlyCheckPossibility);
     }
 
     public void showBoard() {

@@ -6,12 +6,13 @@
 
 <?import java.net.URL?>
 <?import javafx.scene.image.ImageView?>
-<Pane prefWidth="400" prefHeight="400" xmlns:fx="http://javafx.com/fxml"
+<Pane prefWidth="400" prefHeight="480" xmlns:fx="http://javafx.com/fxml"
       fx:controller="YuGiOh.graphicView.ProfileMenuView" styleClass="main">
+    <ImageView fx:id="backgroundImageView" fitWidth="400" fitHeight="480"/>
     <VBox fx:id="mainPane" alignment="CENTER" spacing="13">
-        <ImageView fx:id="profilePicture"/>
-        <Label fx:id="usernameLabel" StackPane.alignment="TOP_CENTER" styleClass="textCss"/>
-        <Label fx:id="nicknameLabel" StackPane.alignment="TOP_CENTER" styleClass="textCss"/>
+        <ImageView fx:id="profilePicture" preserveRatio="true" fitHeight="220"/>
+        <Label fx:id="usernameLabel" StackPane.alignment="TOP_CENTER" styleClass="reddish-text"/>
+        <Label fx:id="nicknameLabel" StackPane.alignment="TOP_CENTER" styleClass="reddish-text"/>
         <Button alignment="CENTER" defaultButton="true" onMouseClicked="#loadNicknameChangePane"
                 mnemonicParsing="false" text="Change Nickname" styleClass="button"/>
         <Button alignment="CENTER" defaultButton="true" onMouseClicked="#loadPasswordChangePane"
@@ -20,7 +21,7 @@
                 mnemonicParsing="false" text="Back" styleClass="button"/>
     </VBox>
     <VBox fx:id="nicknamePane" alignment="CENTER" spacing="13">
-        <Label text="Enter you new nickname below:" StackPane.alignment="TOP_CENTER" styleClass="textCss"/>
+        <Label text="  Enter you new nickname below:  " StackPane.alignment="TOP_CENTER" styleClass="reddish-text"/>
         <TextField styleClass="text-field" promptText="new nickname" fx:id="newNicknameTextField" maxWidth="140"/>
         <Button alignment="CENTER" defaultButton="true" onMouseClicked="#changeNickname"
                 mnemonicParsing="false" text="Update Nickname" styleClass="button"/>
@@ -28,13 +29,14 @@
                 mnemonicParsing="false" text="Back" styleClass="button"/>
     </VBox>
     <VBox fx:id="passwordPane" alignment="CENTER" spacing="13">
-    <Label text="Enter you old and new password below:" StackPane.alignment="TOP_CENTER" styleClass="textCss"/>
-    <TextField styleClass="text-field" promptText="old password" fx:id="oldPasswordTextField" maxWidth="140"/>
-    <TextField styleClass="text-field" promptText="new password" fx:id="newPasswordTextField" maxWidth="140"/>
-    <Button alignment="CENTER" defaultButton="true" onMouseClicked="#changePassword"
-            mnemonicParsing="false" text="Update Nickname" styleClass="button"/>
-    <Button alignment="CENTER" defaultButton="true" onMouseClicked="#back"
-            mnemonicParsing="false" text="Back" styleClass="button"/>
+        <Label text="  Enter you old and new password below:  " StackPane.alignment="TOP_CENTER"
+               styleClass="reddish-text"/>
+        <TextField styleClass="text-field" promptText="old password" fx:id="oldPasswordTextField" maxWidth="140"/>
+        <TextField styleClass="text-field" promptText="new password" fx:id="newPasswordTextField" maxWidth="140"/>
+        <Button alignment="CENTER" defaultButton="true" onMouseClicked="#changePassword"
+                mnemonicParsing="false" text="Update Nickname" styleClass="button"/>
+        <Button alignment="CENTER" defaultButton="true" onMouseClicked="#back"
+                mnemonicParsing="false" text="Back" styleClass="button"/>
     </VBox>
 
     <padding>

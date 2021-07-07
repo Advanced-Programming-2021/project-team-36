@@ -21,7 +21,7 @@ public class YomiShip extends Monster {
     public void specialEffectWhenBeingAttacked(Monster attacker) {
         damageStep(attacker);
         if (GameController.getInstance().getGame().getCardZoneType(this).equals(ZoneType.GRAVEYARD)) {
-            attacker.tryToSendToGraveYardOfMe();
+            GameController.getInstance().moveCardToGraveYard(attacker);
             CustomPrinter.println(String.format("<%s>'s <%s> activated successfully", this.getOwner().getUser().getUsername(), this.getName()), Color.Yellow);
             CustomPrinter.println(this.asEffect(), Color.Gray);
         }

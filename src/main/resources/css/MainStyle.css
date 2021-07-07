@@ -1,66 +1,86 @@
 .button {
     -fx-background-color: #00000f;
-    -fx-text-fill: #ffc800;
     -fx-background-radius: 10;
-    -fx-font-size: 14px;
+    -fx-font-size: 16px;
     -fx-font-weight: bold;
+    -fx-font-family: "Poor Richard";
     -fx-cursor: hand;
-    -fx-text-fill: radial-gradient(center 30% 30%,radius 100%, #ffc800, #2b9903);
-    -fx-font-family: PacFont;
+    -fx-text-fill: radial-gradient(center 30% 30%, radius 100%, #ffc800, #2b9903);
 }
 
 .button:hover {
     -fx-background-color: #010132;
 }
+
 .button:pressed {
     -fx-translate-y: +2;
 }
 
 .title {
+    -fx-font-family: "Poor Richard";
     -fx-font-weight: bold;
     -fx-font-size: 24px;
     -fx-text-fill: #ffc800;
-    -fx-font-family: PacFont;
 }
 
 .text-field {
+    -fx-font-family: "Poor Richard";
     -fx-font-weight: bold;
-    -fx-font-size: 10px;
-    -fx-text-fill: #ffc800;
-    -fx-background-color: #010132;
-    -fx-text-fill: radial-gradient(center 30% 30%,radius 100%, #ffc800, #999703);
+    -fx-font-size: 17px;
+    -fx-background-color: #00000f;
+    -fx-background-radius: 10;
+    -fx-text-fill: radial-gradient(center 30% 30%, radius 100%, #ffc800, #999703);
 }
 
 .textCss {
+    -fx-font-family: "Poor Richard";
     -fx-font-weight: bold;
     -fx-font-size: 20px;
-    -fx-text-fill: #ffc800;
-    -fx-font-family: PacFont;
-    -fx-text-fill: radial-gradient(center 30% 30%,radius 100%, #8448f5, #2b9903);
+    -fx-text-fill: radial-gradient(center 30% 30%, radius 100%, #8448f5, #2b9903);
+}
+.reddish-text {
+    -fx-font-family: "Poor Richard";
+    -fx-background-color: #00000f;
+    -fx-background-radius: 10;
+    -fx-font-size: 20px;;
+    -fx-font-weight: bold;
+    -fx-text-fill: radial-gradient(center 30% 30%, radius 100%, #682e47, #830399);
 }
 
 .main {
-    -fx-background-color: radial-gradient(center 30% 30%,radius 100%, #00ffd9, #f3f5f3);
+    -fx-background-color: radial-gradient(center 30% 30%, radius 100%, #00ffd9, #f3f5f3);
 }
 
 .user {
+    -fx-font-family: "Poor Richard";
     -fx-font-weight: bold;
     -fx-font-size: 20px;
-    -fx-font-family: PacFont;
-    -fx-text-fill: radial-gradient(center 30% 30%,radius 100%, #8448f5, #2b9903);
+    -fx-text-fill: radial-gradient(center 30% 30%, radius 100%, #8448f5, #2b9903);
+    -fx-background-radius: 12;
+    -fx-background-color: radial-gradient(center 70% 70%, radius 100%, #080015, #280a00);
 }
 
 .highlighted-user {
+    -fx-font-family: "Poor Richard";
     -fx-font-weight: bold;
     -fx-font-size: 20px;
-    -fx-font-family: PacFont;
-    -fx-text-fill: radial-gradient(center 30% 30%,radius 100%, #ffc800, #059a5e);
+    -fx-text-fill: radial-gradient(center 30% 30%, radius 100%, #ffc800, #059a5e);
+    -fx-background-radius: 12;
+    -fx-background-color: radial-gradient(center 70% 70%, radius 100%, #080015, #280a00);
+}
+
+.scoreboard-title {
+    -fx-font-family: "Poor Richard";
+    -fx-font-weight: bold;
+    -fx-font-size: 24px;
+    -fx-text-fill: radial-gradient(center 30% 30%, radius 100%, #ff00f2, #059a5e);
+    -fx-background-radius: 12;
+    -fx-background-color: radial-gradient(center 70% 70%, radius 100%, #080015, #280a00);
 }
 
 .loginText {
+    -fx-font-family: "Poor Richard";
     -fx-font-weight: bold;
-    -fx-font-size: 12px;
-    -fx-text-fill: #ffc800;
-    -fx-font-family: PacFont;
-    -fx-text-fill: radial-gradient(center 30% 30%,radius 100%, #8448f5, #2b9903);
+    -fx-font-size: 18px;
+    -fx-text-fill: radial-gradient(center 30% 30%, radius 100%, #8448f5, #2b9903);
 }

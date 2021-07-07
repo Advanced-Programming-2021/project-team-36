@@ -9,9 +9,10 @@
 <?import javafx.scene.image.ImageView?>
 <?import java.net.URL?>
 <?import javafx.geometry.Insets?>
-<Pane xmlns="http://javafx.com/javafx" xmlns:fx="http://javafx.com/fxml" styleClass="background"
+<Pane xmlns="http://javafx.com/javafx" xmlns:fx="http://javafx.com/fxml"
       fx:controller="YuGiOh.graphicView.ShopMenuView" prefHeight="640.0" prefWidth="600.0">
-    <ScrollPane fx:id="scrollPane" maxHeight="500">
+    <ImageView fx:id="backgroundImageView" fitWidth="600" fitHeight="640"/>
+    <ScrollPane fx:id="scrollPane" maxHeight="500" styleClass="scroll-pane">
         <GridPane fx:id="gridPane" alignment="CENTER"/>
     </ScrollPane>
     <VBox fx:id="selectedCardVBox" alignment="CENTER" spacing="7" opacity="0">
