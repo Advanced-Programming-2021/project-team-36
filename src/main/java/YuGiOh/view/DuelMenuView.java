@@ -2,10 +2,13 @@ package YuGiOh.view;
 
 import YuGiOh.MainApplication;
 import YuGiOh.archive.view.gui.Utils;
+import YuGiOh.controller.GameController;
 import YuGiOh.controller.MainGameThread;
 import YuGiOh.controller.menus.*;
 import YuGiOh.model.Duel;
 import YuGiOh.model.Game;
+import YuGiOh.model.Player.AIPlayer;
+import YuGiOh.model.Player.HumanPlayer;
 import YuGiOh.model.card.Card;
 import YuGiOh.archive.view.cardSelector.CardSelector;
 import YuGiOh.archive.view.cardSelector.FinishSelectingCondition;
@@ -199,8 +202,11 @@ public class DuelMenuView extends BaseMenuView {
             askUserToChoose(DuelMenuController.getInstance().getDuel().getLastGameState() + "\n" + "are you ready for the next round? ", Arrays.asList("yes"));
         } catch (ResistToChooseCard ignored) {
         }
-        //Platform.runLater(() ->HalfTimeView.init(primaryStage, GameController.getInstance().getCurrentPlayerController()));
-        Platform.runLater(()->DuelMenuView.init(stage));
+        if (GameController.getInstance().getCurrentPlayerController().getPlayer() instanceof HumanPlayer)
+            Platform.runLater(() ->HalfTimeView.init(stage, GameController.getInstance().getCurrentPlayerController()));
+        else
+            Platform.runLater(() ->HalfTimeView.init(stage, GameController.getInstance().getOpponentPlayerController()));
+        //Platform.runLater(()->DuelMenuView.init(stage));
     }
 
     public void endOfDuel() {
