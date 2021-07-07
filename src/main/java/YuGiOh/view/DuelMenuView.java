@@ -1,6 +1,7 @@
 package YuGiOh.view;
 
 import YuGiOh.Main;
+import YuGiOh.controller.GameController;
 import YuGiOh.controller.MainGameThread;
 import YuGiOh.controller.menus.*;
 import YuGiOh.model.Duel;
@@ -86,8 +87,10 @@ public class DuelMenuView extends BaseMenuView {
         GuiReporter.getInstance().addEventHandler(RoundOverEvent.MY_TYPE, e->{
             if(DuelMenuController.getInstance().getDuel().isFinished())
                 Platform.runLater(()->MainMenuView.getInstance().run());
-            else
+            else {
+                //Platform.runLater(() ->HalfTimeView.init(primaryStage, GameController.getInstance().getCurrentPlayerController()));
                 Platform.runLater(()->DuelMenuView.init(primaryStage));
+            }
         });
     }
 

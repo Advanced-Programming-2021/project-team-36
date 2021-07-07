@@ -3,6 +3,7 @@ package YuGiOh.view;
 
 import YuGiOh.controller.menus.*;
 import YuGiOh.model.User;
+import YuGiOh.model.card.Utils;
 import YuGiOh.utils.Cheat;
 import YuGiOh.utils.DatabaseHandler;
 import javafx.application.Application;
@@ -21,9 +22,9 @@ public class MainApplication extends Application {
 //        new User("ad183", "nclad", "w8");
 //        new User("19", "1398d", "w8");
 //        new User("19831", "Adakd", "w8");
-        //User shayan  = new User("shayan", "shayan.p", "1234");
-        //Cheat.buildSuperUser(shayan);
-        //MainMenuView.init(primaryStage, shayan);
+//        User shayan  = new User("shayan", "shayan.p", "1234");
+//        Cheat.buildSuperUser(shayan);
+//        MainMenuView.init(primaryStage, shayan);
     }
 
     private void initializeApp(Stage primaryStage) {
@@ -34,7 +35,7 @@ public class MainApplication extends Application {
         primaryStage.setOnCloseRequest(new EventHandler<WindowEvent>() {
             @Override
             public void handle(WindowEvent windowEvent) {
-                //DatabaseHandler.exportToDatabase();
+                DatabaseHandler.exportToDatabase();
             }
         });
     }
