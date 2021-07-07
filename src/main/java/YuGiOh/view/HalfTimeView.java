@@ -2,12 +2,17 @@ package YuGiOh.view;
 
 import YuGiOh.Main;
 import YuGiOh.controller.GameController;
+import YuGiOh.controller.LogicException;
+import YuGiOh.controller.events.PlayerReadyExceptionEvent;
 import YuGiOh.controller.menus.HalfTimeMenuController;
 import YuGiOh.controller.player.PlayerController;
+import YuGiOh.model.Game;
+import YuGiOh.model.Player.HumanPlayer;
 import YuGiOh.model.card.Card;
 import YuGiOh.model.card.Utils;
 import YuGiOh.model.deck.BaseDeck;
 import YuGiOh.model.deck.Deck;
+import javafx.application.Platform;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.control.*;
@@ -59,7 +64,6 @@ public class HalfTimeView extends BaseMenuView {
     }
 
     public static void init(Stage primaryStage, PlayerController playerController) {
-        System.out.println("adjhajhdjda");
         try {
             Pane root = FXMLLoader.load(Main.class.getResource("/fxml/HalfTimeView.fxml"));
             HalfTimeView.getInstance().start(primaryStage, root, playerController);
@@ -71,6 +75,7 @@ public class HalfTimeView extends BaseMenuView {
         this.stage = primaryStage;
         this.root = root;
         this.playerController = playerController;
+        this.deck = playerController.getPlayer().getDeck();
         scene.setRoot(root);
         new HalfTimeMenuController(playerController);
         try {
@@ -135,10 +140,15 @@ public class HalfTimeView extends BaseMenuView {
     private void ready() {
         try {
             HalfTimeMenuController.getInstance().ready();
-        } catch (Exception exception) {
+        } catch (PlayerReadyExceptionEvent playerReadyExceptionEvent) {
+        } catch (LogicException exception) {
             new Alert(Alert.AlertType.ERROR, exception.getMessage()).showAndWait();
         }
-        DuelMenuView.init(stage);
+        if (GameController.getInstance().getCurrentPlayerController() == playerController &&
+                GameController.getInstance().getOpponentPlayerController().getPlayer() instanceof HumanPlayer)
+            HalfTimeView.init(stage, GameController.getInstance().getOpponentPlayerController());
+        else
+            DuelMenuView.init(stage);
     }
     @FXML
     private void switchCard() {
@@ -148,7 +158,7 @@ public class HalfTimeView extends BaseMenuView {
                 mainGridPane.getChildren().remove(selectedImageView);
                 sideGridPane.getChildren().add(selectedImageView);
             } else {
-                HalfTimeMenuController.getInstance().addCardToDeck(selectedMainCard);
+                HalfTimeMenuController.getInstance().addCardToDeck(selectedSideCard);
                 sideGridPane.getChildren().remove(selectedImageView);
                 mainGridPane.getChildren().add(selectedImageView);
             }
@@ -161,9 +171,5 @@ public class HalfTimeView extends BaseMenuView {
         sideHBox.getChildren().remove(switchButton);
         new Alert(Alert.AlertType.INFORMATION, "Card was switched successfully!").showAndWait();
 
-    }
-    @FXML
-    private void exit() {
-        DeckMenuView.getInstance().run();
     }
 }
