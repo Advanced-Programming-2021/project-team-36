@@ -150,10 +150,10 @@ public class NewGameView extends BaseMenuView {
         try {
             if (gameMode == 0) {
                 String secondPlayerUsername = secondPlayerUsernameTextField.getText();
-                MainMenuController.getInstance().startNewDuel(secondPlayerUsername, numberOfRounds);
+                MainMenuController.getInstance().startNewDuel(true, secondPlayerUsername, numberOfRounds);
                 coinToss();
             } else {
-                MainMenuController.getInstance().startDuelWithAI(3, AIMode.NORMAL);
+                MainMenuController.getInstance().startDuelWithAI(true, 3, AIMode.NORMAL);
                 coinToss();
             }
         } catch (Exception exception) {
