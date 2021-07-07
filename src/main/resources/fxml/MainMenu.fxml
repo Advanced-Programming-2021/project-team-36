@@ -24,6 +24,8 @@
                     mnemonicParsing="false" text="Deck Menu" styleClass="button"/>
             <Button alignment="CENTER" defaultButton="true" onMouseClicked="#loadShopMenu"
                     mnemonicParsing="false" text="Shop Menu" styleClass="button"/>
+            <Button alignment="CENTER" defaultButton="true" onMouseClicked="#loadCardFactoryMenu"
+                    mnemonicParsing="false" text="Card Factory" styleClass="button"/>
             <Button alignment="CENTER" defaultButton="true" onMouseClicked="#logout"
                     mnemonicParsing="false" text="Logout" styleClass="button"/>
             <padding>

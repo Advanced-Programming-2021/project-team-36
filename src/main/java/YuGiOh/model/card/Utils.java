@@ -75,7 +75,7 @@ public class Utils {
     public static boolean checkCardExistInDatabase(String name) {
         if(name == null)
             return false;
-        return correctIgnoreCase(name) != null;
+        return getCard(correctIgnoreCase(name)) != null;
     }
 
     public static Magic getMagic(String name) {
@@ -201,6 +201,16 @@ public class Utils {
                 return null;
             }
         }
+    }
+
+    public static Card[] getAllMonsters() {
+        ArrayList<Card> cards = new ArrayList<>();
+        cardsData.forEach((k, v) -> {
+            if(getCard(k) != null && getCard(k) instanceof Monster)
+                cards.add(getCard(k));
+        });
+        cards.sort(new cardLexicographicalOrder());
+        return cards.toArray(new Card[0]);
     }
 
     static class cardLexicographicalOrder implements Comparator<Card> {

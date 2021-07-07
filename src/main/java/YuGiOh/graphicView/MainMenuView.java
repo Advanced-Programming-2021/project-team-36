@@ -15,6 +15,7 @@ import javafx.scene.Scene;
 import javafx.scene.control.Alert;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
+import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.Pane;
 import javafx.stage.Stage;
 
@@ -68,33 +69,45 @@ public class MainMenuView extends BaseMenuView {
         stage.show();
         MediaPlayerController.getInstance().playThemeMedia();
     }
+
     @FXML
     private void loadProfileMenu() {
         ProfileMenuView.init(stage, MainMenuController.getInstance().getUser());
     }
+
     @FXML
     private void loadScoreboardMenu() {
         ScoreboardMenuView.init(stage);
     }
+
     @FXML
     private void loadDeckMenu() {
         DeckMenuView.init(stage, MainMenuController.getInstance().getUser());
     }
+
     @FXML
     private void loadShopMenu() {
         ShopMenuView.init(stage, MainMenuController.getInstance().getUser());
     }
+
     @FXML
     private void startNewDuel() {
         NewGameView.init(stage, 0);
     }
+
     @FXML
     private void startNewDuelWithAI() {
         NewGameView.init(stage, 1);
+    }
+
+    @FXML
+    private void loadCardFactoryMenu(MouseEvent mouseEvent) {
+        CardFactoryMenuView.init(stage, MainMenuController.getInstance().getUser());
     }
 
     public void logout() {
         new Alert(Alert.AlertType.INFORMATION, "user logged out successfully!").showAndWait();
         LoginMenuView.getInstance().run();
     }
+
 }
