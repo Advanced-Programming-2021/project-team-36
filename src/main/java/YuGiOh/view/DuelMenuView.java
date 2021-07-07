@@ -1,7 +1,7 @@
 package YuGiOh.view;
 
 import YuGiOh.Main;
-import YuGiOh.controller.GameController;
+import YuGiOh.archive.view.gui.Utils;
 import YuGiOh.controller.MainGameThread;
 import YuGiOh.controller.menus.*;
 import YuGiOh.model.Duel;
@@ -20,12 +20,10 @@ import javafx.beans.binding.Bindings;
 import javafx.beans.property.SimpleBooleanProperty;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
+import javafx.scene.ImageCursor;
 import javafx.scene.Scene;
-import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
-import javafx.scene.input.KeyCode;
 import javafx.scene.layout.Pane;
-import javafx.scene.layout.StackPane;
 import javafx.scene.paint.Color;
 import javafx.scene.text.Font;
 import javafx.scene.text.Text;
@@ -84,13 +82,13 @@ public class DuelMenuView extends BaseMenuView {
         this.selector = new CardSelector(infoBox);
         DuelMenuController.getInstance().runNewGameThread();
         run();
+        stage.setResizable(true);
+        stage.setFullScreen(true);
         GuiReporter.getInstance().addEventHandler(RoundOverEvent.MY_TYPE, e->{
             if(DuelMenuController.getInstance().getDuel().isFinished())
-                Platform.runLater(()->MainMenuView.getInstance().run());
-            else {
-                //Platform.runLater(() ->HalfTimeView.init(primaryStage, GameController.getInstance().getCurrentPlayerController()));
-                Platform.runLater(()->DuelMenuView.init(primaryStage));
-            }
+                endOfDuel();
+            else
+                anotherDuel();
         });
     }
 
@@ -118,6 +116,7 @@ public class DuelMenuView extends BaseMenuView {
         this.navBar.getChildren().add(new CustomButton("surrender", 23, ()-> gameField.addRunnableToMainThread(()-> DuelMenuController.getInstance().surrender())));
         this.navBar.getChildren().add(new CustomButton("next phase", 23, ()-> gameField.addRunnableToMainThread(()-> DuelMenuController.getInstance().goNextPhase())));
         this.addPlayPauseController();
+        scene.setCursor(new ImageCursor(Utils.getImage("Cursor/pen.png")));
     }
 
     public void addPlayPauseController(){
@@ -194,5 +193,22 @@ public class DuelMenuView extends BaseMenuView {
         selectModeText.setText("");
         selectModeText.setFill(Color.BLACK);
         selector.refresh();
+    }
+
+    public void anotherDuel() {
+        try {
+            askUserToChoose(DuelMenuController.getInstance().getDuel().getLastGameState() + "\n" + "are you ready for the next round? ", Arrays.asList("yes"));
+        } catch (ResistToChooseCard ignored) {
+        }
+        //Platform.runLater(() ->HalfTimeView.init(primaryStage, GameController.getInstance().getCurrentPlayerController()));
+        Platform.runLater(()->DuelMenuView.init(stage));
+    }
+
+    public void endOfDuel() {
+        try {
+            askUserToChoose(DuelMenuController.getInstance().getDuel().getLastGameState(), Arrays.asList("back to main menu"));
+        } catch (ResistToChooseCard ignored) {
+        }
+        Platform.runLater(()->MainMenuView.getInstance().run());
     }
 }
