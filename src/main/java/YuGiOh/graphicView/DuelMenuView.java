@@ -110,12 +110,10 @@ public class DuelMenuView extends BaseMenuView {
         this.root.prefWidthProperty().bind(scene.widthProperty());
         this.root.prefHeightProperty().bind(scene.heightProperty());
 
+        this.navBar.setSpacing(40);
+        this.navBar.getChildren().add(new CustomButton("surrender", 23, ()-> gameField.addRunnableToMainThread(()-> DuelMenuController.getInstance().surrender())));
+        this.navBar.getChildren().add(new CustomButton("next phase", 23, ()-> gameField.addRunnableToMainThread(()-> DuelMenuController.getInstance().goNextPhase())));
         this.addPlayPauseController();
-    }
-
-    @FXML
-    private void muteBackground() {
-        System.out.println("muting :))");
     }
 
     public void addPlayPauseController(){

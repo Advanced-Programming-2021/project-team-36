@@ -180,7 +180,6 @@ public class GameField extends Pane {
         });
     }
 
-
     public Duration getAnimationDuration(CardAddress from, CardAddress to){
         if(from == null || to == null)
             throw new Error("this must never happen");
