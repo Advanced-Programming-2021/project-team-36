@@ -24,18 +24,19 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class Monster extends Card {
+    // don't put getter on attack damage and defense rate
     @Setter
     protected int attackDamage;
     @Setter
     protected int defenseRate;
-    @Getter
+    @Getter @Setter
     protected MonsterAttribute attribute;
-    @Getter
+    @Getter @Setter
     protected MonsterType monsterType;
-    @Getter
+    @Getter @Setter
     protected MonsterCardType monsterCardType;
     protected SimpleObjectProperty<MonsterState> monsterStateProperty;
-    @Getter
+    @Getter @Setter
     protected int level;
     protected SimpleBooleanProperty allowAttack = new SimpleBooleanProperty(true);
     // todo allowAttack should be a function that gets monster and tells whether you can attack it or not

@@ -9,16 +9,23 @@ import javafx.scene.image.Image;
 import java.io.File;
 
 public class Utils {
+    public static boolean existsAsset(String relativeAddress) {
+        File file = new File("assets/" + relativeAddress);
+        return file.exists() && file.isFile();
+    }
+
     public static File getAsset(String relativeAddress){
         File file = new File("assets/" + relativeAddress);
-        // todo this is for test until every asset name is ok
-        if(!file.exists()){
+        if(existsAsset(relativeAddress)) {
+            return file;
+        } else {
             System.out.println("not found " + file.toURI());
-            throw new Error();
+            return null;
         }
-        return file;
     }
     public static Image getImage(String address) {
+        if(!existsAsset(address))
+            address = "Cards/CustomCard.jpg";
         return new Image(getAsset(address).toURI().toString());
     }
     public static Image getMonsterImage(String name){

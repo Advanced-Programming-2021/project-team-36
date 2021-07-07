@@ -15,8 +15,9 @@ import lombok.Setter;
 import java.util.Stack;
 
 abstract public class Magic extends Card {
-    @Getter
+    @Getter @Setter
     protected Icon icon;
+    @Getter @Setter
     protected Status status;
     @Getter @Setter
     protected Monster equippedMonster;
@@ -58,6 +59,7 @@ abstract public class Magic extends Card {
         cloned.icon = icon;
         cloned.status = status;
         cloned.magicStateProperty = new SimpleObjectProperty<>(null);
+        cloned.equippedMonster = null;
         return cloned;
     }
 

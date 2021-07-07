@@ -1,9 +1,11 @@
 package YuGiOh.model.card;
 
+import YuGiOh.controller.LogicException;
 import YuGiOh.model.enums.*;
 import YuGiOh.utils.ClassFinder;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
+import lombok.Getter;
 
 import java.io.FileInputStream;
 import java.util.*;
@@ -14,14 +16,23 @@ public class Utils {
     private static final TreeMap<String, TreeMap<String, String>> monstersData = new TreeMap<>();
     private static final TreeMap<String, TreeMap<String, String>> magicData = new TreeMap<>();
     private static final Class<?>[] specialMonstersClasses = ClassFinder.getClasses("YuGiOh.model.card.monsterCards");
+    private static final TreeMap<String, Card> inventedCards = new TreeMap<>();
 
     protected static void addCard(String type, String name) {
         cardsData.put(name, type);
     }
 
+    private static String ignoreSpaces(String name) {
+        return name.replaceAll("\\s+", "");
+    }
     public static String correctIgnoreCase(String name){
+        name = ignoreSpaces(name);
         for (Map.Entry<String,String> e : cardsData.entrySet()) {
-            if (e.getKey().equalsIgnoreCase(name))
+            if (ignoreSpaces(e.getKey()).equalsIgnoreCase(name))
+                return e.getKey();
+        }
+        for (Map.Entry<String,Card> e : inventedCards.entrySet()) {
+            if(ignoreSpaces(e.getKey()).equalsIgnoreCase(name))
                 return e.getKey();
         }
         return null;
@@ -30,13 +41,35 @@ public class Utils {
     public static Card getCard(String name) {
         if(name == null)
             return null;
-        name = correctIgnoreCase(name.replaceAll("\\s+", ""));
+        name = correctIgnoreCase(name);
+        if (inventedCards.containsKey(name))
+            return inventedCards.get(name).clone();
         if (!cardsData.containsKey(name))
             return null;
         if (cardsData.get(name).equals("Monster"))
             return getMonster(name);
         else
             return getMagic(name);
+    }
+
+    public static ArrayList<Card> getInventedCards() {
+        ArrayList<Card> ret = new ArrayList<>();
+        inventedCards.forEach((name, card)->{
+            ret.add(card.clone());
+        });
+        return ret;
+    }
+
+    public static void addCardToInvented(Card card) throws LogicException {
+        if(checkCardExistInDatabase(card.getName()))
+            throw new LogicException("The card name is repeated");
+        inventedCards.put(card.getName(), card);
+    }
+
+    public static boolean checkCardExistInDatabase(String name) {
+        if(name == null)
+            return false;
+        return correctIgnoreCase(name) != null;
     }
 
     public static Magic getMagic(String name) {

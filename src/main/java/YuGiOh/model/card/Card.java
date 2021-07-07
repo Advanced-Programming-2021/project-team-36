@@ -6,14 +6,19 @@ import YuGiOh.model.card.action.Effect;
 import javafx.beans.binding.BooleanBinding;
 import javafx.beans.property.SimpleObjectProperty;
 import lombok.Getter;
+import lombok.Setter;
 
 import java.io.Serializable;
 
 public abstract class Card implements Comparable<Card>, Cloneable, Serializable {
+    @Getter @Setter
     protected String name;
+    @Getter @Setter
     protected String description;
+    @Getter @Setter
     protected int price;
-    private final SimpleObjectProperty<Player> ownerProperty;
+
+    private SimpleObjectProperty<Player> ownerProperty;
 
     {
         ownerProperty = new SimpleObjectProperty<>(null);
@@ -31,18 +36,6 @@ public abstract class Card implements Comparable<Card>, Cloneable, Serializable 
 
     public boolean isFacedUp(){
         return facedUpProperty().get();
-    }
-
-    public String getName() {
-        return name;
-    }
-
-    public String getDescription() {
-        return description;
-    }
-
-    public int getPrice() {
-        return price;
     }
 
     public Card readyForBattle(Player owner) {
@@ -65,6 +58,7 @@ public abstract class Card implements Comparable<Card>, Cloneable, Serializable 
             cloned.name = name;
             cloned.description = description;
             cloned.price = price;
+            cloned.ownerProperty = new SimpleObjectProperty<>(null);
             return cloned;
         } catch (CloneNotSupportedException e) {
             e.printStackTrace();
