@@ -7,27 +7,26 @@ import YuGiOh.model.card.Card;
 import YuGiOh.model.card.Utils;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
-import javafx.scene.Scene;
-import javafx.scene.control.*;
-import javafx.scene.effect.DropShadow;
+import javafx.scene.control.Alert;
+import javafx.scene.control.Button;
+import javafx.scene.control.Label;
+import javafx.scene.control.ScrollPane;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
-import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.Pane;
 import javafx.scene.layout.VBox;
-import javafx.scene.paint.Color;
 import javafx.stage.Stage;
 
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 
-public class ShopMenuView extends BaseMenuView {
+public class ImportExportMenuView extends BaseMenuView {
     private static final int rowSize = 5;
     private static final double imageWidth = 70, imageHeight = imageWidth * 614.0 / 421.0;
     private static final String backgroundImageAddress = "assets/Backgrounds/GUI_T_TowerBg2.dds.png";
-    private static ShopMenuView instance;
+    private static ImportExportMenuView instance;
 
     private User user;
     private Card selectedCard;
@@ -48,20 +47,20 @@ public class ShopMenuView extends BaseMenuView {
     @FXML
     private Label cardNameLabel, cardPriceLabel, cardBalanceLabel, creditBalanceLabel;
 
-    public ShopMenuView() {
+    public ImportExportMenuView() {
         instance = this;
     }
 
-    public static ShopMenuView getInstance() {
+    public static ImportExportMenuView getInstance() {
         if (instance == null)
-            instance = new ShopMenuView();
+            instance = new ImportExportMenuView();
         return instance;
     }
 
     public static void init(Stage primaryStage, User user) {
         try {
-            Pane root = FXMLLoader.load(Main.class.getResource("/fxml/ShopMenu.fxml"));
-            ShopMenuView.getInstance().start(primaryStage, root, user);
+            Pane root = FXMLLoader.load(Main.class.getResource("/fxml/ImportExportMenuView.fxml"));
+            ImportExportMenuView.getInstance().start(primaryStage, root, user);
         } catch (IOException ignored) {
         }
     }
@@ -149,12 +148,6 @@ public class ShopMenuView extends BaseMenuView {
         }
     }
 
-    @FXML
-    private void importCard() {
-    }
-    @FXML
-    private void exportCard() {
-    }
     @FXML
     private void exit() {
         MainMenuView.getInstance().run();

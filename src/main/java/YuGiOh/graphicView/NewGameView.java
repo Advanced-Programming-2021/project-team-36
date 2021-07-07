@@ -1,8 +1,10 @@
 package YuGiOh.graphicView;
 
 import YuGiOh.Main;
+import YuGiOh.controller.LogicException;
 import YuGiOh.graphicController.MainMenuController;
 import YuGiOh.model.Animation;
+import YuGiOh.model.ModelException;
 import YuGiOh.model.enums.AIMode;
 import javafx.animation.AnimationTimer;
 import javafx.fxml.FXML;
@@ -136,8 +138,14 @@ public class NewGameView extends BaseMenuView {
                     this.stop();
                     try {
                         Thread.sleep(1000);
+                        boolean userGoesFirst = winner % 2 == 1;
+                        if (gameMode == 0) {
+                            String secondPlayerUsername = secondPlayerUsernameTextField.getText();
+                            MainMenuController.getInstance().startNewDuel(userGoesFirst, secondPlayerUsername, numberOfRounds);
+                        } else
+                            MainMenuController.getInstance().startDuelWithAI(userGoesFirst, 3, AIMode.NORMAL);
                         DuelMenuView.init(stage);
-                    } catch (InterruptedException ignored) {
+                    } catch (InterruptedException | ModelException | LogicException ignored) {
                     }
                 }
             }
@@ -151,11 +159,9 @@ public class NewGameView extends BaseMenuView {
             if (gameMode == 0) {
                 String secondPlayerUsername = secondPlayerUsernameTextField.getText();
                 MainMenuController.getInstance().startNewDuel(true, secondPlayerUsername, numberOfRounds);
-                coinToss();
-            } else {
+            } else
                 MainMenuController.getInstance().startDuelWithAI(true, 3, AIMode.NORMAL);
-                coinToss();
-            }
+            coinToss();
         } catch (Exception exception) {
             new Alert(Alert.AlertType.ERROR, exception.getMessage()).showAndWait();
         }
