@@ -26,6 +26,7 @@ import YuGiOh.view.gui.event.DropCardEvent;
 import YuGiOh.view.gui.event.DuelOverEvent;
 import YuGiOh.view.gui.event.RoundOverEvent;
 import YuGiOh.view.gui.sound.GameMediaHandler;
+import javafx.animation.ScaleTransition;
 import javafx.application.Platform;
 import javafx.beans.binding.DoubleBinding;
 import javafx.collections.ListChangeListener;
@@ -162,9 +163,21 @@ public class GameField extends Pane {
                 }
             });
         }
-//        setOnMouseClicked(e->{
-//            System.out.println(((e.getX() - getLayoutX()) / getWidth()) + "  " + ((e.getY() - getLayoutY()) / getHeight()));
-//        });
+        setOnMouseClicked(e->{
+            Platform.runLater(()->{
+                ImageView imageView = new ImageView(Utils.getImage("Texture/ring1.png"));
+                getChildren().add(imageView);
+                imageView.setX(e.getX());
+                imageView.setY(e.getY());
+                imageView.fitWidthProperty().bind(widthProperty().multiply(0.007));
+                imageView.fitHeightProperty().bind(heightProperty().multiply(0.007));
+                ScaleTransition t = new ScaleTransition(Duration.millis(400), imageView);
+                t.setToX(7);
+                t.setToY(7);
+                t.setOnFinished(E->getChildren().remove(imageView));
+                t.play();
+            });
+        });
     }
 
 

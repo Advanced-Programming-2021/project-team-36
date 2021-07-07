@@ -1,5 +1,7 @@
 package YuGiOh.view.gui.component;
 
+import YuGiOh.model.card.Card;
+import YuGiOh.model.card.Monster;
 import YuGiOh.view.gui.component.CardFrame;
 import javafx.beans.binding.DoubleBinding;
 import javafx.beans.property.SimpleObjectProperty;
@@ -9,7 +11,7 @@ import javafx.scene.layout.*;
 import javafx.scene.paint.Color;
 import javafx.scene.text.Text;
 
-public class CardInfo extends StackPane {
+public class CardInfo extends Pane {
     private SimpleObjectProperty<CardFrame> cardFrameProperty;
     private ImageView imageView;
     private Text text;
@@ -26,8 +28,8 @@ public class CardInfo extends StackPane {
             cardFrameProperty.set(cardFrame);
             imageView = new ImageView(cardFrame.getImage());
             imageView.fitWidthProperty().bind(widthProperty());
-            imageView.setPreserveRatio(true);
-            text = new Text(cardFrame.getCard().getDescription());
+            imageView.fitHeightProperty().bind(heightProperty().multiply(0.8));
+            text = new Text(getTextInfo(cardFrame.getCard()));
             text.wrappingWidthProperty().bind(widthProperty().multiply(0.9));
             StackPane innerTextPane = new StackPane(text);
             StackPane outerTextPane = new StackPane(innerTextPane);
@@ -42,6 +44,18 @@ public class CardInfo extends StackPane {
             );
             outerTextPane.setPadding(new Insets(0, 0, 20, 0));
             getChildren().addAll(new VBox(imageView, outerTextPane));
+        }
+    }
+
+    private String getTextInfo(Card card) {
+        if(card instanceof Monster) {
+            Monster monster = (Monster) card;
+            return  "Attack [" + monster.getAttackDamage() + "]"
+                    + "   Defense [" + monster.getDefenseRate() + "]"
+                    + "\n" + monster.getDescription();
+
+        } else {
+            return card.getDescription();
         }
     }
 }
