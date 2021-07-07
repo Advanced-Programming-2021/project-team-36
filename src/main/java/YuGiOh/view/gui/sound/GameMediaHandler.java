@@ -11,7 +11,7 @@ import javafx.scene.media.Media;
 import javafx.scene.media.MediaPlayer;
 
 public class GameMediaHandler {
-    private final MediaPlayer background = getMediaPlayer("background");
+    private final MediaPlayer background = getMediaPlayer("cool-background");
     private final AudioClip summon = getAudioClip("summon");
     private final AudioClip attack = getAudioClip("attack");
     private final AudioClip activateMagic = getAudioClip("activate-magic");

@@ -4,6 +4,7 @@ import YuGiOh.Main;
 import YuGiOh.controller.LogicException;
 import YuGiOh.graphicController.DuelMenuController;
 import YuGiOh.graphicController.MainMenuController;
+import YuGiOh.graphicController.MediaPlayerController;
 import YuGiOh.model.Animation;
 import YuGiOh.model.ModelException;
 import YuGiOh.model.enums.AIMode;
@@ -40,6 +41,7 @@ public class NewGameView extends BaseMenuView {
     private int numberOfRounds = 3, gameMode;
     private Animation animation;
     private ArrayList<String> imageURLs = new ArrayList<>();
+    private boolean winner;
 
     private Node leftArrow, rightArrow;
     @FXML
@@ -75,6 +77,8 @@ public class NewGameView extends BaseMenuView {
         this.stage = primaryStage;
         this.root = root;
         this.gameMode = gameMode;
+        Random random = new Random();
+        this.winner = random.nextInt(100) % 2 == 1;
         scene = new Scene(root);
         try {
             backgroundImageView.setImage(new Image(new FileInputStream(backgroundImageAddress)));
@@ -125,10 +129,9 @@ public class NewGameView extends BaseMenuView {
         root.getChildren().add(coinTossVBox);
         coinTossVBox.toFront();
 
-        Random random = new Random();
-        int winner = random.nextInt(100);
+
         int iterations = 10 * imageURLs.size();
-        if (winner % 2 == 0)
+        if (!winner)
             iterations += 10;
 
         int finalIterations = iterations + 1;
@@ -139,15 +142,9 @@ public class NewGameView extends BaseMenuView {
                     this.stop();
                     try {
                         Thread.sleep(1000);
-                        boolean userGoesFirst = winner % 2 == 1;
-                        if (gameMode == 0) {
-                            String secondPlayerUsername = secondPlayerUsernameTextField.getText();
-                            MainMenuController.getInstance().startNewDuel(userGoesFirst, secondPlayerUsername, numberOfRounds);
-                        } else {
-                            MainMenuController.getInstance().startDuelWithAI(userGoesFirst, 3, AIMode.NORMAL);
-                        }
+                        MediaPlayerController.getInstance().stopThemeMedia();
                         DuelMenuView.init(stage);
-                    } catch (InterruptedException | ModelException | LogicException ignored) {
+                    } catch (InterruptedException ignored) {
                     }
                 }
             }
@@ -160,9 +157,9 @@ public class NewGameView extends BaseMenuView {
         try {
             if (gameMode == 0) {
                 String secondPlayerUsername = secondPlayerUsernameTextField.getText();
-                MainMenuController.getInstance().startNewDuel(true, secondPlayerUsername, numberOfRounds);
+                MainMenuController.getInstance().startNewDuel(winner, secondPlayerUsername, numberOfRounds);
             } else
-                MainMenuController.getInstance().startDuelWithAI(true, 3, AIMode.NORMAL);
+                MainMenuController.getInstance().startDuelWithAI(winner, 3, AIMode.NORMAL);
             coinToss();
         } catch (Exception exception) {
             new Alert(Alert.AlertType.ERROR, exception.getMessage()).showAndWait();

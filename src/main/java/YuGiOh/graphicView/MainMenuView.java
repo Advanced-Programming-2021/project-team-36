@@ -3,6 +3,7 @@ package YuGiOh.graphicView;
 import YuGiOh.Main;
 import YuGiOh.graphicController.DuelMenuController;
 import YuGiOh.graphicController.MainMenuController;
+import YuGiOh.graphicController.MediaPlayerController;
 import YuGiOh.model.Duel;
 import YuGiOh.model.User;
 import YuGiOh.model.enums.AIMode;
@@ -65,6 +66,7 @@ public class MainMenuView extends BaseMenuView {
         stage.setScene(scene);
         stage.setResizable(true);
         stage.show();
+        MediaPlayerController.getInstance().playThemeMedia();
     }
     @FXML
     private void loadProfileMenu() {
