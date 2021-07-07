@@ -1,6 +1,6 @@
 package YuGiOh.view;
 
-import YuGiOh.Main;
+import YuGiOh.MainApplication;
 import YuGiOh.controller.menus.*;
 import YuGiOh.model.User;
 import javafx.fxml.FXML;
@@ -45,7 +45,7 @@ public class ProfileMenuView extends BaseMenuView {
 
     public static void init(Stage primaryStage, User user) {
         try {
-            Pane root = FXMLLoader.load(Main.class.getResource("/fxml/ProfileMenu.fxml"));
+            Pane root = FXMLLoader.load(MainApplication.class.getResource("/fxml/ProfileMenu.fxml"));
             ProfileMenuView.getInstance().start(primaryStage, root, user);
         } catch (IOException ignored) {
         }

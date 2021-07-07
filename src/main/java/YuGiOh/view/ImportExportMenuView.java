@@ -1,6 +1,6 @@
 package YuGiOh.view;
 
-import YuGiOh.Main;
+import YuGiOh.MainApplication;
 import YuGiOh.model.ModelException;
 import YuGiOh.model.User;
 import YuGiOh.model.card.Card;
@@ -59,7 +59,7 @@ public class ImportExportMenuView extends BaseMenuView {
 
     public static void init(Stage primaryStage, User user) {
         try {
-            Pane root = FXMLLoader.load(Main.class.getResource("/fxml/ImportExportMenuView.fxml"));
+            Pane root = FXMLLoader.load(MainApplication.class.getResource("/fxml/ImportExportMenuView.fxml"));
             ImportExportMenuView.getInstance().start(primaryStage, root, user);
         } catch (IOException ignored) {
         }

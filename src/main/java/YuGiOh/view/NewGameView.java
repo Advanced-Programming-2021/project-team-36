@@ -1,9 +1,8 @@
 package YuGiOh.view;
 
-import YuGiOh.Main;
+import YuGiOh.MainApplication;
 import YuGiOh.controller.menus.*;
 import YuGiOh.model.Animation;
-import YuGiOh.model.User;
 import YuGiOh.model.enums.AIMode;
 import javafx.animation.AnimationTimer;
 import javafx.fxml.FXML;
@@ -64,7 +63,7 @@ public class NewGameView extends BaseMenuView {
 
     public static void init(Stage primaryStage, int gameMode) {
         try {
-            Pane root = FXMLLoader.load(Main.class.getResource("/fxml/NewGameMenu.fxml"));
+            Pane root = FXMLLoader.load(MainApplication.class.getResource("/fxml/NewGameMenu.fxml"));
             NewGameView.getInstance().start(primaryStage, root, gameMode);
         } catch (IOException ignored) {
         }

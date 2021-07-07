@@ -1,6 +1,6 @@
 package YuGiOh.view;
 
-import YuGiOh.Main;
+import YuGiOh.MainApplication;
 import YuGiOh.controller.menus.*;
 import YuGiOh.model.card.Card;
 import YuGiOh.model.card.Utils;
@@ -43,7 +43,7 @@ public class ShowAllCardsView extends BaseMenuView {
 
     public static void init(Stage primaryStage) {
         try {
-            Pane root = FXMLLoader.load(Main.class.getResource("/fxml/ShowAllCards.fxml"));
+            Pane root = FXMLLoader.load(MainApplication.class.getResource("/fxml/ShowAllCards.fxml"));
             ShowAllCardsView.getInstance().start(primaryStage, root);
         } catch (IOException ignored) {
         }

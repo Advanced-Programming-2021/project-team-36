@@ -1,4 +1,4 @@
-package YuGiOh.view;
+package YuGiOh;
 
 
 import YuGiOh.controller.menus.*;
@@ -6,6 +6,7 @@ import YuGiOh.model.User;
 import YuGiOh.model.card.Utils;
 import YuGiOh.utils.Cheat;
 import YuGiOh.utils.DatabaseHandler;
+import YuGiOh.view.LoginMenuView;
 import javafx.application.Application;
 import javafx.event.EventHandler;
 import javafx.stage.Stage;

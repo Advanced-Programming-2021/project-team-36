@@ -1,7 +1,6 @@
 package YuGiOh.view;
 
-import YuGiOh.Main;
-import YuGiOh.controller.menus.DeckMenuController;
+import YuGiOh.MainApplication;
 import YuGiOh.controller.menus.FactoryMenuController;
 import YuGiOh.model.card.Card;
 import YuGiOh.model.card.Utils;
@@ -56,7 +55,7 @@ public class FactoryView extends BaseMenuView {
 
     public static void init(Stage primaryStage, Card card) {
         try {
-            Pane root = FXMLLoader.load(Main.class.getResource("/fxml/FactoryView.fxml"));
+            Pane root = FXMLLoader.load(MainApplication.class.getResource("/fxml/FactoryView.fxml"));
             FactoryView.getInstance().start(primaryStage, root, card);
         } catch (IOException ignored) {
         }

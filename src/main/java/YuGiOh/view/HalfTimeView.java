@@ -1,7 +1,6 @@
 package YuGiOh.view;
 
-import YuGiOh.Main;
-import YuGiOh.controller.GameController;
+import YuGiOh.MainApplication;
 import YuGiOh.controller.menus.HalfTimeMenuController;
 import YuGiOh.controller.player.PlayerController;
 import YuGiOh.model.card.Card;
@@ -61,7 +60,7 @@ public class HalfTimeView extends BaseMenuView {
     public static void init(Stage primaryStage, PlayerController playerController) {
         System.out.println("adjhajhdjda");
         try {
-            Pane root = FXMLLoader.load(Main.class.getResource("/fxml/HalfTimeView.fxml"));
+            Pane root = FXMLLoader.load(MainApplication.class.getResource("/fxml/HalfTimeView.fxml"));
             HalfTimeView.getInstance().start(primaryStage, root, playerController);
         } catch (IOException ignored) {
         }

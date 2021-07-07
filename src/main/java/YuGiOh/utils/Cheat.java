@@ -1,6 +1,6 @@
 package YuGiOh.utils;
 
-import YuGiOh.archive.menu.DeckMenuController;
+import YuGiOh.controller.menus.DeckMenuController;
 import YuGiOh.model.ModelException;
 import YuGiOh.model.User;
 import YuGiOh.model.card.Card;

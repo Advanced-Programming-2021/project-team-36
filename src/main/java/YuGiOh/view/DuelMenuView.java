@@ -1,6 +1,6 @@
 package YuGiOh.view;
 
-import YuGiOh.Main;
+import YuGiOh.MainApplication;
 import YuGiOh.archive.view.gui.Utils;
 import YuGiOh.controller.MainGameThread;
 import YuGiOh.controller.menus.*;
@@ -35,7 +35,6 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.concurrent.Callable;
-import java.util.concurrent.atomic.AtomicBoolean;
 
 public class DuelMenuView extends BaseMenuView {
     private static DuelMenuView instance;
@@ -64,7 +63,7 @@ public class DuelMenuView extends BaseMenuView {
 
     public static void init(Stage primaryStage) {
         try {
-            Pane root = FXMLLoader.load(Main.class.getResource("/fxml/DuelMenu.fxml"));
+            Pane root = FXMLLoader.load(MainApplication.class.getResource("/fxml/DuelMenu.fxml"));
             DuelMenuView.getInstance().start(primaryStage, root);
         } catch (IOException ignored) {
         }

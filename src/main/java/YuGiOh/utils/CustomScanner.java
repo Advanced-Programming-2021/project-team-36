@@ -64,8 +64,6 @@ public class CustomScanner {
             } catch (Exception ignored) {
             }
         }
-        if(Debugger.isTestMode())
-            throw new Error("end of test");
         String ret = scanner.nextLine();
         lastBuffer += ret + "\n";
         return ret;

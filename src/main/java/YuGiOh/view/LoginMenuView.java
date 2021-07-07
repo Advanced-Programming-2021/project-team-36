@@ -1,6 +1,6 @@
 package YuGiOh.view;
 
-import YuGiOh.Main;
+import YuGiOh.MainApplication;
 import YuGiOh.controller.menus.LoginMenuController;
 import YuGiOh.model.ModelException;
 import YuGiOh.model.User;
@@ -41,7 +41,7 @@ public class LoginMenuView extends BaseMenuView {
 
     public static void init(Stage primaryStage) {
         try {
-            Pane root = FXMLLoader.load(Main.class.getResource("/fxml/LoginMenu.fxml"));
+            Pane root = FXMLLoader.load(MainApplication.class.getResource("/fxml/LoginMenu.fxml"));
             LoginMenuView.getInstance().start(primaryStage, root);
         } catch (IOException ignored) {
         }

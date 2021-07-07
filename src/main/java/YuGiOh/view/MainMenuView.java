@@ -1,13 +1,12 @@
 package YuGiOh.view;
 
-import YuGiOh.Main;
+import YuGiOh.MainApplication;
 import YuGiOh.model.User;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.control.Alert;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
-import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.Pane;
 import javafx.stage.Stage;
 import YuGiOh.controller.menus.*;
@@ -35,7 +34,7 @@ public class MainMenuView extends BaseMenuView {
 
     public static void init(Stage primaryStage, User user) {
         try {
-            Pane root = FXMLLoader.load(Main.class.getResource("/fxml/MainMenu.fxml"));
+            Pane root = FXMLLoader.load(MainApplication.class.getResource("/fxml/MainMenu.fxml"));
             MainMenuView.getInstance().start(primaryStage, root, user);
         } catch (IOException ignored) {
             ignored.printStackTrace();

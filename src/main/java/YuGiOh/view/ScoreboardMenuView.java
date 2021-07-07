@@ -1,6 +1,6 @@
 package YuGiOh.view;
 
-import YuGiOh.Main;
+import YuGiOh.MainApplication;
 import YuGiOh.controller.menus.*;
 import YuGiOh.model.User;
 import javafx.fxml.FXML;
@@ -38,7 +38,7 @@ public class ScoreboardMenuView extends BaseMenuView {
 
     public static void init(Stage primaryStage) {
         try {
-            Pane root = FXMLLoader.load(Main.class.getResource("/fxml/ScoreboardMenu.fxml"));
+            Pane root = FXMLLoader.load(MainApplication.class.getResource("/fxml/ScoreboardMenu.fxml"));
             ScoreboardMenuView.getInstance().start(primaryStage, root);
         } catch (IOException ignored) {
         }
