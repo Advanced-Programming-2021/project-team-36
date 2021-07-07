@@ -1,8 +1,8 @@
 package YuGiOh.controller;
 
 
-import YuGiOh.controller.menu.BaseMenuController;
-import YuGiOh.controller.menu.LoginMenuController;
+import YuGiOh.archive.menu.BaseMenuController;
+import YuGiOh.archive.menu.LoginMenuController;
 import YuGiOh.model.enums.Color;
 import YuGiOh.utils.CustomPrinter;
 import YuGiOh.utils.DatabaseHandler;

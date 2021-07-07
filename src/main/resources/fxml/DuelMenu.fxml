@@ -6,14 +6,14 @@
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
 
-<?import YuGiOh.view.gui.component.GameField?>
-<?import YuGiOh.view.gui.component.DuelInfoBox?>
-<?import YuGiOh.view.gui.component.GameNavBar?>
+<?import YuGiOh.archive.view.gui.component.GameField?>
+<?import YuGiOh.archive.view.gui.component.DuelInfoBox?>
+<?import YuGiOh.archive.view.gui.component.GameNavBar?>
 <?import javafx.scene.text.Text?>
-<?import YuGiOh.view.gui.component.PhaseLamps?>
+<?import YuGiOh.archive.view.gui.component.PhaseLamps?>
 <Pane xmlns="http://javafx.com/javafx"
       xmlns:fx="http://javafx.com/fxml"
-      fx:controller="YuGiOh.graphicView.DuelMenuView">
+      fx:controller="YuGiOh.view.DuelMenuView">
     <HBox>
         <DuelInfoBox fx:id="infoBox"/>
         <VBox>

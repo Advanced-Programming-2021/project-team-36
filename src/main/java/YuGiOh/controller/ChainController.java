@@ -3,15 +3,12 @@ package YuGiOh.controller;
 import YuGiOh.controller.events.GameExceptionEvent;
 import YuGiOh.controller.events.RoundOverExceptionEvent;
 import YuGiOh.controller.player.PlayerController;
-import YuGiOh.model.Player.Player;
 import YuGiOh.model.card.Card;
 import YuGiOh.model.card.Spell;
 import YuGiOh.model.card.action.Action;
 import YuGiOh.model.card.event.MagicActivation;
 import YuGiOh.model.card.magicCards.spells.SpellAbsorption;
-import YuGiOh.model.enums.Color;
-import YuGiOh.utils.CustomPrinter;
-import YuGiOh.view.cardSelector.ResistToChooseCard;
+import YuGiOh.archive.view.cardSelector.ResistToChooseCard;
 import lombok.Getter;
 
 import java.util.Stack;
@@ -46,7 +43,7 @@ public class ChainController {
             Action action = chain.pop();
             try {
                 action.runEffect();
-                // todo remove this
+                // magic absorption
                 if (action.getEvent() instanceof MagicActivation && ((MagicActivation) action.getEvent()).getMagic() instanceof Spell)
                     for (Card card : GameController.getInstance().getGame().getAllCardsOnBoard())
                         if (card instanceof SpellAbsorption && card.isFacedUp())

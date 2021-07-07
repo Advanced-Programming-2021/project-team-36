@@ -5,14 +5,14 @@
 <?import java.net.URL?>
 <?import javafx.scene.image.ImageView?>
 <Pane xmlns="http://javafx.com/javafx" xmlns:fx="http://javafx.com/fxml"
-      fx:controller="YuGiOh.graphicView.DeckView" prefHeight="640.0" prefWidth="480.0" >
+      fx:controller="YuGiOh.view.DeckView" prefHeight="640.0" prefWidth="480.0" >
     <ImageView fx:id="backgroundImageView" fitWidth="480" fitHeight="640"/>
     <VBox alignment="CENTER" spacing="30" prefHeight="640.0" prefWidth="480.0">
         <Label fx:id="deckLabel" alignment="TOP_CENTER" styleClass="title"/>
         <Button alignment="CENTER" defaultButton="true" onMouseClicked="#removeCard" fx:id="removeButton"
                 mnemonicParsing="false" text="Remove From Deck" styleClass="button"/>
         <VBox alignment="CENTER" spacing="10">
-            <Label text="Main Deck" StackPane.alignment="TOP_CENTER" styleClass="deck"/>
+            <Label text="  Main Deck  " StackPane.alignment="TOP_CENTER" styleClass="deck"/>
             <ScrollPane fx:id="mainScrollPane" maxHeight="200" maxWidth="400">
                 <GridPane fx:id="mainGridPane" alignment="CENTER"/>
             </ScrollPane>
@@ -22,7 +22,7 @@
             </HBox>
         </VBox>
         <VBox alignment="CENTER" spacing="10" fx:id="sideVBox">
-            <Label text="Side Deck" StackPane.alignment="TOP_CENTER" styleClass="deck"/>
+            <Label text="  Side Deck  " StackPane.alignment="TOP_CENTER" styleClass="deck"/>
             <ScrollPane fx:id="sideScrollPane" maxHeight="200" maxWidth="400">
                 <GridPane fx:id="sideGridPane" alignment="CENTER"/>
             </ScrollPane>

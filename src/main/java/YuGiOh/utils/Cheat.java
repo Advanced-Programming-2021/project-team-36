@@ -1,10 +1,7 @@
 package YuGiOh.utils;
 
-import YuGiOh.controller.LogicException;
-import YuGiOh.controller.menu.DeckMenuController;
-import YuGiOh.controller.menu.ShopMenuController;
+import YuGiOh.archive.menu.DeckMenuController;
 import YuGiOh.model.ModelException;
-import YuGiOh.model.Player.AIPlayer;
 import YuGiOh.model.User;
 import YuGiOh.model.card.Card;
 import YuGiOh.model.card.Utils;

@@ -7,7 +7,7 @@
 <?import java.net.URL?>
 <?import javafx.scene.image.ImageView?>
 <Pane prefWidth="400" prefHeight="480" xmlns:fx="http://javafx.com/fxml"
-      fx:controller="YuGiOh.graphicView.MainMenuView">
+      fx:controller="YuGiOh.view.MainMenuView">
     <ImageView fx:id="backgroundImageView" fitWidth="400" fitHeight="480"/>
     <StackPane prefWidth="400" prefHeight="480">
         <Label text="YuGiOh!" StackPane.alignment="TOP_CENTER" styleClass="title"/>
@@ -24,6 +24,8 @@
                     mnemonicParsing="false" text="Deck Menu" styleClass="button"/>
             <Button alignment="CENTER" defaultButton="true" onMouseClicked="#loadShopMenu"
                     mnemonicParsing="false" text="Shop Menu" styleClass="button"/>
+            <Button alignment="CENTER" defaultButton="true" onMouseClicked="#loadCardFactoryMenu"
+                    mnemonicParsing="false" text="Card Factory" styleClass="button"/>
             <Button alignment="CENTER" defaultButton="true" onMouseClicked="#logout"
                     mnemonicParsing="false" text="Logout" styleClass="button"/>
             <padding>

@@ -2,7 +2,6 @@ package YuGiOh.model.card.action;
 
 import YuGiOh.controller.GameController;
 import YuGiOh.controller.player.PlayerController;
-import YuGiOh.model.Game;
 import YuGiOh.model.Player.Player;
 import YuGiOh.model.card.Card;
 import YuGiOh.model.card.Monster;
@@ -11,7 +10,7 @@ import YuGiOh.model.enums.Color;
 import YuGiOh.model.enums.MonsterState;
 import YuGiOh.model.enums.SummonType;
 import YuGiOh.utils.CustomPrinter;
-import YuGiOh.view.cardSelector.ResistToChooseCard;
+import YuGiOh.archive.view.cardSelector.ResistToChooseCard;
 
 import java.util.Arrays;
 

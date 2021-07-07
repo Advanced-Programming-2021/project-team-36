@@ -10,7 +10,7 @@ import YuGiOh.model.enums.Color;
 import YuGiOh.model.enums.Icon;
 import YuGiOh.model.enums.Status;
 import YuGiOh.utils.CustomPrinter;
-import YuGiOh.view.cardSelector.SelectConditions;
+import YuGiOh.archive.view.cardSelector.SelectConditions;
 
 public class MysticalSpaceTyphoon extends Spell {
 

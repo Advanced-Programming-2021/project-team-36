@@ -3,14 +3,12 @@ package YuGiOh.model.card.action;
 import YuGiOh.controller.GameController;
 import YuGiOh.controller.LogicException;
 import YuGiOh.model.card.event.Event;
-import YuGiOh.view.cardSelector.ResistToChooseCard;
-import YuGiOh.view.gui.GuiReporter;
-import YuGiOh.view.gui.event.GameActionEvent;
+import YuGiOh.archive.view.cardSelector.ResistToChooseCard;
+import YuGiOh.archive.view.gui.GuiReporter;
+import YuGiOh.archive.view.gui.event.GameActionEvent;
 import YuGiOh.model.enums.Color;
 import YuGiOh.utils.CustomPrinter;
 import lombok.Getter;
-import lombok.Setter;
-import lombok.extern.java.Log;
 
 public abstract class Action {
     @Getter

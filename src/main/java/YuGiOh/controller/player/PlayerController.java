@@ -6,17 +6,14 @@ import YuGiOh.model.card.action.*;
 import YuGiOh.model.card.event.*;
 import YuGiOh.model.card.event.MonsterAttackEvent;
 import YuGiOh.model.enums.*;
-import YuGiOh.view.cardSelector.SelectConditions;
 import YuGiOh.model.card.Spell;
 import YuGiOh.utils.CustomPrinter;
 import YuGiOh.controller.ChainController;
 import YuGiOh.controller.GameController;
 import YuGiOh.controller.LogicException;
-import YuGiOh.view.cardSelector.ResistToChooseCard;
-import YuGiOh.view.cardSelector.SelectCondition;
+import YuGiOh.archive.view.cardSelector.ResistToChooseCard;
+import YuGiOh.archive.view.cardSelector.SelectCondition;
 import lombok.Getter;
-import YuGiOh.model.Board;
-import YuGiOh.model.CardAddress;
 import YuGiOh.model.Game;
 import YuGiOh.model.Player.Player;
 import YuGiOh.model.card.Card;
@@ -43,7 +40,7 @@ public abstract class PlayerController {
 
     abstract public boolean askRespondToQuestion(String question, String yes, String no);
 
-    abstract public void doRespondToChain() throws ResistToChooseCard; // todo check if this action is invalid for chain
+    abstract public void doRespondToChain() throws ResistToChooseCard;
 
     abstract public Card[] chooseKCards(String message, int numberOfCards, SelectCondition condition) throws ResistToChooseCard;
 

@@ -8,7 +8,7 @@ import YuGiOh.model.card.Spell;
 import YuGiOh.model.card.action.Effect;
 import YuGiOh.model.enums.*;
 import YuGiOh.utils.CustomPrinter;
-import YuGiOh.view.cardSelector.SelectConditions;
+import YuGiOh.archive.view.cardSelector.SelectConditions;
 
 public class SwordOfDarkDestruction extends Spell {
 

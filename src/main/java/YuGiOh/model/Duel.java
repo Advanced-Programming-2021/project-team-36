@@ -1,9 +1,6 @@
 package YuGiOh.model;
 
-import YuGiOh.controller.LogicException;
-import YuGiOh.controller.ProgramController;
 import YuGiOh.controller.events.RoundOverExceptionEvent;
-import YuGiOh.controller.menu.HalfTimeMenuController;
 import YuGiOh.model.Player.Player;
 import YuGiOh.model.enums.Color;
 import YuGiOh.model.enums.GameResult;

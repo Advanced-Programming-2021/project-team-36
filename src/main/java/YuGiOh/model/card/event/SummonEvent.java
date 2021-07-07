@@ -4,15 +4,13 @@ import YuGiOh.model.Player.Player;
 import YuGiOh.model.card.Card;
 import YuGiOh.model.enums.MonsterState;
 import YuGiOh.model.enums.SummonType;
-import YuGiOh.view.cardSelector.SelectCondition;
-import YuGiOh.view.cardSelector.SelectConditions;
+import YuGiOh.archive.view.cardSelector.SelectCondition;
+import YuGiOh.archive.view.cardSelector.SelectConditions;
 import lombok.Getter;
 import YuGiOh.model.card.Monster;
 import lombok.Setter;
 
-import java.util.ArrayList;
 import java.util.List;
-import java.util.concurrent.locks.Condition;
 
 public class SummonEvent extends Event {
     @Getter

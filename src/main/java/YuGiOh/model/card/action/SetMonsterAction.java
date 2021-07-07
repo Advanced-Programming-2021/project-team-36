@@ -6,15 +6,13 @@ import YuGiOh.model.Player.Player;
 import YuGiOh.model.card.Card;
 import YuGiOh.model.card.Monster;
 import YuGiOh.model.card.event.SetMonster;
-import YuGiOh.model.card.event.SummonEvent;
 import YuGiOh.model.enums.Color;
 import YuGiOh.model.enums.MonsterState;
 import YuGiOh.model.enums.SummonType;
 import YuGiOh.utils.CustomPrinter;
-import YuGiOh.view.cardSelector.ResistToChooseCard;
+import YuGiOh.archive.view.cardSelector.ResistToChooseCard;
 
 import java.util.Arrays;
-import java.util.Set;
 
 public class SetMonsterAction extends Action {
     public SetMonsterAction(SetMonster event) {

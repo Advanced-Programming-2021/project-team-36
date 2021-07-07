@@ -3,7 +3,7 @@ package utils;
 import YuGiOh.utils.CustomPrinter;
 import YuGiOh.utils.CustomScanner;
 import YuGiOh.controller.ProgramController;
-import YuGiOh.controller.menu.BaseMenuController;
+import YuGiOh.archive.menu.BaseMenuController;
 import org.junit.Before;
 import org.junit.jupiter.api.Assertions;
 import YuGiOh.utils.Debugger;

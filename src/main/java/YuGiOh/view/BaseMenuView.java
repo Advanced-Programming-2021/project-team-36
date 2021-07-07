@@ -1,65 +1,77 @@
 package YuGiOh.view;
 
-import YuGiOh.controller.LogicException;
-import YuGiOh.controller.ProgramController;
-import YuGiOh.model.ModelException;
-import YuGiOh.model.enums.Color;
-import YuGiOh.utils.*;
-import YuGiOh.view.CommandLine.Command;
-import YuGiOh.view.CommandLine.CommandLine;
-import YuGiOh.view.CommandLine.CommandLineException;
-import YuGiOh.utils.*;
-import YuGiOh.controller.menu.LoginMenuController;
-import YuGiOh.utils.DatabaseHandler;
-import YuGiOh.utils.Debugger;
-import YuGiOh.view.CommandLine.Command;
+import javafx.beans.value.ChangeListener;
+import javafx.beans.value.ObservableValue;
+import javafx.event.EventHandler;
+import javafx.scene.Node;
+import javafx.scene.Scene;
+import javafx.scene.input.MouseEvent;
+import javafx.scene.layout.Pane;
+import javafx.scene.paint.Color;
+import javafx.scene.shape.Polygon;
+import javafx.scene.transform.Scale;
+import javafx.stage.Stage;
 
+public abstract class BaseMenuView {
+    protected Stage stage;
+    protected Scene scene;
+    protected Pane root;
 
-abstract public class BaseMenuView {
-    protected final CommandLine cmd;
-
-    public BaseMenuView() {
-        this.cmd = new CommandLine();
-        addCommands();
+    {
+        scene = new Scene(new Pane());
+        scene.widthProperty().addListener(new ChangeListener<Number>() {
+            @Override public void changed(ObservableValue<? extends Number> observableValue, Number oldSceneWidth, Number newSceneWidth) {
+                if (oldSceneWidth.doubleValue() > 0)
+                    root.getTransforms().setAll(new Scale(newSceneWidth.doubleValue() / root.getPrefWidth(), scene.getHeight() / root.getPrefHeight(), 0, 0));
+            }
+        });
+        scene.heightProperty().addListener(new ChangeListener<Number>() {
+            @Override public void changed(ObservableValue<? extends Number> observableValue, Number oldSceneHeight, Number newSceneHeight) {
+                if (oldSceneHeight.doubleValue() > 0)
+                    root.getTransforms().setAll(new Scale(scene.getWidth() / root.getPrefWidth(), newSceneHeight.doubleValue() / root.getPrefHeight(), 0, 0));
+            }
+        });
     }
 
-    public void runNextCommand() {
-        try {
-            String line = CustomScanner.nextLine();
-            if (Debugger.getCaptureMode())
-                Debugger.captureCommand(line);
-            this.cmd.runNextCommand(line);
-        } catch (CommandLineException | ParserException | ModelException | LogicException | RoutingException e) {
-            CustomPrinter.println(e.getMessage(), Color.Red);
-        }
+    public abstract void run();
+
+    public static void relocateNodeFromCenter(Node node, double centerX, double centerY) {
+        node.setLayoutX(node.getLayoutX() + (centerX - node.getBoundsInParent().getCenterX()));
+        node.setLayoutY(node.getLayoutY() + (centerY - node.getBoundsInParent().getCenterY()));
     }
 
-    protected void addCommands() {
-        this.cmd.addCommand(new Command(
-                "menu enter [menuName]",
-                mp -> {
-                    ProgramController.getInstance().navigateToMenu(Parser.menuParser(mp.get("menuName")));
-                }
-        ));
-        this.cmd.addCommand(new Command(
-                "menu exit",
-                mp -> {
-                    ProgramController.getInstance().menuExit();
-                }
-        ));
-        this.cmd.addCommand(new Command(
-                "menu show-current",
-                mp -> {
-                    CustomPrinter.println(getMenuName(), Color.Default);
-                }
-        ));
-        this.cmd.addCommand(new Command(
-                "help",
-                mp -> {
-                    this.cmd.printAllHelpers();
-                }
-        ));
+    public static void relocateFromLeft(Node node, double v1) {
+        node.setLayoutX(v1);
     }
 
-    abstract public String getMenuName();
+    public static void relocateFromRight(Node node, double v1) {
+        node.setLayoutX(node.getLayoutX() + (node.getScene().getWidth() - v1 - node.getBoundsInParent().getMaxX()));
+    }
+
+    public static void relocateFromUp(Node node, double v2) {
+        node.setLayoutY(v2);
+    }
+
+    public static void relocateFromDown(Node node, double v2) {
+        node.setLayoutY(node.getLayoutY() + (node.getScene().getHeight() - v2 - node.getBoundsInParent().getMaxY()));
+    }
+
+    public static void rescale(Node node, double v1, double v2) {
+        node.getTransforms().setAll(new Scale(v1, v2, 0, 0));
+    }
+
+    public static Node getTriangle(String direction, double size, Color color, EventHandler<? super MouseEvent> eventHandler) {
+        Polygon polygon = new Polygon();
+        if (direction.equalsIgnoreCase("left"))
+            polygon.getPoints().addAll(0.0, size / 2,
+                    size * Math.sqrt(3) / 2, 0.0,
+                    size * Math.sqrt(3) / 2, size);
+        else
+            polygon.getPoints().addAll(size * Math.sqrt(3) / 2, size / 2,
+                    0.0, 0.0,
+                    0.0, size);
+        polygon.setFill(color);
+        polygon.setOnMouseClicked(eventHandler);
+        return polygon;
+    }
 }

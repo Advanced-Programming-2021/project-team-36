@@ -1,15 +1,14 @@
 package YuGiOh.model.card.magicCards.spells;
 
 import YuGiOh.controller.GameController;
-import YuGiOh.controller.LogicException;
 import YuGiOh.controller.player.PlayerController;
 import YuGiOh.model.Player.Player;
 import YuGiOh.model.card.action.SummonAction;
 import YuGiOh.model.card.event.SummonEvent;
 import YuGiOh.model.enums.*;
 import YuGiOh.utils.CustomPrinter;
-import YuGiOh.view.cardSelector.SelectConditions;
-import YuGiOh.view.cardSelector.ResistToChooseCard;
+import YuGiOh.archive.view.cardSelector.SelectConditions;
+import YuGiOh.archive.view.cardSelector.ResistToChooseCard;
 import YuGiOh.model.card.Card;
 import YuGiOh.model.card.Monster;
 import YuGiOh.model.card.Spell;

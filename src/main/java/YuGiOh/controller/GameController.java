@@ -1,14 +1,13 @@
 package YuGiOh.controller;
 
 import YuGiOh.controller.events.RoundOverExceptionEvent;
-import YuGiOh.graphicController.DuelMenuController;
+import YuGiOh.controller.menus.DuelMenuController;
 import YuGiOh.controller.player.HumanPlayerController;
 import YuGiOh.controller.player.PlayerController;
 import YuGiOh.model.Player.Player;
 import YuGiOh.model.card.Card;
 import YuGiOh.model.card.Magic;
 import YuGiOh.model.card.Monster;
-import YuGiOh.model.card.Spell;
 import YuGiOh.model.enums.*;
 import YuGiOh.utils.CustomPrinter;
 import lombok.Getter;
@@ -67,7 +66,6 @@ public class GameController {
         CustomPrinter.println(String.format("<%s>'s life point increased by <%d> and it is <%d> now", player.getUser().getUsername(), amount, player.getLifePoint()), Color.Yellow);
     }
 
-    // todo in baraye cheat e? momken nist bug bokhorim saresh?
     public void decreaseLifePoint(Player player, int amount, boolean checkEndGame) {
         player.decreaseLifePoint(amount);
         CustomPrinter.println(String.format("<%s>'s life point decreased by <%d> and it is <%d> now", player.getUser().getUsername(), amount, player.getLifePoint()), Color.Yellow);

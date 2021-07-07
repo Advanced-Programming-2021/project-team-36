@@ -1,67 +1,105 @@
 package YuGiOh.view;
 
-import YuGiOh.controller.menu.MainMenuController;
-import YuGiOh.model.enums.AIMode;
-import YuGiOh.utils.DatabaseHandler;
-import YuGiOh.view.CommandLine.Command;
+import YuGiOh.Main;
+import YuGiOh.model.User;
+import javafx.fxml.FXML;
+import javafx.fxml.FXMLLoader;
+import javafx.scene.control.Alert;
+import javafx.scene.image.Image;
+import javafx.scene.image.ImageView;
+import javafx.scene.input.MouseEvent;
+import javafx.scene.layout.Pane;
+import javafx.stage.Stage;
+import YuGiOh.controller.menus.*;
+
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.IOException;
 
 public class MainMenuView extends BaseMenuView {
+    private static final String backgroundImageAddress = "assets/Backgrounds/GUI_T_TowerBg3.dds.png";
+    private static MainMenuView instance;
+
+    @FXML
+    private ImageView backgroundImageView;
+
     public MainMenuView() {
-        super();
+        instance = this;
     }
 
-    @Override
-    protected void addCommands() {
-        super.addCommands();
-        this.cmd.addCommand(new Command(
-                "duel",
-                mp -> {
-                    MainMenuController.getInstance().startNewDuel(Parser.UserParser(mp.get("second_player")), Parser.RoundParser(mp.get("round")));
-                },
-                Options.newRound(true),
-                Options.secondPlayer(true),
-                Options.round(true)
-        ));
-        this.cmd.addCommand(new Command(
-                "duel",
-                mp -> {
-                    MainMenuController.getInstance().startDuelWithAI(Parser.RoundParser(mp.get("round")), AIMode.NORMAL);
-                },
-                Options.newRound(true),
-                Options.ai(true),
-                Options.round(true)
-        ));
-        this.cmd.addCommand(new Command(
-                "duel",
-                mp -> {
-                    MainMenuController.getInstance().startDuelAIWithAI(Parser.RoundParser(mp.get("round")), AIMode.NORMAL, AIMode.NORMAL);
-                },
-                Options.round(true)
-        ));
-        this.cmd.addCommand(new Command(
-                "user logout",
-                mp -> {
-                    MainMenuController.getInstance().logout();
-                }
-        ));
-        this.cmd.addCommand(new Command(
-                "save to database",
-                mp -> {
-                    DatabaseHandler.saveToDatabase(mp.get("file"));
-                },
-                Options.file(false)
-        ));
-        this.cmd.addCommand(new Command(
-                "cheat increase",
-                mp -> {
-                    MainMenuController.getInstance().increaseBalance(Parser.IntegerParser(mp.get("balance")));
-                },
-                Options.balance(true)
-        ));
+    public static MainMenuView getInstance() {
+        if (instance == null)
+            instance = new MainMenuView();
+        return instance;
     }
 
-    @Override
-    public String getMenuName() {
-        return "Main Menu";
+    public static void init(Stage primaryStage, User user) {
+        try {
+            Pane root = FXMLLoader.load(Main.class.getResource("/fxml/MainMenu.fxml"));
+            MainMenuView.getInstance().start(primaryStage, root, user);
+        } catch (IOException ignored) {
+            ignored.printStackTrace();
+        }
     }
+
+    public void start(Stage primaryStage, Pane root, User user) {
+        this.stage = primaryStage;
+        this.root = root;
+        new MainMenuController(user);
+        scene.setRoot(root);
+        try {
+            backgroundImageView.setImage(new Image(new FileInputStream(backgroundImageAddress)));
+            backgroundImageView.toBack();
+        } catch (FileNotFoundException ignored) {
+        }
+        run();
+    }
+
+    public void run() {
+        stage.setScene(scene);
+        stage.setResizable(true);
+        stage.show();
+        MediaPlayerController.getInstance().playThemeMedia();
+    }
+
+    @FXML
+    private void loadProfileMenu() {
+        ProfileMenuView.init(stage, MainMenuController.getInstance().getUser());
+    }
+
+    @FXML
+    private void loadScoreboardMenu() {
+        ScoreboardMenuView.init(stage);
+    }
+
+    @FXML
+    private void loadDeckMenu() {
+        DeckMenuView.init(stage, MainMenuController.getInstance().getUser());
+    }
+
+    @FXML
+    private void loadShopMenu() {
+        ShopMenuView.init(stage, MainMenuController.getInstance().getUser());
+    }
+
+    @FXML
+    private void startNewDuel() {
+        NewGameView.init(stage, 0);
+    }
+
+    @FXML
+    private void startNewDuelWithAI() {
+        NewGameView.init(stage, 1);
+    }
+
+    @FXML
+    private void loadCardFactoryMenu(MouseEvent mouseEvent) {
+        CardFactoryMenuView.init(stage, MainMenuController.getInstance().getUser());
+    }
+
+    public void logout() {
+        new Alert(Alert.AlertType.INFORMATION, "user logged out successfully!").showAndWait();
+        LoginMenuView.getInstance().run();
+    }
+
 }

@@ -8,7 +8,7 @@
 <?import javafx.scene.image.ImageView?>
 <?import javafx.scene.text.Text?>
 <Pane prefWidth="400" prefHeight="480" xmlns:fx="http://javafx.com/fxml"
-      fx:controller="YuGiOh.graphicView.ScoreboardMenuView">
+      fx:controller="YuGiOh.view.ScoreboardMenuView">
     <ImageView fx:id="backgroundImageView" fitWidth="400" fitHeight="480"/>
     <VBox alignment="CENTER" spacing="40">
         <Label text="  All Time High Scores:  " StackPane.alignment="TOP_CENTER" styleClass="scoreboard-title"/>

@@ -1,5 +1,5 @@
-import YuGiOh.controller.menu.DeckMenuController;
-import YuGiOh.controller.menu.ShopMenuController;
+import YuGiOh.archive.menu.DeckMenuController;
+import YuGiOh.archive.menu.ShopMenuController;
 import initialize.Sample;
 import org.junit.Test;
 
