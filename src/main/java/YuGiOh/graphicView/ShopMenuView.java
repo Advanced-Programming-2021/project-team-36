@@ -9,22 +9,31 @@ import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
+import javafx.scene.effect.DropShadow;
+import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.Pane;
 import javafx.scene.layout.VBox;
+import javafx.scene.paint.Color;
 import javafx.stage.Stage;
 
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.io.IOException;
 
 public class ShopMenuView extends BaseMenuView {
     private static final int rowSize = 5;
     private static final double imageWidth = 70, imageHeight = imageWidth * 614.0 / 421.0;
+    private static final String backgroundImageAddress = "assets/Backgrounds/GUI_T_TowerBg2.dds.png";
     private static ShopMenuView instance;
 
     private User user;
     private Card selectedCard;
+    private ImageView selectedImageView;
 
+    @FXML
+    private ImageView backgroundImageView;
     @FXML
     private ScrollPane scrollPane;
     @FXML
@@ -61,6 +70,11 @@ public class ShopMenuView extends BaseMenuView {
         this.root = root;
         this.user = user;
         scene.setRoot(root);
+        try {
+            backgroundImageView.setImage(new Image(new FileInputStream(backgroundImageAddress)));
+            backgroundImageView.toBack();
+        } catch (FileNotFoundException ignored) {
+        }
         run();
     }
 
@@ -83,12 +97,15 @@ public class ShopMenuView extends BaseMenuView {
             imageView.setFitWidth(imageWidth);
             imageView.setFitHeight(imageHeight);
             gridPane.add(imageView, i % rowSize, i / rowSize);
-            imageView.setOnMouseClicked(mouseEvent -> selectCard(card));
+            imageView.setOnMouseClicked(mouseEvent -> selectCard(card, imageView));
         }
         scrollPane.maxWidthProperty().bind(gridPane.widthProperty().multiply(1.05));
     }
 
-    private void selectCard(Card card) {
+    private void selectCard(Card card, ImageView imageView) {
+        if (selectedImageView != null)
+            selectedImageView.setTranslateY(-4);
+        imageView.setTranslateY(4);
         cardImageView.setImage(Utils.getCardImageView(card));
         cardNameLabel.setText(card.getName());
         cardPriceLabel.setText("Price:  " + card.getPrice());
@@ -104,6 +121,7 @@ public class ShopMenuView extends BaseMenuView {
         }
         buyButton.setOpacity(1);
         selectedCard = card;
+        selectedImageView = imageView;
         disableBuyButton(user.getBalance() < selectedCard.getPrice());
     }
 

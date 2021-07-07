@@ -8,15 +8,22 @@ import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
+import javafx.scene.image.Image;
+import javafx.scene.image.ImageView;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Pane;
 import javafx.stage.Stage;
 
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.io.IOException;
 
 public class DeckMenuView extends BaseMenuView {
+    private static final String backgroundImageAddress = "assets/Backgrounds/GUI_T_TowerBg4.dds.png";
     private static DeckMenuView instance;
 
+    @FXML
+    private ImageView backgroundImageView;
     @FXML
     private ScrollPane scrollPane;
     @FXML
@@ -47,6 +54,11 @@ public class DeckMenuView extends BaseMenuView {
         this.root = root;
         new DeckMenuController(user);
         scene.setRoot(root);
+        try {
+            backgroundImageView.setImage(new Image(new FileInputStream(backgroundImageAddress)));
+            backgroundImageView.toBack();
+        } catch (FileNotFoundException ignored) {
+        }
         run();
     }
 

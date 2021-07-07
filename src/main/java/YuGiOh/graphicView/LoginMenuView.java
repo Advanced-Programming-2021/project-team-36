@@ -11,17 +11,24 @@ import javafx.scene.Scene;
 import javafx.scene.control.Alert;
 import javafx.scene.control.PasswordField;
 import javafx.scene.control.TextField;
+import javafx.scene.image.Image;
+import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Pane;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.io.IOException;
 
 public class LoginMenuView extends BaseMenuView {
+    private static final String backgroundImageAddress = "assets/Backgrounds/GUI_T_TowerBg3.dds.png";
     private static LoginMenuView instance;
 
+    @FXML
+    private ImageView backgroundImageView;
     @FXML
     private TextField registerUsernameTextField, registerPasswordTextField, registerNicknameTextField,
             loginUsernameTextField, loginPasswordTextField;
@@ -51,10 +58,16 @@ public class LoginMenuView extends BaseMenuView {
         this.stage = primaryStage;
         new LoginMenuController();
         scene.setRoot(root);
+        try {
+            backgroundImageView.setImage(new Image(new FileInputStream(backgroundImageAddress)));
+            backgroundImageView.toBack();
+        } catch (FileNotFoundException ignored) {
+        }
         run();
     }
 
     public void run() {
+        backgroundImageView.toFront();
         mainPane.toFront();
         stage.setScene(scene);
         stage.setResizable(true);
@@ -70,6 +83,7 @@ public class LoginMenuView extends BaseMenuView {
             return;
         }
         new Alert(Alert.AlertType.INFORMATION, "user created successfully!").showAndWait();
+        backgroundImageView.toFront();
         mainPane.toFront();
     }
 
@@ -78,6 +92,7 @@ public class LoginMenuView extends BaseMenuView {
             User user = LoginMenuController.getInstance().login(loginUsernameTextField.getText(),
                     loginPasswordTextField.getText());
             new Alert(Alert.AlertType.INFORMATION, "user logged in successfully!").showAndWait();
+            backgroundImageView.toFront();
             mainPane.toFront();
             MainMenuView.init(stage, user);
         } catch (ModelException exception) {
@@ -90,16 +105,19 @@ public class LoginMenuView extends BaseMenuView {
         registerUsernameTextField.clear();
         registerNicknameTextField.clear();
         registerPasswordTextField.clear();
+        backgroundImageView.toFront();
         registerPane.toFront();
     }
 
     public void loadLoginMenu() {
         loginUsernameTextField.clear();
         loginPasswordTextField.clear();
+        backgroundImageView.toFront();
         loginPane.toFront();
     }
 
     public void back() {
+        backgroundImageView.toFront();
         mainPane.toFront();
     }
 

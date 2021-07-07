@@ -22,7 +22,6 @@ public class KasraGraphicStuffBtwThisNameIsWayTooLongLOL extends Application {
         DatabaseHandler.importFromDatabase();
 
         //LoginMenuView.init(primaryStage);
-        //ProfileMenuView.init(primaryStage, new User("abi", "badi", "c"));
         new User("ad", "Ad", "w8");
         new User("ad183", "nclad", "w8");
         new User("19", "1398d", "w8");
@@ -30,6 +29,5 @@ public class KasraGraphicStuffBtwThisNameIsWayTooLongLOL extends Application {
         User shayan  = new User("shayan", "shayan.p", "1234");
         Cheat.buildSuperUser(shayan);
         MainMenuView.init(primaryStage, shayan);
-        //ScoreboardMenuView.init(primaryStage);
     }
 }

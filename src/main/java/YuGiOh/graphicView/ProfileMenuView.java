@@ -10,15 +10,21 @@ import javafx.scene.Scene;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
+import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.Pane;
 import javafx.stage.Stage;
 
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.io.IOException;
 
 public class ProfileMenuView extends BaseMenuView {
+    private static final String backgroundImageAddress = "assets/Backgrounds/GUI_T_TowerBg1.dds.png";
     private static ProfileMenuView instance;
 
+    @FXML
+    private ImageView backgroundImageView;
     @FXML
     private ImageView profilePicture;
     @FXML
@@ -51,6 +57,11 @@ public class ProfileMenuView extends BaseMenuView {
         this.root = root;
         scene.setRoot(root);
         new ProfileMenuController(user);
+        try {
+            backgroundImageView.setImage(new Image(new FileInputStream(backgroundImageAddress)));
+            backgroundImageView.toBack();
+        } catch (FileNotFoundException ignored) {
+        }
         run();
     }
 
@@ -66,8 +77,8 @@ public class ProfileMenuView extends BaseMenuView {
     }
 
     private void renderScene() {
-        usernameLabel.setText("Username: " + ProfileMenuController.getInstance().getUser().getUsername());
-        nicknameLabel.setText("Nickname: " + ProfileMenuController.getInstance().getUser().getNickname());
+        usernameLabel.setText("  Username: " + ProfileMenuController.getInstance().getUser().getUsername() + "  ");
+        nicknameLabel.setText("  Nickname: " + ProfileMenuController.getInstance().getUser().getNickname() + "  ");
         profilePicture.setImage(ProfileMenuController.getInstance().getUser().getProfilePicture());
 
     }

@@ -7,10 +7,12 @@
 <?import java.net.URL?>
 <?import javafx.scene.image.ImageView?>
 <?import javafx.scene.text.Text?>
-<Pane prefWidth="400" prefHeight="400" xmlns:fx="http://javafx.com/fxml"
-      fx:controller="YuGiOh.graphicView.ScoreboardMenuView" styleClass="main">
-    <VBox fx:id="mainBox" alignment="CENTER" spacing="13">
-        <Label text="All Time High Scores:" StackPane.alignment="TOP_CENTER" styleClass="title"/>
+<Pane prefWidth="400" prefHeight="480" xmlns:fx="http://javafx.com/fxml"
+      fx:controller="YuGiOh.graphicView.ScoreboardMenuView">
+    <ImageView fx:id="backgroundImageView" fitWidth="400" fitHeight="480"/>
+    <VBox alignment="CENTER" spacing="40">
+        <Label text="  All Time High Scores:  " StackPane.alignment="TOP_CENTER" styleClass="scoreboard-title"/>
+        <VBox fx:id="mainBox" alignment="CENTER" spacing="10"/>
         <Button alignment="CENTER" defaultButton="true" onMouseClicked="#exit"
                 mnemonicParsing="false" text="Back" styleClass="button"/>
     </VBox>

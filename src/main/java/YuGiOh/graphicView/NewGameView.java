@@ -10,21 +10,30 @@ import javafx.scene.Scene;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
+import javafx.scene.image.Image;
+import javafx.scene.image.ImageView;
 import javafx.scene.layout.HBox;
+import javafx.scene.layout.Pane;
 import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
 import javafx.stage.Stage;
 
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.io.IOException;
 
 public class NewGameView extends BaseMenuView {
     private static final int ARROW_SIZE = 30;
     private static final Color TRIANGLE_COLOR = Color.rgb(255, 200, 0);
+    private static final String backgroundImageAddress = "assets/Backgrounds/GUI_T_TowerBg1.dds.png";
 
     private static NewGameView instance;
 
     private int numberOfRounds = 3, gameMode;
+
     private Node leftArrow, rightArrow;
+    @FXML
+    private ImageView backgroundImageView;
     @FXML
     private Label numberOfRoundsLabel;
     @FXML
@@ -46,17 +55,22 @@ public class NewGameView extends BaseMenuView {
 
     public static void init(Stage primaryStage, int gameMode) {
         try {
-            VBox root = FXMLLoader.load(Main.class.getResource("/fxml/NewGameMenu.fxml"));
+            Pane root = FXMLLoader.load(Main.class.getResource("/fxml/NewGameMenu.fxml"));
             NewGameView.getInstance().start(primaryStage, root, gameMode);
         } catch (IOException ignored) {
         }
     }
 
-    private void start(Stage primaryStage, VBox root, int gameMode) {
+    private void start(Stage primaryStage, Pane root, int gameMode) {
         this.stage = primaryStage;
         this.root = root;
         this.gameMode = gameMode;
         scene = new Scene(root);
+        try {
+            backgroundImageView.setImage(new Image(new FileInputStream(backgroundImageAddress)));
+            backgroundImageView.toBack();
+        } catch (FileNotFoundException ignored) {
+        }
         run();
     }
 

@@ -8,16 +8,23 @@ import javafx.fxml.FXMLLoader;
 import javafx.scene.Node;
 import javafx.scene.Scene;
 import javafx.scene.control.Label;
+import javafx.scene.image.Image;
+import javafx.scene.image.ImageView;
 import javafx.scene.layout.Pane;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.ArrayList;
 
 public class ScoreboardMenuView extends BaseMenuView {
+    private static final String backgroundImageAddress = "assets/Backgrounds/GUI_T_TowerBg4.dds.png";
     private static ScoreboardMenuView instance;
 
+    @FXML
+    private ImageView backgroundImageView;
     @FXML
     private VBox mainBox;
 
@@ -43,6 +50,11 @@ public class ScoreboardMenuView extends BaseMenuView {
         this.stage = primaryStage;
         this.root = root;
         scene.setRoot(root);
+        try {
+            backgroundImageView.setImage(new Image(new FileInputStream(backgroundImageAddress)));
+            backgroundImageView.toBack();
+        } catch (FileNotFoundException ignored) {
+        }
         run();
     }
 
@@ -51,7 +63,7 @@ public class ScoreboardMenuView extends BaseMenuView {
         stage.setScene(scene);
         stage.show();
         stage.setResizable(false);
-        relocateNodeFromCenter(mainBox, root.getWidth() / 2, root.getHeight() * 0.4);
+        relocateNodeFromCenter(mainBox.getParent(), root.getWidth() / 2, root.getHeight() * 0.4);
     }
 
     private void renderScene() {
@@ -66,7 +78,8 @@ public class ScoreboardMenuView extends BaseMenuView {
                 label.getStyleClass().add("highlighted-user");
             else
                 label.getStyleClass().add("user");
-            mainBox.getChildren().add(i + 1, label);
+            label.setText("  " + label.getText() + "  ");
+            mainBox.getChildren().add(i, label);
         }
     }
 
