@@ -230,7 +230,7 @@ public abstract class PlayerController {
                 new MagicActivation(spell),
                 () -> {
                     if (player.hasInHand(spell)) {
-                        player.getBoard().moveCardNoError(spell, ZoneType.MAGIC);
+                        GameController.getInstance().addCardToBoard(spell);
                     }
                     spell.setMagicState(MagicState.OCCUPIED);
                     spell.readyForBattle(player);

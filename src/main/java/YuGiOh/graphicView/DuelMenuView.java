@@ -21,6 +21,7 @@ import javafx.scene.control.Alert;
 import javafx.scene.input.KeyCode;
 import javafx.scene.layout.Pane;
 import javafx.scene.paint.Color;
+import javafx.scene.text.Font;
 import javafx.scene.text.Text;
 import javafx.stage.Stage;
 import lombok.Getter;
@@ -140,7 +141,8 @@ public class DuelMenuView extends BaseMenuView {
     }
 
     public List<Card> askUserToChooseCard(String message, SelectCondition selectCondition, FinishSelectingCondition finishCondition) {
-        selectModeText.setText("Selecting Time");
+        selectModeText.setText("Selecting Cards...");
+        selectModeText.setFont(Font.font(25));
         selectModeText.setFill(Color.RED);
         announce(message);
 

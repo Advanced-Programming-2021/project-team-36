@@ -14,10 +14,13 @@ import javafx.scene.shape.Shape;
 import javafx.scene.text.Font;
 
 public class CustomButton extends Button {
-    public CustomButton(String text, int fontSize, Runnable onClick){
+    public CustomButton(String text, int fontSize, Runnable onClick) {
+        this(text, fontSize, onClick, Color.GREY);
+    }
+    public CustomButton(String text, int fontSize, Runnable onClick, Color background){
         super(text);
         setBackground(
-                new Background(new BackgroundFill(Color.GREY, CornerRadii.EMPTY, Insets.EMPTY))
+                new Background(new BackgroundFill(background, CornerRadii.EMPTY, Insets.EMPTY))
         );
         setOnMouseClicked(e->onClick.run());
         effectProperty().bind(

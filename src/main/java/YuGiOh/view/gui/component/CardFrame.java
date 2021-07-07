@@ -2,6 +2,7 @@ package YuGiOh.view.gui.component;
 
 import YuGiOh.controller.GameController;
 import YuGiOh.controller.LogicException;
+import YuGiOh.controller.events.RoundOverExceptionEvent;
 import YuGiOh.graphicController.DuelMenuController;
 import YuGiOh.model.card.Card;
 import YuGiOh.model.card.Magic;
@@ -19,6 +20,7 @@ import javafx.beans.binding.DoubleBinding;
 import javafx.beans.property.BooleanProperty;
 import javafx.beans.property.SimpleBooleanProperty;
 import javafx.geometry.Bounds;
+import javafx.scene.control.Button;
 import javafx.scene.control.ContextMenu;
 import javafx.scene.control.MenuItem;
 import javafx.scene.effect.DropShadow;
@@ -29,6 +31,7 @@ import javafx.scene.paint.Color;
 import lombok.Getter;
 
 import java.util.ArrayList;
+import java.util.List;
 
 public class CardFrame extends DraggablePane {
     @Getter
@@ -109,6 +112,24 @@ public class CardFrame extends DraggablePane {
         addEventListeners();
     }
 
+
+    interface ValidRunner {
+        void validRun(Card card, boolean validate) throws LogicException, RoundOverExceptionEvent, ResistToChooseCard;
+    }
+    private void addButtonIfCan(ContextMenu contextMenu, String text, Card card, ValidRunner validRunner, boolean include) {
+        Color color = Color.DARKGREEN;
+        try {
+            validRunner.validRun(card, true);
+        } catch (Exception ignored) {
+            color = Color.DARKRED;
+            if(!include)
+                return;
+        }
+        MenuItem item = new MenuItem("", new CustomButton(text, 15, ()->{}, color));
+        item.setOnAction(e-> gameField.addRunnableToMainThreadForCard(card, ()->validRunner.validRun(card, false)));
+        contextMenu.getItems().add(item);
+    }
+
     private void addEventListeners() {
         setOnMouseClicked(e -> {
             GuiReporter.getInstance().report(new ClickOnCardEvent(this));
@@ -131,84 +152,15 @@ public class CardFrame extends DraggablePane {
         });
         setOnContextMenuRequested(e -> {
             ContextMenu contextMenu = new ContextMenu();
-            int buttonFontSize = 15;
-            contextMenu.getItems().addAll();
-            try {
-                DuelMenuController.getInstance().summonCard(card, true);
-                contextMenu.getItems().add(
-                        new MenuItem("", new CustomButton("summon", buttonFontSize, () -> gameField.addRunnableToMainThreadForCard(
-                                card,
-                                () -> DuelMenuController.getInstance().summonCard(card, false)
-                        ))));
-            } catch (Exception ignored) {
-            }
-            try {
-                DuelMenuController.getInstance().specialSummon(card, true);
-                contextMenu.getItems().add(
-                        new MenuItem("", new CustomButton("special summon", buttonFontSize, () -> gameField.addRunnableToMainThreadForCard(
-                                card,
-                                () -> DuelMenuController.getInstance().specialSummon(card, false)
-                        ))));
-            } catch (Exception ignored) {
-            }
-            try {
-                DuelMenuController.getInstance().setCard(card, true);
-                contextMenu.getItems().add(
-                        new MenuItem("", new CustomButton("set", buttonFontSize, () -> gameField.addRunnableToMainThreadForCard(
-                                card,
-                                () -> DuelMenuController.getInstance().setCard(card, false)
-                        ))));
-            } catch (Exception ignored) {
-            }
-            try {
-                DuelMenuController.getInstance().changeCardPosition(card, MonsterState.OFFENSIVE_OCCUPIED, true);
-                contextMenu.getItems().add(
-                        new MenuItem("", new CustomButton("change position", buttonFontSize, () -> {
-                            ArrayList<CustomButton> buttons = new ArrayList<>();
-                            for (MonsterState state : new MonsterState[]{MonsterState.DEFENSIVE_HIDDEN, MonsterState.DEFENSIVE_OCCUPIED, MonsterState.OFFENSIVE_OCCUPIED}) {
-                                buttons.add(new CustomButton(state.getName(), buttonFontSize, () -> {
-                                    gameField.addRunnableToMainThreadForCard(
-                                            card,
-                                            () -> DuelMenuController.getInstance().changeCardPosition(card, state, false)
-                                    );
-                                }));
-                            }
-                            new AlertBox().display(gameField, "choose state", buttons);
-                        })));
-            } catch (Exception ignored) {
-            }
-            try {
-                DuelMenuController.getInstance().flipSummon(card, true);
-                contextMenu.getItems().add(
-                        new MenuItem("", new CustomButton("flip summon", buttonFontSize, () -> gameField.addRunnableToMainThreadForCard(
-                                card,
-                                () -> DuelMenuController.getInstance().flipSummon(card, false)
-                        ))));
-            } catch (Exception ignored) {
-            }
-            try {
-                DuelMenuController.getInstance().activateEffect(card, true);
-                contextMenu.getItems().add(
-                        new MenuItem("", new CustomButton("activate effect", buttonFontSize, () -> {
-                            gameField.addRunnableToMainThreadForCard(
-                                    card,
-                                    () -> DuelMenuController.getInstance().activateEffect(card, false)
-                            );
-                        })));
-            } catch (Exception ignored) {
-            }
-            try {
-                DuelMenuController.getInstance().directAttack(card, true);
-                contextMenu.getItems().add(
-                        new MenuItem("", new CustomButton("direct attack", buttonFontSize, () -> gameField.addRunnableToMainThreadForCard(
-                                card,
-                                () -> DuelMenuController.getInstance().directAttack(card, false)
-                        ))));
-            } catch (Exception ignored) {
-            }
-            contextMenu.getItems().forEach(item -> {
-                item.setOnAction(E -> item.getGraphic().getOnMouseClicked().handle(null));
-            });
+            addButtonIfCan(contextMenu, "summon", card, (card, check)->DuelMenuController.getInstance().summonCard(card, check), true);
+            addButtonIfCan(contextMenu, "special summon", card, (card, check)->DuelMenuController.getInstance().specialSummon(card, check), true);
+            addButtonIfCan(contextMenu, "set", card, (card, check)->DuelMenuController.getInstance().setCard(card, check), true);
+            addButtonIfCan(contextMenu, "change position to OO", card, (card, check)->DuelMenuController.getInstance().changeCardPosition(card, MonsterState.OFFENSIVE_OCCUPIED, check), false);
+            addButtonIfCan(contextMenu, "change position to DO", card, (card, check)->DuelMenuController.getInstance().changeCardPosition(card, MonsterState.DEFENSIVE_OCCUPIED, check), false);
+            addButtonIfCan(contextMenu, "change position to DH", card, (card, check)->DuelMenuController.getInstance().changeCardPosition(card, MonsterState.DEFENSIVE_HIDDEN, check), false);
+            addButtonIfCan(contextMenu, "flip summon", card, (card, check)->DuelMenuController.getInstance().flipSummon(card, check), true);
+            addButtonIfCan(contextMenu, "activate effect", card, (card, check)->DuelMenuController.getInstance().activateEffect(card, check), true);
+            addButtonIfCan(contextMenu, "direct attack", card, (card, check)->DuelMenuController.getInstance().directAttack(card, check), true);
             contextMenu.setStyle("-fx-background-color: #006699;");
             contextMenu.show(this, e.getScreenX(), e.getScreenY());
         });
