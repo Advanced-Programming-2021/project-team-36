@@ -82,11 +82,13 @@ public class DuelMenuView extends BaseMenuView {
         this.selector = new CardSelector(infoBox);
         DuelMenuController.getInstance().runNewGameThread();
         run();
+        stage.setResizable(true);
+        stage.setFullScreen(true);
         GuiReporter.getInstance().addEventHandler(RoundOverEvent.MY_TYPE, e->{
             if(DuelMenuController.getInstance().getDuel().isFinished())
-                Platform.runLater(()->MainMenuView.getInstance().run());
+                endOfDuel();
             else
-                Platform.runLater(()->DuelMenuView.init(primaryStage));
+                anotherDuel();
         });
     }
 
@@ -191,5 +193,21 @@ public class DuelMenuView extends BaseMenuView {
         selectModeText.setText("");
         selectModeText.setFill(Color.BLACK);
         selector.refresh();
+    }
+
+    public void anotherDuel() {
+        try {
+            askUserToChoose(DuelMenuController.getInstance().getDuel().getLastGameState() + "\n" + "are you ready for the next round? ", Arrays.asList("yes"));
+        } catch (ResistToChooseCard ignored) {
+        }
+        Platform.runLater(()->DuelMenuView.init(stage));
+    }
+
+    public void endOfDuel() {
+        try {
+            askUserToChoose(DuelMenuController.getInstance().getDuel().getLastGameState(), Arrays.asList("back to main menu"));
+        } catch (ResistToChooseCard ignored) {
+        }
+        Platform.runLater(()->MainMenuView.getInstance().run());
     }
 }
