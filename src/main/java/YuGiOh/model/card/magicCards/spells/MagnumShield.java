@@ -21,12 +21,16 @@ public class MagnumShield extends Spell {
 
     @Override
     public int affectionOnAttackingMonster(Monster monster) {
-        return monster.getDefenseRateOnCard();
+        if (monster.equals(equippedMonster))
+            return monster.getDefenseRateOnCard();
+        return 0;
     }
 
     @Override
     public int affectionOnDefensiveMonster(Monster monster) {
-        return monster.getAttackDamageOnCard();
+        if (monster.equals(equippedMonster))
+            return monster.getAttackDamageOnCard();
+        return 0;
     }
 
     @Override

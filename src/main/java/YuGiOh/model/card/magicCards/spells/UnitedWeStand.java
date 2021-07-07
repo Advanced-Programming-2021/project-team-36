@@ -21,6 +21,8 @@ public class UnitedWeStand extends Spell {
 
     @Override
     public int affectionOnAttackingMonster(Monster monster1) {
+        if (!equippedMonster.equals(monster1))
+            return 0;
         int affect = 0;
         for (int i = 1; i <= 5; i++) {
             Monster monster = this.getOwner().getBoard().getMonsterCardZone().get(i);
