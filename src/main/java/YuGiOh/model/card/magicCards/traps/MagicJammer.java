@@ -31,7 +31,7 @@ public class MagicJammer extends Trap {
                     SelectConditions.getCardFromPlayerHand(this.getOwner(), this))[0];
             gameController.moveCardToGraveYard(card);
             Action action = getChain().pop();
-            Card card1 = ((MagicActivation) action.getEvent()).getCard();
+            Card card1 = ((MagicActivation) action.getEvent()).getMagic();
             gameController.moveCardToGraveYard(card1);
             CustomPrinter.println(String.format("<%s>'s <%s> activated successfully", this.getOwner().getUser().getUsername(), this.getName()), Color.Yellow);
             CustomPrinter.println(this, Color.Gray);

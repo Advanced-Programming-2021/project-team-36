@@ -4,16 +4,14 @@ import YuGiOh.model.Player.Player;
 import YuGiOh.model.card.Card;
 import YuGiOh.model.card.Magic;
 import YuGiOh.model.card.Monster;
+import YuGiOh.model.card.Spell;
 import YuGiOh.model.deck.MainDeck;
-import YuGiOh.model.enums.Icon;
-import YuGiOh.model.enums.MagicState;
-import YuGiOh.model.enums.MonsterState;
-import YuGiOh.model.enums.ZoneType;
+import YuGiOh.model.enums.*;
+import YuGiOh.utils.CustomPrinter;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.collections.ObservableMap;
 import lombok.Getter;
-import lombok.Setter;
 
 import java.util.*;
 
@@ -28,8 +26,6 @@ public class Board {
     private final ObservableMap<Integer, Magic> magicCardZone;
     @Getter
     private final ObservableList<Card> cardsOnHand;
-
-    // todo handle this without need of list
     @Getter
     private final ObservableList<Magic> fieldZoneCard;
 
@@ -55,10 +51,10 @@ public class Board {
         cardsOnHand.add(card);
     }
 
-    public void removeCardIfHas(Card card) {
+    private void removeCardFromBoardIfHas(Card card) throws ModelException {
         CardAddress cardAddress = getCardAddress(card);
         if(cardAddress == null)
-            return;
+            throw new ModelException("this card is not in this board");
         if(cardAddress.isInDeck())
             mainDeck.getCards().remove(card);
         if(cardAddress.isInFieldZone())
@@ -71,6 +67,77 @@ public class Board {
             graveYard.remove(card);
         if(cardAddress.isInMagicZone())
             magicCardZone.remove(cardAddress.getId());
+    }
+
+    public void moveToFieldZone(Spell spell) throws ModelException {
+        CardAddress cardAddress = getCardAddress(spell);
+        if(cardAddress.getZone().equals(ZoneType.FIELD))
+            return;
+        removeCardFromBoardIfHas(spell);
+        if(getFieldZoneCard() != null)
+            moveToGraveyard(getFieldZoneCard());
+        setFieldZoneCard(spell);
+    }
+    public void moveToMonsterZone(Monster monster) throws ModelException {
+        CardAddress cardAddress = getCardAddress(monster);
+        if(cardAddress.getZone().equals(ZoneType.MONSTER))
+            return;
+        for (int i = 1; i <= 5; i++) {
+            if (getMonsterCardZone().get(i) == null) {
+                removeCardFromBoardIfHas(monster);
+                monsterCardZone.put(i, monster);
+                return;
+            }
+        }
+        throw new ModelException("there was not enough space to put this monster");
+    }
+    public void moveToMagicZone(Magic magic) throws ModelException {
+        CardAddress cardAddress = getCardAddress(magic);
+        if(cardAddress.getZone().equals(ZoneType.MAGIC))
+            return;
+        if(magic instanceof Spell && ((Spell) magic).getIcon().equals(Icon.FIELD))
+            throw new ModelException("this card is field and cannot be moved to magic zone");
+        for (int i = 1; i <= 5; i++) {
+            if (getMagicCardZone().get(i) == null) {
+                removeCardFromBoardIfHas(magic);
+                magicCardZone.put(i, magic);
+                return;
+            }
+        }
+        throw new ModelException("there was not enough space to put this monster");
+    }
+    public void moveToGraveyard(Card card) throws ModelException {
+        CardAddress cardAddress = getCardAddress(card);
+        if(cardAddress.getZone().equals(ZoneType.GRAVEYARD))
+            return;
+        removeCardFromBoardIfHas(card);
+        graveYard.add(card);
+        card.onMovingToGraveyard();
+        CustomPrinter.println(String.format("<%s>'s Card <%s> moved to graveyard", owner.getUser().getUsername(), card.getName()), Color.Blue);
+    }
+    public void moveToHand(Card card) throws ModelException {
+        CardAddress cardAddress = getCardAddress(card);
+        if(cardAddress.getZone().equals(ZoneType.HAND))
+            return;
+        removeCardFromBoardIfHas(card);
+        cardsOnHand.add(card);
+    }
+
+    public void moveCardNoError(Card card, ZoneType zoneType) {
+        // also you can't move to deck :))
+        try {
+            if(zoneType.equals(ZoneType.FIELD))
+                moveToFieldZone((Spell) card);
+            if(zoneType.equals(ZoneType.HAND))
+                moveToHand(card);
+            if(zoneType.equals(ZoneType.MONSTER))
+                moveToMonsterZone((Monster) card);
+            if(zoneType.equals(ZoneType.MAGIC))
+                moveToMagicZone((Magic) card);
+            if(zoneType.equals(ZoneType.GRAVEYARD))
+                moveToGraveyard(card);
+        } catch (ClassCastException | ModelException ignored) {
+        }
     }
 
     public Card getCardByCardAddress(CardAddress cardAddress) {
@@ -119,19 +186,10 @@ public class Board {
     }
 
     public ZoneType getCardZoneType(Card card){
-        if(monsterCardZone.containsValue(card))
-            return ZoneType.MONSTER;
-        if(magicCardZone.containsValue(card))
-            return ZoneType.MAGIC;
-        if(graveYard.contains(card))
-            return ZoneType.GRAVEYARD;
-        if(card.equals(getFieldZoneCard()))
-            return ZoneType.FIELD;
-        if(cardsOnHand.contains(card))
-            return ZoneType.HAND;
-        if(mainDeck.getCards().contains(card))
-            return ZoneType.DECK;
-        return null;
+        CardAddress address = getCardAddress(card);
+        if(address == null)
+            return null;
+        return address.getZone();
     }
 
     public List<Card> getAllCardsOnBoard() {
@@ -142,7 +200,6 @@ public class Board {
             allCards.add(getFieldZoneCard());
         return allCards;
     }
-
     public List<Card> getAllCards(){
         List<Card> allCards = getAllCardsOnBoard();
         allCards.addAll(graveYard);
@@ -151,62 +208,11 @@ public class Board {
         return allCards;
     }
 
-    public void addCardToBoard(Card card, CardAddress cardAddress) {
-        if (cardAddress.isInFieldZone()) {
-            if (getFieldZoneCard() != null)
-                moveCardToGraveYard(getFieldZoneCard());
-            setFieldZoneCard((Magic) card);
-        }
-        else if (cardAddress.isInMagicZone()) {
-            assert magicCardZone.get(cardAddress.getId()) == null;
-            magicCardZone.put(cardAddress.getId(), (Magic) card);
-        }
-        else {
-            assert monsterCardZone.get(cardAddress.getId()) == null;
-            monsterCardZone.put(cardAddress.getId(), (Monster) card);
-        }
-    }
-
-    public void addMonster(Monster monster) {
-        for (int i = 1; i <= 5; i++) {
-            if (getMonsterCardZone().get(i) == null) {
-                addCardToBoard(monster, new CardAddress(ZoneType.MONSTER, i, owner));
-                break;
-            }
-        }
-    }
-
-    public void addMagic(Magic magic) {
-        if (magic.getIcon().equals(Icon.FIELD))
-            addCardToBoard((Card) magic, new CardAddress(ZoneType.FIELD, 1, owner));
-        else {
-            for (int i = 1; i <= 5; i++) {
-                if (getMagicCardZone().get(i) == null) {
-                    addCardToBoard(magic, new CardAddress(ZoneType.MAGIC, i, owner));
-                    break;
-                }
-            }
-        }
-    }
-
-    public void addCardToHand(Card card){
-        cardsOnHand.add(card);
-    }
-    public void removeFromHand(Card card){
-        cardsOnHand.remove(card);
-    }
-
-    public void moveCardToGraveYard(Card card) {
-        removeCardIfHas(card);
-        graveYard.add(card);
-        
-    }
-
     public boolean isMonsterCardZoneFull() {
         return monsterCardZone.size() == 5;
     }
 
-    public void setFieldZoneCard(Magic fieldZoneCard) {
+    private void setFieldZoneCard(Magic fieldZoneCard) {
         this.fieldZoneCard.set(0, fieldZoneCard);
     }
     public Magic getFieldZoneCard() {

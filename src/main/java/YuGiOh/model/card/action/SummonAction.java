@@ -23,17 +23,12 @@ public class SummonAction extends Action {
             preprocess();
             Player player = event.getPlayer();
             Monster monster = event.getMonster();
-            CustomPrinter.println(String.format("%s has little summoned %s successfully.", player.getUser().getUsername(), monster.getName()), Color.Green);
             monster.readyForBattle(player);
             if (event.getRequiredTributes() > 0)
                 for (Card card : event.getChosenCardsToTribute())
                     gameController.moveCardToGraveYard(card);
-            gameController.removeCardFromGame(monster);
-            CustomPrinter.println(String.format("%s has little summoned %s successfully.", player.getUser().getUsername(), monster.getName()), Color.Green);
             gameController.addCardToBoard(monster);
-            CustomPrinter.println(String.format("%s has little summoned %s successfully.", player.getUser().getUsername(), monster.getName()), Color.Green);
             monster.setMonsterState(event.getMonsterState());
-            CustomPrinter.println(String.format("%s has little summoned %s successfully.", player.getUser().getUsername(), monster.getName()), Color.Green);
             if (!event.getSummonType().equals(SummonType.SPECIAL))
                 gameController.setSummoned(monster.getOwner());
             CustomPrinter.println(String.format("%s has summoned %s successfully.", player.getUser().getUsername(), monster.getName()), Color.Green);

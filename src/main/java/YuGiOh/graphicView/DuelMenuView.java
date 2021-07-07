@@ -13,6 +13,7 @@ import YuGiOh.view.cardSelector.ResistToChooseCard;
 import YuGiOh.view.cardSelector.SelectCondition;
 import YuGiOh.view.gui.GameMapLocationIml;
 import YuGiOh.view.gui.component.*;
+import javafx.application.Platform;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
@@ -23,6 +24,7 @@ import javafx.scene.paint.Color;
 import javafx.scene.text.Text;
 import javafx.stage.Stage;
 import lombok.Getter;
+import lombok.experimental.UtilityClass;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -88,6 +90,9 @@ public class DuelMenuView extends BaseMenuView {
         renderScene();
         stage.setScene(scene);
         stage.show();
+        // todo this will cause problem for other views
+        stage.setResizable(true);
+        stage.setFullScreen(true);
     }
 
     private void renderScene() {
@@ -120,9 +125,9 @@ public class DuelMenuView extends BaseMenuView {
             if(e.getCode() == KeyCode.P){
                 stopped.set(!stopped.get());
                 if(stopped.get())
-                    MainGameThread.getInstance().lockRunningThreadIfMain();
+                    MainGameThread.getInstance().suspend();
                 else
-                    MainGameThread.getInstance().unlockTheThreadIfMain();
+                    MainGameThread.getInstance().resume();
             }
         });
     }
@@ -130,20 +135,23 @@ public class DuelMenuView extends BaseMenuView {
     // all of this asking user must happen in Query Thread!
 
     public boolean askUser(String question, String yes, String no) {
-        return MainGameThread.getInstance().blockUnblockRunningThreadAndDoInGui((Callable<Boolean>) ()->
-                new AlertBox().displayYesNoStandAlone(question, yes, no));
+        return new MainGameThread.TwoWayTicket<>((Callable<Boolean>) ()->
+            new AlertBox().displayYesNoStandAlone(question, yes, no)
+        ).runAndWait();
     }
 
-    public List<Card> askUserToChooseCard(String message, SelectCondition selectCondition, FinishSelectingCondition finishCondition) throws ResistToChooseCard {
+    public List<Card> askUserToChooseCard(String message, SelectCondition selectCondition, FinishSelectingCondition finishCondition) {
         selectModeText.setText("Selecting Time");
         selectModeText.setFill(Color.RED);
         announce(message);
-        MainGameThread.getInstance().onlyBlockRunningThreadThenDoInGui(()->{
+
+        MainGameThread.OneWayTicket ticket = new MainGameThread.OneWayTicket();
+        ticket.runOneWay(()->{
             selector.refresh(selectCondition, CardSelector.SelectMode.Choosing);
             selector.setOnAction(()->{
                 if(finishCondition.canFinish(selector.getSelectedCards())){
                     selectModeText.setFill(Color.GREEN);
-                    MainGameThread.getInstance().unlockTheThreadIfMain();
+                    ticket.free();
                 } else {
                     selectModeText.setFill(Color.RED);
                 }
@@ -158,8 +166,8 @@ public class DuelMenuView extends BaseMenuView {
         ArrayList<CustomButton> buttons = new ArrayList<>();
         choices.forEach(s->buttons.add(new CustomButton(s, 17, ()->{})));
 
-        int ret = MainGameThread.getInstance().blockUnblockRunningThreadAndDoInGui((Callable<Integer>) ()->
-                new AlertBox().displayChoicesStandAlone(question, buttons));
+        int ret = new MainGameThread.TwoWayTicket<Integer>((Callable<Integer>) ()->
+                new AlertBox().displayChoicesStandAlone(question, buttons)).runAndWait();
         if(ret == -1)
             throw new ResistToChooseCard();
         return ret;
@@ -175,9 +183,9 @@ public class DuelMenuView extends BaseMenuView {
 
 
     public void announce(String message){
-        MainGameThread.getInstance().blockUnblockRunningThreadAndDoInGui(()->
-                new AlertBox().displayMessageStandAlone(message)
-        );
+        Platform.runLater(()->{
+            new AlertBox().displayMessageStandAlone(message);
+        });
     }
 
     public void resetSelector(){

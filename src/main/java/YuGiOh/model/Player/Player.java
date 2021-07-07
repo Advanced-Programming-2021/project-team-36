@@ -92,7 +92,7 @@ abstract public class Player {
     }
 
     public void moveCardToGraveYard(Card card) {
-        board.moveCardToGraveYard(card);
+        board.moveCardNoError(card, ZoneType.GRAVEYARD);
     }
 
     public boolean hasAnyRitualMonsterInHand() {

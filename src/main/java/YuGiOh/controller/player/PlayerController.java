@@ -55,7 +55,7 @@ public abstract class PlayerController {
         List<Action> actions = new ArrayList<>();
         for (Card magic : player.getBoard().getAllCardsOnBoard()) {
             if (magic instanceof Magic) {
-                if (((Magic) magic).canActivateEffect() && previousSpeed <= magic.getSpeed()) {
+                if (magic.canActivateEffect() && previousSpeed <= magic.getSpeed()) {
                     actions.add(new MagicActivationAction(
                             new MagicActivation((Magic) magic),
                             ((Magic) magic).activateEffect()
@@ -126,8 +126,7 @@ public abstract class PlayerController {
         SetMagicAction action = new SetMagicAction(
                 new SetMagic(magic),
                 () -> {
-                    player.getBoard().removeFromHand(magic);
-                    player.getBoard().addMagic(magic);
+                    player.getBoard().moveCardNoError(magic, ZoneType.MAGIC);
                     magic.setMagicState(MagicState.HIDDEN);
                     CustomPrinter.println(String.format("<%s> set magic <%s> successfully", player.getUser().getUsername(), magic.getName()), Color.Green);
                 }
@@ -217,8 +216,9 @@ public abstract class PlayerController {
         MagicActivationAction action = new MagicActivationAction(
                 new MagicActivation(spell),
                 () -> {
-                    player.getBoard().removeFromHand(spell);
-                    player.getBoard().addMagic(spell);
+                    if (player.hasInHand(spell)) {
+                        player.getBoard().moveCardNoError(spell, ZoneType.MAGIC);
+                    }
                     spell.setMagicState(MagicState.OCCUPIED);
                     spell.readyForBattle(player);
                     spell.activateEffect().run();
@@ -234,7 +234,7 @@ public abstract class PlayerController {
     }
 
     public void startChain(Action action) throws RoundOverExceptionEvent, ResistToChooseCard {
-        ChainController chainController = new ChainController(this, action);
+        ChainController chainController = new ChainController(action);
         chainController.control();
     }
 

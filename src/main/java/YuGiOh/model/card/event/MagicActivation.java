@@ -1,26 +1,24 @@
 package YuGiOh.model.card.event;
 
-import YuGiOh.model.card.Card;
 import YuGiOh.model.card.Magic;
-import YuGiOh.model.card.Spell;
 import lombok.Getter;
 
 public class MagicActivation extends Event {
     @Getter
-    private final Card card;
+    private final Magic magic;
 
     public MagicActivation(Magic magic){
-        this.card = magic;
+        this.magic = magic;
     }
 
     @Override
     public int getSpeed() {
-        return card.getSpeed();
+        return magic.getSpeed();
     }
 
     @Override
     public String getActivationQuestion() {
-        return String.format("Do you want to activate effect of %s?", card.getName());
+        return String.format("Do you want to activate effect of %s?", magic.getName());
     }
 
     @Override

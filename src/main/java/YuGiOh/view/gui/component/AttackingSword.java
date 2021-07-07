@@ -50,7 +50,8 @@ public class AttackingSword extends ImageView {
                     .and(monster.isDefensive().not())
                     .and(ObservableBuilder.inMonsterZoneBinding(monster))
                     .and(inBattlePhase)
-                    .and(ObservableBuilder.myTurnBinding(monster));
+                    .and(ObservableBuilder.myTurnBinding(monster))
+                    .and(((Monster) cardFrame.getCard()).allowAttackProperty());
             visibleProperty().bind(extraVisibility.and(activationNeeds));
             inBattlePhase.addListener(new ChangeListener<Boolean>() {
                 @Override
@@ -72,7 +73,8 @@ public class AttackingSword extends ImageView {
         ready(cardFrame.getCenterXProperty(), cardFrame.getCenterYProperty());
     }
     public void shoot(DoubleBinding x, DoubleBinding y) {
-        MainGameThread.getInstance().onlyBlockRunningThreadThenDoInGui(()-> {
+        MainGameThread.OneWayTicket ticket = new MainGameThread.OneWayTicket();
+        ticket.runOneWay(()->{
             TranslateTransition t = new TranslateTransition(Duration.millis(600), this);
             translateXProperty().unbind();
             translateYProperty().unbind();
@@ -83,7 +85,7 @@ public class AttackingSword extends ImageView {
             setRotate(Math.atan2(toY.get(), toX.get()) * 180 / Math.PI + 90);
             t.setOnFinished(e -> {
                 hide();
-                MainGameThread.getInstance().unlockTheThreadIfMain();
+                ticket.free();
             });
             t.play();
         });

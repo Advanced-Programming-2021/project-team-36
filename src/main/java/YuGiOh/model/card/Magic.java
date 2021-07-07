@@ -89,9 +89,9 @@ abstract public class Magic extends Card {
         return magicStateProperty.getValue();
     }
 
-    public void onMovingToGraveYard() {
+    public void onMovingToGraveyard() {
+        setMagicState(null);
     }
-
     public void onDestroyMyMonster() {
     }
 

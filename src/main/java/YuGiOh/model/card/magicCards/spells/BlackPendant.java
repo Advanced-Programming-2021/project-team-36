@@ -48,7 +48,8 @@ public class BlackPendant extends Spell {
     }
 
     @Override
-    public void onMovingToGraveYard() {
+    public void onMovingToGraveyard() {
+        super.onMovingToGraveyard();
         Player opponent = GameController.getInstance().getGame().getOtherPlayer(this.getOwner());
         GameController.getInstance().decreaseLifePoint(opponent, 500, false);
         CustomPrinter.println(String.format("<%s> activated <%s> successfully", this.getOwner().getUser().getUsername(), this.getName()), Color.Yellow);

@@ -3,6 +3,7 @@ package YuGiOh.view.gui.component;
 import YuGiOh.controller.GameController;
 import YuGiOh.graphicController.DuelMenuController;
 import YuGiOh.model.card.Card;
+import YuGiOh.model.card.Magic;
 import YuGiOh.model.card.Monster;
 import YuGiOh.model.enums.MonsterState;
 import YuGiOh.view.gui.*;
@@ -119,9 +120,12 @@ public class CardFrame extends DraggablePane {
             System.out.println("actual zone: " + GameController.getInstance().getGame().getCardZoneType(card));
             System.out.println("force image face up : " + forceImageFaceUp.get());
             System.out.println("force flip card animation: " + forceFlipCardAnimation.get());
+            System.out.println("faced up property: " + getCard().facedUpProperty().get());
             System.out.println(getWidth() + " " + getHeight() + " " + imageView.getFitWidth() + " " + imageView.getFitHeight());
             if(card instanceof Monster)
                 System.out.println("monster state: " + ((Monster) card).getMonsterState());
+            if(card instanceof Magic)
+                System.out.println("magic state: " + ((Magic) card).getState());
         });
         setOnContextMenuRequested(e->{
             ContextMenu contextMenu = new ContextMenu();

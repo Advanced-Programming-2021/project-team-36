@@ -14,9 +14,14 @@ import YuGiOh.utils.CustomPrinter;
 import YuGiOh.view.cardSelector.ResistToChooseCard;
 import javafx.beans.binding.Bindings;
 import javafx.beans.binding.BooleanBinding;
+import javafx.beans.property.BooleanProperty;
+import javafx.beans.property.SimpleBooleanProperty;
 import javafx.beans.property.SimpleObjectProperty;
 import lombok.Getter;
 import lombok.Setter;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public class Monster extends Card {
     @Setter
@@ -32,9 +37,7 @@ public class Monster extends Card {
     protected SimpleObjectProperty<MonsterState> monsterStateProperty;
     @Getter
     protected int level;
-    @Getter
-    @Setter
-    protected boolean allowAttack = true;
+    protected SimpleBooleanProperty allowAttack = new SimpleBooleanProperty(true);
     // todo allowAttack should be a function that gets monster and tells whether you can attack it or not
 
     public Monster(String name, String description, int price, int attackDamage, int defenseRate, MonsterAttribute attribute, MonsterType monsterType, MonsterCardType monsterCardType, int level) {
@@ -257,9 +260,32 @@ public class Monster extends Card {
         monsterStateProperty.set(state);
     }
 
+    public void onMovingToGraveyard() {
+        List<Magic> equipped = new ArrayList<>();
+        getOwner().getBoard().getMagicCardZone().forEach((id, magic)->{
+            if(magic.getIcon().equals(Icon.EQUIP) && magic.getEquippedMonster().equals(this))
+                equipped.add(magic);
+        });
+        equipped.forEach(Card::moveCardToGraveYard);
+        getOwner().getBoard().getMagicCardZone().forEach((id, magic)->{
+            magic.onDestroyMyMonster();
+        });
+        setMonsterState(null);
+    }
+
     @Override
     public int getSpeed() {
         return 1;
+    }
+
+    public void setAllowAttack(boolean allowAttack) {
+        this.allowAttack.set(allowAttack);
+    }
+    public boolean isAllowAttack() {
+        return allowAttack.get();
+    }
+    public BooleanProperty allowAttackProperty() {
+        return allowAttack;
     }
 
     // todo not clean :))

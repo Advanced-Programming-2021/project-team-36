@@ -40,36 +40,35 @@ public class GameCardFrameManager {
         }
     }
 
-    private void refresh() {
-        if(game.getAllCards().size() != occupied.size())
+    public synchronized void refresh() {
+        System.out.println("TRYING TO REFRESH " + game.getAllCards().size() + " <-> " + occupied.size());
+        if (game.getAllCards().size() != occupied.size()) {
+            System.out.println(game.getAllCards().size() + " <-> " + occupied.size());
             return;
+        }
         Map<CardFrame, CardAddress> changes = new HashMap<>();
         AtomicBoolean invalid = new AtomicBoolean(false);
-        occupied.forEach((cardFrame, address)->{
+        occupied.forEach((cardFrame, address) -> {
             try {
                 CardAddress newAddress = game.getCardAddress(cardFrame.getCard());
-                if(!newAddress.equals(address))
+                if (!newAddress.equals(address))
                     changes.put(cardFrame, newAddress);
-            } catch (Throwable t) {
+            } catch (Throwable tt) {
+                tt.printStackTrace();
                 invalid.set(true);
             }
         });
-        if(invalid.get())
+        if (invalid.get())
             return;
+
         changes.forEach(((cardFrame, cardAddress) -> {
-            if(moveHandler != null)
+            if (moveHandler != null)
                 moveHandler.move(cardFrame, cardAddress);
             occupied.put(cardFrame, cardAddress);
         }));
         occupied.forEach(((cardFrame, address) -> {
-            if(address.getZone().equals(ZoneType.HAND))
+            if (address.getZone().equals(ZoneType.HAND))
                 moveHandler.move(cardFrame, address);
-        }));
-
-
-        System.out.println("FROM CARD FRAME MANAGER: ");
-        occupied.forEach(((cardFrame, address) -> {
-            System.out.println(cardFrame + "   " + cardFrame.getCard().getName() + "  " + address.getZone() + " " + address.getId());
         }));
     }
 
@@ -110,8 +109,9 @@ public class GameCardFrameManager {
         }));
         return ret;
     }
-
-    public void put(CardFrame cardFrame, CardAddress cardAddress) {
+    public void addNewCard(CardFrame cardFrame, CardAddress cardAddress) {
+        if(occupied.containsKey(cardFrame))
+            throw new Error("this is just for creating");
         occupied.put(cardFrame, cardAddress);
     }
 

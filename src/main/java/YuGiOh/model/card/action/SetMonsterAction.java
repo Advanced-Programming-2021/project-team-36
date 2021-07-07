@@ -28,7 +28,6 @@ public class SetMonsterAction extends Action {
             if (event.getRequiredTributes() > 0)
                 for (Card card : event.getChosenCardsToTribute())
                     gameController.moveCardToGraveYard(card);
-            gameController.removeCardFromGame(monster);
             gameController.addCardToBoard(monster);
             monster.setMonsterState(MonsterState.DEFENSIVE_HIDDEN);
             gameController.setSummoned(monster.getOwner());

@@ -31,6 +31,7 @@ public abstract class Action {
             System.out.println("shit");
         GuiReporter.getInstance().report(new GameActionEvent(this));
         try {
+            validateEffect();
             effect.run();
             GameController.getInstance().checkBothLivesEndGame();
         } catch (LogicException | ValidateResult e){

@@ -7,9 +7,12 @@ import YuGiOh.model.card.action.Effect;
 import YuGiOh.model.enums.Color;
 import YuGiOh.model.enums.Icon;
 import YuGiOh.model.enums.Status;
+import YuGiOh.model.enums.ZoneType;
 import YuGiOh.utils.CustomPrinter;
 
 import java.util.List;
+import java.util.Optional;
+import java.util.stream.Collectors;
 
 public class Terraforming extends Spell {
 
@@ -20,33 +23,21 @@ public class Terraforming extends Spell {
     @Override
     protected Effect getEffect() {
         return () -> {
-            Player player = this.getOwner();
-            List<Card> cards = player.getBoard().getMainDeck().getCards();
-            for (Card card : cards)
-                if (card instanceof Spell) {
-                    Spell spell = (Spell) card;
-                    if (spell.getIcon().equals(Icon.FIELD)) {
-                        cards.remove(spell);
-                        player.getBoard().getCardsOnHand().add(spell);
-                        CustomPrinter.println(String.format("new card added to <%s>'s hand : <%s>", player.getUser().getUsername(), card), Color.Blue);
-                        CustomPrinter.println(String.format("<%s> activated <%s> successfully", this.getOwner().getUser().getUsername(), this.getName()), Color.Yellow);
-                        CustomPrinter.println(this, Color.Gray);
-                        break;
-                    }
-                }
+            Optional<Card> opt = getOwner().getBoard().getMainDeck().getCards().stream()
+                    .filter(card-> card instanceof Spell && ((Spell) card).getIcon().equals(Icon.FIELD))
+                    .findFirst();
+            if(opt.isPresent()) {
+                CustomPrinter.println(String.format("new card added to <%s>'s hand : <%s>", getOwner().getUser().getUsername(), opt.get()), Color.Blue);
+                CustomPrinter.println(String.format("<%s> activated <%s> successfully", this.getOwner().getUser().getUsername(), this.getName()), Color.Yellow);
+                CustomPrinter.println(this, Color.Gray);
+                getOwner().getBoard().moveCardNoError(opt.get(), ZoneType.HAND);
+            }
         };
     }
 
     @Override
     public boolean canActivateEffect() {
-        Player player = this.getOwner();
-        List<Card> cards = player.getBoard().getMainDeck().getCards();
-        for (Card card : cards)
-            if (card instanceof Spell) {
-                Spell spell = (Spell) card;
-                if (spell.getIcon().equals(Icon.FIELD))
-                    return true;
-            }
-        return false;
+        return getOwner().getBoard().getMainDeck().getCards().stream()
+                .anyMatch(card-> card instanceof Spell && ((Spell) card).getIcon().equals(Icon.FIELD));
     }
 }

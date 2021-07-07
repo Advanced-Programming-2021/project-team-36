@@ -3,10 +3,7 @@ package YuGiOh.model.card.monsterCards;
 import YuGiOh.controller.GameController;
 import YuGiOh.controller.LogicException;
 import YuGiOh.controller.player.PlayerController;
-import YuGiOh.model.enums.Color;
-import YuGiOh.model.enums.MonsterAttribute;
-import YuGiOh.model.enums.MonsterCardType;
-import YuGiOh.model.enums.MonsterType;
+import YuGiOh.model.enums.*;
 import YuGiOh.utils.CustomPrinter;
 import YuGiOh.view.cardSelector.SelectConditions;
 import YuGiOh.view.cardSelector.ResistToChooseCard;
@@ -55,8 +52,8 @@ public class HeraldOfCreation extends Monster {
                 CustomPrinter.println("canceled", Color.Default);
                 return;
             }
-            this.getOwner().getBoard().removeFromHand(discarded);
-            this.getOwner().getBoard().addCardToHand(monster);
+            this.getOwner().getBoard().moveCardNoError(discarded, ZoneType.GRAVEYARD);
+            this.getOwner().getBoard().moveCardNoError(monster, ZoneType.HAND);
             lastTurnActivated = GameController.instance.getGame().getTurn();
             CustomPrinter.println(String.format("<%s>'s <%s> activated successfully", this.getOwner().getUser().getUsername(), this.getName()), Color.Yellow);
             CustomPrinter.println(this.asEffect(), Color.Gray);

@@ -13,7 +13,7 @@ public abstract class Card implements Comparable<Card>, Cloneable, Serializable 
     protected String name;
     protected String description;
     protected int price;
-    private SimpleObjectProperty<Player> ownerProperty;
+    private final SimpleObjectProperty<Player> ownerProperty;
 
     {
         ownerProperty = new SimpleObjectProperty<>(null);
@@ -81,6 +81,8 @@ public abstract class Card implements Comparable<Card>, Cloneable, Serializable 
 
     public void preprocessForEffect() {
     }
+
+    abstract public void onMovingToGraveyard();
 
     public void setOwner(Player player) {
         ownerProperty.set(player);

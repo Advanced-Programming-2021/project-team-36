@@ -104,8 +104,8 @@ public class Game {
     }
 
     public void moveCardToGraveYard(Card card) {
-        firstPlayer.getBoard().moveCardToGraveYard(card);
-        secondPlayer.getBoard().moveCardToGraveYard(card);
+        firstPlayer.moveCardToGraveYard(card);
+        secondPlayer.moveCardToGraveYard(card);
     }
 
     public Player getOtherPlayer(Player player) {
