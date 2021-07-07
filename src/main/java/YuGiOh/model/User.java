@@ -26,8 +26,7 @@ public class User implements Serializable {
     private final ArrayList<Card> cards;
     private final ArrayList<Deck> decks;
     private Deck activeDeck;
-    @Getter
-    private Image profilePicture;
+    private int photoNumber;
 
     public User(String username, String nickname, String password) {
         this.username = username;
@@ -38,12 +37,7 @@ public class User implements Serializable {
         this.cards = new ArrayList<>();
         this.decks = new ArrayList<>();
         this.activeDeck = null;
-        try {
-            this.profilePicture = new Image(new FileInputStream(randomProfilePhotoURL()));
-        } catch (IOException ignored) {
-            System.out.println("shit");
-            ignored.printStackTrace();
-        }
+        this.photoNumber = randomProfilePhoto();
         this.save();
     }
 
@@ -170,10 +164,19 @@ public class User implements Serializable {
         return this.password.equals(password);
     }
 
-    private String randomProfilePhotoURL() {
+    private int randomProfilePhoto() {
         final int numberOfPhotos = 38;
         Random random = new Random();
         int photoNumber = random.nextInt(numberOfPhotos);
-        return "assets/Characters/Chara001.dds" + photoNumber + ".png";
+        return photoNumber;
+    }
+
+    public Image getProfilePicture() {
+        try {
+            Image image = new Image(new FileInputStream("assets/Characters/Chara001.dds" + photoNumber + ".png"));
+            return image;
+        } catch (IOException exception) {
+        }
+        return null;
     }
 }
