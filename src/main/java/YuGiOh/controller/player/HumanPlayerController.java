@@ -2,12 +2,12 @@ package YuGiOh.controller.player;
 
 import YuGiOh.controller.GameController;
 import YuGiOh.controller.MainGameThread;
-import YuGiOh.view.DuelMenuView;
-import YuGiOh.archive.view.cardSelector.FinishSelectingCondition;
-import YuGiOh.archive.view.cardSelector.FinishSelectingConditions;
-import YuGiOh.archive.view.cardSelector.ResistToChooseCard;
-import YuGiOh.archive.view.cardSelector.SelectCondition;
-import YuGiOh.controller.menus.DuelMenuController;
+import YuGiOh.view.menu.DuelMenuView;
+import YuGiOh.view.cardSelector.FinishSelectingCondition;
+import YuGiOh.view.cardSelector.FinishSelectingConditions;
+import YuGiOh.view.cardSelector.ResistToChooseCard;
+import YuGiOh.view.cardSelector.SelectCondition;
+import YuGiOh.controller.menu.DuelMenuController;
 import YuGiOh.model.Player.HumanPlayer;
 import YuGiOh.model.card.Card;
 import YuGiOh.model.card.Monster;

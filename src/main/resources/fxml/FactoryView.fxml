@@ -6,7 +6,7 @@
 <?import javafx.scene.image.ImageView?>
 <?import com.sun.javafx.scene.control.IntegerField?>
 <Pane xmlns="http://javafx.com/javafx" xmlns:fx="http://javafx.com/fxml"
-      fx:controller="YuGiOh.view.FactoryView" prefHeight="640.0" prefWidth="480.0" >
+      fx:controller="YuGiOh.view.menu.FactoryView" prefHeight="640.0" prefWidth="480.0" >
     <ImageView fx:id="backgroundImageView" fitWidth="480" fitHeight="640"/>
     <VBox alignment="CENTER" spacing="30" prefHeight="640.0" prefWidth="480.0">
         <Label text="  Factory  " alignment="TOP_CENTER" styleClass="title"/>

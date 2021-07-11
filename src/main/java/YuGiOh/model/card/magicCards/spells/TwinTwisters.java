@@ -11,8 +11,8 @@ import YuGiOh.model.enums.Color;
 import YuGiOh.model.enums.Icon;
 import YuGiOh.model.enums.Status;
 import YuGiOh.utils.CustomPrinter;
-import YuGiOh.archive.view.cardSelector.ResistToChooseCard;
-import YuGiOh.archive.view.cardSelector.SelectConditions;
+import YuGiOh.view.cardSelector.ResistToChooseCard;
+import YuGiOh.view.cardSelector.SelectConditions;
 
 public class TwinTwisters extends Spell {
 

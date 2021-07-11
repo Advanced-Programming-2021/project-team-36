@@ -8,7 +8,7 @@ import YuGiOh.model.card.Spell;
 import YuGiOh.model.card.action.Action;
 import YuGiOh.model.card.event.MagicActivation;
 import YuGiOh.model.card.magicCards.spells.SpellAbsorption;
-import YuGiOh.archive.view.cardSelector.ResistToChooseCard;
+import YuGiOh.view.cardSelector.ResistToChooseCard;
 import lombok.Getter;
 
 import java.util.Stack;

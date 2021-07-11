@@ -12,7 +12,7 @@ import YuGiOh.model.enums.Status;
 import YuGiOh.model.enums.ZoneType;
 import YuGiOh.model.enums.*;
 import YuGiOh.utils.CustomPrinter;
-import YuGiOh.archive.view.cardSelector.SelectConditions;
+import YuGiOh.view.cardSelector.SelectConditions;
 
 public class BlackPendant extends Spell {
 

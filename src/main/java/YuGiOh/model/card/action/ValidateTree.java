@@ -8,7 +8,7 @@ import YuGiOh.model.card.Magic;
 import YuGiOh.model.card.Monster;
 import YuGiOh.model.card.Spell;
 import YuGiOh.model.enums.*;
-import YuGiOh.archive.view.cardSelector.SelectCondition;
+import YuGiOh.view.cardSelector.SelectCondition;
 
 import java.util.Optional;
 

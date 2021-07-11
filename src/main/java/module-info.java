@@ -6,6 +6,7 @@ open module YuGiOh {
     requires commons.cli;
     requires javafx.media;
     requires gson;
+    requires java.sql;
 
     exports YuGiOh;
 }

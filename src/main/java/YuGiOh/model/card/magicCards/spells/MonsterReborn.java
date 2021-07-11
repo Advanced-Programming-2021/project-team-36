@@ -11,7 +11,7 @@ import YuGiOh.model.card.action.SummonAction;
 import YuGiOh.model.card.event.SummonEvent;
 import YuGiOh.model.enums.*;
 import YuGiOh.utils.CustomPrinter;
-import YuGiOh.archive.view.cardSelector.SelectConditions;
+import YuGiOh.view.cardSelector.SelectConditions;
 
 import java.util.ArrayList;
 import java.util.List;

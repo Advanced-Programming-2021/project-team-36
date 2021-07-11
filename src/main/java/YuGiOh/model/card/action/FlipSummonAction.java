@@ -10,7 +10,7 @@ import YuGiOh.model.enums.Color;
 import YuGiOh.model.enums.MonsterState;
 import YuGiOh.model.enums.SummonType;
 import YuGiOh.utils.CustomPrinter;
-import YuGiOh.archive.view.cardSelector.ResistToChooseCard;
+import YuGiOh.view.cardSelector.ResistToChooseCard;
 
 public class FlipSummonAction extends Action {
     public FlipSummonAction(FlipSummonEvent event) {

@@ -8,8 +8,8 @@ import YuGiOh.model.enums.MonsterCardType;
 import YuGiOh.model.enums.MonsterType;
 import YuGiOh.model.enums.Color;
 import YuGiOh.utils.CustomPrinter;
-import YuGiOh.archive.view.cardSelector.SelectConditions;
-import YuGiOh.archive.view.cardSelector.ResistToChooseCard;
+import YuGiOh.view.cardSelector.SelectConditions;
+import YuGiOh.view.cardSelector.ResistToChooseCard;
 import YuGiOh.model.card.action.Effect;
 import YuGiOh.model.card.Monster;
 

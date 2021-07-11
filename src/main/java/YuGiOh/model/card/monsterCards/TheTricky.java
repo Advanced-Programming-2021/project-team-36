@@ -7,8 +7,8 @@ import YuGiOh.model.card.action.ValidateResult;
 import YuGiOh.model.card.event.SummonEvent;
 import YuGiOh.model.enums.*;
 import YuGiOh.model.card.Monster;
-import YuGiOh.archive.view.cardSelector.SelectCondition;
-import YuGiOh.archive.view.cardSelector.SelectConditions;
+import YuGiOh.view.cardSelector.SelectCondition;
+import YuGiOh.view.cardSelector.SelectConditions;
 
 public class TheTricky extends Monster {
 

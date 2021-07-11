@@ -10,7 +10,7 @@
 <?import java.net.URL?>
 <?import javafx.geometry.Insets?>
 <Pane xmlns="http://javafx.com/javafx" xmlns:fx="http://javafx.com/fxml" styleClass="background"
-      fx:controller="YuGiOh.view.DeckMenuView" prefHeight="480.0" prefWidth="400.0">
+      fx:controller="YuGiOh.view.menu.DeckMenuView" prefHeight="480.0" prefWidth="400.0">
     <ImageView fx:id="backgroundImageView" fitWidth="480" fitHeight="480"/>
     <ScrollPane maxHeight="350" maxWidth="220" fx:id="scrollPane" styleClass="scroll-pane">
         <ListView fx:id="listView" prefHeight="300" prefWidth="210" styleClass="list-view"/>

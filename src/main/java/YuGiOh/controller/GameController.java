@@ -1,7 +1,7 @@
 package YuGiOh.controller;
 
 import YuGiOh.controller.events.RoundOverExceptionEvent;
-import YuGiOh.controller.menus.DuelMenuController;
+import YuGiOh.controller.menu.DuelMenuController;
 import YuGiOh.controller.player.HumanPlayerController;
 import YuGiOh.controller.player.PlayerController;
 import YuGiOh.model.Player.Player;

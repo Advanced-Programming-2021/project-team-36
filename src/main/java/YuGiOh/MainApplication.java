@@ -1,12 +1,9 @@
 package YuGiOh;
 
 
-import YuGiOh.controller.menus.*;
-import YuGiOh.model.User;
-import YuGiOh.model.card.Utils;
-import YuGiOh.utils.Cheat;
+import YuGiOh.controller.MediaPlayerController;
 import YuGiOh.utils.DatabaseHandler;
-import YuGiOh.view.LoginMenuView;
+import YuGiOh.view.menu.LoginMenuView;
 import javafx.application.Application;
 import javafx.event.EventHandler;
 import javafx.stage.Stage;
@@ -39,5 +36,9 @@ public class MainApplication extends Application {
                 DatabaseHandler.exportToDatabase();
             }
         });
+    }
+
+    public static void main(String[] args) {
+        launch(args);
     }
 }
