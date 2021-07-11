@@ -27,7 +27,6 @@ public class LoginMenuController extends BaseMenuController {
         assert user != null;
         if (!user.authenticate(password))
             throw new ModelException("Username and password didn’t match!");
-        new MainMenuController(user);
         return user;
     }
 }

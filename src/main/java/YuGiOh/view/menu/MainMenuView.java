@@ -84,12 +84,12 @@ public class MainMenuView extends BaseMenuView {
 
     @FXML
     private void startNewDuel() {
-        NewGameView.init(stage, 0);
+        StartNewDuelView.init(stage, 0);
     }
 
     @FXML
     private void startNewDuelWithAI() {
-        NewGameView.init(stage, 1);
+        StartNewDuelView.init(stage, 1);
     }
 
     @FXML

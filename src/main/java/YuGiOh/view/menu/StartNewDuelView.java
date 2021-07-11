@@ -27,13 +27,13 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Random;
 
-public class NewGameView extends BaseMenuView {
+public class StartNewDuelView extends BaseMenuView {
     private static final int ARROW_SIZE = 30;
     private static final Color TRIANGLE_COLOR = Color.rgb(255, 200, 0);
     private static final String backgroundImageAddress = "assets/Backgrounds/GUI_T_TowerBg1.dds.png";
     private static final String coinAssetURL = "assets/Coin/";
 
-    private static NewGameView instance;
+    private static StartNewDuelView instance;
 
     private int numberOfRounds = 3, gameMode;
     private Animation animation;
@@ -52,20 +52,20 @@ public class NewGameView extends BaseMenuView {
     @FXML
     private TextField secondPlayerUsernameTextField;
 
-    public NewGameView() {
+    public StartNewDuelView() {
         instance = this;
     }
 
-    public static NewGameView getInstance() {
+    public static StartNewDuelView getInstance() {
         if (instance == null)
-            instance = new NewGameView();
+            instance = new StartNewDuelView();
         return instance;
     }
 
     public static void init(Stage primaryStage, int gameMode) {
         try {
             Pane root = FXMLLoader.load(MainApplication.class.getResource("/fxml/NewGameMenu.fxml"));
-            NewGameView.getInstance().start(primaryStage, root, gameMode);
+            StartNewDuelView.getInstance().start(primaryStage, root, gameMode);
         } catch (IOException ignored) {
         }
     }
@@ -77,6 +77,7 @@ public class NewGameView extends BaseMenuView {
         Random random = new Random();
         this.winner = random.nextInt(100) % 2 == 1;
         scene = new Scene(root);
+        new StartNewDuelController();
         try {
             backgroundImageView.setImage(new Image(new FileInputStream(backgroundImageAddress)));
             backgroundImageView.toBack();
@@ -154,9 +155,9 @@ public class NewGameView extends BaseMenuView {
         try {
             if (gameMode == 0) {
                 String secondPlayerUsername = secondPlayerUsernameTextField.getText();
-                MainMenuController.getInstance().startNewDuel(winner, secondPlayerUsername, numberOfRounds);
+                StartNewDuelController.getInstance().startNewDuel(winner, secondPlayerUsername, numberOfRounds);
             } else
-                MainMenuController.getInstance().startDuelWithAI(winner, 3, AIMode.NORMAL);
+                StartNewDuelController.getInstance().startDuelWithAI(winner, 3, AIMode.NORMAL);
             coinToss();
         } catch (Exception exception) {
             new Alert(Alert.AlertType.ERROR, exception.getMessage()).showAndWait();
