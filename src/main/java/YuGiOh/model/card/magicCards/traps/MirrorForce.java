@@ -13,6 +13,8 @@ import YuGiOh.model.card.event.AttackEvent;
 import YuGiOh.model.card.action.Effect;
 import YuGiOh.utils.CustomPrinter;
 
+import java.util.concurrent.CompletableFuture;
+
 public class MirrorForce extends Trap {
 
     public MirrorForce(String name, String description, int price, Icon icon, Status status) {
@@ -33,6 +35,7 @@ public class MirrorForce extends Trap {
             GameController.getInstance().moveCardToGraveYard(this);
             CustomPrinter.println(String.format("<%s>'s <%s> activated successfully", this.getOwner().getUser().getUsername(), this.getName()), Color.Yellow);
             CustomPrinter.println(this, Color.Gray);
+            return CompletableFuture.completedFuture(null);
         };
     }
 

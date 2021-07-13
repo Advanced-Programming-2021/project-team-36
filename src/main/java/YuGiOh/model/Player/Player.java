@@ -1,6 +1,6 @@
 package YuGiOh.model.Player;
 
-import YuGiOh.model.ModelException;
+import YuGiOh.model.exception.ModelException;
 import YuGiOh.model.User;
 import YuGiOh.model.enums.MonsterCardType;
 import YuGiOh.model.deck.Deck;

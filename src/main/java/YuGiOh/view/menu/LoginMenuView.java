@@ -2,7 +2,7 @@ package YuGiOh.view.menu;
 
 import YuGiOh.MainApplication;
 import YuGiOh.controller.menu.LoginMenuController;
-import YuGiOh.model.ModelException;
+import YuGiOh.model.exception.ModelException;
 import YuGiOh.model.User;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;

@@ -4,7 +4,6 @@ import YuGiOh.controller.GameController;
 import YuGiOh.controller.player.PlayerController;
 import YuGiOh.model.CardAddress;
 import YuGiOh.model.card.Magic;
-import YuGiOh.model.card.Monster;
 import YuGiOh.model.card.Spell;
 import YuGiOh.model.card.action.Effect;
 import YuGiOh.model.enums.Color;
@@ -12,6 +11,8 @@ import YuGiOh.model.enums.Icon;
 import YuGiOh.model.enums.Status;
 import YuGiOh.model.enums.ZoneType;
 import YuGiOh.utils.CustomPrinter;
+
+import java.util.concurrent.CompletableFuture;
 
 public class HarpiesFeatherDuster extends Spell {
 
@@ -35,6 +36,7 @@ public class HarpiesFeatherDuster extends Spell {
                 gameController.moveCardToGraveYard(opponent.getPlayer().getBoard().getFieldZoneCard());
             CustomPrinter.println(String.format("<%s>'s <%s> activated successfully", this.getOwner().getUser().getUsername(), this.getName()), Color.Yellow);
             CustomPrinter.println(this, Color.Gray);
+            return CompletableFuture.completedFuture(null);
         };
     }
 

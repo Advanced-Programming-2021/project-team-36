@@ -1,17 +1,19 @@
 package YuGiOh.model.card;
 
 import YuGiOh.controller.GameController;
-import YuGiOh.controller.LogicException;
-import YuGiOh.controller.events.RoundOverExceptionEvent;
+import YuGiOh.model.card.action.SpecialSummonAction;
+import YuGiOh.model.card.event.SummonEvent;
+import YuGiOh.model.exception.LogicException;
+import YuGiOh.model.exception.eventException.RoundOverExceptionEvent;
 import YuGiOh.controller.player.PlayerController;
 import YuGiOh.model.CardAddress;
 import YuGiOh.model.Player.Player;
 import YuGiOh.model.card.action.Effect;
 import YuGiOh.model.card.action.SummonAction;
-import YuGiOh.model.card.action.ValidateResult;
+import YuGiOh.model.exception.ValidateResult;
 import YuGiOh.model.enums.*;
 import YuGiOh.utils.CustomPrinter;
-import YuGiOh.view.cardSelector.ResistToChooseCard;
+import YuGiOh.model.exception.ResistToChooseCard;
 import javafx.beans.binding.Bindings;
 import javafx.beans.binding.BooleanBinding;
 import javafx.beans.property.BooleanProperty;
@@ -22,6 +24,7 @@ import lombok.Setter;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.CompletableFuture;
 
 public class Monster extends Card {
     // don't put getter on attack damage and defense rate
@@ -165,6 +168,7 @@ public class Monster extends Card {
         return () -> {
             if (getMonsterState().equals(MonsterState.DEFENSIVE_HIDDEN))
                 setMonsterState(MonsterState.DEFENSIVE_OCCUPIED);
+            return CompletableFuture.completedFuture(null);
         };
     }
 
@@ -177,8 +181,9 @@ public class Monster extends Card {
             setMonsterState(MonsterState.DEFENSIVE_OCCUPIED);
     }
 
-    protected void specialEffectWhenBeingAttacked(Monster attacker) throws ResistToChooseCard, LogicException {
+    protected CompletableFuture<Void> specialEffectWhenBeingAttacked(Monster attacker) {
         damageStep(attacker);
+        return CompletableFuture.completedFuture(null);
     }
 
     public Effect directAttack(Player player) {
@@ -186,10 +191,11 @@ public class Monster extends Card {
         return () -> {
             if (GameController.getInstance().getGame().getCardZoneType(this).equals(ZoneType.GRAVEYARD)) {
                 CustomPrinter.println(this.getName() + " is dead so it cannot attack", Color.Yellow);
-                return;
+                return CompletableFuture.completedFuture(null);
             }
             GameController.getInstance().decreaseLifePoint(opponent, this.getAttackDamage(), true);
             this.setAllowAttack(false);
+            return CompletableFuture.completedFuture(null);
         };
     }
 
@@ -203,12 +209,12 @@ public class Monster extends Card {
         return () -> {
             if (GameController.getInstance().getGame().getCardZoneType(attacker).equals(ZoneType.GRAVEYARD)) {
                 CustomPrinter.println(this.getName() + " is dead so it cannot attack", Color.Yellow);
-                return;
+                return CompletableFuture.completedFuture(null);
             }
             startOfBeingAttackedByMonster();
-            changeFromHiddenToOccupiedIfCanEffect().run();
-            specialEffectWhenBeingAttacked(attacker);
-            endOfBeingAttackedByMonster();
+            return changeFromHiddenToOccupiedIfCanEffect().run()
+                    .thenCompose(res -> specialEffectWhenBeingAttacked(attacker))
+                    .thenRun(this::endOfBeingAttackedByMonster);
         };
     }
 
@@ -220,14 +226,8 @@ public class Monster extends Card {
     }
 
     @Override
-    public Effect activateEffect() throws LogicException {
-        return () -> {
-        };
-    }
-
-    @Override
-    public boolean hasEffect() {
-        return true;
+    public Effect activateEffect() {
+        return ()-> CompletableFuture.completedFuture(null);
     }
 
     public BooleanBinding isDefensive() {
@@ -244,12 +244,14 @@ public class Monster extends Card {
         setAllowAttack(true);
     }
 
-    public void validateSpecialSummon() throws ValidateResult {
-        throw new ValidateResult("you can't special summon " + this.getName());
-    }
-
-    public SummonAction specialSummonAction() {
-        return null;
+    public SpecialSummonAction specialSummonAction() {
+        Monster card = this;
+        return new SpecialSummonAction(new SummonEvent(this.getOwner(), this, SummonType.SPECIAL)) {
+            @Override
+            public void specialValidate() throws ValidateResult {
+                throw new ValidateResult("you can't special summon " + card.getName());
+            }
+        };
     }
 
     public MonsterState getMonsterState(){
@@ -262,7 +264,7 @@ public class Monster extends Card {
     public void onMovingToGraveyard() {
         List<Magic> equipped = new ArrayList<>();
         getOwner().getBoard().getMagicCardZone().forEach((id, magic)->{
-            if(magic.getIcon().equals(Icon.EQUIP) && magic.getEquippedMonster().equals(this))
+            if(magic.getIcon().equals(Icon.EQUIP) && this.equals(magic.getEquippedMonster()))
                 equipped.add(magic);
         });
         equipped.forEach(Card::moveCardToGraveYard);

@@ -1,11 +1,9 @@
 package YuGiOh.model.card;
 
-import YuGiOh.controller.LogicException;
+import YuGiOh.model.exception.LogicException;
 import YuGiOh.model.enums.*;
 import YuGiOh.utils.ClassFinder;
 import javafx.scene.image.Image;
-import javafx.scene.image.ImageView;
-import lombok.Getter;
 
 import java.io.FileInputStream;
 import java.util.*;
@@ -173,6 +171,11 @@ public class Utils {
         for(Class<?> monsterClass : specialMonstersClasses){
             String[] strings = monsterClass.getName().split("\\.");
             String name = strings[strings.length-1];
+
+            // todo this was strange. classloader returned this non existence class
+            if(name.equals("TheTricky$1"))
+                continue;
+
             if(getCard(name) == null)
                 throw new Error("Could not find " + name);
             if(getMonster(name) == null)

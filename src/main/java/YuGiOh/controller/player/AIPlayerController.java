@@ -2,8 +2,9 @@ package YuGiOh.controller.player;
 
 import YuGiOh.model.card.Magic;
 import YuGiOh.controller.GameController;
-import YuGiOh.controller.LogicException;
-import YuGiOh.view.cardSelector.ResistToChooseCard;
+import YuGiOh.model.card.action.NextPhaseAction;
+import YuGiOh.model.exception.GameException;
+import YuGiOh.model.exception.ResistToChooseCard;
 import YuGiOh.view.cardSelector.SelectCondition;
 import YuGiOh.model.Game;
 import YuGiOh.model.Player.AIPlayer;
@@ -12,46 +13,41 @@ import YuGiOh.model.card.Card;
 import YuGiOh.model.card.Monster;
 import YuGiOh.model.card.Spell;
 import YuGiOh.model.card.action.Action;
-import YuGiOh.model.enums.Icon;
 import YuGiOh.model.enums.MonsterState;
 
 import java.util.*;
+import java.util.concurrent.CompletableFuture;
+import java.util.stream.Collectors;
 
 public class AIPlayerController extends PlayerController {
     public AIPlayerController(AIPlayer player) {
         super(player);
     }
 
-    public void mainPhase() {
-        Random rnd = new Random();
-        List<Card> allCards = new ArrayList<>(player.getBoard().getAllCards());
-        while (!allCards.isEmpty()) {
-            Card card = allCards.get(rnd.nextInt(allCards.size()));
-            allCards.remove(card);
-            if (card instanceof Monster) {
-                int r = rnd.nextInt(3);
-                if (r == 0)
-                    noErrorSummonCard((Monster) card);
-                if (r == 1)
-                    noErrorFlipSummon((Monster) card);
-                if (r == 2)
-                    noErrorSetMonster((Monster) card);
-                r = rnd.nextInt(3);
-                if (r == 0)
-                    noErrorChangeMonsterPosition((Monster) card, MonsterState.OFFENSIVE_OCCUPIED);
-                if (r == 1)
-                    noErrorChangeMonsterPosition((Monster) card, MonsterState.DEFENSIVE_OCCUPIED);
-                if (r == 2)
-                    noErrorChangeMonsterPosition((Monster) card, MonsterState.DEFENSIVE_HIDDEN);
-                noErrorMonsterActivateEffect((Monster) card);
-            } else if (card instanceof Magic) {
-                noErrorSetMagic((Magic) card);
-            }
-            if (card instanceof Spell) {
-                noErrorActivateEffect((Spell) card);
-            }
+    public CompletableFuture<Void> recurse(Stack<Action> actions) {
+        CompletableFuture<Void> ret = CompletableFuture.completedFuture(null);
+        for(Action action : actions) {
+            ret = ret.thenCompose(res-> {
+                if(!action.isValid())
+                    return CompletableFuture.completedFuture(null);
+                try {
+                    return startChain(action);
+                } catch (GameException e) {
+                    throw new Error(action.isValid() + " this must never happen!");
+                }
+            });
         }
-        GameController.getInstance().goNextPhaseAndNotify();
+        ret = ret.thenCompose(res -> new NextPhaseAction().runEffect());
+        return ret;
+    }
+
+    public CompletableFuture<Void> doAllYouCan() {
+        Stack<Action> actions = getAllActions().stream().filter(Action::isValid).collect(Collectors.toCollection(Stack<Action>::new));
+        Collections.shuffle(actions);
+        return recurse(actions);
+    }
+    public void mainPhase() {
+        doAllYouCan();
     }
 
     @Override
@@ -64,150 +60,66 @@ public class AIPlayerController extends PlayerController {
         mainPhase();
     }
 
-    @Override
-    public void controlBattlePhase() {
-        Random rnd = new Random();
-        List<Card> allCards = new ArrayList<>(player.getBoard().getAllCards());
-        while (!allCards.isEmpty()) {
-            Card card = allCards.get(rnd.nextInt(allCards.size()));
-            allCards.remove(card);
-            if (card instanceof Monster) {
-                int r = rnd.nextInt(4);
-                if (r == 0)
-                    noErrorSummonCard((Monster) card);
-                if (r == 1)
-                    noErrorFlipSummon((Monster) card);
-                if (r == 2)
-                    noErrorSetMonster((Monster) card);
-                if (r == 3)
-                    noErrorSpecialSummonCard((Monster) card);
-                r = rnd.nextInt(3);
-                if (r == 0)
-                    noErrorChangeMonsterPosition((Monster) card, MonsterState.OFFENSIVE_OCCUPIED);
-                if (r == 1)
-                    noErrorChangeMonsterPosition((Monster) card, MonsterState.DEFENSIVE_OCCUPIED);
-                if (r == 2)
-                    noErrorChangeMonsterPosition((Monster) card, MonsterState.DEFENSIVE_HIDDEN);
-                for (Card opponentCard : GameController.getInstance().getGame().getOtherPlayer(player).getBoard().getAllCardsOnBoard()) {
-                    if (opponentCard instanceof Monster)
-                        noErrorAttack((Monster) card, (Monster) opponentCard);
-                }
-                noErrorMonsterActivateEffect((Monster) card);
-                noErrorDirectAttack((Monster) card);
-            } else if (card instanceof Magic) {
-                noErrorSetMagic((Magic) card);
+    protected List<Action> getAllActionsOfCard(Card card) {
+        List<Action> actions = new ArrayList<>();
+        if (card instanceof Monster) {
+            actions.add(normalSummon((Monster) card));
+            actions.add(flipSummon((Monster) card));
+            actions.add(setMonster((Monster) card));
+            actions.add(specialSummon((Monster) card));
+            actions.add(changeMonsterPosition((Monster) card, MonsterState.OFFENSIVE_OCCUPIED));
+            actions.add(changeMonsterPosition((Monster) card, MonsterState.DEFENSIVE_HIDDEN));
+            actions.add(changeMonsterPosition((Monster) card, MonsterState.DEFENSIVE_OCCUPIED));
+            for (Card opponentCard : GameController.getInstance().getGame().getOtherPlayer(player).getBoard().getAllCardsOnBoard()) {
+                if (opponentCard instanceof Monster)
+                    actions.add(attack((Monster) card, (Monster) opponentCard));
             }
-            if (card instanceof Spell) {
-                noErrorActivateEffect((Spell) card);
-            }
+            actions.add(activateMonsterEffect((Monster) card));
+            actions.add(directAttack((Monster) card));
+        } else if (card instanceof Magic) {
+            actions.add(setMagic((Magic) card));
         }
-        GameController.getInstance().goNextPhaseAndNotify();
+        if (card instanceof Spell) {
+            actions.add(activateSpellEffect((Spell) card));
+        }
+        return actions;
     }
 
-    protected void noErrorSummonCard(Monster monster) {
-        try {
-            normalSummon(monster, false);
-        } catch (ResistToChooseCard | LogicException ignored) {
-        }
-    }
-
-    protected void noErrorSpecialSummonCard(Monster monster) {
-        try {
-            specialSummon(monster, false);
-        } catch (ResistToChooseCard | LogicException ignored) {
-        }
-    }
-
-    protected void noErrorFlipSummon(Monster monster) {
-        try {
-            flipSummon(monster, false);
-        } catch (LogicException | ResistToChooseCard ignored) {
-        }
-    }
-
-    protected void noErrorChangeMonsterPosition(Monster monster, MonsterState monsterState) {
-        try {
-            changeMonsterPosition(monster, monsterState, false);
-        } catch (LogicException ignored) {
-        }
-    }
-
-    protected void noErrorSetMonster(Monster monster) {
-        try {
-            setMonster(monster, false);
-        } catch (LogicException | ResistToChooseCard ignored) {
-        }
-    }
-
-    protected void noErrorSetMagic(Magic magic) {
-        try {
-            setMagic(magic, false);
-        } catch (LogicException | ResistToChooseCard ignored) {
-        }
-    }
-
-    protected void noErrorActivateEffect(Spell spell) {
-        if (spell.getIcon().equals(Icon.RITUAL)) {
-            noErrorRitualSummon(spell);
-            return;
-        }
-        try {
-            activateSpellEffect(spell, false);
-        } catch (LogicException | ResistToChooseCard ignored) {
-        }
-    }
-
-    protected void noErrorRitualSummon(Spell spell) {
-        while (true) {
-            try {
-                activateSpellEffect(spell, false);
-            } catch (LogicException | ResistToChooseCard logicException) {
-                break;
-            }
-        }
-    }
-
-    protected void noErrorAttack(Monster attacker, Monster defender) {
-        try {
-            attack(attacker, defender);
-        } catch (LogicException | ResistToChooseCard ignored) {
-        }
-    }
-
-    protected void noErrorDirectAttack(Monster monster) {
-        try {
-            directAttack(monster, false);
-        } catch (LogicException | ResistToChooseCard ignored) {
-        }
-    }
-
-    protected void noErrorMonsterActivateEffect(Monster monster) {
-        try {
-            activateMonsterEffect(monster, false);
-        } catch (LogicException | ResistToChooseCard ignored) {
-        }
+    protected List<Action> getAllActions() {
+        List<Action> actions = new ArrayList<>();
+        // todo after testing we can omit cards in graveyard and deck to make it faster
+        player.getBoard().getAllCards().forEach(card->{
+            actions.addAll(getAllActionsOfCard(card));
+        });
+        return actions;
     }
 
     @Override
-    public boolean askRespondToChain() {
-        return true;
+    public void controlBattlePhase() {
+        doAllYouCan();
     }
 
     @Override
-    public void doRespondToChain() {
+    public CompletableFuture<Boolean> askRespondToChain() {
+        return CompletableFuture.completedFuture(true);
+    }
+
+    @Override
+    public CompletableFuture<Void> doRespondToChain() {
         List<Action> actions = listOfAvailableActionsInResponse();
         Random rnd = new Random();
         addActionToChain(actions.get(rnd.nextInt(actions.size())));
+        return CompletableFuture.completedFuture(null);
     }
 
     @Override
-    public boolean askRespondToQuestion(String question, String yes, String no) {
+    public CompletableFuture<Boolean> askRespondToQuestion(String question, String yes, String no) {
         Random rand = new Random();
-        return rand.nextBoolean();
+        return CompletableFuture.completedFuture(rand.nextBoolean());
     }
 
     @Override
-    public Card[] chooseKCards(String message, int numberOfCards, SelectCondition condition) throws ResistToChooseCard {
+    public CompletableFuture<List<Card>> chooseKCards(String message, int numberOfCards, SelectCondition condition) {
         ArrayList<Card> cards = new ArrayList<>();
         GameController.getInstance().getGame().getAllCards().stream()
                 .filter(condition::canSelect).forEach(cards::add);
@@ -225,17 +137,17 @@ public class AIPlayerController extends PlayerController {
         }
 
         if (cards.size() < numberOfCards)
-            throw new ResistToChooseCard();
+            return CompletableFuture.failedFuture(new ResistToChooseCard());
         Random rnd = new Random();
         while (cards.size() > numberOfCards) {
             int id = rnd.nextInt(cards.size());
             cards.remove(id);
         }
-        return cards.toArray(Card[]::new);
+        return CompletableFuture.completedFuture(cards);
     }
 
     @Override
-    public Monster[] chooseKSumLevelMonsters(String message, int sumOfLevelsOfCards, SelectCondition condition) throws ResistToChooseCard {
+    public CompletableFuture<List<Monster>> chooseKSumLevelMonsters(String message, int sumOfLevelsOfCards, SelectCondition condition) {
         ArrayList<Monster> monsters = new ArrayList<>();
         int sum = 0;
         for (Card card : player.getBoard().getAllCards()) {
@@ -259,7 +171,7 @@ public class AIPlayerController extends PlayerController {
                 break;
         }
         if (sum < sumOfLevelsOfCards)
-            throw new ResistToChooseCard();
-        return monsters.toArray(Monster[]::new);
+            return CompletableFuture.failedFuture(new ResistToChooseCard());
+        return CompletableFuture.completedFuture(monsters);
     }
 }

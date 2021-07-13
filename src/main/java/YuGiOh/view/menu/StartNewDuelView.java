@@ -6,6 +6,8 @@ import YuGiOh.controller.menu.*;
 import YuGiOh.model.Animation;
 import YuGiOh.model.enums.AIMode;
 import javafx.animation.AnimationTimer;
+import javafx.animation.KeyFrame;
+import javafx.animation.Timeline;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Node;
@@ -20,12 +22,14 @@ import javafx.scene.layout.Pane;
 import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
 import javafx.stage.Stage;
+import javafx.util.Duration;
 
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Random;
+import java.util.concurrent.CountDownLatch;
 
 public class StartNewDuelView extends BaseMenuView {
     private static final int ARROW_SIZE = 30;
@@ -132,22 +136,15 @@ public class StartNewDuelView extends BaseMenuView {
         if (!winner)
             iterations += 10;
 
-        int finalIterations = iterations + 1;
-        AnimationTimer coinAnimator = new AnimationTimer() {
-            public void handle(long currentNanoTime) {
-                animatedCoin.setImage(animation.getImage());
-                if (animation.getCurrentImageId() > finalIterations) {
-                    this.stop();
-                    try {
-                        Thread.sleep(1000);
-                        MediaPlayerController.getInstance().stopThemeMedia();
-                        DuelMenuView.init(stage);
-                    } catch (InterruptedException ignored) {
-                    }
-                }
-            }
-        };
-        coinAnimator.start();
+        Timeline coinAnimator = new Timeline(new KeyFrame(Duration.millis(3), e->{
+            animatedCoin.setImage(animation.getImage());
+        }));
+        coinAnimator.setCycleCount(iterations + 1);
+        coinAnimator.play();
+        coinAnimator.setOnFinished(e->{
+            MediaPlayerController.getInstance().stopThemeMedia();
+            DuelMenuView.init(stage);
+        });
     }
 
     @FXML

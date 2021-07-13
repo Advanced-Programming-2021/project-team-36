@@ -3,16 +3,14 @@ package YuGiOh.model;
 import YuGiOh.model.deck.Deck;
 import YuGiOh.model.enums.Constants;
 import YuGiOh.model.card.Card;
+import YuGiOh.model.exception.ModelException;
 import javafx.scene.image.Image;
-import lombok.Getter;
-import lombok.Setter;
 
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Comparator;
-import java.util.Map;
 import java.util.Random;
 
 public class User implements Serializable {

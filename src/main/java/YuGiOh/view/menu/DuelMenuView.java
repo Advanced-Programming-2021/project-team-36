@@ -1,9 +1,10 @@
 package YuGiOh.view.menu;
 
 import YuGiOh.MainApplication;
+import YuGiOh.model.card.action.NextPhaseAction;
+import YuGiOh.model.card.magicCards.spells.SupplySquad;
 import YuGiOh.view.game.Utils;
 import YuGiOh.controller.GameController;
-import YuGiOh.controller.MainGameThread;
 import YuGiOh.controller.menu.*;
 import YuGiOh.model.Duel;
 import YuGiOh.model.Game;
@@ -11,14 +12,12 @@ import YuGiOh.model.Player.HumanPlayer;
 import YuGiOh.model.card.Card;
 import YuGiOh.view.cardSelector.CardSelector;
 import YuGiOh.view.cardSelector.FinishSelectingCondition;
-import YuGiOh.view.cardSelector.ResistToChooseCard;
 import YuGiOh.view.cardSelector.SelectCondition;
 import YuGiOh.view.game.GameMapLocationIml;
 import YuGiOh.view.game.GuiReporter;
 import YuGiOh.view.game.component.*;
 import YuGiOh.view.game.event.RoundOverEvent;
-import javafx.application.Platform;
-import javafx.beans.binding.Bindings;
+import javafx.animation.PauseTransition;
 import javafx.beans.property.SimpleBooleanProperty;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
@@ -30,17 +29,16 @@ import javafx.scene.paint.Color;
 import javafx.scene.text.Font;
 import javafx.scene.text.Text;
 import javafx.stage.Stage;
+import javafx.util.Duration;
 import lombok.Getter;
 
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
-import java.util.concurrent.Callable;
+import java.util.concurrent.CompletableFuture;
 
 public class DuelMenuView extends BaseMenuView {
     private static DuelMenuView instance;
-    private Game game;
     @FXML
     private GameNavBar navBar;
     @FXML
@@ -76,12 +74,14 @@ public class DuelMenuView extends BaseMenuView {
 
         this.stage = primaryStage;
         this.root = root;
-        this.game = duel.getCurrentGame();
+        Game game = duel.getCurrentGame();
         DuelMenuController.getInstance().setView(this);
         this.gameField.init(game, new GameMapLocationIml(game));
         this.infoBox.init(gameField, game);
         this.selector = new CardSelector(infoBox);
-        DuelMenuController.getInstance().runNewGameThread();
+        PauseTransition delay = new PauseTransition(Duration.millis(3000));
+        delay.setOnFinished(e-> DuelMenuController.getInstance().runNewGame());
+        delay.play();
         run();
         stage.setResizable(true);
         stage.setFullScreen(true);
@@ -114,80 +114,46 @@ public class DuelMenuView extends BaseMenuView {
         this.root.prefHeightProperty().bind(scene.heightProperty());
 
         this.navBar.setSpacing(40);
-        this.navBar.getChildren().add(new CustomButton("surrender", 23, ()-> gameField.addRunnableToMainThread(()-> DuelMenuController.getInstance().surrender())));
-        this.navBar.getChildren().add(new CustomButton("next phase", 23, ()-> gameField.addRunnableToMainThread(()-> DuelMenuController.getInstance().goNextPhase())));
-        this.addPlayPauseController();
+        this.navBar.getChildren().add(new CustomButton("surrender", 23, ()-> gameField.addRunnableToMainThread(()-> GameController.getInstance().getCurrentPlayerController().surrender())));
+        this.navBar.getChildren().add(new CustomButton("next phase", 23, ()-> gameField.addRunnableToMainThread(()-> new NextPhaseAction().runEffect())));
         scene.setCursor(new ImageCursor(Utils.getImage("Cursor/pen.png")));
     }
 
-    public void addPlayPauseController(){
-        SimpleBooleanProperty stopped = new SimpleBooleanProperty(false);
-        Button button = new CustomButton("", 23, ()-> {
-            stopped.set(!stopped.get());
-            if (stopped.get())
-                MainGameThread.getInstance().suspend();
-            else
-                MainGameThread.getInstance().resume();
-        });
-        button.textProperty().bind(Bindings.when(stopped).then("play").otherwise("pause"));
-        this.navBar.getChildren().add(button);
+    public CompletableFuture<Boolean> askUser(String question, String yes, String no) {
+        return new AlertBox().displayTextChoicesStandAlone(question, Arrays.asList(yes, no)).thenApply(res -> res == 0);
     }
 
-    // all of this asking user must happen in Query Thread!
-
-    public boolean askUser(String question, String yes, String no) {
-        return new MainGameThread.TwoWayTicket<>((Callable<Boolean>) ()->
-            new AlertBox().displayYesNoStandAlone(question, yes, no)
-        ).runAndWait();
-    }
-
-    public List<Card> askUserToChooseCard(String message, SelectCondition selectCondition, FinishSelectingCondition finishCondition) {
+    public CompletableFuture<List<Card>> askUserToChooseCard(String message, SelectCondition selectCondition, FinishSelectingCondition finishCondition) {
         selectModeText.setText("Selecting Cards...");
         selectModeText.setFont(Font.font(25));
         selectModeText.setFill(Color.RED);
         announce(message);
 
-        MainGameThread.OneWayTicket ticket = new MainGameThread.OneWayTicket();
-        ticket.runOneWay(()->{
-            selector.refresh(selectCondition, CardSelector.SelectMode.Choosing);
-            selector.setOnAction(()->{
-                if(finishCondition.canFinish(selector.getSelectedCards())){
-                    selectModeText.setFill(Color.GREEN);
-                    ticket.free();
-                } else {
-                    selectModeText.setFill(Color.RED);
-                }
-            });
+        CompletableFuture<List<Card>> ret = new CompletableFuture<>();
+
+        selector.refresh(selectCondition, CardSelector.SelectMode.Choosing);
+        System.out.println("SELECTING MODE");
+        selector.setOnAction(()->{
+            System.out.println("CLICKED!");
+            if(finishCondition.canFinish(selector.getSelectedCards())){
+                selectModeText.setFill(Color.GREEN);
+                List<Card> cards = selector.getSelectedCards();
+                resetSelector();
+                System.out.println("SELECTION COMPLETED!");
+                ret.complete(cards);
+            } else {
+                selectModeText.setFill(Color.RED);
+            }
         });
-        List<Card> cards = selector.getSelectedCards();
-        resetSelector();
-        return cards;
-    }
-
-    public int askUserToChoose(String question, List<String> choices) throws ResistToChooseCard {
-        ArrayList<CustomButton> buttons = new ArrayList<>();
-        choices.forEach(s->buttons.add(new CustomButton(s, 17, ()->{})));
-
-        int ret = new MainGameThread.TwoWayTicket<Integer>((Callable<Integer>) ()->
-                new AlertBox().displayChoicesStandAlone(question, buttons)).runAndWait();
-        if(ret == -1)
-            throw new ResistToChooseCard();
         return ret;
     }
 
-    public int askUserToChooseNoResist(String question, String... choices) {
-        try {
-            return askUserToChoose(question, Arrays.asList(choices));
-        } catch (ResistToChooseCard e){
-            return -1;
-        }
+    public CompletableFuture<Integer> askUserToChoose(String question, List<String> choices) {
+        return new AlertBox().displayTextChoicesStandAlone(question, choices);
     }
 
-
-    public void announce(String message){
-        Platform.runLater(()->{
-            new AlertBox().displayMessageStandAlone(message);
-        });
+    public CompletableFuture<Void> announce(String message){
+        return new AlertBox().displayMessageStandAlone(message);
     }
 
     public void resetSelector(){
@@ -197,22 +163,20 @@ public class DuelMenuView extends BaseMenuView {
     }
 
     public void anotherDuel() {
-        try {
-            askUserToChoose(DuelMenuController.getInstance().getDuel().getLastGameState() + "\n" + "are you ready for the next round? ", Arrays.asList("yes"));
-        } catch (ResistToChooseCard ignored) {
-        }
-        if (GameController.getInstance().getCurrentPlayerController().getPlayer() instanceof HumanPlayer)
-            Platform.runLater(() ->HalfTimeView.init(stage, GameController.getInstance().getCurrentPlayerController()));
-        else
-            Platform.runLater(() ->HalfTimeView.init(stage, GameController.getInstance().getOpponentPlayerController()));
-        //Platform.runLater(()->DuelMenuView.init(stage));
+        // todo here we assume at least one of players are human?
+        askUserToChoose(DuelMenuController.getInstance().getDuel().getLastGameState() + "\n" + "are you ready for the next round? ", Arrays.asList("yes"))
+                .thenRun(()->{
+                    if (GameController.getInstance().getCurrentPlayerController().getPlayer() instanceof HumanPlayer)
+                        HalfTimeView.init(stage, GameController.getInstance().getCurrentPlayerController());
+                    else
+                        HalfTimeView.init(stage, GameController.getInstance().getOpponentPlayerController());
+                });
     }
 
     public void endOfDuel() {
-        try {
-            askUserToChoose(DuelMenuController.getInstance().getDuel().getLastGameState(), Arrays.asList("back to main menu"));
-        } catch (ResistToChooseCard ignored) {
-        }
-        Platform.runLater(()->MainMenuView.getInstance().run());
+        askUserToChoose(DuelMenuController.getInstance().getDuel().getLastGameState(), Arrays.asList("back to main menu"))
+                .thenRun(()->{
+                    MainMenuView.getInstance().run();
+                });
     }
 }

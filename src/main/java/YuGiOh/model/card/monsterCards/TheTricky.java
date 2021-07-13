@@ -2,8 +2,10 @@ package YuGiOh.model.card.monsterCards;
 
 import YuGiOh.controller.GameController;
 import YuGiOh.controller.player.PlayerController;
+import YuGiOh.model.card.action.SpecialSummonAction;
 import YuGiOh.model.card.action.SummonAction;
-import YuGiOh.model.card.action.ValidateResult;
+import YuGiOh.model.card.action.ValidateTree;
+import YuGiOh.model.exception.ValidateResult;
 import YuGiOh.model.card.event.SummonEvent;
 import YuGiOh.model.enums.*;
 import YuGiOh.model.card.Monster;
@@ -17,14 +19,8 @@ public class TheTricky extends Monster {
     }
 
     @Override
-    public void validateSpecialSummon() throws ValidateResult {
-        if (!getOwner().hasInHand(this))
-            throw new ValidateResult("you can only summon the tricky from your hand");
-    }
-
-    @Override
-    public SummonAction specialSummonAction() {
-        PlayerController controller = GameController.getInstance().getPlayerControllerByPlayer(getOwner());
+    public SpecialSummonAction specialSummonAction() {
+        TheTricky card = this;
         SelectCondition condition = SelectConditions.and(
                 SelectConditions.or(
                         SelectConditions.getOnPlayersBoard(getOwner()),
@@ -32,8 +28,12 @@ public class TheTricky extends Monster {
                 ),
                 SelectConditions.getNotThisCard(this)
         );
-        return new SummonAction(
-                new SummonEvent(this.getOwner(), this, SummonType.SPECIAL, 1, condition)
-        );
+        return new SpecialSummonAction(new SummonEvent(this.getOwner(), this, SummonType.SPECIAL, 1, condition)) {
+            @Override
+            public void specialValidate() throws ValidateResult {
+                if (!getOwner().hasInHand(card))
+                    throw new ValidateResult("you can only summon the tricky from your hand");
+            }
+        };
     }
 }

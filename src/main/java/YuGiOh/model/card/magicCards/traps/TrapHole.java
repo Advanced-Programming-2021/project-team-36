@@ -12,6 +12,8 @@ import YuGiOh.model.card.Trap;
 import YuGiOh.model.card.action.Action;
 import YuGiOh.utils.CustomPrinter;
 
+import java.util.concurrent.CompletableFuture;
+
 public class TrapHole extends Trap {
     public TrapHole(String name, String description, int price, Icon icon, Status status) {
         super(name, description, price, icon, status);
@@ -27,6 +29,7 @@ public class TrapHole extends Trap {
             getChain().pop(); // do not summon
             CustomPrinter.println(String.format("<%s>'s <%s> activated successfully", this.getOwner().getUser().getUsername(), this.getName()), Color.Yellow);
             CustomPrinter.println(this, Color.Gray);
+            return CompletableFuture.completedFuture(null);
         };
     }
 

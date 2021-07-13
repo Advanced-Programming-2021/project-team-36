@@ -18,14 +18,14 @@ public class SwordOfDarkDestruction extends Spell {
 
     @Override
     public int affectionOnAttackingMonster(Monster monster) {
-        if (getEquippedMonster().equals(monster) && monster.getAttribute().equals(MonsterAttribute.DARK))
+        if (monster.equals(getEquippedMonster()) && monster.getAttribute().equals(MonsterAttribute.DARK))
             return 400;
         return 0;
     }
 
     @Override
     public int affectionOnDefensiveMonster(Monster monster) {
-        if (getEquippedMonster().equals(monster) && monster.getAttribute().equals(MonsterAttribute.DARK))
+        if (monster.equals(getEquippedMonster()) && monster.getAttribute().equals(MonsterAttribute.DARK))
             return 200;
         return 0;
     }
@@ -34,12 +34,16 @@ public class SwordOfDarkDestruction extends Spell {
     public Effect getEffect() {
         return () -> {
             PlayerController playerController = GameController.getInstance().getPlayerControllerByPlayer(this.getOwner());
-            Monster monster = (Monster) playerController.chooseKCards("Equip this <SwordofDarkDestruction> to a monster on your field",
+            return playerController.chooseKCards("Equip this <SwordofDarkDestruction> to a monster on your field",
                     1,
-                    SelectConditions.getPlayerMonsterFromMonsterZone(this.getOwner()))[0];
-            setEquippedMonster(monster);
-            CustomPrinter.println(String.format("<%s> equipped <%s> to monster <%s>", this.getOwner().getUser().getUsername(), this.getName(), monster.getName()), Color.Yellow);
-            CustomPrinter.println(this, Color.Gray);
+                    SelectConditions.getPlayerMonsterFromMonsterZone(this.getOwner())
+            ).thenApply(cards -> {
+                return (Monster) cards.get(0);
+            }).thenAccept(monster -> {
+                setEquippedMonster(monster);
+                CustomPrinter.println(String.format("<%s> equipped <%s> to monster <%s>", this.getOwner().getUser().getUsername(), this.getName(), monster.getName()), Color.Yellow);
+                CustomPrinter.println(this, Color.Gray);
+            });
         };
     }
 

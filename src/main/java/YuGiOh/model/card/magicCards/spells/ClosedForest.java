@@ -9,10 +9,9 @@ import YuGiOh.model.enums.Icon;
 import YuGiOh.model.enums.MonsterType;
 import YuGiOh.model.enums.Status;
 import YuGiOh.model.enums.Color;
-import YuGiOh.model.enums.Icon;
-import YuGiOh.model.enums.MonsterType;
-import YuGiOh.model.enums.Status;
 import YuGiOh.utils.CustomPrinter;
+
+import java.util.concurrent.CompletableFuture;
 
 public class ClosedForest extends Spell {
 
@@ -36,6 +35,7 @@ public class ClosedForest extends Spell {
             lastAliveTurn = GameController.getInstance().getGame().getTurn();
             CustomPrinter.println(String.format("<%s> activated field spell <%s>", this.getOwner().getUser().getUsername(), this.getName()), Color.Yellow);
             CustomPrinter.println(this, Color.Gray);
+            return CompletableFuture.completedFuture(null);
         };
     }
 

@@ -1,13 +1,16 @@
 package YuGiOh.model.card.magicCards.spells;
 
 import YuGiOh.controller.GameController;
-import YuGiOh.controller.LogicException;
+import YuGiOh.model.exception.GameException;
+import YuGiOh.model.exception.LogicException;
 import YuGiOh.model.card.Spell;
 import YuGiOh.model.card.action.Effect;
 import YuGiOh.model.enums.Color;
 import YuGiOh.model.enums.Icon;
 import YuGiOh.model.enums.Status;
 import YuGiOh.utils.CustomPrinter;
+
+import java.util.concurrent.CompletableFuture;
 
 public class SupplySquad extends Spell {
 
@@ -22,12 +25,9 @@ public class SupplySquad extends Spell {
         if (!isActivated) {
             isActivated = true;
             GameController gameController = GameController.getInstance();
-            try {
-                gameController.getPlayerControllerByPlayer(this.getOwner()).drawCard();
-                CustomPrinter.println(String.format("<%s>'s <%s> activated successfully. ", this.getOwner().getUser().getUsername(), this.getName()), Color.Yellow);
-                CustomPrinter.println(this, Color.Gray);
-            } catch (LogicException ignored) {
-            }
+            gameController.getPlayerControllerByPlayer(this.getOwner()).drawCard();
+            CustomPrinter.println(String.format("<%s>'s <%s> activated successfully. ", this.getOwner().getUser().getUsername(), this.getName()), Color.Yellow);
+            CustomPrinter.println(this, Color.Gray);
         }
     }
 
@@ -38,7 +38,7 @@ public class SupplySquad extends Spell {
 
     @Override
     protected Effect getEffect() {
-        return () -> {};
+        return () -> CompletableFuture.completedFuture(null);
     }
 
     @Override

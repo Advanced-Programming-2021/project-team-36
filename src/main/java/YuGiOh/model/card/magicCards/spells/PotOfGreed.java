@@ -1,14 +1,12 @@
 package YuGiOh.model.card.magicCards.spells;
 
 import YuGiOh.controller.GameController;
-import YuGiOh.controller.player.PlayerController;
-import YuGiOh.model.CardAddress;
-import YuGiOh.model.card.Card;
-import YuGiOh.model.card.Monster;
 import YuGiOh.model.card.Spell;
 import YuGiOh.model.card.action.Effect;
 import YuGiOh.model.enums.*;
 import YuGiOh.utils.CustomPrinter;
+
+import java.util.concurrent.CompletableFuture;
 
 public class PotOfGreed extends Spell {
 
@@ -26,6 +24,7 @@ public class PotOfGreed extends Spell {
                 gameController.getPlayerControllerByPlayer(this.getOwner()).drawCard();
             CustomPrinter.println(String.format("<%s>'s <%s> activated successfully", this.getOwner().getUser().getUsername(), this.getName()), Color.Yellow);
             CustomPrinter.println(this, Color.Gray);
+            return CompletableFuture.completedFuture(null);
         };
     }
 

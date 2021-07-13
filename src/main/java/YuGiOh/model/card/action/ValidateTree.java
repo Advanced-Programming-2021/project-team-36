@@ -8,6 +8,7 @@ import YuGiOh.model.card.Magic;
 import YuGiOh.model.card.Monster;
 import YuGiOh.model.card.Spell;
 import YuGiOh.model.enums.*;
+import YuGiOh.model.exception.ValidateResult;
 import YuGiOh.view.cardSelector.SelectCondition;
 
 import java.util.Optional;
@@ -72,7 +73,6 @@ public class ValidateTree {
             checkPhase(Phase.MAIN_PHASE1, Phase.MAIN_PHASE2);
             checkOwnerOfCard(player, monster);
             checkNotRitual(monster);
-            monster.validateSpecialSummon();
         } else if (summonType.equals(SummonType.FLIP)) {
             checkPhase(Phase.MAIN_PHASE1, Phase.MAIN_PHASE2);
             checkAlreadySummoned(player);
@@ -119,6 +119,8 @@ public class ValidateTree {
 
     public static void checkActivateMonster(Monster monster) throws ValidateResult {
         Game game = GameController.getInstance().getGame();
+        if (!monster.getMonsterCardType().equals(MonsterCardType.EFFECT))
+            throw new ValidateResult("this monster is not an effect monster");
         if (!game.getPhase().equals(Phase.MAIN_PHASE1) && !game.getPhase().equals(Phase.MAIN_PHASE2))
             throw new ValidateResult("you can't activate an effect on this turn");
         if (!monster.getOwner().getBoard().getMonsterCardZone().containsValue(monster) || !monster.getMonsterState().equals(MonsterState.OFFENSIVE_OCCUPIED))

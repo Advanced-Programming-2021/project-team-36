@@ -12,6 +12,8 @@ import YuGiOh.model.enums.Status;
 import YuGiOh.model.enums.ZoneType;
 import YuGiOh.utils.CustomPrinter;
 
+import java.util.concurrent.CompletableFuture;
+
 public class DarkHole extends Spell {
 
     public DarkHole(String name, String description, int price, Icon icon, Status status) {
@@ -38,6 +40,7 @@ public class DarkHole extends Spell {
             }
             CustomPrinter.println(String.format("<%s>'s <%s> activated successfully", this.getOwner().getUser().getUsername(), this.getName()), Color.Yellow);
             CustomPrinter.println(this, Color.Gray);
+            return CompletableFuture.completedFuture(null);
         };
     }
 

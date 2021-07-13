@@ -6,6 +6,8 @@ import YuGiOh.model.card.action.Effect;
 import YuGiOh.model.enums.*;
 import YuGiOh.utils.CustomPrinter;
 
+import java.util.concurrent.CompletableFuture;
+
 public class Forest extends Spell {
 
     public Forest(String name, String description, int price, Icon icon, Status status) {
@@ -32,6 +34,7 @@ public class Forest extends Spell {
         return () -> {
             CustomPrinter.println(String.format("<%s> activated field spell <%s>", this.getOwner().getUser().getUsername(), this.getName()), Color.Yellow);
             CustomPrinter.println(this, Color.Gray);
+            return CompletableFuture.completedFuture(null);
         };
     }
 

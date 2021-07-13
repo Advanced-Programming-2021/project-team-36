@@ -1,4 +1,4 @@
-package YuGiOh.controller.events;
+package YuGiOh.model.exception.eventException;
 
 import YuGiOh.model.Player.Player;
 import YuGiOh.model.enums.GameResult;

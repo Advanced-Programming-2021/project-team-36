@@ -1,6 +1,5 @@
 package YuGiOh.model.card.magicCards.spells;
 
-import YuGiOh.model.Player.Player;
 import YuGiOh.model.card.Card;
 import YuGiOh.model.card.Spell;
 import YuGiOh.model.card.action.Effect;
@@ -10,9 +9,8 @@ import YuGiOh.model.enums.Status;
 import YuGiOh.model.enums.ZoneType;
 import YuGiOh.utils.CustomPrinter;
 
-import java.util.List;
 import java.util.Optional;
-import java.util.stream.Collectors;
+import java.util.concurrent.CompletableFuture;
 
 public class Terraforming extends Spell {
 
@@ -32,6 +30,7 @@ public class Terraforming extends Spell {
                 CustomPrinter.println(this, Color.Gray);
                 getOwner().getBoard().moveCardNoError(opt.get(), ZoneType.HAND);
             }
+            return CompletableFuture.completedFuture(null);
         };
     }
 

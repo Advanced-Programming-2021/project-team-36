@@ -1,6 +1,7 @@
 package YuGiOh.model;
 
-import YuGiOh.controller.events.RoundOverExceptionEvent;
+import YuGiOh.model.exception.ModelException;
+import YuGiOh.model.exception.eventException.RoundOverExceptionEvent;
 import YuGiOh.model.Player.Player;
 import YuGiOh.model.enums.Color;
 import YuGiOh.model.enums.GameResult;

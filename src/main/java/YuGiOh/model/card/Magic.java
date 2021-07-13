@@ -32,21 +32,17 @@ abstract public class Magic extends Card {
 
     public final Effect activateEffect() {
         return () -> {
-            getEffect().run();
-            if (icon.equals(Icon.QUICKPLAY) || icon.equals(Icon.COUNTER) || icon.equals(Icon.NORMAL)) {
-                moveCardToGraveYard();
-            }
+            return getEffect().run().thenRun(()-> {
+                if (icon.equals(Icon.QUICKPLAY) || icon.equals(Icon.COUNTER) || icon.equals(Icon.NORMAL)) {
+                    moveCardToGraveYard();
+                }
+            });
         };
     }
 
     abstract protected Effect getEffect();
 
     abstract public boolean canActivateEffect();
-
-    @Override
-    public boolean hasEffect() {
-        return true;
-    }
 
     @Override
     public BooleanBinding facedUpProperty() {

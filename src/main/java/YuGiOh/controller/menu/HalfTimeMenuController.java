@@ -1,7 +1,7 @@
 package YuGiOh.controller.menu;
 
-import YuGiOh.controller.LogicException;
-import YuGiOh.controller.events.PlayerReadyExceptionEvent;
+import YuGiOh.model.exception.LogicException;
+import YuGiOh.model.exception.eventException.PlayerReadyExceptionEvent;
 import YuGiOh.controller.player.PlayerController;
 import YuGiOh.model.Player.Player;
 import YuGiOh.model.card.Card;

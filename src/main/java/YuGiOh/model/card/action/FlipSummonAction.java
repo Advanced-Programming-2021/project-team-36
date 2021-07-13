@@ -9,15 +9,16 @@ import YuGiOh.model.card.event.SummonEvent;
 import YuGiOh.model.enums.Color;
 import YuGiOh.model.enums.MonsterState;
 import YuGiOh.model.enums.SummonType;
+import YuGiOh.model.exception.ValidateResult;
 import YuGiOh.utils.CustomPrinter;
-import YuGiOh.view.cardSelector.ResistToChooseCard;
+import YuGiOh.model.exception.ResistToChooseCard;
+
+import java.util.concurrent.CompletableFuture;
 
 public class FlipSummonAction extends Action {
     public FlipSummonAction(FlipSummonEvent event) {
-        super(event);
-        this.effect = () -> {
+        super(event, ()->{
             GameController gameController = GameController.getInstance();
-            preprocess();
             Player player = event.getPlayer();
             Monster monster = event.getMonster();
             monster.setMonsterState(event.getMonsterState());
@@ -25,14 +26,18 @@ public class FlipSummonAction extends Action {
                 gameController.setSummoned(monster.getOwner());
             monster.changeFromHiddenToOccupiedIfCanEffect();
             CustomPrinter.println(String.format("%s has flip summoned %s successfully.", player.getUser().getUsername(), monster.getName()), Color.Green);
-        };
+            return CompletableFuture.completedFuture(null);
+        });
     }
 
-    protected void preprocess() throws ResistToChooseCard {
+    @Override
+    protected CompletableFuture<Void> preprocess() {
         FlipSummonEvent event = (FlipSummonEvent) getEvent();
         PlayerController playerController = GameController.getInstance().getPlayerControllerByPlayer(event.getPlayer());
-        boolean AttackingState = playerController.askRespondToQuestion("which position you want to summon?", "defending", "attacking");
-        event.setMonsterState((AttackingState ? MonsterState.DEFENSIVE_OCCUPIED : MonsterState.OFFENSIVE_OCCUPIED));
+        return playerController.askRespondToQuestion("which position you want to summon?", "defending", "attacking")
+                .thenAccept(res->
+                    event.setMonsterState((res ? MonsterState.DEFENSIVE_OCCUPIED : MonsterState.OFFENSIVE_OCCUPIED))
+                );
     }
 
     @Override

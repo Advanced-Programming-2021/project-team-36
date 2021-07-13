@@ -1,6 +1,6 @@
 package YuGiOh.model.card;
 
-import YuGiOh.controller.LogicException;
+import YuGiOh.model.exception.LogicException;
 import YuGiOh.model.Player.Player;
 import YuGiOh.model.card.action.Effect;
 import javafx.beans.binding.BooleanBinding;
@@ -9,6 +9,7 @@ import lombok.Getter;
 import lombok.Setter;
 
 import java.io.Serializable;
+import java.util.concurrent.CompletableFuture;
 
 public abstract class Card implements Comparable<Card>, Cloneable, Serializable {
     @Getter @Setter
@@ -49,7 +50,6 @@ public abstract class Card implements Comparable<Card>, Cloneable, Serializable 
 
     abstract public Effect activateEffect() throws LogicException;
     abstract public boolean canActivateEffect();
-    abstract public boolean hasEffect();
 
     @Override
     public Card clone() {
@@ -73,7 +73,8 @@ public abstract class Card implements Comparable<Card>, Cloneable, Serializable 
     public void startOfNewTurn() {
     }
 
-    public void preprocessForEffect() {
+    public CompletableFuture<Void> preprocessForEffect() {
+        return CompletableFuture.completedFuture(null);
     }
 
     abstract public void onMovingToGraveyard();

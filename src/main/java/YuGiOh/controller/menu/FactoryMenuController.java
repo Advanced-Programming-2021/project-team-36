@@ -1,6 +1,6 @@
 package YuGiOh.controller.menu;
 
-import YuGiOh.controller.LogicException;
+import YuGiOh.model.exception.LogicException;
 import YuGiOh.model.User;
 import YuGiOh.model.card.Card;
 import YuGiOh.model.card.Monster;

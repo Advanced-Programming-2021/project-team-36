@@ -1,13 +1,14 @@
 package YuGiOh.model.card.magicCards.spells;
 
 import YuGiOh.controller.GameController;
-import YuGiOh.controller.LogicException;
 import YuGiOh.model.card.Spell;
 import YuGiOh.model.card.action.Effect;
 import YuGiOh.model.enums.Color;
 import YuGiOh.model.enums.Icon;
 import YuGiOh.model.enums.Status;
 import YuGiOh.utils.CustomPrinter;
+
+import java.util.concurrent.CompletableFuture;
 
 public class SpellAbsorption extends Spell {
 
@@ -21,9 +22,12 @@ public class SpellAbsorption extends Spell {
         CustomPrinter.println(this, Color.Gray);
     }
 
+    // todo what is this shit
+
     @Override
     protected Effect getEffect() {
-        return () -> {};
+        return ()->
+                CompletableFuture.completedFuture(null);
     }
 
     @Override

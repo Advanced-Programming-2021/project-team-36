@@ -36,12 +36,7 @@ public class BaseDeck implements Cloneable, Serializable {
     }
 
     public void removeCard(Card toBeRemoved) {
-        Card tmp = null;
-        for (Card card : cards) {
-            if (card.getName().equals(toBeRemoved.getName()))
-                tmp = card;
-        }
-        cards.remove(tmp);
+        getCards().remove(toBeRemoved);
     }
 
     public boolean hasCard(Card card) {

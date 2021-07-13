@@ -12,6 +12,8 @@ import YuGiOh.model.card.action.Effect;
 import YuGiOh.model.card.event.SummonEvent;
 import YuGiOh.utils.CustomPrinter;
 
+import java.util.concurrent.CompletableFuture;
+
 public class TorrentialTribute extends Trap {
     public TorrentialTribute(String name, String description, int price, Icon icon, Status status) {
         super(name, description, price, icon, status);
@@ -28,6 +30,7 @@ public class TorrentialTribute extends Trap {
             GameController.getInstance().moveCardToGraveYard(this);
             CustomPrinter.println(String.format("<%s>'s <%s> activated successfully", this.getOwner().getUser().getUsername(), this.getName()), Color.Yellow);
             CustomPrinter.println(this, Color.Gray);
+            return CompletableFuture.completedFuture(null);
         };
     }
 

@@ -27,16 +27,20 @@ public class MonsterReborn extends Spell {
         return () -> {
             assert canActivateEffect();
             PlayerController playerController = GameController.getInstance().getPlayerControllerByPlayer(this.getOwner());
-            Monster monster = (Monster) playerController.chooseKCards("Choose 1 monster in GraveYard to special summon it",
+            return playerController.chooseKCards("Choose 1 monster in GraveYard to special summon it",
                     1,
                     SelectConditions.getMonsterFromGraveYard()
-            )[0];
-            SummonAction action = new SummonAction(
-                new SummonEvent(this.getOwner(), monster, SummonType.SPECIAL, 0, SelectConditions.noCondition)
-            );
-            action.runEffect();
-            CustomPrinter.println(String.format("<%s>'s <%s> activated successfully", this.getOwner().getUser().getUsername(), this.getName()), Color.Yellow);
-            CustomPrinter.println(this, Color.Gray);
+            ).thenApply(cards ->
+                    (Monster) cards.get(0)
+            ).thenCompose(monster -> {
+                SummonAction action = new SummonAction(
+                        new SummonEvent(this.getOwner(), monster, SummonType.SPECIAL, 0, SelectConditions.noCondition)
+                );
+                return action.runEffect(()-> {
+                    CustomPrinter.println(String.format("<%s>'s <%s> activated successfully", this.getOwner().getUser().getUsername(), this.getName()), Color.Yellow);
+                    CustomPrinter.println(this, Color.Gray);
+                }, ()->{});
+            });
         };
     }
 

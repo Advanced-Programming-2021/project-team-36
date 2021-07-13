@@ -1,9 +1,9 @@
 package YuGiOh.view.game.component;
 
 import YuGiOh.controller.GameController;
-import YuGiOh.controller.LogicException;
-import YuGiOh.controller.MainGameThread;
-import YuGiOh.controller.events.RoundOverExceptionEvent;
+import YuGiOh.controller.player.PlayerController;
+import YuGiOh.model.exception.GameException;
+import YuGiOh.model.exception.eventException.RoundOverExceptionEvent;
 import YuGiOh.controller.menu.DuelMenuController;
 import YuGiOh.controller.player.AIPlayerController;
 import YuGiOh.model.Board;
@@ -13,34 +13,39 @@ import YuGiOh.model.Player.Player;
 import YuGiOh.model.card.Card;
 import YuGiOh.model.card.Magic;
 import YuGiOh.model.card.Monster;
-import YuGiOh.model.card.event.DirectAttackEvent;
-import YuGiOh.model.card.event.MonsterAttackEvent;
 import YuGiOh.model.enums.Phase;
 import YuGiOh.model.enums.ZoneType;
 import YuGiOh.utils.CustomPrinter;
-import YuGiOh.view.cardSelector.ResistToChooseCard;
+import YuGiOh.model.exception.ResistToChooseCard;
 import YuGiOh.view.game.*;
 import YuGiOh.view.game.event.DropCardEvent;
 import javafx.animation.ScaleTransition;
-import javafx.application.Platform;
-import javafx.beans.binding.DoubleBinding;
 import javafx.collections.ListChangeListener;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.*;
 import javafx.util.Duration;
+import lombok.Getter;
 
 import java.util.*;
+import java.util.concurrent.CompletableFuture;
 
 public class GameField extends Pane {
     private Game game;
+    @Getter
     private GameMapLocation gameMapLocation;
+    @Getter
     private GameCardFrameManager cardFrameManager;
+    @Getter
     private GameCardMovementManager movementManager;
     private PileOfCardManager[] deckPile, graveYardPile;
     private ImageView background;
 
+    @Getter
+    private static GameField instance;
+
     public void init(Game game, GameMapLocation gameMapLocation){
+        instance = this;
         this.game = game;
         this.gameMapLocation = gameMapLocation;
         this.cardFrameManager = new GameCardFrameManager(game);
@@ -64,11 +69,12 @@ public class GameField extends Pane {
                 graveYardPile[i].close(false);
                 deckPile[i].close(false);
             }
-            moveCardByAddress(to, cardFrame);
+            CompletableFuture<Void> completableFuture = moveCardByAddress(to, cardFrame);
             for(int i = 0; i < 2; i++) {
                 graveYardPile[i].close(false);
                 deckPile[i].close(false);
             }
+            return completableFuture;
         });
 
         this.deckPile = new PileOfCardManager[] {createPile(ZoneType.DECK, game.getFirstPlayer()), createPile(ZoneType.DECK, game.getSecondPlayer())};
@@ -94,26 +100,22 @@ public class GameField extends Pane {
 
     private void setEventListeners(){
         GuiReporter.getInstance().addEventHandler(DropCardEvent.MY_TYPE, e->{
-            Optional<CardFrame> opt = cardFrameManager.getIntersectingCards(e.getBounds())
-                    .stream().filter(candid -> !candid.equals(e.getCardFrame()))
-                    .findFirst();
-            if(opt.isPresent()) {
-                CardAddress address = cardFrameManager.getCardAddressByCard(opt.get().getCard());
-                addRunnableToMainThreadForCard(
-                        e.getCardFrame().getCard(),
-                        () -> DuelMenuController.getInstance().attack(e.getCardFrame().getCard(), address)
-                );
+            if(e.getCardFrame().getCard() instanceof Monster) {
+                Optional<CardFrame> opt = cardFrameManager.getIntersectingCards(e.getBounds())
+                        .stream().filter(candid -> !candid.equals(e.getCardFrame()))
+                        .findFirst();
+                if (opt.isPresent()) {
+                    if (opt.get().getCard() instanceof Monster) {
+                        addRunnableToMainThreadForCard(
+                                e.getCardFrame().getCard(),
+                                () -> {
+                                    PlayerController controller = GameController.getInstance().getPlayerControllerByPlayer(e.getCardFrame().getCard().getOwner());
+                                    controller.startChain(controller.attack((Monster) e.getCardFrame().getCard(), (Monster) opt.get().getCard()));
+                                }
+                        );
+                    }
+                }
             }
-        });
-        GuiReporter.getInstance().addGameEventHandler((GuiReporter.GameEventHandler<MonsterAttackEvent>) (event)->{
-            DoubleBinding x = widthProperty().multiply(gameMapLocation.getLocationByCardAddress(cardFrameManager.getCardAddressByCard(event.getDefender())).xRatio);
-            DoubleBinding y = heightProperty().multiply(gameMapLocation.getLocationByCardAddress(cardFrameManager.getCardAddressByCard(event.getDefender())).yRatio);
-            AttackingSword.getOrCreateSwordForCard(cardFrameManager.getCardFrameByCard(event.getAttacker())).shoot(x, y);
-        });
-        GuiReporter.getInstance().addGameEventHandler((GuiReporter.GameEventHandler<DirectAttackEvent>) (event)->{
-            DoubleBinding x = widthProperty().multiply(gameMapLocation.getDirectPlayerLocation(event.getPlayer()).xRatio);
-            DoubleBinding y = heightProperty().multiply(gameMapLocation.getDirectPlayerLocation(event.getPlayer()).yRatio);
-            AttackingSword.getOrCreateSwordForCard(cardFrameManager.getCardFrameByCard(event.getAttacker())).shoot(x, y);
         });
 
         for (Board board : Arrays.asList(game.getFirstPlayer().getBoard(), game.getSecondPlayer().getBoard())) {
@@ -133,7 +135,7 @@ public class GameField extends Pane {
             });
         }
         setOnMouseClicked(e->{
-            Platform.runLater(()->{
+//            Platform.runLater(()->{
                 ImageView imageView = new ImageView(Utils.getImage("Texture/ring1.png"));
                 getChildren().add(imageView);
                 imageView.setX(e.getX());
@@ -145,14 +147,14 @@ public class GameField extends Pane {
                 t.setToY(7);
                 t.setOnFinished(E->getChildren().remove(imageView));
                 t.play();
-            });
+//            });
         });
     }
 
     public Duration getAnimationDuration(CardAddress from, CardAddress to){
         if(from == null || to == null)
             throw new Error("this must never happen");
-        double speedRatio = 1;
+        double speedRatio = 3;
         if(from.getZone().equals(to.getZone())){
             if(to.isInGraveYard() || to.isInDeck())
                 return Duration.ZERO;
@@ -172,17 +174,6 @@ public class GameField extends Pane {
         throw new Error("this will never happen");
     }
 
-    public boolean getAnimationBlocking(CardAddress from, CardAddress to){
-        if(from == null || to == null)
-            throw new Error("this must never happen");
-        if(from.getZone().equals(to.getZone())) {
-            ZoneType zoneType = from.getZone();
-            return zoneType.equals(ZoneType.HAND) || zoneType.equals(ZoneType.GRAVEYARD) || zoneType.equals(ZoneType.DECK);
-        }
-        return true;
-    }
-
-
     private void createCards(Board board) {
         board.getAllCards().forEach(card->{
             CardAddress address = board.getCardAddress(card);
@@ -197,22 +188,21 @@ public class GameField extends Pane {
                     widthProperty().multiply(location.xRatio),
                     heightProperty().multiply(location.yRatio)
             );
-            Platform.runLater(()-> getChildren().add(cardFrame));
+            getChildren().add(cardFrame);
             cardFrameManager.addNewCard(cardFrame, address);
         });
     }
 
-    private void moveCardByAddress(CardFrame cardFrame, CardAddress address, Duration duration) {
-        movementManager.animateCardMoving(
+    private CompletableFuture<Void> moveCardByAddress(CardFrame cardFrame, CardAddress address, Duration duration) {
+        return movementManager.animateCardMoving(
                 cardFrame,
                 gameMapLocation.getLocationByCardAddress(address),
-                duration,
-                getAnimationBlocking(cardFrameManager.getCardAddressByCard(cardFrame.getCard()), address)
+                duration
         );
     }
 
-    private void moveCardByAddress(CardAddress address, CardFrame cardFrame) {
-        moveCardByAddress(cardFrame, address, getAnimationDuration(cardFrameManager.getCardAddressByCard(cardFrame.getCard()), address));
+    private CompletableFuture<Void> moveCardByAddress(CardAddress address, CardFrame cardFrame) {
+        return moveCardByAddress(cardFrame, address, getAnimationDuration(cardFrameManager.getCardAddressByCard(cardFrame.getCard()), address));
     }
 
     public void addRunnableToMainThreadForCard(Card card, GameRunnable runnable){
@@ -226,17 +216,18 @@ public class GameField extends Pane {
             CustomPrinter.println("you can't do stuff in opponent's turn", YuGiOh.model.enums.Color.Red);
             return;
         }
-        MainGameThread.getInstance().addRunnable(()->{
-            try {
-                runnable.run();
-            } catch (LogicException e){
-                Platform.runLater(()->new AlertBox().display(this, e.getMessage()));
-            } catch (ResistToChooseCard e) {
-            }
-        });
+        try {
+            runnable.run();
+        } catch (ResistToChooseCard ignored) {
+
+        } catch (GameException e){
+            new AlertBox().display(this, e.getMessage());
+        } catch (RoundOverExceptionEvent roundOverExceptionEvent) {
+            DuelMenuController.getInstance().finishGame(roundOverExceptionEvent);
+        }
     }
 
     public interface GameRunnable{
-        void run() throws LogicException, RoundOverExceptionEvent, ResistToChooseCard;
+        void run() throws GameException, RoundOverExceptionEvent;
     }
 }

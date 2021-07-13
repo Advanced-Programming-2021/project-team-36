@@ -1,7 +1,7 @@
 package YuGiOh.model.card.magicCards.traps;
 
 import YuGiOh.controller.GameController;
-import YuGiOh.controller.LogicException;
+import YuGiOh.model.exception.LogicException;
 import YuGiOh.model.card.Monster;
 import YuGiOh.model.enums.Icon;
 import YuGiOh.model.enums.Status;
@@ -9,6 +9,8 @@ import YuGiOh.model.card.action.Action;
 import YuGiOh.model.card.event.AttackEvent;
 import YuGiOh.model.card.action.Effect;
 import YuGiOh.model.card.Trap;
+
+import java.util.concurrent.CompletableFuture;
 
 public class MagicCylinder extends Trap {
 
@@ -20,9 +22,9 @@ public class MagicCylinder extends Trap {
     protected Effect getEffect() {
         return () -> {
             if (!canActivateEffect())
-                throw new LogicException("You can't activate this effect");
+                throw new Error("This must never happen if we validate before run.");
             AttackEvent event = (AttackEvent) getChain().pop().getEvent();
-            Monster attacker = (Monster) event.getAttacker();
+            Monster attacker = event.getAttacker();
             GameController.getInstance().decreaseLifePoint(
                     GameController.getInstance().getGame().getOtherPlayer(this.getOwner()),
                     attacker.getAttackDamage(),
@@ -30,6 +32,7 @@ public class MagicCylinder extends Trap {
             );
             attacker.setAllowAttack(false);
             GameController.getInstance().moveCardToGraveYard(this);
+            return CompletableFuture.completedFuture(null);
         };
     }
 

@@ -3,69 +3,46 @@ package YuGiOh.controller.player;
 import YuGiOh.controller.GameController;
 import YuGiOh.model.Player.AIPlayer;
 import YuGiOh.model.card.*;
+import YuGiOh.model.card.action.Action;
+import YuGiOh.model.card.action.NextPhaseAction;
 import YuGiOh.model.enums.MonsterState;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
+import java.util.concurrent.CompletableFuture;
 
 public class AggressiveAIPlayerController extends AIPlayerController {
     public AggressiveAIPlayerController(AIPlayer player) {
         super(player);
     }
 
-    @Override
-    public void mainPhase(){
-        Random rnd = new Random();
-        List<Card> allCards = new ArrayList<>(player.getBoard().getAllCards());
-        while (!allCards.isEmpty()) {
-            Card card = allCards.get(rnd.nextInt(allCards.size()));
-            allCards.remove(card);
-            if (card instanceof Monster) {
-                if (rnd.nextInt(2) == 0)
-                    noErrorSpecialSummonCard((Monster) card);
-                noErrorSummonCard((Monster) card);
-                noErrorMonsterActivateEffect((Monster) card);
+    protected List<Action> getAllActionsOfCard(Card card) {
+        List<Action> actions = new ArrayList<>();
+        if (card instanceof Monster) {
+            actions.add(normalSummon((Monster) card));
+            actions.add(flipSummon((Monster) card));
+            actions.add(specialSummon((Monster) card));
+            actions.add(activateMonsterEffect((Monster) card));
+            actions.add(directAttack((Monster) card));
+            for (Card opponentCard : GameController.getInstance().getGame().getOtherPlayer(player).getBoard().getAllCardsOnBoard()) {
+                if (opponentCard instanceof Monster)
+                    actions.add(attack((Monster) card, (Monster) opponentCard));
             }
-            if (card instanceof Trap) {
-                noErrorSetMagic((Magic) card);
-            }
-            if (card instanceof Spell) {
-                noErrorActivateEffect((Spell) card);
-            }
+        } else if (card instanceof Magic) {
+            actions.add(setMagic((Magic) card));
         }
-        GameController.getInstance().goNextPhaseAndNotify();
+        if (card instanceof Spell) {
+            actions.add(activateSpellEffect((Spell) card));
+        }
+        return actions;
     }
 
     @Override
-    public void controlBattlePhase() {
-        Random rnd = new Random();
-        List<Card> allCards = new ArrayList<>(player.getBoard().getAllCards());
-        while (!allCards.isEmpty()) {
-            Card card = allCards.get(rnd.nextInt(allCards.size()));
-            allCards.remove(card);
-            if (card instanceof Monster) {
-                for (Card opponentCard : GameController.getInstance().getGame().getOtherPlayer(player).getBoard().getAllCardsOnBoard()) {
-                    if (opponentCard instanceof Monster)
-                        noErrorAttack((Monster) card, (Monster) opponentCard);
-                }
-                noErrorMonsterActivateEffect((Monster) card);
-                noErrorDirectAttack((Monster) card);
-            } else if (card instanceof Magic) {
-                noErrorSetMagic((Magic) card);
-            }
-            if (card instanceof Spell) {
-                noErrorActivateEffect((Spell) card);
-            }
-        }
-        GameController.getInstance().goNextPhaseAndNotify();
-    }
-
-    @Override
-    public boolean askRespondToQuestion(String question, String yes, String no) {
+    public CompletableFuture<Boolean> askRespondToQuestion(String question, String yes, String no) {
         if(question.equals("which position you want to summon?"))
-            return yes.equals("attacking");
+            return CompletableFuture.completedFuture(yes.equals("attacking"));
         Random rand = new Random();
-        return rand.nextBoolean();
+        return CompletableFuture.completedFuture(rand.nextBoolean());
     }
 }

@@ -1,7 +1,6 @@
 package YuGiOh.view.game.component;
 
 import YuGiOh.controller.GameController;
-import YuGiOh.controller.MainGameThread;
 import YuGiOh.model.card.Monster;
 import YuGiOh.model.enums.Phase;
 import YuGiOh.view.game.ObservableBuilder;
@@ -16,6 +15,7 @@ import javafx.scene.image.ImageView;
 import javafx.util.Duration;
 
 import java.util.HashMap;
+import java.util.concurrent.CompletableFuture;
 
 public class AttackingSword extends ImageView {
     private final CardFrame cardFrame;
@@ -71,23 +71,22 @@ public class AttackingSword extends ImageView {
     private void ready() {
         ready(cardFrame.getCenterXProperty(), cardFrame.getCenterYProperty());
     }
-    public void shoot(DoubleBinding x, DoubleBinding y) {
-        MainGameThread.OneWayTicket ticket = new MainGameThread.OneWayTicket();
-        ticket.runOneWay(()->{
-            TranslateTransition t = new TranslateTransition(Duration.millis(600), this);
-            translateXProperty().unbind();
-            translateYProperty().unbind();
-            DoubleBinding toX = x.add(cardFrame.getCenterXProperty().negate());
-            DoubleBinding toY = y.add(cardFrame.getCenterYProperty().negate());
-            t.toXProperty().bind(toX);
-            t.toYProperty().bind(toY);
-            setRotate(Math.atan2(toY.get(), toX.get()) * 180 / Math.PI + 90);
-            t.setOnFinished(e -> {
-                hide();
-                ticket.free();
-            });
-            t.play();
+    public CompletableFuture<Void> shoot(DoubleBinding x, DoubleBinding y) {
+        CompletableFuture<Void> completableFuture = new CompletableFuture<>();
+        TranslateTransition t = new TranslateTransition(Duration.millis(3000), this);
+        translateXProperty().unbind();
+        translateYProperty().unbind();
+        DoubleBinding toX = x.add(cardFrame.getCenterXProperty().negate());
+        DoubleBinding toY = y.add(cardFrame.getCenterYProperty().negate());
+        t.toXProperty().bind(toX);
+        t.toYProperty().bind(toY);
+        setRotate(Math.atan2(toY.get(), toX.get()) * 180 / Math.PI + 90);
+        t.setOnFinished(e -> {
+            hide();
+            completableFuture.complete(null);
         });
+        t.play();
+        return completableFuture;
     }
     public void hide() {
         extraVisibility.set(false);

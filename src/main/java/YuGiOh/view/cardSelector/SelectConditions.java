@@ -132,4 +132,7 @@ public class SelectConditions {
         };
     }
 
+    public static long countOfAllCardCanSelect(SelectCondition selectCondition) {
+        return GameController.getInstance().getGame().getAllCards().stream().filter(selectCondition::canSelect).count();
+    }
 }

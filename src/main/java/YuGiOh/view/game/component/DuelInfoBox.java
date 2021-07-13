@@ -36,13 +36,13 @@ public class DuelInfoBox extends BorderPane {
     }
 
     public void addInfo(CardFrame cardFrame){
-        Platform.runLater(()-> {
+//        Platform.runLater(()-> {
             cardInfo.setCardFrame(cardFrame);
-        });
+//        });
     }
     public void clear(){
-        Platform.runLater(()-> {
+//        Platform.runLater(()-> {
             cardInfo.setCardFrame(null);
-        });
+//        });
     }
 }

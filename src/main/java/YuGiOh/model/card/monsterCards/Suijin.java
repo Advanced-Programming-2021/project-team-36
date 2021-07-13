@@ -1,13 +1,15 @@
 package YuGiOh.model.card.monsterCards;
 
 import YuGiOh.controller.GameController;
+import YuGiOh.controller.player.PlayerController;
 import YuGiOh.model.enums.Color;
 import YuGiOh.model.enums.MonsterAttribute;
 import YuGiOh.model.enums.MonsterCardType;
 import YuGiOh.model.enums.MonsterType;
-import YuGiOh.model.card.action.Effect;
 import YuGiOh.model.card.Monster;
 import YuGiOh.utils.CustomPrinter;
+
+import java.util.concurrent.CompletableFuture;
 
 public class Suijin extends Monster {
     boolean stillHasPower = true;
@@ -17,20 +19,26 @@ public class Suijin extends Monster {
     }
 
     @Override
-    public void specialEffectWhenBeingAttacked(Monster attacker) {
+    public CompletableFuture<Void> specialEffectWhenBeingAttacked(Monster attacker) {
         int _attackDamage = attacker.getAttackDamage();
         if (stillHasPower) {
-            boolean confirm = GameController.getInstance().getPlayerControllerByPlayer(this.getOwner()).askRespondToQuestion(
-                    "Do you want to activate Suijin's effect?", "yes", "no");
-            if (confirm) {
-                stillHasPower = false;
-                attacker.setAttackDamage(0);
-                CustomPrinter.println(String.format("<%s>'s <%s> activated successfully", this.getOwner().getUser().getUsername(), this.getName()), Color.Yellow);
-                CustomPrinter.println(this.asEffect(), Color.Gray);
-            }
+            PlayerController controller = GameController.getInstance().getPlayerControllerByPlayer(this.getOwner());
+            return controller.askRespondToQuestion("Do you want to activate Suijin's effect?", "yes", "no")
+                    .thenAccept(res -> {
+                        if(res) {
+                            stillHasPower = false;
+                            attacker.setAttackDamage(0);
+                            CustomPrinter.println(String.format("<%s>'s <%s> activated successfully", this.getOwner().getUser().getUsername(), this.getName()), Color.Yellow);
+                            CustomPrinter.println(this.asEffect(), Color.Gray);
+                        }
+                        damageStep(attacker);
+                        attacker.setAttackDamage(_attackDamage);
+                    }
+            );
+        } else {
+            damageStep(attacker);
+            return CompletableFuture.completedFuture(null);
         }
-        damageStep(attacker);
-        attacker.setAttackDamage(_attackDamage);
     }
 
     @Override

@@ -1,14 +1,14 @@
 package YuGiOh.model.card.monsterCards;
 
 import YuGiOh.controller.GameController;
-import YuGiOh.model.Game;
 import YuGiOh.model.enums.Color;
 import YuGiOh.model.enums.MonsterAttribute;
 import YuGiOh.model.enums.MonsterCardType;
 import YuGiOh.model.enums.MonsterType;
-import YuGiOh.model.card.action.Effect;
 import YuGiOh.model.card.Monster;
 import YuGiOh.utils.CustomPrinter;
+
+import java.util.concurrent.CompletableFuture;
 
 public class Marshmallon extends Monster {
     boolean checkIfFaceIsDown = false;
@@ -28,7 +28,7 @@ public class Marshmallon extends Monster {
     }
 
     @Override
-    public void specialEffectWhenBeingAttacked(Monster attacker) {
+    public CompletableFuture<Void> specialEffectWhenBeingAttacked(Monster attacker) {
         if (checkIfFaceIsDown) {
             GameController.getInstance().decreaseLifePoint(
                     GameController.getInstance().getGame().getOtherPlayer(this.getOwner()),
@@ -39,5 +39,6 @@ public class Marshmallon extends Monster {
         CustomPrinter.println(String.format("<%s> activated <%s> successfully", this.getOwner().getUser().getUsername(), this.getName()), Color.Yellow);
         CustomPrinter.println(this.asEffect(), Color.Gray);
         damageStep(attacker);
+        return CompletableFuture.completedFuture(null);
     }
 }

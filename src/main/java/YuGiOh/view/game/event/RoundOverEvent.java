@@ -1,6 +1,6 @@
 package YuGiOh.view.game.event;
 
-import YuGiOh.controller.events.RoundOverExceptionEvent;
+import YuGiOh.model.exception.eventException.RoundOverExceptionEvent;
 import javafx.event.Event;
 import javafx.event.EventType;
 import lombok.Getter;

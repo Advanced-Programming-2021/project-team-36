@@ -1,6 +1,6 @@
 package YuGiOh.controller.menu;
 
-import YuGiOh.model.ModelException;
+import YuGiOh.model.exception.ModelException;
 import YuGiOh.model.User;
 import lombok.Getter;
 

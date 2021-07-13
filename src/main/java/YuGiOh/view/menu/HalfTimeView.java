@@ -2,8 +2,8 @@ package YuGiOh.view.menu;
 
 import YuGiOh.MainApplication;
 import YuGiOh.controller.GameController;
-import YuGiOh.controller.LogicException;
-import YuGiOh.controller.events.PlayerReadyExceptionEvent;
+import YuGiOh.model.exception.LogicException;
+import YuGiOh.model.exception.eventException.PlayerReadyExceptionEvent;
 import YuGiOh.controller.menu.HalfTimeMenuController;
 import YuGiOh.controller.player.PlayerController;
 import YuGiOh.model.Player.HumanPlayer;
@@ -142,7 +142,7 @@ public class HalfTimeView extends BaseMenuView {
         } catch (LogicException exception) {
             new Alert(Alert.AlertType.ERROR, exception.getMessage()).showAndWait();
         }
-        if (GameController.getInstance().getCurrentPlayerController() == playerController &&
+        if (GameController.getInstance().getCurrentPlayerController().equals(playerController) &&
                 GameController.getInstance().getOpponentPlayerController().getPlayer() instanceof HumanPlayer)
             HalfTimeView.init(stage, GameController.getInstance().getOpponentPlayerController());
         else
@@ -168,6 +168,5 @@ public class HalfTimeView extends BaseMenuView {
         mainHBox.getChildren().remove(switchButton);
         sideHBox.getChildren().remove(switchButton);
         new Alert(Alert.AlertType.INFORMATION, "Card was switched successfully!").showAndWait();
-
     }
 }

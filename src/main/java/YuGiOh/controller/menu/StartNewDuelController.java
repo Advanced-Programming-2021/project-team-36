@@ -1,8 +1,8 @@
 package YuGiOh.controller.menu;
 
-import YuGiOh.controller.LogicException;
+import YuGiOh.model.exception.LogicException;
 import YuGiOh.model.Duel;
-import YuGiOh.model.ModelException;
+import YuGiOh.model.exception.ModelException;
 import YuGiOh.model.Player.AIPlayer;
 import YuGiOh.model.Player.HumanPlayer;
 import YuGiOh.model.User;
@@ -20,7 +20,7 @@ public class StartNewDuelController extends BaseMenuController {
     }
 
     private void startDuel(Duel duel) throws LogicException {
-        new DuelMenuController(duel).getNewGameThread();
+        new DuelMenuController(duel).getReadyForNewGame();
         CustomPrinter.println(String.format("start new duel between %s and %s", duel.getFirstPlayer().getUser().getNickname(), duel.getSecondPlayer().getUser().getNickname()), Color.Default);
     }
 

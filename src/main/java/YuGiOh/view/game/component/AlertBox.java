@@ -15,7 +15,8 @@ import javafx.stage.Stage;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.concurrent.atomic.AtomicInteger;
+import java.util.concurrent.CompletableFuture;
+import java.util.stream.Collectors;
 
 public class AlertBox {
     public static Stage stageGenerator(String title, double minWidth, double minHeight){
@@ -27,17 +28,20 @@ public class AlertBox {
         return stage;
     }
 
+    public CompletableFuture<Integer> displayTextChoicesStandAlone(String question, List<String> texts) {
+        return displayButtonChoicesStandAlone(question, texts.stream().map(str -> new CustomButton(str, 17, ()->{})).collect(Collectors.toList()));
+    }
 
-    public int displayChoicesStandAlone(String question, List<CustomButton> buttons) {
+    public CompletableFuture<Integer> displayButtonChoicesStandAlone(String question, List<CustomButton> buttons) {
         Stage stage = stageGenerator("alert", 300, 100);
-        AtomicInteger ret = new AtomicInteger(-1);
+        CompletableFuture<Integer> ret = new CompletableFuture<>();
         Pane root = new Pane();
         Scene scene = new Scene(root);
         int counter = 0;
         for(CustomButton button : buttons){
             EventHandler<MouseEvent> onClickFunction = (EventHandler<MouseEvent>) button.getOnMouseClicked();
             final int finalCounter = counter;
-            button.setOnMouseClicked(e->{ onClickFunction.handle(e); stage.close(); ret.set(finalCounter);});
+            button.setOnMouseClicked(e->{ onClickFunction.handle(e); stage.close(); ret.complete(finalCounter);});
             counter++;
         }
         Pane innerRoot = display(root, question, buttons);
@@ -48,21 +52,45 @@ public class AlertBox {
         innerRoot.minWidthProperty().bind(scene.widthProperty());
         innerRoot.minHeightProperty().bind(scene.heightProperty());
         stage.setScene(scene);
-        stage.showAndWait();
-        return ret.get();
+//        stage.showAndWait();
+
+        stage.setOnCloseRequest(e-> ret.complete(-1));
+        stage.show();
+        // we don't wait it is async
+
+        return ret;
     }
 
-    public boolean displayYesNoStandAlone(String question, String yes, String no){
+    public CompletableFuture<Boolean> displayYesNoStandAlone(String question, String yes, String no){
         ArrayList<CustomButton> buttons = new ArrayList<>();
         buttons.add(new CustomButton(yes, 20, ()->{}));
         buttons.add(new CustomButton(no, 20, ()->{}));
-        return displayChoicesStandAlone(question, buttons) == 0;
+        return displayButtonChoicesStandAlone(question, buttons).thenApply(res -> res == 0);
     }
 
-    public void displayMessageStandAlone(String message){
+    public CompletableFuture<Void> displayMessageStandAlone(String message){
         ArrayList<CustomButton> buttons = new ArrayList<>();
         buttons.add(new CustomButton("Ok!", 20, ()->{}));
-        displayChoicesStandAlone(message, buttons);
+        return displayButtonChoicesStandAlone(message, buttons).thenAccept(res -> {});
+    }
+
+
+    public CompletableFuture<Integer> displayChoices(Pane parent, String question, List<String> choices) {
+        CompletableFuture<Integer> ret = new CompletableFuture<>();
+        List<CustomButton> buttons = new ArrayList<>();
+        int counter = 0;
+        for(String buttonText : choices){
+            final int nowCounter = counter;
+            counter++;
+            buttons.add(new CustomButton(buttonText, 17, ()-> ret.complete(nowCounter)));
+        }
+        // can make it draggable pane
+        Pane innerRoot = display(parent, question, buttons);
+        innerRoot.translateXProperty().bind(parent.widthProperty().divide(2).add(-100));
+        innerRoot.translateYProperty().bind(parent.heightProperty().divide(2).add(-100));
+        innerRoot.minWidthProperty().bind(parent.widthProperty().divide(5));
+        innerRoot.minHeightProperty().bind(parent.heightProperty().divide(5));
+        return ret;
     }
 
     public Pane display(Pane parent, String question, Runnable yesRun, Runnable noRun){

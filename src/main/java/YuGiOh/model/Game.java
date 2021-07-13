@@ -5,6 +5,7 @@ import YuGiOh.model.card.Card;
 import YuGiOh.model.card.action.Action;
 import YuGiOh.model.enums.Phase;
 import YuGiOh.model.enums.ZoneType;
+import YuGiOh.model.exception.ModelException;
 import javafx.beans.property.SimpleObjectProperty;
 import lombok.Getter;
 import lombok.Setter;
@@ -23,8 +24,7 @@ public class Game {
     private final SimpleObjectProperty<Phase> phase;
 
     @Getter
-    @Setter
-    private Stack<Action> chain;
+    private Stack<Action> chain = new Stack<>();
 
     private final SimpleObjectProperty<Player> currentPlayerProperty;
     private Player storeCurrentPlayerForChane;
@@ -128,6 +128,10 @@ public class Game {
         cards.addAll(firstPlayer.getBoard().getAllCards());
         cards.addAll(secondPlayer.getBoard().getAllCards());
         return cards;
+    }
+
+    public void resetChain() {
+        chain.clear();
     }
 
     public Phase getPhase() {

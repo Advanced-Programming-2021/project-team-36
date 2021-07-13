@@ -1,13 +1,18 @@
 package YuGiOh.model.card.event;
 
+import YuGiOh.model.Player.Player;
 import YuGiOh.model.card.Magic;
 import lombok.Getter;
 
 public class SetMagic extends Event {
     @Getter
-    Magic magic;
-    public SetMagic(Magic magic){
+    private final Magic magic;
+    @Getter
+    private final Player player;
+
+    public SetMagic(Player player, Magic magic){
         this.magic = magic;
+        this.player = player;
     }
 
     @Override

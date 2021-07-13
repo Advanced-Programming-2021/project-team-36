@@ -1,6 +1,7 @@
 package YuGiOh.controller;
 
-import YuGiOh.controller.events.RoundOverExceptionEvent;
+import YuGiOh.model.card.action.NextPhaseAction;
+import YuGiOh.model.exception.eventException.RoundOverExceptionEvent;
 import YuGiOh.controller.menu.DuelMenuController;
 import YuGiOh.controller.player.HumanPlayerController;
 import YuGiOh.controller.player.PlayerController;
@@ -9,11 +10,16 @@ import YuGiOh.model.card.Card;
 import YuGiOh.model.card.Magic;
 import YuGiOh.model.card.Monster;
 import YuGiOh.model.enums.*;
+import YuGiOh.model.exception.LogicException;
 import YuGiOh.utils.CustomPrinter;
+import YuGiOh.view.game.GuiReporter;
+import YuGiOh.view.game.event.RoundOverEvent;
 import lombok.Getter;
 import YuGiOh.model.Game;
 import YuGiOh.model.Player.AIPlayer;
 import YuGiOh.model.Player.HumanPlayer;
+
+import java.util.concurrent.CompletableFuture;
 
 public class GameController {
     @Getter
@@ -43,13 +49,8 @@ public class GameController {
         }
     }
 
-    public void drawCard() throws RoundOverExceptionEvent {
-        try {
-            getCurrentPlayerController().drawCard();
-        }
-        catch (LogicException ignored) {
-            throw new RoundOverExceptionEvent(GameResult.NOT_DRAW, game.getCurrentPlayer(), game.getOpponentPlayer(), game.getOpponentPlayer().getLifePoint());
-        }
+    public CompletableFuture<Void> drawCard() throws RoundOverExceptionEvent {
+        return getCurrentPlayerController().drawCard();
     }
 
     public void checkBothLivesEndGame() throws RoundOverExceptionEvent {
@@ -110,7 +111,7 @@ public class GameController {
         return playerController1;
     }
 
-    private void goNextPhase(){
+    public void goNextPhaseImplementationDoNotUseThisFunction(){
         boolean mustChangeTurn = game.getPhase() == Phase.END_PHASE;
         game.setPhase(game.getPhase().nextPhase());
         if(mustChangeTurn){
@@ -118,12 +119,7 @@ public class GameController {
             playerController1.refresh();
             playerController2.refresh();
         }
-        DuelMenuController.getInstance().getView().resetSelector();
-    }
-
-    public void goNextPhaseAndNotify() {
-        MainGameThread.getInstance().stopRunningQueuedTasks();
-        goNextPhase();
+        doGameStep();
     }
 
     public PlayerController getPlayerControllerByPlayer(Player player){
@@ -132,19 +128,19 @@ public class GameController {
         return playerController2;
     }
 
-    public void control() {
+    public void doGameStep() {
         CustomPrinter.println(String.format("its %s's turn%n", game.getCurrentPlayer().getUser().getUsername()), Color.Blue);
-        while (true) {
-            if(!game.getPhase().equals(previousIterationPhase)){
+        try {
+            if (!game.getPhase().equals(previousIterationPhase)) {
                 previousIterationPhase = game.getPhase();
                 DuelMenuController.getInstance().printCurrentPhase();
-            }
+            } // let this be for debug
+
             if (game.getPhase().equals(Phase.DRAW_PHASE)) {
                 CustomPrinter.println(String.format("its %s's turn%n", game.getCurrentPlayer().getUser().getUsername()), Color.Blue);
-                drawCard();
-                goNextPhase();
+                drawCard().thenRun(()->new NextPhaseAction().runEffect());
             } else if (game.getPhase().equals(Phase.STANDBY_PHASE)) {
-                goNextPhase();
+                new NextPhaseAction().runEffect();
             } else if (game.getPhase().equals(Phase.MAIN_PHASE1)) {
                 DuelMenuController.getInstance().showBoard();
                 getCurrentPlayerController().controlMainPhase1();
@@ -155,8 +151,10 @@ public class GameController {
                 DuelMenuController.getInstance().showBoard();
                 getCurrentPlayerController().controlMainPhase2();
             } else if (game.getPhase().equals(Phase.END_PHASE)) {
-                goNextPhase();
+                new NextPhaseAction().runEffect();
             }
+        } catch (RoundOverExceptionEvent roundOverEvent) {
+            DuelMenuController.getInstance().finishGame(roundOverEvent);
         }
     }
 }

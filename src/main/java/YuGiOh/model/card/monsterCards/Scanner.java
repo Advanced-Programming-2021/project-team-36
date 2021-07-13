@@ -1,7 +1,7 @@
 package YuGiOh.model.card.monsterCards;
 
 import YuGiOh.controller.GameController;
-import YuGiOh.controller.LogicException;
+import YuGiOh.model.exception.LogicException;
 import YuGiOh.controller.player.PlayerController;
 import YuGiOh.model.enums.MonsterAttribute;
 import YuGiOh.model.enums.MonsterCardType;
@@ -9,7 +9,7 @@ import YuGiOh.model.enums.MonsterType;
 import YuGiOh.model.enums.Color;
 import YuGiOh.utils.CustomPrinter;
 import YuGiOh.view.cardSelector.SelectConditions;
-import YuGiOh.view.cardSelector.ResistToChooseCard;
+import YuGiOh.model.exception.ResistToChooseCard;
 import YuGiOh.model.card.action.Effect;
 import YuGiOh.model.card.Monster;
 
@@ -27,23 +27,19 @@ public class Scanner extends Monster {
     }
 
     @Override
-    public Effect activateEffect() throws LogicException {
-        if(lastTurnActivated == GameController.instance.getGame().getTurn())
-            throw new LogicException("you can only activate this once in a turn");
+    public Effect activateEffect() {
         return ()-> {
-            try {
-                PlayerController controller = GameController.getInstance().getPlayerControllerByPlayer(this.getOwner());
-                copiedMonster = (Monster) controller.chooseKCards(
-                        "choose a monster to copy",
-                        1,
-                        SelectConditions.OpponentMonsterFromGraveYard
-                )[0];
-                copiedMonster = (Monster) copiedMonster.clone().readyForBattle(this.getOwner());
+            PlayerController controller = GameController.getInstance().getPlayerControllerByPlayer(this.getOwner());
+            return controller.chooseKCards(
+                    "choose a monster to copy",
+                    1,
+                    SelectConditions.OpponentMonsterFromGraveYard
+            ).thenAccept(cards-> {
+                Monster copiedMonster = (Monster) cards.get(0).clone().readyForBattle(this.getOwner());
                 lastTurnActivated = GameController.instance.getGame().getTurn();
                 CustomPrinter.println(String.format("<%s>'s <%s> activated successfully", this.getOwner().getUser().getUsername(), this.getName()), Color.Yellow);
                 CustomPrinter.println(this.asEffect(), Color.Gray);
-            } catch (ResistToChooseCard ignored) {
-            }
+            });
         };
     }
 

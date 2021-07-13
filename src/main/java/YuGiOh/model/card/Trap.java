@@ -8,12 +8,6 @@ abstract public class Trap extends Magic {
         super(name, description, price, icon, status);
     }
 
-
-    @Override
-    public boolean hasEffect() {
-        return true;
-    }
-
     @Override
     public int getSpeed(){
         if(icon.equals(Icon.COUNTER))

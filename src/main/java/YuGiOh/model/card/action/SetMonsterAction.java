@@ -9,17 +9,17 @@ import YuGiOh.model.card.event.SetMonster;
 import YuGiOh.model.enums.Color;
 import YuGiOh.model.enums.MonsterState;
 import YuGiOh.model.enums.SummonType;
+import YuGiOh.model.exception.ValidateResult;
 import YuGiOh.utils.CustomPrinter;
-import YuGiOh.view.cardSelector.ResistToChooseCard;
+import YuGiOh.model.exception.ResistToChooseCard;
 
 import java.util.Arrays;
+import java.util.concurrent.CompletableFuture;
 
 public class SetMonsterAction extends Action {
     public SetMonsterAction(SetMonster event) {
-        super(event);
-        this.effect = () -> {
+        super(event, ()->{
             GameController gameController = GameController.getInstance();
-            preprocess();
             Player player = event.getPlayer();
             Monster monster = event.getMonster();
             monster.setOwner(player);
@@ -30,7 +30,8 @@ public class SetMonsterAction extends Action {
             monster.setMonsterState(MonsterState.DEFENSIVE_HIDDEN);
             gameController.setSummoned(monster.getOwner());
             CustomPrinter.println(String.format("%s has set %s successfully.", player.getUser().getUsername(), monster.getName()), Color.Green);
-        };
+            return CompletableFuture.completedFuture(null);
+        });
     }
 
     @Override
@@ -40,10 +41,14 @@ public class SetMonsterAction extends Action {
         ValidateTree.checkTribute(event.getPlayer(), event.getRequiredTributes(), event.getTributeCondition());
     }
 
-    public void preprocess() throws ResistToChooseCard {
+    public CompletableFuture<Void> preprocess() {
         SetMonster event = (SetMonster) getEvent();
         PlayerController playerController = GameController.getInstance().getPlayerControllerByPlayer(event.getPlayer());
-        if (event.getRequiredTributes() > 0)
-            event.setChosenCardsToTribute(Arrays.asList(playerController.chooseKCards(String.format("Choose %d cards to tribute", event.getRequiredTributes()), event.getRequiredTributes(), event.getTributeCondition())));
+        if (event.getRequiredTributes() > 0) {
+            return playerController.chooseKCards(String.format("Choose %d cards to tribute", event.getRequiredTributes()), event.getRequiredTributes(), event.getTributeCondition())
+                    .thenAccept(event::setChosenCardsToTribute);
+        } else {
+            return CompletableFuture.completedFuture(null);
+        }
     }
 }

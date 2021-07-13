@@ -4,6 +4,7 @@ import YuGiOh.controller.GameController;
 import YuGiOh.controller.player.PlayerController;
 import YuGiOh.model.card.Card;
 import YuGiOh.model.card.Magic;
+import YuGiOh.model.card.Monster;
 import YuGiOh.model.card.Spell;
 import YuGiOh.model.card.action.Effect;
 import YuGiOh.model.enums.Color;
@@ -23,12 +24,16 @@ public class MysticalSpaceTyphoon extends Spell {
         return () -> {
             GameController gameController = GameController.getInstance();
             PlayerController playerController = gameController.getPlayerControllerByPlayer(this.getOwner());
-            Magic magic = (Magic) playerController.chooseKCards("Destroy one spell or trap on field",
+            return playerController.chooseKCards("Destroy one spell or trap on field",
                     1,
-                    SelectConditions.getMagicFromField(this))[0];
-            gameController.moveCardToGraveYard(magic);
-            CustomPrinter.println(String.format("<%s>'s <%s> activated successfully", this.getOwner().getUser().getUsername(), this.getName()), Color.Yellow);
-            CustomPrinter.println(this, Color.Gray);
+                    SelectConditions.getMagicFromField(this)
+            ).thenApply(cards ->
+                    (Magic) cards.get(0)
+            ).thenAccept(magic -> {
+                gameController.moveCardToGraveYard(magic);
+                CustomPrinter.println(String.format("<%s>'s <%s> activated successfully", this.getOwner().getUser().getUsername(), this.getName()), Color.Yellow);
+                CustomPrinter.println(this, Color.Gray);
+            });
         };
     }
 

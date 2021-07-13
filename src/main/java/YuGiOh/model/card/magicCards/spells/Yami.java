@@ -1,15 +1,15 @@
 package YuGiOh.model.card.magicCards.spells;
 
-import YuGiOh.controller.GameController;
 import YuGiOh.model.enums.Color;
 import YuGiOh.model.enums.Icon;
 import YuGiOh.model.enums.MonsterType;
 import YuGiOh.model.enums.Status;
-import YuGiOh.model.card.Card;
 import YuGiOh.model.card.Monster;
 import YuGiOh.model.card.Spell;
 import YuGiOh.model.card.action.Effect;
 import YuGiOh.utils.CustomPrinter;
+
+import java.util.concurrent.CompletableFuture;
 
 public class Yami extends Spell {
 
@@ -38,6 +38,7 @@ public class Yami extends Spell {
         return () -> {
             CustomPrinter.println(String.format("<%s> activated field spell <%s>", this.getOwner().getUser().getUsername(), this.getName()), Color.Yellow);
             CustomPrinter.println(this, Color.Gray);
+            return CompletableFuture.completedFuture(null);
         };
     }
 

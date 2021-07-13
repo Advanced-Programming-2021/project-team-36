@@ -1,6 +1,6 @@
 package YuGiOh.view.cardSelector;
 
-import YuGiOh.controller.LogicException;
+import YuGiOh.model.exception.LogicException;
 import YuGiOh.model.card.Card;
 import YuGiOh.view.game.*;
 import YuGiOh.view.game.component.CardFrame;
@@ -89,6 +89,7 @@ public class CardSelector {
         onAction = null;
     }
     public void refresh(){
+        this.onAction = null;
         refresh(SelectConditions.noCondition, SelectMode.Normal);
     }
 

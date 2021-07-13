@@ -68,10 +68,10 @@ public class PileOfCardManager extends StackPane {
                         startY.add(openY.add(startY.negate()).divide(cardFrames.size()).multiply(i))
                 );
             }
-            Platform.runLater(()->{
+//            Platform.runLater(()->{
                 for (CardFrame cardFrame : cardFrames)
                     cardFrame.toFront();
-            });
+//            });
         }
         refreshNumber();
     }
@@ -93,7 +93,7 @@ public class PileOfCardManager extends StackPane {
             open(false);
     }
     private void refreshNumber() {
-        Platform.runLater(()->{
+//        Platform.runLater(()->{
             toFront();
             setViewOrder(-3);
             int number = getCardFrames().size();
@@ -103,6 +103,6 @@ public class PileOfCardManager extends StackPane {
             } else {
                 setVisible(false);
             }
-        });
+//        });
     }
 }

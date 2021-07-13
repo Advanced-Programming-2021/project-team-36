@@ -7,6 +7,7 @@ import YuGiOh.model.card.Monster;
 import YuGiOh.model.card.Spell;
 import YuGiOh.model.deck.MainDeck;
 import YuGiOh.model.enums.*;
+import YuGiOh.model.exception.ModelException;
 import YuGiOh.utils.CustomPrinter;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -47,8 +48,11 @@ public class Board {
     public void drawCardFromDeck() {
         assert mainDeck.getTopCard() != null;
         Card card = mainDeck.getTopCard();
-        mainDeck.removeCard(card);
-        cardsOnHand.add(card);
+        try {
+            moveToHand(card);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
     private void removeCardFromBoardIfHas(Card card) throws ModelException {
@@ -56,7 +60,7 @@ public class Board {
         if(cardAddress == null)
             throw new ModelException("this card is not in this board");
         if(cardAddress.isInDeck())
-            mainDeck.getCards().remove(card);
+            mainDeck.removeCard(card);
         if(cardAddress.isInFieldZone())
             setFieldZoneCard(null);
         if(cardAddress.isInMonsterZone())

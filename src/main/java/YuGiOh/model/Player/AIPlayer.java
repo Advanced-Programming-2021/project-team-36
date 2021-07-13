@@ -2,7 +2,7 @@ package YuGiOh.model.Player;
 
 import YuGiOh.model.enums.AIMode;
 import YuGiOh.utils.Cheat;
-import YuGiOh.model.ModelException;
+import YuGiOh.model.exception.ModelException;
 import YuGiOh.model.User;
 import lombok.Getter;
 
