@@ -6,6 +6,7 @@ import YuGiOh.model.User;
 import YuGiOh.model.card.*;
 import com.google.gson.*;
 import com.google.gson.reflect.TypeToken;
+import lombok.Getter;
 
 import java.io.IOException;
 import java.lang.reflect.Type;
@@ -16,7 +17,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 public class ImportAndExportMenuController extends BaseMenuController {
-
+    @Getter
     private static ImportAndExportMenuController instance;
     private static final Gson gson = new GsonBuilder()
             .registerTypeAdapter(GeneralCard.class, new GeneralCard.Deserializer())

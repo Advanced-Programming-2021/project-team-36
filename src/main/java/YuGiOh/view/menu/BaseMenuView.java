@@ -1,16 +1,22 @@
 package YuGiOh.view.menu;
 
+import YuGiOh.network.ClientConnection;
+import YuGiOh.network.NetworkConnection;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
 import javafx.event.EventHandler;
 import javafx.scene.Node;
 import javafx.scene.Scene;
+import javafx.scene.control.Alert;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.Pane;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Polygon;
 import javafx.scene.transform.Scale;
 import javafx.stage.Stage;
+import lombok.Setter;
+
+import java.io.IOException;
 
 public abstract class BaseMenuView {
     protected Stage stage;

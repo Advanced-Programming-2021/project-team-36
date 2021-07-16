@@ -1,8 +1,7 @@
 package YuGiOh.view.menu;
 
-import YuGiOh.MainApplication;
+import YuGiOh.ClientApplication;
 import YuGiOh.model.card.action.NextPhaseAction;
-import YuGiOh.model.card.magicCards.spells.SupplySquad;
 import YuGiOh.view.game.Utils;
 import YuGiOh.controller.GameController;
 import YuGiOh.controller.menu.*;
@@ -18,12 +17,10 @@ import YuGiOh.view.game.GuiReporter;
 import YuGiOh.view.game.component.*;
 import YuGiOh.view.game.event.RoundOverEvent;
 import javafx.animation.PauseTransition;
-import javafx.beans.property.SimpleBooleanProperty;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.ImageCursor;
 import javafx.scene.Scene;
-import javafx.scene.control.Button;
 import javafx.scene.layout.Pane;
 import javafx.scene.paint.Color;
 import javafx.scene.text.Font;
@@ -63,7 +60,7 @@ public class DuelMenuView extends BaseMenuView {
 
     public static void init(Stage primaryStage) {
         try {
-            Pane root = FXMLLoader.load(MainApplication.class.getResource("/fxml/DuelMenu.fxml"));
+            Pane root = FXMLLoader.load(ClientApplication.class.getResource("/fxml/DuelMenu.fxml"));
             DuelMenuView.getInstance().start(primaryStage, root);
         } catch (IOException ignored) {
         }

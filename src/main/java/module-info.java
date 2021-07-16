@@ -7,6 +7,7 @@ open module YuGiOh {
     requires javafx.media;
     requires gson;
     requires java.sql;
+    requires com.auth0.jwt;
 
     exports YuGiOh;
 }

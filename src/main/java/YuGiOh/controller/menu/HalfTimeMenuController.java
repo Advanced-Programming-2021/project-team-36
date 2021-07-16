@@ -10,7 +10,7 @@ import YuGiOh.utils.CustomPrinter;
 import lombok.Getter;
 
 
-public class HalfTimeMenuController {
+public class HalfTimeMenuController extends BaseMenuController {
     @Getter
     public static HalfTimeMenuController instance;
     private final PlayerController playerController;

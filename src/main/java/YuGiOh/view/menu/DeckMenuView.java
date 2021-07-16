@@ -1,6 +1,6 @@
 package YuGiOh.view.menu;
 
-import YuGiOh.MainApplication;
+import YuGiOh.ClientApplication;
 import YuGiOh.controller.menu.DeckMenuController;
 import YuGiOh.model.User;
 import YuGiOh.model.deck.Deck;
@@ -42,7 +42,7 @@ public class DeckMenuView extends BaseMenuView {
 
     public static void init(Stage primaryStage, User user) {
         try {
-            Pane root = FXMLLoader.load(MainApplication.class.getResource("/fxml/DeckMenu.fxml"));
+            Pane root = FXMLLoader.load(ClientApplication.class.getResource("/fxml/DeckMenu.fxml"));
             DeckMenuView.getInstance().start(primaryStage, root, user);
         } catch (IOException ignored) {
         }

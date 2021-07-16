@@ -1,9 +1,10 @@
 package YuGiOh.view.menu;
 
-import YuGiOh.MainApplication;
-import YuGiOh.controller.menu.LoginMenuController;
+import YuGiOh.ClientApplication;
+import YuGiOh.api.LoginMenuApi;
 import YuGiOh.model.exception.ModelException;
 import YuGiOh.model.User;
+import YuGiOh.network.ClientConnection;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.control.Alert;
@@ -33,6 +34,8 @@ public class LoginMenuView extends BaseMenuView {
         instance = this;
     }
 
+    private LoginMenuApi api;
+
     public static LoginMenuView getInstance() {
         if (instance == null)
             instance = new LoginMenuView();
@@ -41,7 +44,7 @@ public class LoginMenuView extends BaseMenuView {
 
     public static void init(Stage primaryStage) {
         try {
-            Pane root = FXMLLoader.load(MainApplication.class.getResource("/fxml/LoginMenu.fxml"));
+            Pane root = FXMLLoader.load(ClientApplication.class.getResource("/fxml/LoginMenu.fxml"));
             LoginMenuView.getInstance().start(primaryStage, root);
         } catch (IOException ignored) {
         }
@@ -50,7 +53,13 @@ public class LoginMenuView extends BaseMenuView {
     public void start(Stage primaryStage, Pane root) {
         this.root = root;
         this.stage = primaryStage;
-        new LoginMenuController();
+        try {
+            this.api = new LoginMenuApi(ClientConnection.getOrCreateInstance());
+        } catch (IOException e) {
+            new Alert(Alert.AlertType.ERROR, "check your connection to server and retry!").showAndWait();
+            LoginMenuView.init(stage);
+            return;
+        }
         scene.setRoot(root);
         try {
             backgroundImageView.setImage(new Image(new FileInputStream(backgroundImageAddress)));
@@ -69,30 +78,30 @@ public class LoginMenuView extends BaseMenuView {
     }
 
     public void register() {
-        try {
-            LoginMenuController.getInstance().createUser(registerUsernameTextField.getText(), registerNicknameTextField.getText(),
-                    registerPasswordTextField.getText());
-        } catch (ModelException exception) {
-            new Alert(Alert.AlertType.ERROR, exception.getMessage()).showAndWait();
-            return;
-        }
-        new Alert(Alert.AlertType.INFORMATION, "user created successfully!").showAndWait();
-        backgroundImageView.toFront();
-        mainPane.toFront();
+        api.createUser(registerUsernameTextField.getText(), registerNicknameTextField.getText(), registerPasswordTextField.getText())
+                .whenComplete((res, ex) -> {
+                    if(ex == null) {
+                        new Alert(Alert.AlertType.INFORMATION, "user created successfully!").showAndWait();
+                        backgroundImageView.toFront();
+                        mainPane.toFront();
+                    } else {
+                        new Alert(Alert.AlertType.ERROR, ex.getCause().getMessage()).showAndWait();
+                    }
+                });
     }
 
     public void login() {
-        try {
-            User user = LoginMenuController.getInstance().login(loginUsernameTextField.getText(),
-                    loginPasswordTextField.getText());
-            new Alert(Alert.AlertType.INFORMATION, "user logged in successfully!").showAndWait();
-            backgroundImageView.toFront();
-            mainPane.toFront();
-            MainMenuView.init(stage, user);
-        } catch (ModelException exception) {
-            new Alert(Alert.AlertType.ERROR, exception.getMessage()).showAndWait();
-            return;
-        }
+        api.login(loginUsernameTextField.getText(), loginPasswordTextField.getText())
+                .whenComplete((user, ex) -> {
+                    if (ex == null) {
+                        new Alert(Alert.AlertType.INFORMATION, "user logged in successfully!").showAndWait();
+                        backgroundImageView.toFront();
+                        mainPane.toFront();
+                        MainMenuView.init(stage, user);
+                    } else {
+                        new Alert(Alert.AlertType.ERROR, ex.getCause().getMessage()).showAndWait();
+                    }
+                });
     }
 
     public void loadRegisterMenu() {

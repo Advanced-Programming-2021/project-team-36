@@ -1,6 +1,6 @@
 package YuGiOh.view.menu;
 
-import YuGiOh.MainApplication;
+import YuGiOh.ClientApplication;
 import YuGiOh.controller.menu.FactoryMenuController;
 import YuGiOh.model.User;
 import YuGiOh.model.card.Card;
@@ -60,7 +60,7 @@ public class CardFactoryMenuView extends BaseMenuView {
 
     public static void init(Stage primaryStage, User user) {
         try {
-            Pane root = FXMLLoader.load(MainApplication.class.getResource("/fxml/CardFactoryMenuView.fxml"));
+            Pane root = FXMLLoader.load(ClientApplication.class.getResource("/fxml/CardFactoryMenuView.fxml"));
             CardFactoryMenuView.getInstance().start(primaryStage, root, user);
         } catch (IOException ignored) {
         }

@@ -1,11 +1,10 @@
 package YuGiOh.view.menu;
 
-import YuGiOh.MainApplication;
+import YuGiOh.ClientApplication;
 import YuGiOh.controller.MediaPlayerController;
 import YuGiOh.controller.menu.*;
 import YuGiOh.model.Animation;
 import YuGiOh.model.enums.AIMode;
-import javafx.animation.AnimationTimer;
 import javafx.animation.KeyFrame;
 import javafx.animation.Timeline;
 import javafx.fxml.FXML;
@@ -29,7 +28,6 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Random;
-import java.util.concurrent.CountDownLatch;
 
 public class StartNewDuelView extends BaseMenuView {
     private static final int ARROW_SIZE = 30;
@@ -68,7 +66,7 @@ public class StartNewDuelView extends BaseMenuView {
 
     public static void init(Stage primaryStage, int gameMode) {
         try {
-            Pane root = FXMLLoader.load(MainApplication.class.getResource("/fxml/NewGameMenu.fxml"));
+            Pane root = FXMLLoader.load(ClientApplication.class.getResource("/fxml/NewGameMenu.fxml"));
             StartNewDuelView.getInstance().start(primaryStage, root, gameMode);
         } catch (IOException ignored) {
         }
