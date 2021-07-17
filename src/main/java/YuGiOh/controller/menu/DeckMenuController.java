@@ -11,21 +11,21 @@ import lombok.experimental.UtilityClass;
 
 
 public class DeckMenuController extends BaseMenuController {
-    public void createDeck(Request request, String deckName) throws LogicException {
+    public static void createDeck(Request request, String deckName) throws LogicException {
         if (request.getUser().getDeckByName(deckName) != null)
             throw new LogicException(String.format("Deck with name %s already exists", deckName));
         request.getUser().addDeck(new Deck(deckName));
     }
 
-    public void deleteDeck(Request request, String deckName) {
+    public static void deleteDeck(Request request, String deckName) {
         request.getUser().deleteDeck(request.getUser().getDeckByName(deckName));
     }
 
-    public void setActiveDeck(Request request, String deckName) {
+    public static void setActiveDeck(Request request, String deckName) {
         request.getUser().setActiveDeck(request.getUser().getDeckByName(deckName));
     }
 
-    public void addCardToDeck(Request request, String cardName, String deckName, boolean force, boolean side) throws LogicException{
+    public static void addCardToDeck(Request request, String cardName, String deckName, boolean force, boolean side) throws LogicException{
         Deck deck = request.getUser().getDeckByName(deckName);
         Card card = Utils.getCard(cardName);
         if (deck.getCardFrequency(card) >= request.getUser().getCardFrequency(card) && !force)
@@ -43,7 +43,7 @@ public class DeckMenuController extends BaseMenuController {
         }
     }
 
-    public void removeCardFromDeck(Request request, String cardName, String deckName, boolean side) {
+    public static void removeCardFromDeck(Request request, String cardName, String deckName, boolean side) {
         Deck deck = request.getUser().getDeckByName(deckName);
         if(side)
             deck.getSideDeck().removeCardByName(cardName);
@@ -51,7 +51,7 @@ public class DeckMenuController extends BaseMenuController {
             deck.getMainDeck().removeCardByName(cardName);
     }
 
-    public Deck deckParser(Request request, String deckName) {
+    public static Deck deckParser(Request request, String deckName) {
         return request.getUser().getDeckByName(deckName);
     }
 }
