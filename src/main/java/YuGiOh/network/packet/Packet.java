@@ -1,5 +1,7 @@
 package YuGiOh.network.packet;
 
+import YuGiOh.model.User;
+import YuGiOh.network.NotAuthenticatedException;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -14,5 +16,11 @@ public class Packet implements Serializable {
     public Packet(int id, JwtToken token) {
         this.id = id;
         this.token = token;
+    }
+
+    public User getUser() {
+        if(token == null)
+            throw new NotAuthenticatedException();
+        return token.getUserThrows();
     }
 }

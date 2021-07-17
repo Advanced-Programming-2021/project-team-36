@@ -1,8 +1,11 @@
 package YuGiOh.view.menu;
 
 import YuGiOh.ClientApplication;
+import YuGiOh.api.LoginMenuApi;
+import YuGiOh.api.ProfileMenuApi;
 import YuGiOh.controller.menu.*;
 import YuGiOh.model.User;
+import YuGiOh.network.ClientConnection;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Node;
@@ -33,6 +36,8 @@ public class ProfileMenuView extends BaseMenuView {
     @FXML
     private Node mainPane, passwordPane, nicknamePane;
 
+    private ProfileMenuApi api;
+
     public ProfileMenuView() {
         instance = this;
     }
@@ -43,19 +48,25 @@ public class ProfileMenuView extends BaseMenuView {
         return instance;
     }
 
-    public static void init(Stage primaryStage, User user) {
+    public static void init(Stage primaryStage) {
         try {
             Pane root = FXMLLoader.load(ClientApplication.class.getResource("/fxml/ProfileMenu.fxml"));
-            ProfileMenuView.getInstance().start(primaryStage, root, user);
+            ProfileMenuView.getInstance().start(primaryStage, root);
         } catch (IOException ignored) {
         }
     }
 
-    public void start(Stage primaryStage, Pane root, User user) {
+    public void start(Stage primaryStage, Pane root) {
         this.stage = primaryStage;
         this.root = root;
         scene.setRoot(root);
-        new ProfileMenuController(user);
+        try {
+            this.api = new ProfileMenuApi(ClientConnection.getOrCreateInstance());
+        } catch (IOException e) {
+            new Alert(Alert.AlertType.ERROR, "check your connection to server and retry!").showAndWait();
+            LoginMenuView.init(stage);
+            return;
+        }
         try {
             backgroundImageView.setImage(new Image(new FileInputStream(backgroundImageAddress)));
             backgroundImageView.toBack();
@@ -76,31 +87,40 @@ public class ProfileMenuView extends BaseMenuView {
     }
 
     private void renderScene() {
-        usernameLabel.setText("  Username: " + ProfileMenuController.getInstance().getUser().getUsername() + "  ");
-        nicknameLabel.setText("  Nickname: " + ProfileMenuController.getInstance().getUser().getNickname() + "  ");
-        profilePicture.setImage(ProfileMenuController.getInstance().getUser().getProfilePicture());
-
+        api.getUserFromServer().thenAccept(user->{
+            usernameLabel.setText("  Username: " + user.getUsername() + "  ");
+            nicknameLabel.setText("  Nickname: " + user.getNickname() + "  ");
+            profilePicture.setImage(user.getProfilePicture());
+        });
     }
 
     @FXML
     private void changeNickname() {
-        try {
-            ProfileMenuController.getInstance().changeNickname(newNicknameTextField.getText());
-            new Alert(Alert.AlertType.INFORMATION, "Nickname changed successfully!").showAndWait();
-            nicknameLabel.setText("Nickname: " + ProfileMenuController.getInstance().getUser().getNickname());
-        } catch (Exception exception) {
-            new Alert(Alert.AlertType.ERROR, exception.getMessage()).showAndWait();
-        }
+        api.changeNickname(newNicknameTextField.getText())
+                .whenComplete((res, ex)->{
+                    if(ex == null) {
+                        api.getUserFromServer().thenAccept(user->{
+                            new Alert(Alert.AlertType.INFORMATION, "Nickname changed successfully!").showAndWait();
+                            nicknameLabel.setText("Nickname: " + user.getNickname());
+                        });
+                    } else {
+                        new Alert(Alert.AlertType.ERROR, ex.getMessage()).showAndWait();
+                    }
+                });
     }
 
     @FXML
     private void changePassword() {
-        try {
-            ProfileMenuController.getInstance().changePassword(oldPasswordTextField.getText(), newPasswordTextField.getText());
-            new Alert(Alert.AlertType.INFORMATION, "password changed successfully!").showAndWait();
-        } catch (Exception exception) {
-            new Alert(Alert.AlertType.ERROR, exception.getMessage()).showAndWait();
-        }
+        api.changePassword(oldPasswordTextField.getText(), newPasswordTextField.getText())
+                .whenComplete((res, ex)-> {
+                    if(ex == null) {
+                        api.getUserFromServer().thenAccept(user->{
+                            new Alert(Alert.AlertType.INFORMATION, "password changed successfully!").showAndWait();
+                        });
+                    } else {
+                        new Alert(Alert.AlertType.ERROR, ex.getMessage()).showAndWait();
+                    }
+                });
     }
 
     @FXML

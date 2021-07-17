@@ -5,6 +5,7 @@ import YuGiOh.model.enums.Constants;
 import YuGiOh.model.card.Card;
 import YuGiOh.model.exception.ModelException;
 import javafx.scene.image.Image;
+import lombok.Getter;
 
 import java.io.FileInputStream;
 import java.io.IOException;
@@ -25,6 +26,8 @@ public class User implements Serializable {
     private final ArrayList<Deck> decks;
     private Deck activeDeck;
     private int photoNumber;
+    @Getter
+    private final int userId;
 
     public User(String username, String nickname, String password) {
         this.username = username;
@@ -36,12 +39,19 @@ public class User implements Serializable {
         this.decks = new ArrayList<>();
         this.activeDeck = null;
         this.photoNumber = randomProfilePhoto();
+        this.userId = users.size();
         this.save();
     }
 
     public static User getUserByUsername(String username) {
         for (User user : users)
             if (user.getUsername().equals(username))
+                return user;
+        return null;
+    }
+    public static User getUserByUserId(int userId) {
+        for (User user : users)
+            if (user.getUserId() == userId)
                 return user;
         return null;
     }

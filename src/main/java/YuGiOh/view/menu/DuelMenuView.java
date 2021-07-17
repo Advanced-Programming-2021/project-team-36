@@ -111,8 +111,8 @@ public class DuelMenuView extends BaseMenuView {
         this.root.prefHeightProperty().bind(scene.heightProperty());
 
         this.navBar.setSpacing(40);
-        this.navBar.getChildren().add(new CustomButton("surrender", 23, ()-> gameField.addRunnableToMainThread(()-> GameController.getInstance().getCurrentPlayerController().surrender())));
-        this.navBar.getChildren().add(new CustomButton("next phase", 23, ()-> gameField.addRunnableToMainThread(()-> new NextPhaseAction().runEffect())));
+        this.navBar.getChildren().add(new CustomButton("surrender", 23, ()-> GameController.getInstance().addRunnableToMainThread(()-> GameController.getInstance().getCurrentPlayerController().surrender())));
+        this.navBar.getChildren().add(new CustomButton("next phase", 23, ()-> GameController.getInstance().addRunnableToMainThread(()-> new NextPhaseAction().runEffect())));
         scene.setCursor(new ImageCursor(Utils.getImage("Cursor/pen.png")));
     }
 

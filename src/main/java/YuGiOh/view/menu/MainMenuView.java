@@ -1,8 +1,10 @@
 package YuGiOh.view.menu;
 
 import YuGiOh.ClientApplication;
+import YuGiOh.api.LoginMenuApi;
 import YuGiOh.controller.MediaPlayerController;
 import YuGiOh.model.User;
+import YuGiOh.network.ClientConnection;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.control.Alert;
@@ -33,19 +35,18 @@ public class MainMenuView extends BaseMenuView {
         return instance;
     }
 
-    public static void init(Stage primaryStage, User user) {
+    public static void init(Stage primaryStage) {
         try {
             Pane root = FXMLLoader.load(ClientApplication.class.getResource("/fxml/MainMenu.fxml"));
-            MainMenuView.getInstance().start(primaryStage, root, user);
+            MainMenuView.getInstance().start(primaryStage, root);
         } catch (IOException ignored) {
             ignored.printStackTrace();
         }
     }
 
-    public void start(Stage primaryStage, Pane root, User user) {
+    public void start(Stage primaryStage, Pane root) {
         this.stage = primaryStage;
         this.root = root;
-        new MainMenuController(user);
         scene.setRoot(root);
         try {
             backgroundImageView.setImage(new Image(new FileInputStream(backgroundImageAddress)));
@@ -64,7 +65,7 @@ public class MainMenuView extends BaseMenuView {
 
     @FXML
     private void loadProfileMenu() {
-        ProfileMenuView.init(stage, MainMenuController.getInstance().getUser());
+        ProfileMenuView.init(stage);
     }
 
     @FXML
@@ -74,12 +75,12 @@ public class MainMenuView extends BaseMenuView {
 
     @FXML
     private void loadDeckMenu() {
-        DeckMenuView.init(stage, MainMenuController.getInstance().getUser());
+        DeckMenuView.init(stage);
     }
 
     @FXML
     private void loadShopMenu() {
-        ShopMenuView.init(stage, MainMenuController.getInstance().getUser());
+        ShopMenuView.init(stage);
     }
 
     @FXML
@@ -94,12 +95,12 @@ public class MainMenuView extends BaseMenuView {
 
     @FXML
     private void loadCardFactoryMenu() {
-        CardFactoryMenuView.init(stage, MainMenuController.getInstance().getUser());
+        CardFactoryMenuView.init(stage);
     }
 
     public void logout() {
         new Alert(Alert.AlertType.INFORMATION, "user logged out successfully!").showAndWait();
+        ClientConnection.disconnectAll();
         LoginMenuView.getInstance().run();
     }
-
 }

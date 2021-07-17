@@ -16,6 +16,9 @@ import YuGiOh.model.card.Card;
 import YuGiOh.model.card.Monster;
 import YuGiOh.model.enums.Constants;
 
+import java.io.LineNumberInputStream;
+import java.util.HashMap;
+
 abstract public class Player {
     private final User user;
     @Getter
@@ -23,6 +26,7 @@ abstract public class Player {
     private Board board;
 
     private IntegerProperty lifePoint;
+    private static final HashMap<User, Player> userPlayerHashMap = new HashMap<>();
 
     @Getter @Setter
     private boolean summonedInLastTurn;
@@ -37,6 +41,12 @@ abstract public class Player {
         this.board = new Board(deck.getMainDeck(), this);
         this.lifePoint = new SimpleIntegerProperty(Constants.InitialLifePoint.val);
         summonedInLastTurn = false;
+
+        userPlayerHashMap.put(user, this);
+    }
+
+    public static Player getPlayerByUser(User user) {
+        return userPlayerHashMap.get(user);
     }
 
     public void refresh() {

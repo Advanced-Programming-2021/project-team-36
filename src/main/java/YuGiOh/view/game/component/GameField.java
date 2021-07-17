@@ -106,7 +106,7 @@ public class GameField extends Pane {
                         .findFirst();
                 if (opt.isPresent()) {
                     if (opt.get().getCard() instanceof Monster) {
-                        addRunnableToMainThreadForCard(
+                        GameController.getInstance().addRunnableToMainThreadForCard(
                                 e.getCardFrame().getCard(),
                                 () -> {
                                     PlayerController controller = GameController.getInstance().getPlayerControllerByPlayer(e.getCardFrame().getCard().getOwner());
@@ -203,28 +203,6 @@ public class GameField extends Pane {
 
     private CompletableFuture<Void> moveCardByAddress(CardAddress address, CardFrame cardFrame) {
         return moveCardByAddress(cardFrame, address, getAnimationDuration(cardFrameManager.getCardAddressByCard(cardFrame.getCard()), address));
-    }
-
-    public void addRunnableToMainThreadForCard(Card card, GameRunnable runnable){
-        if(card.getOwner().equals(GameController.getInstance().getGame().getCurrentPlayer()))
-            addRunnableToMainThread(runnable);
-        else
-            CustomPrinter.println("You can't control your opponent's card", YuGiOh.model.enums.Color.Red);
-    }
-    public void addRunnableToMainThread(GameRunnable runnable){
-        if(GameController.getInstance().getCurrentPlayerController() instanceof AIPlayerController){
-            CustomPrinter.println("you can't do stuff in opponent's turn", YuGiOh.model.enums.Color.Red);
-            return;
-        }
-        try {
-            runnable.run();
-        } catch (ResistToChooseCard ignored) {
-
-        } catch (GameException e){
-            new AlertBox().display(this, e.getMessage());
-        } catch (RoundOverExceptionEvent roundOverExceptionEvent) {
-            DuelMenuController.getInstance().finishGame(roundOverExceptionEvent);
-        }
     }
 
     public interface GameRunnable{

@@ -1,6 +1,9 @@
 package YuGiOh.controller;
 
+import YuGiOh.controller.player.AIPlayerController;
 import YuGiOh.model.card.action.NextPhaseAction;
+import YuGiOh.model.exception.GameException;
+import YuGiOh.model.exception.ResistToChooseCard;
 import YuGiOh.model.exception.eventException.RoundOverExceptionEvent;
 import YuGiOh.controller.menu.DuelMenuController;
 import YuGiOh.controller.player.HumanPlayerController;
@@ -10,10 +13,8 @@ import YuGiOh.model.card.Card;
 import YuGiOh.model.card.Magic;
 import YuGiOh.model.card.Monster;
 import YuGiOh.model.enums.*;
-import YuGiOh.model.exception.LogicException;
 import YuGiOh.utils.CustomPrinter;
-import YuGiOh.view.game.GuiReporter;
-import YuGiOh.view.game.event.RoundOverEvent;
+import YuGiOh.view.game.component.GameField;
 import lombok.Getter;
 import YuGiOh.model.Game;
 import YuGiOh.model.Player.AIPlayer;
@@ -128,27 +129,62 @@ public class GameController {
         return playerController2;
     }
 
+    public void showBoard() {
+        CustomPrinter.println(game.getOpponentPlayer().getUser().getNickname() + ":" + game.getOpponentPlayer().getLifePoint(), Color.Purple);
+        CustomPrinter.println(game.getOpponentPlayer().getBoard().toRotatedString(), Color.Purple);
+        CustomPrinter.println();
+        CustomPrinter.println("--------------------------", Color.Purple);
+        CustomPrinter.println();
+        CustomPrinter.println(game.getCurrentPlayer().getBoard().toString(), Color.Purple);
+        CustomPrinter.println(game.getCurrentPlayer().getUser().getNickname() + ":" + game.getCurrentPlayer().getLifePoint(), Color.Purple);
+    }
+
+    public void printCurrentPhase() {
+        CustomPrinter.println("phase: " + game.getPhase().getVerboseName(), Color.Blue);
+    }
+
+    public void addRunnableToMainThreadForCard(Card card, GameField.GameRunnable runnable){
+        if(card.getOwner().equals(GameController.getInstance().getGame().getCurrentPlayer()))
+            addRunnableToMainThread(runnable);
+        else
+            CustomPrinter.println("You can't control your opponent's card", YuGiOh.model.enums.Color.Red);
+    }
+
+    public void addRunnableToMainThread(GameField.GameRunnable runnable){
+        if(GameController.getInstance().getCurrentPlayerController() instanceof AIPlayerController){
+            CustomPrinter.println("you can't do stuff in opponent's turn", YuGiOh.model.enums.Color.Red);
+            return;
+        }
+        try {
+            runnable.run();
+        } catch (ResistToChooseCard ignored) {
+        } catch (GameException e){
+            DuelMenuController.getInstance().getView().announce(e.getMessage());
+        } catch (RoundOverExceptionEvent roundOverExceptionEvent) {
+            DuelMenuController.getInstance().finishGame(roundOverExceptionEvent);
+        }
+    }
+
     public void doGameStep() {
         CustomPrinter.println(String.format("its %s's turn%n", game.getCurrentPlayer().getUser().getUsername()), Color.Blue);
         try {
             if (!game.getPhase().equals(previousIterationPhase)) {
                 previousIterationPhase = game.getPhase();
-                DuelMenuController.getInstance().printCurrentPhase();
+                printCurrentPhase();
             } // let this be for debug
-
             if (game.getPhase().equals(Phase.DRAW_PHASE)) {
                 CustomPrinter.println(String.format("its %s's turn%n", game.getCurrentPlayer().getUser().getUsername()), Color.Blue);
                 drawCard().thenRun(()->new NextPhaseAction().runEffect());
             } else if (game.getPhase().equals(Phase.STANDBY_PHASE)) {
                 new NextPhaseAction().runEffect();
             } else if (game.getPhase().equals(Phase.MAIN_PHASE1)) {
-                DuelMenuController.getInstance().showBoard();
+                showBoard();
                 getCurrentPlayerController().controlMainPhase1();
             } else if (game.getPhase().equals(Phase.BATTLE_PHASE)) {
-                DuelMenuController.getInstance().showBoard();
+                showBoard();
                 getCurrentPlayerController().controlBattlePhase();
             } else if (game.getPhase().equals(Phase.MAIN_PHASE2)) {
-                DuelMenuController.getInstance().showBoard();
+                showBoard();
                 getCurrentPlayerController().controlMainPhase2();
             } else if (game.getPhase().equals(Phase.END_PHASE)) {
                 new NextPhaseAction().runEffect();

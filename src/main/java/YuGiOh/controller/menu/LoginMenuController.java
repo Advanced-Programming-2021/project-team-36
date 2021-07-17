@@ -14,7 +14,7 @@ public class LoginMenuController extends BaseMenuController {
         new User(username, nickname, password);
     }
 
-    public static User login(Request request, String username, String password) throws ModelException {
+    public static void login(Request request, String username, String password) throws ModelException {
         User user = User.getUserByUsername(username);
         if (User.getUserByUsername(username) == null)
             throw new ModelException("Username and password didn’t match!");
@@ -22,6 +22,8 @@ public class LoginMenuController extends BaseMenuController {
         if (!user.authenticate(password))
             throw new ModelException("Username and password didn’t match!");
         request.setToken(JwtToken.getTokenForUser(user));
-        return user;
+    }
+    public static User getUser(Request request) {
+        return request.getUser();
     }
 }

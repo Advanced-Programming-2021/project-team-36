@@ -1,11 +1,13 @@
 package YuGiOh.view.menu;
 
 import YuGiOh.ClientApplication;
+import YuGiOh.api.DeckMenuApi;
 import YuGiOh.controller.menu.DeckMenuController;
 import YuGiOh.model.card.Card;
 import YuGiOh.model.card.Utils;
 import YuGiOh.model.deck.BaseDeck;
 import YuGiOh.model.deck.Deck;
+import YuGiOh.network.ClientConnection;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.control.*;
@@ -22,6 +24,7 @@ import javafx.stage.Stage;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.util.concurrent.CompletableFuture;
 
 public class DeckView extends BaseMenuView {
     private static final double imageWidth = 90, imageHeight = imageWidth * 614.0 / 421.0, HGAP = 1.8;
@@ -49,6 +52,15 @@ public class DeckView extends BaseMenuView {
         instance = this;
     }
 
+    private DeckMenuApi api;
+
+    private CompletableFuture<Void> refreshDeck() {
+        return api.deckParser(deck.getName()).thenAccept(this::setDeck);
+    }
+    private void setDeck(Deck deck) {
+        this.deck = deck;
+    }
+
     public static DeckView getInstance() {
         if (instance == null)
             instance = new DeckView();
@@ -67,6 +79,13 @@ public class DeckView extends BaseMenuView {
         this.stage = primaryStage;
         this.root = root;
         this.deck = deck;
+        try {
+            this.api = new DeckMenuApi(ClientConnection.getOrCreateInstance());
+        } catch (IOException e) {
+            new Alert(Alert.AlertType.ERROR, "check your connection to server and retry!").showAndWait();
+            LoginMenuView.init(stage);
+            return;
+        }
         scene.setRoot(root);
         try {
             backgroundImageView.setImage(new Image(new FileInputStream(backgroundImageAddress)));
@@ -84,12 +103,14 @@ public class DeckView extends BaseMenuView {
     }
 
     private void renderInitialSettings() {
-        ((VBox) removeButton.getParent()).getChildren().remove(removeButton);
-        deckLabel.setText(deck.getName());
-        renderDeck(deck.getMainDeck(), mainGridPane, mainScrollPane);
-        renderDeck(deck.getSideDeck(), sideGridPane, sideScrollPane);
-        mainGridPane.setHgap(HGAP);
-        sideGridPane.setHgap(HGAP);
+        refreshDeck().thenRun(()->{
+                ((VBox) removeButton.getParent()).getChildren().remove(removeButton);
+                deckLabel.setText(deck.getName());
+                renderDeck(deck.getMainDeck(), mainGridPane, mainScrollPane);
+                renderDeck(deck.getSideDeck(), sideGridPane, sideScrollPane);
+                mainGridPane.setHgap(HGAP);
+                sideGridPane.setHgap(HGAP);
+        });
     }
 
     private void renderDeck(BaseDeck deck, GridPane gridPane, ScrollPane scrollPane) {
@@ -140,17 +161,20 @@ public class DeckView extends BaseMenuView {
 
     private void addCardToDeck(boolean side) {
         Card card = selectCard();
-        try {
-            DeckMenuController.getInstance().addCardToDeck(card, deck, false, side);
-            new Alert(Alert.AlertType.INFORMATION, "Card added to deck successfully!").showAndWait();
-            if (!side)
-                addCardToGrid(mainGridPane, deck.getMainDeck(), card, mainGridPane.getColumnCount());
-            else
-                addCardToGrid(sideGridPane, deck.getSideDeck(), card, sideGridPane.getColumnCount());
-        } catch (Exception exception) {
-            new Alert(Alert.AlertType.ERROR, exception.getMessage()).showAndWait();
-        }
+        api.addCardToDeck(card.getName(), deck.getName(), false, side).thenCompose(res -> refreshDeck())
+                .whenComplete((res, ex)->{
+                    if(ex == null) {
+                        new Alert(Alert.AlertType.INFORMATION, "Card added to deck successfully!").showAndWait();
+                        if (!side)
+                            addCardToGrid(mainGridPane, deck.getMainDeck(), card, mainGridPane.getColumnCount());
+                        else
+                            addCardToGrid(sideGridPane, deck.getSideDeck(), card, sideGridPane.getColumnCount());
+                    } else {
+                        new Alert(Alert.AlertType.ERROR, ex.getMessage()).showAndWait();
+                    }
+                });
     }
+
     @FXML
     private void addCardToMainDeck() {
         addCardToDeck(false);
@@ -166,18 +190,23 @@ public class DeckView extends BaseMenuView {
         alert.showAndWait();
         if (!alert.getResult().getText().equalsIgnoreCase("Yes"))
             return;
-        if (selectedMainCard != null) {
-            deck.getMainDeck().removeCard(selectedMainCard);
-            mainGridPane.getChildren().remove(selectedImageView);
-        } else {
-            deck.getSideDeck().removeCard(selectedSideCard);
-            sideGridPane.getChildren().remove(selectedImageView);
-        }
-        selectedSideCard = selectedMainCard = null;
-        selectedImageView = null;
-        mainHBox.getChildren().remove(removeButton);
-        sideHBox.getChildren().remove(removeButton);
-        new Alert(Alert.AlertType.INFORMATION, "Card removed from deck successfully!").showAndWait();
+        CompletableFuture.completedFuture(null).thenCompose(res-> {
+                    if (selectedMainCard != null)
+                        return api.removeCardFromDeck(selectedMainCard.getName(), deck.getName(), false).thenAccept(dum->{
+                            mainGridPane.getChildren().remove(selectedImageView);
+                        });
+                    else
+                        return api.removeCardFromDeck(selectedSideCard.getName(), deck.getName(), true).thenAccept(dum-> {
+                            sideGridPane.getChildren().remove(selectedImageView);
+                        });
+                })
+                .thenRun(()->{
+                    selectedSideCard = selectedMainCard = null;
+                    selectedImageView = null;
+                    mainHBox.getChildren().remove(removeButton);
+                    sideHBox.getChildren().remove(removeButton);
+                    new Alert(Alert.AlertType.INFORMATION, "Card removed from deck successfully!").showAndWait();
+                });
 
     }
     @FXML

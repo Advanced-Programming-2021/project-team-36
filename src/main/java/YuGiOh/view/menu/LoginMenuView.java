@@ -2,8 +2,6 @@ package YuGiOh.view.menu;
 
 import YuGiOh.ClientApplication;
 import YuGiOh.api.LoginMenuApi;
-import YuGiOh.model.exception.ModelException;
-import YuGiOh.model.User;
 import YuGiOh.network.ClientConnection;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
@@ -92,12 +90,12 @@ public class LoginMenuView extends BaseMenuView {
 
     public void login() {
         api.login(loginUsernameTextField.getText(), loginPasswordTextField.getText())
-                .whenComplete((user, ex) -> {
+                .whenComplete((res, ex) -> {
                     if (ex == null) {
                         new Alert(Alert.AlertType.INFORMATION, "user logged in successfully!").showAndWait();
                         backgroundImageView.toFront();
                         mainPane.toFront();
-                        MainMenuView.init(stage, user);
+                        MainMenuView.init(stage);
                     } else {
                         new Alert(Alert.AlertType.ERROR, ex.getCause().getMessage()).showAndWait();
                     }

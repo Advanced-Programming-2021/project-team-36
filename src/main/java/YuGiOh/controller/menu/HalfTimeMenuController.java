@@ -6,46 +6,34 @@ import YuGiOh.controller.player.PlayerController;
 import YuGiOh.model.Player.Player;
 import YuGiOh.model.card.Card;
 import YuGiOh.model.enums.Color;
+import YuGiOh.network.packet.Request;
 import YuGiOh.utils.CustomPrinter;
 import lombok.Getter;
 
 
 public class HalfTimeMenuController extends BaseMenuController {
-    @Getter
-    public static HalfTimeMenuController instance;
-    private final PlayerController playerController;
-
-    public HalfTimeMenuController(PlayerController playerController) {
-        this.playerController = playerController;
-        instance = this;
+    private static Player getPlayer(Request request) {
+        return Player.getPlayerByUser(request.getUser());
     }
 
-    private Player getPlayer() {
-        return playerController.getPlayer();
-    }
-
-    public void addCardToDeck(Card card) throws LogicException {
-        if (!getPlayer().getSideDeck().hasCard(card))
+    public static void addCardToDeck(Request request, Card card) throws LogicException {
+        if (!getPlayer(request).getSideDeck().hasCard(card))
             throw new LogicException("you don't have this card in your side deck");
-        getPlayer().getMainDeck().addCard(card);
-        getPlayer().getSideDeck().removeCard(card);
+        getPlayer(request).getMainDeck().addCard(card);
+        getPlayer(request).getSideDeck().removeCard(card);
         CustomPrinter.println("card moved to main deck successfully", Color.Default);
     }
 
-    public void removeCardFromDeck(Card card) throws LogicException {
-        if (!getPlayer().getMainDeck().hasCard(card))
+    public static void removeCardFromDeck(Request request, Card card) throws LogicException {
+        if (!getPlayer(request).getMainDeck().hasCard(card))
             throw new LogicException("you don't have this card in your main deck");
-        getPlayer().getMainDeck().removeCard(card);
-        getPlayer().getSideDeck().addCard(card);
+        getPlayer(request).getMainDeck().removeCard(card);
+        getPlayer(request).getSideDeck().addCard(card);
         CustomPrinter.println("card moved to side deck successfully", Color.Default);
     }
 
-    public void showDeck(boolean side) {
-        CustomPrinter.println(getPlayer().getDeck().info(side), Color.Default);
-    }
-
-    public void ready() throws PlayerReadyExceptionEvent, LogicException {
-        if (!getPlayer().getMainDeck().isValid())
+    public static void ready(Request request) throws PlayerReadyExceptionEvent, LogicException {
+        if (!getPlayer(request).getMainDeck().isValid())
             throw new LogicException("your main deck is not valid");
         throw new PlayerReadyExceptionEvent();
     }

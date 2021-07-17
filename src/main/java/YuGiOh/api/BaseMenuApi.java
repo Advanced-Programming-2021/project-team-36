@@ -1,12 +1,12 @@
 package YuGiOh.api;
 
+import YuGiOh.controller.menu.LoginMenuController;
+import YuGiOh.model.User;
 import YuGiOh.network.NetworkConnection;
 import YuGiOh.network.packet.Request;
 import YuGiOh.network.packet.Response;
 
 import java.io.IOException;
-import java.io.Serializable;
-import java.lang.reflect.Method;
 import java.util.concurrent.CompletableFuture;
 
 public abstract class BaseMenuApi {
@@ -32,6 +32,13 @@ public abstract class BaseMenuApi {
         } catch (NoSuchMethodException | SecurityException e) {
             throw new Error(e);
         }
+    }
+    protected CompletableFuture<Void> askToSendRequestVoid(ExceptionalRequestBuilder requestBuilder) {
+        return askToSendRequest(requestBuilder).thenAccept(res->{});
+    }
+    public CompletableFuture<User> getUserFromServer() {
+        return askToSendRequest(()-> new Request(LoginMenuController.class.getDeclaredMethod("getUser", Request.class)))
+                .thenApply(res -> (User) res.getUser());
     }
 
     protected interface ExceptionalRequestBuilder {

@@ -126,7 +126,7 @@ public class CardFrame extends DraggablePane {
         }
         MenuItem item = new MenuItem("", new CustomButton(text, 15, ()->{}, color));
         PlayerController controller = GameController.getInstance().getPlayerControllerByPlayer(card.getOwner());
-        item.setOnAction(e-> gameField.addRunnableToMainThreadForCard(card, ()-> controller.startChain(action)));
+        item.setOnAction(e-> GameController.getInstance().addRunnableToMainThreadForCard(card, ()-> controller.startChain(action)));
         contextMenu.getItems().add(item);
     }
 

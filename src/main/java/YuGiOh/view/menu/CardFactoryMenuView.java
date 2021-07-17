@@ -1,7 +1,6 @@
 package YuGiOh.view.menu;
 
 import YuGiOh.ClientApplication;
-import YuGiOh.controller.menu.FactoryMenuController;
 import YuGiOh.model.User;
 import YuGiOh.model.card.Card;
 import YuGiOh.model.card.Monster;
@@ -71,7 +70,6 @@ public class CardFactoryMenuView extends BaseMenuView {
         this.root = root;
         this.user = user;
         scene.setRoot(root);
-        new FactoryMenuController(user);
         try {
             backgroundImageView.setImage(new Image(new FileInputStream(backgroundImageAddress)));
             backgroundImageView.toBack();
@@ -129,8 +127,9 @@ public class CardFactoryMenuView extends BaseMenuView {
     @FXML
     private void selectSpecifiedCard() {
         try {
-            FactoryMenuController.getInstance().selectBaseMonster((Monster) selectedCard);
-            FactoryView.init(stage, selectedCard);
+            if(!(selectedCard instanceof Monster))
+                throw new Exception("card must be monster!");
+            FactoryView.init(stage, (Monster) selectedCard);
         } catch (Exception exception) {
             new Alert(Alert.AlertType.ERROR, exception.getMessage()).showAndWait();
         }

@@ -1,8 +1,11 @@
 package YuGiOh.network;
 
+import YuGiOh.model.User;
 import YuGiOh.network.packet.JwtToken;
 import YuGiOh.network.packet.Request;
 import YuGiOh.network.packet.Response;
+import javafx.application.Platform;
+import javafx.print.PageLayout;
 
 import java.io.IOException;
 import java.net.Socket;
@@ -10,7 +13,6 @@ import java.util.concurrent.CompletableFuture;
 
 public class ClientConnection extends NetworkConnection {
     public static ClientConnection instance;
-    private static JwtToken lastTokenSent;
 
     private ClientConnection() throws IOException {
         super(getSocket());
@@ -22,15 +24,15 @@ public class ClientConnection extends NetworkConnection {
 
     @Override
     public void send(Response<?> response) throws IOException {
-        if(lastTokenSent != null)
-            response.setToken(lastTokenSent);
+        if(lastTokenSentOrReceived != null)
+            response.setToken(lastTokenSentOrReceived);
         super.send(response);
     }
 
     @Override
     public CompletableFuture<Response<?>> send(Request request) throws IOException {
-        if(lastTokenSent != null)
-            request.setToken(lastTokenSent);
+        if(lastTokenSentOrReceived != null)
+            request.setToken(lastTokenSentOrReceived);
         return super.send(request);
     }
 
@@ -41,18 +43,34 @@ public class ClientConnection extends NetworkConnection {
         return instance;
     }
 
+    public static void disconnectAll() {
+        try {
+            if (instance != null)
+                instance.closeConnection();
+        } catch (IOException exception){
+            exception.printStackTrace();
+        }
+    }
+
     @Override
-    protected CompletableFuture<Response<?>> handleRequest(Request request) {
-        if(request.getToken() != null)
-            lastTokenSent = request.getToken();
+    protected CompletableFuture<Response<?>> handleRequestImpl(Request request) {
         return CompletableFuture.failedFuture(new Error("not implemented yet!"));
         // todo not implemented
     }
 
     @Override
+    protected void handleWaitingResponse(CompletableFuture<Response<?>> waitingResponse, Response<?> response) {
+        Platform.runLater(()-> waitingResponse.complete(response));
+    }
+
+    @Override
     protected void handleResponse(Response<?> response) {
-        if(response.getToken() != null)
-            lastTokenSent = response.getToken();
         super.handleResponse(response);
+    }
+
+    public static User getUserThrows() {
+        if(instance == null || instance.lastTokenSentOrReceived == null)
+            throw new NotAuthenticatedException();
+        return instance.lastTokenSentOrReceived.getUserThrows();
     }
 }

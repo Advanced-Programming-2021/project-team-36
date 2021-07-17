@@ -3,10 +3,12 @@ package YuGiOh.view.menu;
 import YuGiOh.ClientApplication;
 import YuGiOh.controller.menu.FactoryMenuController;
 import YuGiOh.model.card.Card;
+import YuGiOh.model.card.Monster;
 import YuGiOh.model.card.Utils;
 import YuGiOh.model.enums.MonsterAttribute;
 import YuGiOh.model.enums.MonsterCardType;
 import YuGiOh.model.enums.MonsterType;
+import YuGiOh.model.exception.LogicException;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.control.*;
@@ -26,7 +28,7 @@ public class FactoryView extends BaseMenuView {
     private static final String backgroundImageAddress = "assets/Backgrounds/GUI_T_TowerBg2.dds.png";
 
     private static FactoryView instance;
-    private Card card;
+    private Monster selectedMonster;
 
     @FXML
     private TextField nameField, attackField, defenseField, descriptionField;
@@ -53,18 +55,18 @@ public class FactoryView extends BaseMenuView {
         return instance;
     }
 
-    public static void init(Stage primaryStage, Card card) {
+    public static void init(Stage primaryStage, Monster monster) {
         try {
             Pane root = FXMLLoader.load(ClientApplication.class.getResource("/fxml/FactoryView.fxml"));
-            FactoryView.getInstance().start(primaryStage, root, card);
+            FactoryView.getInstance().start(primaryStage, root, monster);
         } catch (IOException ignored) {
         }
     }
 
-    public void start(Stage primaryStage, Pane root, Card card) {
+    public void start(Stage primaryStage, Pane root, Monster monster) {
         this.stage = primaryStage;
         this.root = root;
-        this.card = card;
+        this.selectedMonster = monster;
         scene.setRoot(root);
         try {
             backgroundImageView.setImage(new Image(new FileInputStream(backgroundImageAddress)));
@@ -82,7 +84,7 @@ public class FactoryView extends BaseMenuView {
     }
 
     private void renderInitialSettings() {
-        selectedCardImageView.setImage(Utils.getCardImageView(card));
+        selectedCardImageView.setImage(Utils.getCardImageView(selectedMonster));
         for (int i = 1; i <= 10; i ++)
             levelChoiceBox.getItems().add(i);
         monsterTypeChoiceBox.getItems().addAll(MonsterType.values());
@@ -100,12 +102,12 @@ public class FactoryView extends BaseMenuView {
     private void updatePrice() {
         try {
             int attack = Integer.parseInt(attackField.getText());
-            int defense = Integer.parseInt(attackField.getText());
-            FactoryMenuController.getInstance().setAttackDamage(attack);
-            FactoryMenuController.getInstance().setDefenseRate(defense);
-            FactoryMenuController.getInstance().setLevel(levelChoiceBox.getSelectionModel().getSelectedItem());
-            FactoryMenuController.getInstance().setMonster(monsterCardTypeChoiceBox.getSelectionModel().getSelectedItem());
-            priceLabel.setText(FactoryMenuController.getInstance().getPrice() + "");
+            int defense = Integer.parseInt(defenseField.getText());
+            setAttackDamage(attack);
+            setDefenseRate(defense);
+            setLevel(levelChoiceBox.getSelectionModel().getSelectedItem());
+            setCardTypeMonster(monsterCardTypeChoiceBox.getSelectionModel().getSelectedItem());
+            priceLabel.setText(FactoryMenuController.getPrice(selectedMonster) + "");
         } catch (Exception ignored) {
             priceLabel.setText("");
         }
@@ -115,31 +117,88 @@ public class FactoryView extends BaseMenuView {
         int attack = 0, defense = 0;
         try {
             attack = Integer.parseInt(attackField.getText());
-            defense = Integer.parseInt(attackField.getText());
+            defense = Integer.parseInt(defenseField.getText());
         } catch (Exception exception) {
             new Alert(Alert.AlertType.ERROR, "Attack and Defense field should be integers.").showAndWait();
             return;
         }
         try {
-            FactoryMenuController.getInstance().setCardName(nameField.getText());
-            FactoryMenuController.getInstance().setAttackDamage(attack);
-            FactoryMenuController.getInstance().setDefenseRate(defense);
-            FactoryMenuController.getInstance().setDescription(descriptionField.getText());
-            FactoryMenuController.getInstance().setLevel(levelChoiceBox.getSelectionModel().getSelectedItem());
-            FactoryMenuController.getInstance().setMonsterType(monsterTypeChoiceBox.getSelectionModel().getSelectedItem());
-            FactoryMenuController.getInstance().setMonsterAttribute(monsterAttributeChoiceBox.getSelectionModel().getSelectedItem());
-            FactoryMenuController.getInstance().setMonster(monsterCardTypeChoiceBox.getSelectionModel().getSelectedItem());
-            FactoryMenuController.getInstance().submitThisMonster();
+            setCardName(nameField.getText());
+            setAttackDamage(attack);
+            setDefenseRate(defense);
+            setDescription(descriptionField.getText());
+            setLevel(levelChoiceBox.getSelectionModel().getSelectedItem());
+            setMonsterType(monsterTypeChoiceBox.getSelectionModel().getSelectedItem());
+            setMonsterAttribute(monsterAttributeChoiceBox.getSelectionModel().getSelectedItem());
+            setCardTypeMonster(monsterCardTypeChoiceBox.getSelectionModel().getSelectedItem());
+            FactoryMenuController.submitThisMonster(selectedMonster);
             new Alert(Alert.AlertType.INFORMATION, "Card was successfully created!").showAndWait();
             exit();
         } catch (Exception exception) {
             new Alert(Alert.AlertType.ERROR, exception.getMessage()).showAndWait();
         }
     }
+
+    public void selectBaseMonster(Monster monster) throws LogicException {
+        if(selectedMonster != null)
+            throw new LogicException("if you want to select another monster you have to discard this one first!");
+        selectedMonster = monster.clone();
+    }
+
+    private void checkCardIsSelected() throws LogicException {
+        if(selectedMonster == null)
+            throw new LogicException("no card is selected!");
+    }
+
+    public void setAttackDamage(int value) throws LogicException {
+        checkCardIsSelected();
+        if(value < 0)
+            throw new LogicException("attack damage cannot be negative");
+        if(value > 10000)
+            throw new LogicException("attack damage is at most 10000");
+        selectedMonster.setAttackDamage(value);
+    }
+    public void setDefenseRate(int value) throws LogicException {
+        checkCardIsSelected();
+        if(value < 0)
+            throw new LogicException("defense rate cannot be negative");
+        if(value > 10000)
+            throw new LogicException("defense rate is at most 10000");
+        selectedMonster.setDefenseRate(value);
+    }
+    public void setLevel(int level) throws LogicException {
+        checkCardIsSelected();
+        if(level < 1)
+            throw new LogicException("level must be between 1 and 10");
+        if(level > 10)
+            throw new LogicException("level must be between 1 and 10");
+        selectedMonster.setLevel(level);
+    }
+    public void setMonsterType (MonsterType type) throws LogicException {
+        checkCardIsSelected();
+        selectedMonster.setMonsterType(type);
+    }
+    public void setMonsterAttribute (MonsterAttribute attribute) throws LogicException {
+        checkCardIsSelected();
+        selectedMonster.setAttribute(attribute);
+    }
+    public void setCardTypeMonster(MonsterCardType cardType) throws LogicException {
+        checkCardIsSelected();
+        selectedMonster.setMonsterCardType(cardType);
+    }
+    public void setDescription(String description) throws LogicException {
+        checkCardIsSelected();
+        selectedMonster.setDescription(description);
+    }
+    public void setCardName(String name) throws LogicException {
+        checkCardIsSelected();
+        selectedMonster.setName(name);
+    }
+
     @FXML
     private void exit() {
         try {
-            FactoryMenuController.getInstance().discardThisMonster();
+            selectedMonster = null;
         } catch (Exception ignored) {
         }
         CardFactoryMenuView.getInstance().run();
