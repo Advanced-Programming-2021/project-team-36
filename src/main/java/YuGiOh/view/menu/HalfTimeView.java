@@ -1,16 +1,13 @@
 package YuGiOh.view.menu;
 
 import YuGiOh.ClientApplication;
-import YuGiOh.controller.GameController;
-import YuGiOh.model.exception.LogicException;
-import YuGiOh.model.exception.eventException.PlayerReadyExceptionEvent;
-import YuGiOh.controller.menu.HalfTimeMenuController;
-import YuGiOh.controller.player.PlayerController;
-import YuGiOh.model.Player.HumanPlayer;
-import YuGiOh.model.card.Card;
-import YuGiOh.model.card.Utils;
+import YuGiOh.api.HalfTimeMenuApi;
 import YuGiOh.model.deck.BaseDeck;
 import YuGiOh.model.deck.Deck;
+import YuGiOh.model.exception.LogicException;
+import YuGiOh.model.card.Card;
+import YuGiOh.model.card.Utils;
+import YuGiOh.network.ClientConnection;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.control.*;
@@ -33,10 +30,9 @@ public class HalfTimeView extends BaseMenuView {
     private static final String backgroundImageAddress = "assets/Backgrounds/GUI_T_TowerBg2.dds.png";
 
     private static HalfTimeView instance;
-    private Deck deck;
     private Card selectedMainCard, selectedSideCard;
     private ImageView selectedImageView;
-    private PlayerController playerController;
+    private Deck deck;
 
     @FXML
     private ImageView backgroundImageView;
@@ -51,6 +47,8 @@ public class HalfTimeView extends BaseMenuView {
     @FXML
     private Button switchButton;
 
+    private HalfTimeMenuApi api;
+
     public HalfTimeView() {
         instance = this;
     }
@@ -61,21 +59,25 @@ public class HalfTimeView extends BaseMenuView {
         return instance;
     }
 
-    public static void init(Stage primaryStage, PlayerController playerController) {
+    public static void init(Stage primaryStage) {
         try {
             Pane root = FXMLLoader.load(ClientApplication.class.getResource("/fxml/HalfTimeView.fxml"));
-            HalfTimeView.getInstance().start(primaryStage, root, playerController);
+            HalfTimeView.getInstance().start(primaryStage, root);
         } catch (IOException ignored) {
         }
     }
 
-    public void start(Stage primaryStage, Pane root, PlayerController playerController) {
+    public void start(Stage primaryStage, Pane root) {
         this.stage = primaryStage;
         this.root = root;
-        this.playerController = playerController;
-        this.deck = playerController.getPlayer().getDeck();
+        try {
+            this.api = new HalfTimeMenuApi(ClientConnection.getOrCreateInstance());
+        } catch (IOException e) {
+            new Alert(Alert.AlertType.ERROR, "check your connection to server and retry!").showAndWait();
+            LoginMenuView.init(stage);
+            return;
+        }
         scene.setRoot(root);
-        new HalfTimeMenuController(playerController);
         try {
             backgroundImageView.setImage(new Image(new FileInputStream(backgroundImageAddress)));
             backgroundImageView.toBack();
@@ -92,12 +94,15 @@ public class HalfTimeView extends BaseMenuView {
     }
 
     private void renderInitialSettings() {
-        ((VBox) switchButton.getParent()).getChildren().remove(switchButton);
-        deckLabel.setText(deck.getName());
-        renderDeck(deck.getMainDeck(), mainGridPane, mainScrollPane);
-        renderDeck(deck.getSideDeck(), sideGridPane, sideScrollPane);
-        mainGridPane.setHgap(HGAP);
-        sideGridPane.setHgap(HGAP);
+        api.getDeck().thenAccept(deck->{
+            this.deck = deck;
+            ((VBox) switchButton.getParent()).getChildren().remove(switchButton);
+            deckLabel.setText(deck.getName());
+            renderDeck(deck.getMainDeck(), mainGridPane, mainScrollPane);
+            renderDeck(deck.getSideDeck(), sideGridPane, sideScrollPane);
+            mainGridPane.setHgap(HGAP);
+            sideGridPane.setHgap(HGAP);
+        });
     }
 
     private void renderDeck(BaseDeck deck, GridPane gridPane, ScrollPane scrollPane) {
@@ -125,7 +130,7 @@ public class HalfTimeView extends BaseMenuView {
             selectedImageView = imageView;
             sideHBox.getChildren().remove(switchButton);
             mainHBox.getChildren().remove(switchButton);
-            if (deck == this.deck.getMainDeck()) {
+            if (deck == this.deck.getMainDeck()) { // todo if this is ok over network
                 selectedMainCard = card;
                 mainHBox.getChildren().add(switchButton);
             } else {
@@ -136,33 +141,29 @@ public class HalfTimeView extends BaseMenuView {
     }
     @FXML
     private void ready() {
-        try {
-            HalfTimeMenuController.getInstance().ready();
-        } catch (PlayerReadyExceptionEvent playerReadyExceptionEvent) {
-        } catch (LogicException exception) {
-            new Alert(Alert.AlertType.ERROR, exception.getMessage()).showAndWait();
-        }
-        if (GameController.getInstance().getCurrentPlayerController().equals(playerController) &&
-                GameController.getInstance().getOpponentPlayerController().getPlayer() instanceof HumanPlayer)
-            HalfTimeView.init(stage, GameController.getInstance().getOpponentPlayerController());
-        else
-            DuelMenuView.init(stage);
+        api.ready().whenComplete((res, ex)->{
+            if(ex != null) {
+                if (ex.getCause() instanceof LogicException) {
+                    new Alert(Alert.AlertType.ERROR, ex.getCause().getMessage()).showAndWait();
+                }
+            } else {
+                // todo here also check if duel has started
+                DuelMenuView.init(stage);
+            }
+        });
     }
     @FXML
     private void switchCard() {
-        try {
-            if (selectedMainCard != null) {
-                HalfTimeMenuController.getInstance().removeCardFromDeck(selectedMainCard);
-                mainGridPane.getChildren().remove(selectedImageView);
-                sideGridPane.getChildren().add(selectedImageView);
-            } else {
-                HalfTimeMenuController.getInstance().addCardToDeck(selectedSideCard);
-                sideGridPane.getChildren().remove(selectedImageView);
-                mainGridPane.getChildren().add(selectedImageView);
-            }
-        } catch (Exception exception) {
-            new Alert(Alert.AlertType.ERROR, exception.getMessage()).showAndWait();
+        if (selectedMainCard != null) {
+            showErrorAsync(api.removeCardFromDeck(selectedMainCard));
+            mainGridPane.getChildren().remove(selectedImageView);
+            sideGridPane.getChildren().add(selectedImageView);
+        } else {
+            showErrorAsync(api.addCardToDeck(selectedSideCard));
+            sideGridPane.getChildren().remove(selectedImageView);
+            mainGridPane.getChildren().add(selectedImageView);
         }
+        // todo exit if error happened
         selectedSideCard = selectedMainCard = null;
         selectedImageView = null;
         mainHBox.getChildren().remove(switchButton);

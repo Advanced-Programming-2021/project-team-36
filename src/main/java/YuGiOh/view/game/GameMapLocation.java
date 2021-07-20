@@ -7,14 +7,14 @@ import YuGiOh.model.enums.Phase;
 import YuGiOh.model.enums.ZoneType;
 
 public abstract class GameMapLocation {
-    Game game;
+    Player downPlayer;
 
-    GameMapLocation(Game game){
-        this.game = game;
+    GameMapLocation(Player downPlayer){
+        this.downPlayer = downPlayer;
     }
 
     public int getPlayerUpDown(Player player){
-        return player.equals(game.getFirstPlayer()) ? 0 : 1;
+        return downPlayer.equals(player) ? 0 : 1;
     }
     public int getOwnerUpDown(CardAddress address){
         return getPlayerUpDown(address.getOwner());

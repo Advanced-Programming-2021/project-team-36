@@ -6,6 +6,7 @@ import YuGiOh.model.Player.Player;
 import YuGiOh.model.card.Card;
 import YuGiOh.model.enums.ZoneType;
 import YuGiOh.view.game.component.CardFrame;
+import YuGiOh.view.menu.DuelMenuView;
 import javafx.geometry.Bounds;
 
 import java.util.*;
@@ -15,49 +16,42 @@ import java.util.concurrent.atomic.AtomicReference;
 
 public class GameCardFrameManager {
     private final HashMap<CardFrame, CardAddress> occupied = new HashMap<>();
-    private final Game game;
     private CardMoveHandler moveHandler;
-
-    public GameCardFrameManager(Game game) {
-        this.game = game;
-    }
 
     public void setMoveHandler(CardMoveHandler moveHandler) {
         this.moveHandler = moveHandler;
     }
 
     public synchronized CompletableFuture<Void> refresh() {
-        if (game.getAllCards().size() != occupied.size()) {
-            System.out.println(game.getAllCards().size() + "   " + occupied.size());
-            throw new Error("this must never happen!");
-        }
-        Map<CardFrame, CardAddress> changes = new HashMap<>();
-        AtomicBoolean invalid = new AtomicBoolean(false);
-        occupied.forEach((cardFrame, address) -> {
-            try {
-                CardAddress newAddress = game.getCardAddress(cardFrame.getCard());
-                if (!newAddress.equals(address))
-                    changes.put(cardFrame, newAddress);
-            } catch (Throwable tt) {
-                tt.printStackTrace();
-                invalid.set(true);
+        return DuelMenuView.getInstance().getApi().getCardPositions().thenCompose(cardPositions->{
+            Map<CardFrame, CardAddress> changes = new HashMap<>();
+            AtomicBoolean invalid = new AtomicBoolean(false);
+            occupied.forEach((cardFrame, address) -> {
+                try {
+                    CardAddress newAddress = cardPositions.get(cardFrame.getCard());
+                    if (!newAddress.equals(address))
+                        changes.put(cardFrame, newAddress);
+                } catch (Throwable tt) {
+                    tt.printStackTrace();
+                    invalid.set(true);
+                }
+            });
+            if (invalid.get()) {
+                throw new Error("this must never happen!");
             }
-        });
-        if (invalid.get()) {
-            throw new Error("this must never happen!");
-        }
 
-        List<CompletableFuture<Void>> completableFutures = new ArrayList<>();
-        changes.forEach(((cardFrame, cardAddress) -> {
-            if (moveHandler != null)
-                completableFutures.add(moveHandler.move(cardFrame, cardAddress));
-            occupied.put(cardFrame, cardAddress);
-        }));
-        occupied.forEach(((cardFrame, address) -> {
-            if (address.getZone().equals(ZoneType.HAND))
-                completableFutures.add(moveHandler.move(cardFrame, address));
-        }));
-        return CompletableFuture.allOf(completableFutures.toArray(CompletableFuture[]::new));
+            List<CompletableFuture<Void>> completableFutures = new ArrayList<>();
+            changes.forEach(((cardFrame, cardAddress) -> {
+                if (moveHandler != null)
+                    completableFutures.add(moveHandler.move(cardFrame, cardAddress));
+                occupied.put(cardFrame, cardAddress);
+            }));
+            occupied.forEach(((cardFrame, address) -> {
+                if (address.getZone().equals(ZoneType.HAND))
+                    completableFutures.add(moveHandler.move(cardFrame, address));
+            }));
+            return CompletableFuture.allOf(completableFutures.toArray(CompletableFuture[]::new));
+        });
     }
 
     public CardAddress getCardAddressByCard(Card card){

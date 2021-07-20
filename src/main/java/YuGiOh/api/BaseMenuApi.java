@@ -9,7 +9,7 @@ import YuGiOh.network.packet.Response;
 import java.io.IOException;
 import java.util.concurrent.CompletableFuture;
 
-public abstract class BaseMenuApi {
+public class BaseMenuApi {
     protected NetworkConnection connection;
 
     public BaseMenuApi(NetworkConnection connection) {

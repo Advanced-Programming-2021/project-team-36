@@ -1,5 +1,6 @@
 package YuGiOh.controller.menu;
 
+import YuGiOh.model.deck.Deck;
 import YuGiOh.model.exception.LogicException;
 import YuGiOh.model.exception.eventException.PlayerReadyExceptionEvent;
 import YuGiOh.controller.player.PlayerController;
@@ -36,5 +37,9 @@ public class HalfTimeMenuController extends BaseMenuController {
         if (!getPlayer(request).getMainDeck().isValid())
             throw new LogicException("your main deck is not valid");
         throw new PlayerReadyExceptionEvent();
+    }
+
+    public static Deck getDeck(Request request) {
+        return getPlayer(request).getDeck();
     }
 }

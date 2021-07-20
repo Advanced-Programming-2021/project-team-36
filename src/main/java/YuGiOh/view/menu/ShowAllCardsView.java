@@ -1,11 +1,13 @@
 package YuGiOh.view.menu;
 
 import YuGiOh.ClientApplication;
-import YuGiOh.controller.menu.*;
+import YuGiOh.api.BaseMenuApi;
 import YuGiOh.model.card.Card;
 import YuGiOh.model.card.Utils;
+import YuGiOh.network.ClientConnection;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
+import javafx.scene.control.Alert;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.GridPane;
@@ -31,6 +33,8 @@ public class ShowAllCardsView extends BaseMenuView {
     @FXML
     private VBox vBox;
 
+    private BaseMenuApi api;
+
     public ShowAllCardsView() {
         instance = this;
     }
@@ -52,6 +56,13 @@ public class ShowAllCardsView extends BaseMenuView {
     public void start(Stage primaryStage, Pane root) {
         this.stage = primaryStage;
         this.root = root;
+        try {
+            this.api = new BaseMenuApi(ClientConnection.getOrCreateInstance());
+        } catch (IOException e) {
+            new Alert(Alert.AlertType.ERROR, "check your connection to server and retry!").showAndWait();
+            LoginMenuView.init(stage);
+            return;
+        }
         scene.setRoot(root);
         try {
             backgroundImageView.setImage(new Image(new FileInputStream(backgroundImageAddress)));
@@ -70,15 +81,17 @@ public class ShowAllCardsView extends BaseMenuView {
     }
 
     private void renderInitialSettings() {
-        int i = 0;
-        for (Card card : DeckMenuController.getInstance().getUser().getCards()) {
-            ImageView imageView = new ImageView(Utils.getCardImageView(card));
-            imageView.setPreserveRatio(true);
-            imageView.setFitWidth(imageWidth);
-            imageView.setFitHeight(imageHeight);
-            gridPane.add(imageView, i % rowSize, i / rowSize);
-            i ++;
-        }
+        api.getUserFromServer().thenAccept(user->{
+            int i = 0;
+            for (Card card : user.getCards()) {
+                ImageView imageView = new ImageView(Utils.getCardImageView(card));
+                imageView.setPreserveRatio(true);
+                imageView.setFitWidth(imageWidth);
+                imageView.setFitHeight(imageHeight);
+                gridPane.add(imageView, i % rowSize, i / rowSize);
+                i ++;
+            }
+        });
     }
 
     @FXML

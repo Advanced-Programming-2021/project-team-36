@@ -2,7 +2,6 @@ package YuGiOh.view.menu;
 
 import YuGiOh.ClientApplication;
 import YuGiOh.api.DeckMenuApi;
-import YuGiOh.controller.menu.DeckMenuController;
 import YuGiOh.model.card.Card;
 import YuGiOh.model.card.Utils;
 import YuGiOh.model.deck.BaseDeck;

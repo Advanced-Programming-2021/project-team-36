@@ -17,6 +17,7 @@ import javafx.stage.Stage;
 import lombok.Setter;
 
 import java.io.IOException;
+import java.util.concurrent.CompletableFuture;
 
 public abstract class BaseMenuView {
     protected Stage stage;
@@ -79,5 +80,13 @@ public abstract class BaseMenuView {
         polygon.setFill(color);
         polygon.setOnMouseClicked(eventHandler);
         return polygon;
+    }
+
+    public static void showErrorAsync(CompletableFuture<Void> completableFuture) {
+        completableFuture.whenComplete((res, ex) ->{
+            if(ex != null){
+                new Alert(Alert.AlertType.ERROR, ex.getCause().getMessage()).showAndWait();
+            }
+        });
     }
 }

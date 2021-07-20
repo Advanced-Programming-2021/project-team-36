@@ -2,6 +2,7 @@ package YuGiOh.api;
 
 import YuGiOh.controller.menu.HalfTimeMenuController;
 import YuGiOh.model.card.Card;
+import YuGiOh.model.deck.Deck;
 import YuGiOh.model.enums.Color;
 import YuGiOh.model.exception.LogicException;
 import YuGiOh.model.exception.eventException.PlayerReadyExceptionEvent;
@@ -22,12 +23,16 @@ public class HalfTimeMenuApi extends BaseMenuApi {
         return askToSendRequestVoid(()-> new Request(HalfTimeMenuController.class.getDeclaredMethod("addCardToDeck", Request.class, Card.class), card));
     }
 
-    public CompletableFuture<Void> removeCardFromDeck(Request request, Card card) {
+    public CompletableFuture<Void> removeCardFromDeck(Card card) {
         return askToSendRequestVoid(()-> new Request(HalfTimeMenuController.class.getDeclaredMethod("removeCardFromDeck", Request.class, Card.class), card));
     }
 
-    public CompletableFuture<Void> ready(Request request) {
+    public CompletableFuture<Void> ready() {
         return askToSendRequestVoid(()-> new Request(HalfTimeMenuController.class.getDeclaredMethod("ready", Request.class)));
     }
 
+    public CompletableFuture<Deck> getDeck() {
+        return askToSendRequest(()-> new Request(HalfTimeMenuController.class.getDeclaredMethod("getDeck", Request.class)))
+            .thenApply(response -> (Deck) response.getData());
+    }
 }

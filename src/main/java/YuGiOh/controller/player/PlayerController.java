@@ -68,7 +68,7 @@ public abstract class PlayerController {
         return new DrawCardAction(player).runEffect();
     }
     public CompletableFuture<Void> surrender() throws RoundOverExceptionEvent {
-        return new SurrenderAction().runEffect();
+        return new SurrenderAction(player).runEffect();
     }
 
     public NormalSummonAction normalSummon(Monster monster) {
@@ -100,13 +100,6 @@ public abstract class PlayerController {
     }
     public SpellActivationAction activateSpellEffect(Spell spell) {
         return new SpellActivationAction(spell);
-    }
-
-    public CompletableFuture<Void> startChain(Action action) throws RoundOverExceptionEvent, GameException {
-        action.validateEffect();
-        ChainController chainController = new ChainController();
-        addActionToChain(action);
-        return chainController.control();
     }
 
     protected void addActionToChain(Action action) {

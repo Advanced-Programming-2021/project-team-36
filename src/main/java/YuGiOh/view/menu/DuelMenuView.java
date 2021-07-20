@@ -1,7 +1,16 @@
 package YuGiOh.view.menu;
 
 import YuGiOh.ClientApplication;
+import YuGiOh.api.DuelMenuApi;
+import YuGiOh.api.LoginMenuApi;
+import YuGiOh.model.CardAddress;
+import YuGiOh.model.Player.Player;
+import YuGiOh.model.card.Monster;
+import YuGiOh.model.card.action.MonsterAttackAction;
 import YuGiOh.model.card.action.NextPhaseAction;
+import YuGiOh.model.card.action.SurrenderAction;
+import YuGiOh.model.card.event.MonsterAttackEvent;
+import YuGiOh.network.ClientConnection;
 import YuGiOh.view.game.Utils;
 import YuGiOh.controller.GameController;
 import YuGiOh.controller.menu.*;
@@ -21,6 +30,7 @@ import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.ImageCursor;
 import javafx.scene.Scene;
+import javafx.scene.control.Alert;
 import javafx.scene.layout.Pane;
 import javafx.scene.paint.Color;
 import javafx.scene.text.Font;
@@ -31,6 +41,7 @@ import lombok.Getter;
 
 import java.io.IOException;
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.List;
 import java.util.concurrent.CompletableFuture;
 
@@ -47,6 +58,11 @@ public class DuelMenuView extends BaseMenuView {
 
     @Getter
     private CardSelector selector;
+
+    @Getter
+    private DuelMenuApi api;
+
+    private Player player;
 
     public DuelMenuView() {
         instance = this;
@@ -67,26 +83,37 @@ public class DuelMenuView extends BaseMenuView {
     }
 
     public void start(Stage primaryStage, Pane root) {
-        Duel duel = DuelMenuController.getInstance().getDuel();
+        try {
+            this.api = new DuelMenuApi(ClientConnection.getOrCreateInstance());
+        } catch (IOException e) {
+            new Alert(Alert.AlertType.ERROR, "check your connection to server and retry!").showAndWait();
+            LoginMenuView.init(stage);
+            return;
+        }
 
         this.stage = primaryStage;
         this.root = root;
-        Game game = duel.getCurrentGame();
-        DuelMenuController.getInstance().setView(this);
-        this.gameField.init(game, new GameMapLocationIml(game));
-        this.infoBox.init(gameField, game);
-        this.selector = new CardSelector(infoBox);
-        PauseTransition delay = new PauseTransition(Duration.millis(3000));
-        delay.setOnFinished(e-> DuelMenuController.getInstance().runNewGame());
-        delay.play();
-        run();
-        stage.setResizable(true);
-        stage.setFullScreen(true);
-        GuiReporter.getInstance().addEventHandler(RoundOverEvent.MY_TYPE, e->{
-            if(DuelMenuController.getInstance().getDuel().isFinished())
-                endOfDuel();
-            else
-                anotherDuel();
+
+        this.api.getPlayer().thenAccept(player -> {
+            this.player = player;
+        });
+        this.api.getGame().thenAccept(game->{
+            this.gameField.init(game.getFirstPlayer(), game.getSecondPlayer(), new GameMapLocationIml(game.getFirstPlayer()));
+            this.infoBox.init(gameField, game);
+            this.selector = new CardSelector(infoBox);
+            PauseTransition delay = new PauseTransition(Duration.millis(3000));
+            delay.setOnFinished(e-> DuelMenuController.getInstance().runNewGame());
+            delay.play();
+            run();
+            stage.setResizable(true);
+            stage.setFullScreen(true);
+            // todo we have to remove gui reporter
+            GuiReporter.getInstance().addEventHandler(RoundOverEvent.MY_TYPE, e->{
+                if(DuelMenuController.getInstance().getDuel().isFinished())
+                    endOfDuel();
+                else
+                    anotherDuel();
+            });
         });
     }
 
@@ -111,9 +138,14 @@ public class DuelMenuView extends BaseMenuView {
         this.root.prefHeightProperty().bind(scene.heightProperty());
 
         this.navBar.setSpacing(40);
-        this.navBar.getChildren().add(new CustomButton("surrender", 23, ()-> GameController.getInstance().addRunnableToMainThread(()-> GameController.getInstance().getCurrentPlayerController().surrender())));
-        this.navBar.getChildren().add(new CustomButton("next phase", 23, ()-> GameController.getInstance().addRunnableToMainThread(()-> new NextPhaseAction().runEffect())));
+        this.navBar.getChildren().add(new CustomButton("surrender", 23, ()-> showErrorAsync(api.requestToAction(new SurrenderAction(player)))));
+        this.navBar.getChildren().add(new CustomButton("next phase", 23, ()-> showErrorAsync(api.requestToAction(new NextPhaseAction()))));
         scene.setCursor(new ImageCursor(Utils.getImage("Cursor/pen.png")));
+    }
+
+    public void attackRequest(Monster attacker, Monster defender) {
+        // todo is it ok to build action in view?
+        DuelMenuView.showErrorAsync(api.requestToAction(new MonsterAttackAction(new MonsterAttackEvent(attacker, defender))));
     }
 
     public CompletableFuture<Boolean> askUser(String question, String yes, String no) {
@@ -153,6 +185,7 @@ public class DuelMenuView extends BaseMenuView {
         return new AlertBox().displayMessageStandAlone(message);
     }
 
+
     public void resetSelector(){
         selectModeText.setText("");
         selectModeText.setFill(Color.BLACK);
@@ -160,20 +193,12 @@ public class DuelMenuView extends BaseMenuView {
     }
 
     public void anotherDuel() {
-        // todo here we assume at least one of players are human?
         askUserToChoose(DuelMenuController.getInstance().getDuel().getLastGameState() + "\n" + "are you ready for the next round? ", Arrays.asList("yes"))
-                .thenRun(()->{
-                    if (GameController.getInstance().getCurrentPlayerController().getPlayer() instanceof HumanPlayer)
-                        HalfTimeView.init(stage, GameController.getInstance().getCurrentPlayerController());
-                    else
-                        HalfTimeView.init(stage, GameController.getInstance().getOpponentPlayerController());
-                });
+                .thenRun(()-> HalfTimeView.init(stage));
     }
 
     public void endOfDuel() {
         askUserToChoose(DuelMenuController.getInstance().getDuel().getLastGameState(), Arrays.asList("back to main menu"))
-                .thenRun(()->{
-                    MainMenuView.getInstance().run();
-                });
+                .thenRun(()-> MainMenuView.getInstance().run());
     }
 }

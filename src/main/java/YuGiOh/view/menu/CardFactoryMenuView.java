@@ -1,10 +1,13 @@
 package YuGiOh.view.menu;
 
 import YuGiOh.ClientApplication;
+import YuGiOh.api.BaseMenuApi;
+import YuGiOh.api.LoginMenuApi;
 import YuGiOh.model.User;
 import YuGiOh.model.card.Card;
 import YuGiOh.model.card.Monster;
 import YuGiOh.model.card.Utils;
+import YuGiOh.network.ClientConnection;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.control.Alert;
@@ -28,7 +31,6 @@ public class CardFactoryMenuView extends BaseMenuView {
     private static final String backgroundImageAddress = "assets/Backgrounds/GUI_T_TowerBg2.dds.png";
     private static CardFactoryMenuView instance;
 
-    private User user;
     private Card selectedCard;
     private ImageView selectedImageView;
 
@@ -47,6 +49,8 @@ public class CardFactoryMenuView extends BaseMenuView {
     @FXML
     private Label cardNameLabel, creditBalanceLabel;
 
+    private BaseMenuApi api;
+
     public CardFactoryMenuView() {
         instance = this;
     }
@@ -57,18 +61,31 @@ public class CardFactoryMenuView extends BaseMenuView {
         return instance;
     }
 
-    public static void init(Stage primaryStage, User user) {
+    public static void init(Stage primaryStage) {
         try {
             Pane root = FXMLLoader.load(ClientApplication.class.getResource("/fxml/CardFactoryMenuView.fxml"));
-            CardFactoryMenuView.getInstance().start(primaryStage, root, user);
+            CardFactoryMenuView.getInstance().start(primaryStage, root);
         } catch (IOException ignored) {
         }
     }
 
-    public void start(Stage primaryStage, Pane root, User user) {
+    public void start(Stage primaryStage, Pane root) {
         this.stage = primaryStage;
         this.root = root;
-        this.user = user;
+        try {
+            this.api = new LoginMenuApi(ClientConnection.getOrCreateInstance());
+        } catch (IOException e) {
+            new Alert(Alert.AlertType.ERROR, "check your connection to server and retry!").showAndWait();
+            LoginMenuView.init(stage);
+            return;
+        }
+        try {
+            this.api = new BaseMenuApi(ClientConnection.getOrCreateInstance());
+        } catch (IOException e) {
+            new Alert(Alert.AlertType.ERROR, "check your connection to server and retry!").showAndWait();
+            LoginMenuView.init(stage);
+            return;
+        }
         scene.setRoot(root);
         try {
             backgroundImageView.setImage(new Image(new FileInputStream(backgroundImageAddress)));
@@ -110,7 +127,9 @@ public class CardFactoryMenuView extends BaseMenuView {
     private void selectCard(Card card, ImageView imageView) {
         cardImageView.setImage(Utils.getCardImageView(card));
         cardNameLabel.setText(card.getName());
-        creditBalanceLabel.setText("Credit:  " + user.getBalance());
+        api.getUserFromServer().thenAccept(user->
+                creditBalanceLabel.setText("Credit:  " + user.getBalance())
+        );
         if (selectedCard == null) {
             selectedCardVBox.setOpacity(1);
             relocateNodeFromCenter(selectedCardVBox, 0, scene.getHeight() * 0.325);

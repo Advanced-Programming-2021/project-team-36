@@ -28,7 +28,6 @@ public class Cheat {
             String deckName = user.getNickname() + i;
             Deck deck = new Deck(deckName);
             user.addDeck(deck);
-            DeckMenuController deckController = new DeckMenuController(user);
             while (deck.getMainDeck().getCards().size() < 40) {
                 int index = rnd.nextInt(user.getCards().size());
                 Card card = user.getCards().get(index);

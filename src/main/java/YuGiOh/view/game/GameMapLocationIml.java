@@ -7,8 +7,8 @@ import YuGiOh.model.enums.Phase;
 import YuGiOh.model.enums.ZoneType;
 
 public class GameMapLocationIml extends GameMapLocation {
-    public GameMapLocationIml(Game game) {
-        super(game);
+    public GameMapLocationIml(Player downPlayer) {
+        super(downPlayer);
     }
 
     private RatioLocation getHandLocation(int cardId, int totalCards, int up){

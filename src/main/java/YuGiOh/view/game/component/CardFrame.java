@@ -1,5 +1,6 @@
 package YuGiOh.view.game.component;
 
+import YuGiOh.api.DuelMenuApi;
 import YuGiOh.controller.GameController;
 import YuGiOh.controller.player.PlayerController;
 import YuGiOh.model.card.Magic;
@@ -18,6 +19,7 @@ import YuGiOh.view.game.transition.CardRotateTransition;
 import YuGiOh.view.game.transition.JumpingAnimation;
 import YuGiOh.view.game.event.ClickOnCardEvent;
 import YuGiOh.view.game.event.DropCardEvent;
+import YuGiOh.view.menu.DuelMenuView;
 import javafx.beans.binding.Bindings;
 import javafx.beans.binding.BooleanBinding;
 import javafx.beans.binding.DoubleBinding;
@@ -117,18 +119,22 @@ public class CardFrame extends DraggablePane {
     }
 
 
-    private void addButtonIfCan(ContextMenu contextMenu, String text, Card card, Action action, boolean include) {
-        Color color = Color.DARKGREEN;
-        if(!action.isValid()) {
-            color = Color.DARKRED;
-            if(!include)
-                return;
-        }
-        MenuItem item = new MenuItem("", new CustomButton(text, 15, ()->{}, color));
-        PlayerController controller = GameController.getInstance().getPlayerControllerByPlayer(card.getOwner());
-        item.setOnAction(e-> GameController.getInstance().addRunnableToMainThreadForCard(card, ()-> controller.startChain(action)));
-        contextMenu.getItems().add(item);
+    private void addButtonIfCan(ContextMenu contextMenu, String text, Action action, boolean include) {
+        DuelMenuApi api = DuelMenuView.getInstance().getApi();
+        api.validateAction(action).thenAccept(res->{
+            Color color = Color.DARKGREEN;
+            if(!res) {
+                color = Color.DARKRED;
+                if(!include)
+                    return;
+            }
+            MenuItem item = new MenuItem("", new CustomButton(text, 15, ()->{}, color));
+            item.setOnAction(e-> api.requestToAction(action));
+            contextMenu.getItems().add(item);
+        });
     }
+
+    // todo change this context menu
 
     private void addEventListeners() {
         setOnMouseClicked(e -> {
@@ -138,20 +144,20 @@ public class CardFrame extends DraggablePane {
             ContextMenu contextMenu = new ContextMenu();
             PlayerController controller = GameController.getInstance().getPlayerControllerByPlayer(card.getOwner());
             if (card instanceof Monster) {
-                addButtonIfCan(contextMenu, "summon", card, controller.normalSummon((Monster) card), true);
-                addButtonIfCan(contextMenu, "special summon", card, controller.specialSummon((Monster) card), true);
-                addButtonIfCan(contextMenu, "set", card, controller.setMonster((Monster) card), true);
-                addButtonIfCan(contextMenu, "change position to OO", card, controller.changeMonsterPosition((Monster) card, MonsterState.OFFENSIVE_OCCUPIED), false);
-                addButtonIfCan(contextMenu, "change position to OO", card, controller.changeMonsterPosition((Monster) card, MonsterState.DEFENSIVE_OCCUPIED), false);
-                addButtonIfCan(contextMenu, "change position to OO", card, controller.changeMonsterPosition((Monster) card, MonsterState.DEFENSIVE_HIDDEN), false);
-                addButtonIfCan(contextMenu, "flip summon", card, controller.flipSummon((Monster) card), true);
-                addButtonIfCan(contextMenu, "activate effect", card, controller.activateMonsterEffect((Monster) card), true);
-                addButtonIfCan(contextMenu, "direct attack", card, controller.directAttack((Monster) card), true);
+                addButtonIfCan(contextMenu, "summon", controller.normalSummon((Monster) card), true);
+                addButtonIfCan(contextMenu, "special summon", controller.specialSummon((Monster) card), true);
+                addButtonIfCan(contextMenu, "set", controller.setMonster((Monster) card), true);
+                addButtonIfCan(contextMenu, "change position to OO", controller.changeMonsterPosition((Monster) card, MonsterState.OFFENSIVE_OCCUPIED), false);
+                addButtonIfCan(contextMenu, "change position to OO", controller.changeMonsterPosition((Monster) card, MonsterState.DEFENSIVE_OCCUPIED), false);
+                addButtonIfCan(contextMenu, "change position to OO", controller.changeMonsterPosition((Monster) card, MonsterState.DEFENSIVE_HIDDEN), false);
+                addButtonIfCan(contextMenu, "flip summon", controller.flipSummon((Monster) card), true);
+                addButtonIfCan(contextMenu, "activate effect", controller.activateMonsterEffect((Monster) card), true);
+                addButtonIfCan(contextMenu, "direct attack", controller.directAttack((Monster) card), true);
             } else if (card instanceof Magic) {
-                addButtonIfCan(contextMenu, "set", card, controller.setMagic((Magic) card), true);
+                addButtonIfCan(contextMenu, "set", controller.setMagic((Magic) card), true);
             }
             if (card instanceof Spell) {
-                addButtonIfCan(contextMenu, "activate effect", card, controller.activateSpellEffect((Spell) card), true);
+                addButtonIfCan(contextMenu, "activate effect", controller.activateSpellEffect((Spell) card), true);
             }
             contextMenu.setStyle("-fx-background-color: #006699;");
             contextMenu.show(this, e.getScreenX(), e.getScreenY());

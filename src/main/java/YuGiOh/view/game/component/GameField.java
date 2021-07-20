@@ -1,7 +1,10 @@
 package YuGiOh.view.game.component;
 
+import YuGiOh.api.DuelMenuApi;
 import YuGiOh.controller.GameController;
 import YuGiOh.controller.player.PlayerController;
+import YuGiOh.model.card.action.MonsterAttackAction;
+import YuGiOh.model.card.event.MonsterAttackEvent;
 import YuGiOh.model.exception.GameException;
 import YuGiOh.model.exception.eventException.RoundOverExceptionEvent;
 import YuGiOh.controller.menu.DuelMenuController;
@@ -19,6 +22,7 @@ import YuGiOh.utils.CustomPrinter;
 import YuGiOh.model.exception.ResistToChooseCard;
 import YuGiOh.view.game.*;
 import YuGiOh.view.game.event.DropCardEvent;
+import YuGiOh.view.menu.DuelMenuView;
 import javafx.animation.ScaleTransition;
 import javafx.collections.ListChangeListener;
 import javafx.scene.image.Image;
@@ -31,7 +35,6 @@ import java.util.*;
 import java.util.concurrent.CompletableFuture;
 
 public class GameField extends Pane {
-    private Game game;
     @Getter
     private GameMapLocation gameMapLocation;
     @Getter
@@ -44,11 +47,10 @@ public class GameField extends Pane {
     @Getter
     private static GameField instance;
 
-    public void init(Game game, GameMapLocation gameMapLocation){
+    public void init(Player firstPlayer, Player secondPlayer, GameMapLocation gameMapLocation){
         instance = this;
-        this.game = game;
         this.gameMapLocation = gameMapLocation;
-        this.cardFrameManager = new GameCardFrameManager(game);
+        this.cardFrameManager = new GameCardFrameManager();
 
         this.movementManager = new GameCardMovementManager(this);
 
@@ -61,8 +63,8 @@ public class GameField extends Pane {
         getChildren().add(background);
         getChildren().add(new PhaseLamps(this, gameMapLocation, Phase.DRAW_PHASE, Phase.STANDBY_PHASE, Phase.MAIN_PHASE1, Phase.BATTLE_PHASE, Phase.MAIN_PHASE2));
 
-        createCards(game.getFirstPlayer().getBoard());
-        createCards(game.getSecondPlayer().getBoard());
+        createCards(firstPlayer.getBoard());
+        createCards(secondPlayer.getBoard());
 
         this.cardFrameManager.setMoveHandler((cardFrame, to)->{
             for(int i = 0; i < 2; i++) {
@@ -77,8 +79,8 @@ public class GameField extends Pane {
             return completableFuture;
         });
 
-        this.deckPile = new PileOfCardManager[] {createPile(ZoneType.DECK, game.getFirstPlayer()), createPile(ZoneType.DECK, game.getSecondPlayer())};
-        this.graveYardPile = new PileOfCardManager[] {createPile(ZoneType.GRAVEYARD, game.getFirstPlayer()), createPile(ZoneType.GRAVEYARD, game.getSecondPlayer())};
+        this.deckPile = new PileOfCardManager[] {createPile(ZoneType.DECK, firstPlayer), createPile(ZoneType.DECK, secondPlayer)};
+        this.graveYardPile = new PileOfCardManager[] {createPile(ZoneType.GRAVEYARD, firstPlayer), createPile(ZoneType.GRAVEYARD, secondPlayer)};
 
         getChildren().addAll(deckPile);
         getChildren().addAll(graveYardPile);
@@ -104,36 +106,28 @@ public class GameField extends Pane {
                 Optional<CardFrame> opt = cardFrameManager.getIntersectingCards(e.getBounds())
                         .stream().filter(candid -> !candid.equals(e.getCardFrame()))
                         .findFirst();
-                if (opt.isPresent()) {
-                    if (opt.get().getCard() instanceof Monster) {
-                        GameController.getInstance().addRunnableToMainThreadForCard(
-                                e.getCardFrame().getCard(),
-                                () -> {
-                                    PlayerController controller = GameController.getInstance().getPlayerControllerByPlayer(e.getCardFrame().getCard().getOwner());
-                                    controller.startChain(controller.attack((Monster) e.getCardFrame().getCard(), (Monster) opt.get().getCard()));
-                                }
-                        );
-                    }
-                }
+                if (opt.isPresent() && opt.get().getCard() instanceof Monster)
+                        DuelMenuView.getInstance().attackRequest((Monster) e.getCardFrame().getCard(), (Monster) opt.get().getCard());
             }
         });
 
-        for (Board board : Arrays.asList(game.getFirstPlayer().getBoard(), game.getSecondPlayer().getBoard())) {
-            board.getFieldZoneCardObservableList().addListener((ListChangeListener<Magic>) (c) -> {
-                Magic me = board.getFieldZoneCard();
-                Magic field1 = game.getFirstPlayer().getBoard().getFieldZoneCard();
-                Magic field2 = game.getSecondPlayer().getBoard().getFieldZoneCard();
-                if(me == null && field1 != null)
-                    me = field1;
-                if(me == null && field2 != null)
-                    me = field2;
-                try {
-                    Image image = Utils.getImage("Field/" + (me == null ? "Normal" : me.getName()) + ".bmp");
-                    this.background.setImage(image);
-                } catch (Throwable ignored){
-                }
-            });
-        }
+        // todo handle field change!
+//        for (Board board : Arrays.asList(game.getFirstPlayer().getBoard(), game.getSecondPlayer().getBoard())) {
+//            board.getFieldZoneCardObservableList().addListener((ListChangeListener<Magic>) (c) -> {
+//                Magic me = board.getFieldZoneCard();
+//                Magic field1 = game.getFirstPlayer().getBoard().getFieldZoneCard();
+//                Magic field2 = game.getSecondPlayer().getBoard().getFieldZoneCard();
+//                if(me == null && field1 != null)
+//                    me = field1;
+//                if(me == null && field2 != null)
+//                    me = field2;
+//                try {
+//                    Image image = Utils.getImage("Field/" + (me == null ? "Normal" : me.getName()) + ".bmp");
+//                    this.background.setImage(image);
+//                } catch (Throwable ignored){
+//                }
+//            });
+//        }
         setOnMouseClicked(e->{
 //            Platform.runLater(()->{
                 ImageView imageView = new ImageView(Utils.getImage("Texture/ring1.png"));

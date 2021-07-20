@@ -17,6 +17,7 @@ import YuGiOh.model.card.Monster;
 import YuGiOh.model.enums.Constants;
 
 import java.io.LineNumberInputStream;
+import java.io.Serializable;
 import java.util.HashMap;
 
 abstract public class Player {

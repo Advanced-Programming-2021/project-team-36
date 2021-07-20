@@ -1,14 +1,14 @@
 package YuGiOh.view.menu;
 
 import YuGiOh.ClientApplication;
-import YuGiOh.controller.menu.FactoryMenuController;
-import YuGiOh.model.card.Card;
+import YuGiOh.api.FactoryMenuApi;
 import YuGiOh.model.card.Monster;
 import YuGiOh.model.card.Utils;
 import YuGiOh.model.enums.MonsterAttribute;
 import YuGiOh.model.enums.MonsterCardType;
 import YuGiOh.model.enums.MonsterType;
 import YuGiOh.model.exception.LogicException;
+import YuGiOh.network.ClientConnection;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.control.*;
@@ -45,6 +45,8 @@ public class FactoryView extends BaseMenuView {
     @FXML
     private ImageView backgroundImageView, selectedCardImageView;
 
+    private FactoryMenuApi api;
+
     public FactoryView() {
         instance = this;
     }
@@ -67,6 +69,13 @@ public class FactoryView extends BaseMenuView {
         this.stage = primaryStage;
         this.root = root;
         this.selectedMonster = monster;
+        try {
+            this.api = new FactoryMenuApi(ClientConnection.getOrCreateInstance());
+        } catch (IOException e) {
+            new Alert(Alert.AlertType.ERROR, "check your connection to server and retry!").showAndWait();
+            LoginMenuView.init(stage);
+            return;
+        }
         scene.setRoot(root);
         try {
             backgroundImageView.setImage(new Image(new FileInputStream(backgroundImageAddress)));
@@ -107,7 +116,7 @@ public class FactoryView extends BaseMenuView {
             setDefenseRate(defense);
             setLevel(levelChoiceBox.getSelectionModel().getSelectedItem());
             setCardTypeMonster(monsterCardTypeChoiceBox.getSelectionModel().getSelectedItem());
-            priceLabel.setText(FactoryMenuController.getPrice(selectedMonster) + "");
+            api.getPrice(selectedMonster).thenAccept(price-> priceLabel.setText(price + ""));
         } catch (Exception ignored) {
             priceLabel.setText("");
         }
@@ -131,12 +140,16 @@ public class FactoryView extends BaseMenuView {
             setMonsterType(monsterTypeChoiceBox.getSelectionModel().getSelectedItem());
             setMonsterAttribute(monsterAttributeChoiceBox.getSelectionModel().getSelectedItem());
             setCardTypeMonster(monsterCardTypeChoiceBox.getSelectionModel().getSelectedItem());
-            FactoryMenuController.submitThisMonster(selectedMonster);
-            new Alert(Alert.AlertType.INFORMATION, "Card was successfully created!").showAndWait();
-            exit();
-        } catch (Exception exception) {
+        }  catch (Exception exception) {
             new Alert(Alert.AlertType.ERROR, exception.getMessage()).showAndWait();
+            return;
         }
+        api.submitThisMonster(selectedMonster)
+                .whenComplete((res, ex)->{
+                    if(ex == null)
+                        new Alert(Alert.AlertType.INFORMATION, "Card was successfully created!").showAndWait();
+                    exit();
+                });
     }
 
     public void selectBaseMonster(Monster monster) throws LogicException {

@@ -31,7 +31,7 @@ public class AIPlayerController extends PlayerController {
                 if(!action.isValid())
                     return CompletableFuture.completedFuture(null);
                 try {
-                    return startChain(action);
+                    return GameController.getInstance().startChain(action);
                 } catch (GameException e) {
                     throw new Error(action.isValid() + " this must never happen!");
                 }

@@ -1,10 +1,13 @@
 package YuGiOh.view.menu;
 
 import YuGiOh.ClientApplication;
-import YuGiOh.controller.menu.*;
+import YuGiOh.api.BaseMenuApi;
+import YuGiOh.api.LoginMenuApi;
 import YuGiOh.model.User;
+import YuGiOh.network.ClientConnection;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
+import javafx.scene.control.Alert;
 import javafx.scene.control.Label;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
@@ -25,6 +28,8 @@ public class ScoreboardMenuView extends BaseMenuView {
     private ImageView backgroundImageView;
     @FXML
     private VBox mainBox;
+
+    private BaseMenuApi api;
 
     public ScoreboardMenuView() {
         instance = this;
@@ -47,6 +52,13 @@ public class ScoreboardMenuView extends BaseMenuView {
     public void start(Stage primaryStage, Pane root) {
         this.stage = primaryStage;
         this.root = root;
+        try {
+            this.api = new LoginMenuApi(ClientConnection.getOrCreateInstance());
+        } catch (IOException e) {
+            new Alert(Alert.AlertType.ERROR, "check your connection to server and retry!").showAndWait();
+            LoginMenuView.init(stage);
+            return;
+        }
         scene.setRoot(root);
         try {
             backgroundImageView.setImage(new Image(new FileInputStream(backgroundImageAddress)));
@@ -65,20 +77,22 @@ public class ScoreboardMenuView extends BaseMenuView {
     }
 
     private void renderScene() {
-        ArrayList<User> users = User.retrieveUsersBasedOnScore();
-        int rank = 1;
-        for (int i = 0; i < users.size(); i++) {
-            User user = users.get(i);
-            if (i > 0 && users.get(i - 1).getScore() > user.getScore())
-                rank = i + 1;
-            Label label = new Label(rank + ".  " + user.getNickname() + ":  " + user.getScore());
-            if (user == MainMenuController.getInstance().getUser())
-                label.getStyleClass().add("highlighted-user");
-            else
-                label.getStyleClass().add("user");
-            label.setText("  " + label.getText() + "  ");
-            mainBox.getChildren().add(i, label);
-        }
+        api.getUserFromServer().thenAccept(currentUser->{
+            ArrayList<User> users = User.retrieveUsersBasedOnScore();
+            int rank = 1;
+            for (int i = 0; i < users.size(); i++) {
+                User user = users.get(i);
+                if (i > 0 && users.get(i - 1).getScore() > user.getScore())
+                    rank = i + 1;
+                Label label = new Label(rank + ".  " + user.getNickname() + ":  " + user.getScore());
+                if (user.getUserId() == currentUser.getUserId())
+                    label.getStyleClass().add("highlighted-user");
+                else
+                    label.getStyleClass().add("user");
+                label.setText("  " + label.getText() + "  ");
+                mainBox.getChildren().add(i, label);
+            }
+        });
     }
 
     @FXML

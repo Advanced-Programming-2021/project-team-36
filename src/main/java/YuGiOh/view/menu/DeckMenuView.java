@@ -2,9 +2,6 @@ package YuGiOh.view.menu;
 
 import YuGiOh.ClientApplication;
 import YuGiOh.api.DeckMenuApi;
-import YuGiOh.api.ProfileMenuApi;
-import YuGiOh.controller.menu.DeckMenuController;
-import YuGiOh.model.User;
 import YuGiOh.model.deck.Deck;
 import YuGiOh.network.ClientConnection;
 import javafx.fxml.FXML;

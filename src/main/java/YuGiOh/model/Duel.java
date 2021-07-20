@@ -8,9 +8,7 @@ import YuGiOh.model.enums.GameResult;
 import YuGiOh.utils.CustomPrinter;
 import lombok.Getter;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
+import java.util.*;
 
 public class Duel {
     @Getter
@@ -35,13 +33,26 @@ public class Duel {
 
     private final List<Integer> firstPlayerScores = new ArrayList<>();
     private final List<Integer> secondPlayerScores = new ArrayList<>();
+    private static final List<Duel> duels = new ArrayList<>();
 
     public Duel(Player firstPlayer, Player secondPlayer, int rounds) throws ModelException {
-        this.firstPlayer = firstPlayer;
-        this.secondPlayer = secondPlayer;
+        if (new Random().nextInt(2) == 0) {
+            this.firstPlayer = firstPlayer;
+            this.secondPlayer = secondPlayer;
+        } else {
+            this.firstPlayer = secondPlayer;
+            this.secondPlayer = firstPlayer;
+        }
         this.rounds = rounds;
         this.currentRound = 0;
         this.currentGame = new Game(firstPlayer, secondPlayer);
+        duels.add(this);
+    }
+
+    public static Optional<Duel> getUserLastDuel(User user) {
+        return duels.stream().filter(duel ->
+                duel.getFirstPlayer().getUser().getUserId() == user.getUserId() || duel.getSecondPlayer().getUser().getUserId() == user.getUserId()
+        ).findAny();
     }
 
     private void addFirstPlayerLastRoundScore(int score) {

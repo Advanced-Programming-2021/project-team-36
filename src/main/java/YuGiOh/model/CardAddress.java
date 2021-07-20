@@ -5,9 +5,10 @@ import YuGiOh.model.enums.ZoneType;
 import lombok.Generated;
 import lombok.Getter;
 
+import java.io.Serializable;
 import java.util.Objects;
 
-public class CardAddress {
+public class CardAddress implements Serializable {
     @Getter
     private final ZoneType zone;
     @Getter

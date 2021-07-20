@@ -1,10 +1,7 @@
 package YuGiOh.view.menu;
 
 import YuGiOh.ClientApplication;
-import YuGiOh.api.LoginMenuApi;
 import YuGiOh.api.ProfileMenuApi;
-import YuGiOh.controller.menu.*;
-import YuGiOh.model.User;
 import YuGiOh.network.ClientConnection;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;

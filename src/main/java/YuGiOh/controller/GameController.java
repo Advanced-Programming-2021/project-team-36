@@ -1,6 +1,7 @@
 package YuGiOh.controller;
 
 import YuGiOh.controller.player.AIPlayerController;
+import YuGiOh.model.card.action.Action;
 import YuGiOh.model.card.action.NextPhaseAction;
 import YuGiOh.model.exception.GameException;
 import YuGiOh.model.exception.ResistToChooseCard;
@@ -143,26 +144,11 @@ public class GameController {
         CustomPrinter.println("phase: " + game.getPhase().getVerboseName(), Color.Blue);
     }
 
-    public void addRunnableToMainThreadForCard(Card card, GameField.GameRunnable runnable){
-        if(card.getOwner().equals(GameController.getInstance().getGame().getCurrentPlayer()))
-            addRunnableToMainThread(runnable);
-        else
-            CustomPrinter.println("You can't control your opponent's card", YuGiOh.model.enums.Color.Red);
-    }
-
-    public void addRunnableToMainThread(GameField.GameRunnable runnable){
-        if(GameController.getInstance().getCurrentPlayerController() instanceof AIPlayerController){
-            CustomPrinter.println("you can't do stuff in opponent's turn", YuGiOh.model.enums.Color.Red);
-            return;
-        }
-        try {
-            runnable.run();
-        } catch (ResistToChooseCard ignored) {
-        } catch (GameException e){
-            DuelMenuController.getInstance().getView().announce(e.getMessage());
-        } catch (RoundOverExceptionEvent roundOverExceptionEvent) {
-            DuelMenuController.getInstance().finishGame(roundOverExceptionEvent);
-        }
+    public CompletableFuture<Void> startChain(Action action) throws RoundOverExceptionEvent, GameException {
+        action.validateEffect();
+        ChainController chainController = new ChainController();
+        GameController.getInstance().getGame().getChain().add(action);
+        return chainController.control();
     }
 
     public void doGameStep() {

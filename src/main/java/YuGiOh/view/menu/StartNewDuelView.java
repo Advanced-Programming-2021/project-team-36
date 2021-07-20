@@ -1,10 +1,11 @@
 package YuGiOh.view.menu;
 
 import YuGiOh.ClientApplication;
+import YuGiOh.api.StartNewDuelApi;
 import YuGiOh.controller.MediaPlayerController;
-import YuGiOh.controller.menu.*;
 import YuGiOh.model.Animation;
 import YuGiOh.model.enums.AIMode;
+import YuGiOh.network.ClientConnection;
 import javafx.animation.KeyFrame;
 import javafx.animation.Timeline;
 import javafx.fxml.FXML;
@@ -40,7 +41,6 @@ public class StartNewDuelView extends BaseMenuView {
     private int numberOfRounds = 3, gameMode;
     private Animation animation;
     private ArrayList<String> imageURLs = new ArrayList<>();
-    private boolean winner;
 
     private Node leftArrow, rightArrow;
     @FXML
@@ -53,6 +53,8 @@ public class StartNewDuelView extends BaseMenuView {
     private HBox hBox;
     @FXML
     private TextField secondPlayerUsernameTextField;
+
+    private StartNewDuelApi api;
 
     public StartNewDuelView() {
         instance = this;
@@ -77,9 +79,14 @@ public class StartNewDuelView extends BaseMenuView {
         this.root = root;
         this.gameMode = gameMode;
         Random random = new Random();
-        this.winner = random.nextInt(100) % 2 == 1;
+        try {
+            this.api = new StartNewDuelApi(ClientConnection.getOrCreateInstance());
+        } catch (IOException e) {
+            new Alert(Alert.AlertType.ERROR, "check your connection to server and retry!").showAndWait();
+            LoginMenuView.init(stage);
+            return;
+        }
         scene = new Scene(root);
-        new StartNewDuelController();
         try {
             backgroundImageView.setImage(new Image(new FileInputStream(backgroundImageAddress)));
             backgroundImageView.toBack();
@@ -124,7 +131,7 @@ public class StartNewDuelView extends BaseMenuView {
         animatedCoin.setImage(animation.getImage());
     }
 
-    private void coinToss() {
+    private void coinToss(boolean winner) {
         root.getChildren().remove(1);
         root.getChildren().add(coinTossVBox);
         coinTossVBox.toFront();
@@ -147,15 +154,11 @@ public class StartNewDuelView extends BaseMenuView {
 
     @FXML
     private void startGame() {
-        try {
-            if (gameMode == 0) {
-                String secondPlayerUsername = secondPlayerUsernameTextField.getText();
-                StartNewDuelController.getInstance().startNewDuel(winner, secondPlayerUsername, numberOfRounds);
-            } else
-                StartNewDuelController.getInstance().startDuelWithAI(winner, 3, AIMode.NORMAL);
-            coinToss();
-        } catch (Exception exception) {
-            new Alert(Alert.AlertType.ERROR, exception.getMessage()).showAndWait();
+        if (gameMode == 0) {
+            String secondPlayerUsername = secondPlayerUsernameTextField.getText();
+            showErrorAsync(api.startNewDuel(secondPlayerUsername, numberOfRounds).thenCompose(res -> api.doesUserStart()).thenAccept(this::coinToss));
+        } else {
+            showErrorAsync(api.startDuelWithAI(numberOfRounds, AIMode.NORMAL).thenCompose(res -> api.doesUserStart()).thenAccept(this::coinToss));
         }
     }
 
